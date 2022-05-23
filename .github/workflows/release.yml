@@ -1,0 +1,45 @@
+name: Release Workflow
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  run-goreleaser:
+    name: "Release All Binaries and Frameworks"
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Configure Homebrew w/ cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/Library/Caches/Homebrew/foo--*
+            ~/Library/Caches/Homebrew/downloads/*--foo-*
+          key: brew-${{ hashFiles('.github/brew-formulae') }}
+          restore-keys: brew-
+      - name: Install Homebrew dependencies
+        run: |
+          brew install FiloSottile/musl-cross/musl-cross
+          brew install mingw-w64
+
+      - name: Configure Golang w/ cache
+        uses: magnetikonline/action-golang-cache@v2
+        with:
+          go-version: ~1.17
+
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          distribution: goreleaser-pro
+          version: latest
+          args: release --rm-dist --parallelism=4
+        env:
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_GH_TOKEN }}
