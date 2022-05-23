@@ -1,6 +1,7 @@
-package webauthn
+package client
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -26,15 +27,14 @@ const (
 type WebAuthn struct {
 	instance *webauthn.WebAuthn
 
+	ctx      context.Context
 	cache    *cache.Cache
 	config   *config.Config
 	sessions *session.Store
 }
 
 // NewWebauthn creates a new WebAuthn instance with the given configuration
-func NewWebauthn() (*WebAuthn, error) {
-	config := config.DefaultConfig(config.Role_HIGHWAY)
-
+func NewWebauthn(ctx context.Context, config *config.Config) (*WebAuthn, error) {
 	// Create a WebAuthn instance
 	web, err := webauthn.New(toWebauthnConfig(config))
 	if err != nil {
@@ -50,6 +50,7 @@ func NewWebauthn() (*WebAuthn, error) {
 	// return a new WebAuthn instance
 	return &WebAuthn{
 		instance: web,
+		ctx:      ctx,
 		cache:    cache.New(5*time.Minute, 10*time.Minute),
 		config:   config,
 		sessions: sessionStore,
