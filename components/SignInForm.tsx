@@ -12,7 +12,7 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 import * as React from "react";
-import { Logo } from "../../components/Logo";
+import { Logo } from "./Logo";
 
 export const SignInForm = (props: StackProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });

@@ -18,7 +18,7 @@ import {
 import * as React from "react";
 import { Sidebar } from "../../../components/Sidebar";
 import { FiSearch } from "react-icons/fi";
-import { ObjectTable } from "./ObjectTable";
+import { ObjectTable } from "../../../components/ObjectTable";
 
 const Home: NextPage = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
