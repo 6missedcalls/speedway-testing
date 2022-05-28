@@ -18,10 +18,9 @@ func BeginLogin(w http.ResponseWriter, r *http.Request) {
 		JsonResponse(w, fmt.Errorf("must supply a valid username i.e. foo@bar.com"), http.StatusBadRequest)
 		return
 	}
+
 	// get user
 	user, err := userDB.GetUser(username)
-
-	// user doesn't exist
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusBadRequest)
