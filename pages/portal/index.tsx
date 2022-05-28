@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
 import {
   Box,
-  Circle,
   Flex,
   Heading,
   SimpleGrid,
@@ -11,23 +10,6 @@ import {
   useColorModeValue as mode,
 } from "@chakra-ui/react";
 import * as React from "react";
-import {
-  BiBuoy,
-  BiCog,
-  BiCommentAdd,
-  BiCreditCard,
-  BiEnvelope,
-  BiHome,
-  BiNews,
-  BiPurchaseTagAlt,
-  BiRecycle,
-  BiRedo,
-  BiUserCircle,
-  BiWallet,
-} from "react-icons/bi";
-import { AccountSwitcher } from "../../components/Sidebar/AccountSwitcher";
-import { NavGroup } from "../../components/Sidebar/NavGroup";
-import { NavItem } from "../../components/NavItem";
 import { Sidebar } from "../../components/Sidebar";
 import { Button } from "@chakra-ui/react";
 import { FiDownloadCloud } from "react-icons/fi";

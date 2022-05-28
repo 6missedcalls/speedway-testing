@@ -20,8 +20,6 @@ import {
   VisuallyHidden,
 } from "@chakra-ui/react";
 import * as React from "react";
-import { Logo } from "../components/Logo";
-import { SignInForm } from "./auth/SignInForm";
 import { FaPlay } from "react-icons/fa";
 import * as Logos from "../components/Brands";
 import { Navbar } from "../components/Navbar";
