@@ -30,7 +30,7 @@ import { FaGithub, FaLinkedin, FaPlay, FaTwitter } from "react-icons/fa";
 import * as Logos from "../components/Brands";
 import { Navbar } from "../components/Navbar";
 import { FiArrowRight } from "react-icons/fi";
-import { features } from "./data";
+import { features } from "../models/featuresData";
 import { Logo } from "../components/Logo";
 
 const Home: NextPage = () => {

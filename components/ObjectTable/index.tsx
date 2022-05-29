@@ -19,7 +19,7 @@ import * as React from "react";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import { IoArrowDown } from "react-icons/io5";
 import { Rating } from "./Rating";
-import { members } from "./data";
+import { members } from "../../models/objectsData";
 
 export const ObjectTable = (props: TableProps) => (
   <Table {...props}>

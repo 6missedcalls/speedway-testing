@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import * as React from "react";
 import { items } from "./resourceData";
-import { PopoverIcon } from "./PopoverIcon";
+import { PopoverIcon } from "../../models/PopoverIcon";
 
 export const ResourcesPopover = () => (
   <Popover

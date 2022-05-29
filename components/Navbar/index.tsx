@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import * as React from "react";
 import { FiMenu } from "react-icons/fi";
-import { PopoverIcon } from "./PopoverIcon";
+import { PopoverIcon } from "../../models/PopoverIcon";
 import { Logo } from "./Logo";
 import { ResourcesSubmenu } from "./DocumentationSubmenu";
 import { ResourcesPopover } from "./ResourcesPopover";

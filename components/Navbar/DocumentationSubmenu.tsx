@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { FiPlayCircle } from "react-icons/fi";
-import { items, tutorials } from "./docsData";
+import { items, tutorials } from "../../models/docsData";
 
 export const ResourcesSubmenu = (props: UseDisclosureProps) => {
   const { isOpen } = props;
