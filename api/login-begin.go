@@ -49,9 +49,9 @@ func BeginLogin(w http.ResponseWriter, r *http.Request) {
 func Setup() error {
 	var err error
 	webAuthn, err = webauthn.New(&webauthn.Config{
-		RPDisplayName: "Sonr",                 // Display Name for your site
-		RPID:          "sonr.dev",             // Generally the domain name for your site
-		RPOrigin:      "https://www.sonr.dev", // The origin URL for WebAuthn requests
+		RPDisplayName: "Sonr - Highway",         // Display Name for your site
+		RPID:          "highway.sh",             // Generally the domain name for your site
+		RPOrigin:      "https://www.highway.sh", // The origin URL for WebAuthn requests
 	})
 	if err != nil {
 		log.Println(err)

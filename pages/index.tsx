@@ -18,11 +18,20 @@ import {
   LightMode,
   SimpleGrid,
   VisuallyHidden,
+  Container,
+  Icon,
+  Square,
+  ButtonGroup,
+  IconButton,
 } from "@chakra-ui/react";
 import * as React from "react";
-import { FaPlay } from "react-icons/fa";
+
+import { FaGithub, FaLinkedin, FaPlay, FaTwitter } from "react-icons/fa";
 import * as Logos from "../components/Brands";
 import { Navbar } from "../components/Navbar";
+import { FiArrowRight } from "react-icons/fi";
+import { features } from "./data";
+import { Logo } from "../components/Logo";
 
 const Home: NextPage = () => {
   return (
@@ -44,7 +53,7 @@ const Home: NextPage = () => {
               lineHeight="1.2"
               letterSpacing="tight"
             >
-              Design collaboration without the chaos
+              Launch Decentralized Apps in Seconds
             </Heading>
             <Text fontSize="xl" mt="4" maxW="xl" mx="auto">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -153,6 +162,96 @@ const Home: NextPage = () => {
           </SimpleGrid>
         </Box>
       </Box>
+      <Box as="section" bg="bg-surface">
+        <Container py={{ base: "16", md: "24" }}>
+          <Stack spacing={{ base: "12", md: "16" }}>
+            <Stack spacing={{ base: "4", md: "5" }} maxW="3xl">
+              <Stack spacing="3">
+                <Text
+                  fontSize={{ base: "sm", md: "md" }}
+                  fontWeight="semibold"
+                  color="accent"
+                >
+                  Features
+                </Text>
+                <Heading size={useBreakpointValue({ base: "sm", md: "md" })}>
+                  What can you expect?
+                </Heading>
+              </Stack>
+              <Text color="muted" fontSize={{ base: "lg", md: "xl" }}>
+                A bundle of 210+ ready-to-use, responsive and accessible
+                components with clever structured sourcode files.
+              </Text>
+            </Stack>
+            <SimpleGrid
+              columns={{ base: 1, md: 2, lg: 3 }}
+              columnGap={8}
+              rowGap={{ base: 10, md: 16 }}
+            >
+              {features.map((feature) => (
+                <Stack key={feature.name} spacing={{ base: "4", md: "5" }}>
+                  <Square
+                    size={{ base: "10", md: "12" }}
+                    bg="accent"
+                    color="inverted"
+                    borderRadius="lg"
+                  >
+                    <Icon as={feature.icon} boxSize={{ base: "5", md: "6" }} />
+                  </Square>
+                  <Stack spacing={{ base: "1", md: "2" }} flex="1">
+                    <Text
+                      fontSize={{ base: "lg", md: "xl" }}
+                      fontWeight="medium"
+                    >
+                      {feature.name}
+                    </Text>
+                    <Text color="muted">{feature.description}</Text>
+                  </Stack>
+                  <Button
+                    variant="link"
+                    colorScheme="blue"
+                    rightIcon={<FiArrowRight fontSize="1.25rem" />}
+                    alignSelf="start"
+                  >
+                    Read more
+                  </Button>
+                </Stack>
+              ))}
+            </SimpleGrid>
+          </Stack>
+        </Container>
+      </Box>
+      <Container as="footer" role="contentinfo" py={{ base: "12", md: "16" }}>
+        <Stack spacing={{ base: "4", md: "5" }}>
+          <Stack justify="space-between" direction="row" align="center">
+            <Logo />
+            <ButtonGroup variant="ghost">
+              <IconButton
+                as="a"
+                href="#"
+                aria-label="LinkedIn"
+                icon={<FaLinkedin fontSize="1.25rem" />}
+              />
+              <IconButton
+                as="a"
+                href="#"
+                aria-label="GitHub"
+                icon={<FaGithub fontSize="1.25rem" />}
+              />
+              <IconButton
+                as="a"
+                href="#"
+                aria-label="Twitter"
+                icon={<FaTwitter fontSize="1.25rem" />}
+              />
+            </ButtonGroup>
+          </Stack>
+          <Text fontSize="sm" color="subtle">
+            &copy; {new Date().getFullYear()} Chakra UI Pro, Inc. All rights
+            reserved.
+          </Text>
+        </Stack>
+      </Container>
     </Box>
   );
 };

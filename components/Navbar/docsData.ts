@@ -2,22 +2,22 @@ import { FiBarChart, FiFileText, FiGrid, FiMousePointer, FiRepeat, FiShield } fr
 
 export const items = [
   {
-    title: 'Resources',
+    title: 'Build Apps',
     links: [
       {
-        title: 'Analytics',
+        title: 'Highway SDK',
         description: 'Danish lollipop marzipan dragée gingerbread tart wafer sweet.',
         href: '#',
         icon: FiBarChart,
       },
       {
-        title: 'Automations',
+        title: 'Blockchain API',
         description: 'Macaroon tiramisu tart bonbon apple pie jujubes brownie.',
         href: '#',
         icon: FiRepeat,
       },
       {
-        title: 'Engagement',
+        title: 'Motor Plugins',
         description: 'hupa chups donut caramels chocolate cake toffee.',
         href: '#',
         icon: FiMousePointer,
@@ -25,22 +25,22 @@ export const items = [
     ],
   },
   {
-    title: 'Resources',
+    title: 'Run Nodes',
     links: [
       {
-        title: 'Integrations',
+        title: 'Setup Validator',
         description: 'Dragée jujubes brownie pastry biscuit croissant wafer halva apple.',
         href: '#',
         icon: FiGrid,
       },
       {
-        title: 'Reports',
+        title: 'Bind Motor Node',
         description: 'Candy oat cake caramels shortbread gummies.',
         href: '#',
         icon: FiFileText,
       },
       {
-        title: 'Security',
+        title: 'Deploy a Smart Contract',
         description: 'Bear claw topping toffee tiramisu cake fruitcake marzipan icing.',
         href: '#',
         icon: FiShield,

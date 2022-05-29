@@ -12,25 +12,32 @@ import {
   Text,
   useColorModeValue,
   UseDisclosureProps,
-} from '@chakra-ui/react'
-import React from 'react'
-import { FiPlayCircle } from 'react-icons/fi'
-import { items, tutorials } from './data'
+} from "@chakra-ui/react";
+import React from "react";
+import { FiPlayCircle } from "react-icons/fi";
+import { items, tutorials } from "./docsData";
 
 export const ResourcesSubmenu = (props: UseDisclosureProps) => {
-  const { isOpen } = props
+  const { isOpen } = props;
   return (
     <Box position="absolute" boxSize="full">
       <SlideFade in={isOpen}>
         <Box
           bg="bg-surface"
-          boxShadow={useColorModeValue('md', 'md-dark')}
-          pt={{ base: '4', md: '8' }}
+          boxShadow={useColorModeValue("md", "md-dark")}
+          pt={{ base: "4", md: "8" }}
           pb="8"
         >
           <Container>
-            <Stack direction={{ base: 'column', lg: 'row' }} spacing={{ base: '14', lg: '16' }}>
-              <SimpleGrid columns={{ base: 1, md: 2 }} maxW={{ lg: '2xl' }} gap={6}>
+            <Stack
+              direction={{ base: "column", lg: "row" }}
+              spacing={{ base: "14", lg: "16" }}
+            >
+              <SimpleGrid
+                columns={{ base: 1, md: 2 }}
+                maxW={{ lg: "2xl" }}
+                gap={6}
+              >
                 {items.map((item, id) => (
                   <Stack key={id} spacing="3">
                     <Text fontSize="sm" fontWeight="medium" color="accent">
@@ -59,11 +66,21 @@ export const ResourcesSubmenu = (props: UseDisclosureProps) => {
                   <Text fontSize="sm" fontWeight="medium" color="accent">
                     {item.title}
                   </Text>
-                  <Stack spacing="8" direction={{ base: 'column', md: 'row', lg: 'column' }}>
+                  <Stack
+                    spacing="8"
+                    direction={{ base: "column", md: "row", lg: "column" }}
+                  >
                     {item.links.map((link, id) => (
-                      <Stack direction={{ base: 'column', lg: 'row' }} spacing="6" key={id}>
+                      <Stack
+                        direction={{ base: "column", lg: "row" }}
+                        spacing="6"
+                        key={id}
+                      >
                         <Box>
-                          <AspectRatio ratio={3 / 2} width={{ base: '60', lg: '40' }}>
+                          <AspectRatio
+                            ratio={3 / 2}
+                            width={{ base: "60", lg: "40" }}
+                          >
                             <Image
                               borderRadius="md"
                               objectFit="cover"
@@ -98,5 +115,5 @@ export const ResourcesSubmenu = (props: UseDisclosureProps) => {
         </Box>
       </SlideFade>
     </Box>
-  )
-}
+  );
+};

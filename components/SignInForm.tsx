@@ -13,9 +13,43 @@ import {
 } from "@chakra-ui/react";
 import * as React from "react";
 import { Logo } from "./Logo";
+import { signIn, useSession } from "next-auth/react";
+import { ChangeEvent, KeyboardEventHandler, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 export const SignInForm = (props: StackProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const [email, setEmail] = useState("");
+  const [isValid, setIsValid] = useState(false);
+
+  const router = useRouter();
+  const { status } = useSession();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/");
+    }
+  });
+
+  async function signInWithEmail() {
+    return signIn("email", { email });
+  }
+
+  async function handleSignIn() {
+    await signInWithEmail();
+  }
+
+  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key === "Enter") {
+      return handleSignIn();
+    }
+  };
+
+  function updateEmail(e: ChangeEvent<HTMLInputElement>) {
+    setIsValid(e.target.validity.valid);
+    setEmail(e.target.value);
+  }
+
   return (
     <Stack spacing="8" {...props}>
       <Stack spacing="6">
@@ -36,17 +70,21 @@ export const SignInForm = (props: StackProps) => {
         <Stack spacing="5">
           <FormControl>
             <FormLabel htmlFor="email">Email</FormLabel>
-            <Input id="email" placeholder="Enter your email" type="email" />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor="password">Password</FormLabel>
-            <Input id="password" placeholder="********" type="password" />
+            <Input
+              name="email"
+              type="email"
+              id="email"
+              autoComplete="home email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={updateEmail}
+              onKeyDown={handleKeyDown}
+            />
           </FormControl>
         </Stack>
         <HStack justify="space-between">
-          <Checkbox defaultChecked>Remember me</Checkbox>
           <Button variant="link" colorScheme="blue" size="sm">
-            Forgot password
+            Recover account
           </Button>
         </HStack>
         <Stack spacing="4">
