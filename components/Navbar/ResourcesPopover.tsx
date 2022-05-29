@@ -14,7 +14,7 @@ import * as React from "react";
 import { items } from "../../models/resourceData";
 import { PopoverIcon } from "../../models/PopoverIcon";
 
-export const ResourcesPopover = () => (
+export const ResourcesPopover = (props: {color: string}) => (
   <Popover
     trigger="hover"
     openDelay={0}
@@ -25,7 +25,7 @@ export const ResourcesPopover = () => (
     {({ isOpen }) => (
       <>
         <PopoverTrigger>
-          <Button variant="link" rightIcon={<PopoverIcon isOpen={isOpen} />}>
+          <Button color={props.color} variant="link" rightIcon={<PopoverIcon isOpen={isOpen} />}>
             Resources
           </Button>
         </PopoverTrigger>

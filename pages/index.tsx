@@ -30,12 +30,14 @@ import { Navbar } from "../components/Navbar";
 import { FiArrowRight } from "react-icons/fi";
 import { features } from "../models/featuresData";
 import { Logo } from "../components/Logo";
+import { Footer } from "../components/Footer";
+import { FeaturesModal } from "../components/FeaturesModal";
 
 const Home: NextPage = () => {
   const { isOpen, onClose, onOpen } = useDisclosure({ defaultIsOpen: false });
   return (
     <main>
-      <Navbar />
+      <Navbar style={"light"} />
       <Box>
         <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
           <ModalOverlay bg="blackAlpha.700" backdropFilter="blur(10px)" />
@@ -203,6 +205,7 @@ const Home: NextPage = () => {
                   Apps, with all the Sonr Modules available out of the box.
                 </Text>
               </Stack>
+
               <SimpleGrid
                 columns={{ base: 1, md: 2, lg: 3 }}
                 columnGap={8}
@@ -210,6 +213,11 @@ const Home: NextPage = () => {
               >
                 {features.map((feature) => (
                   <Stack key={feature.name} spacing={{ base: "4", md: "5" }}>
+                    <FeaturesModal
+                      id="features-modal"
+                      title={feature.name}
+                      description={feature.description}
+                    />
                     <Square
                       size={{ base: "10", md: "12" }}
                       bg="accent"
@@ -235,6 +243,7 @@ const Home: NextPage = () => {
                       colorScheme="blue"
                       rightIcon={<FiArrowRight fontSize="1.25rem" />}
                       alignSelf="start"
+                      onClick={onOpen}
                     >
                       Read more
                     </Button>
@@ -244,37 +253,7 @@ const Home: NextPage = () => {
             </Stack>
           </Container>
         </Box>
-
-        <Container as="footer" role="contentinfo" py={{ base: "12", md: "16" }}>
-          <Stack spacing={{ base: "4", md: "5" }}>
-            <Stack justify="space-between" direction="row" align="center">
-              <Logo type="Default" size="md" mb="8px" />
-              <ButtonGroup variant="ghost">
-                <IconButton
-                  as="a"
-                  href="#"
-                  aria-label="LinkedIn"
-                  icon={<FaLinkedin fontSize="1.25rem" />}
-                />
-                <IconButton
-                  as="a"
-                  href="#"
-                  aria-label="GitHub"
-                  icon={<FaGithub fontSize="1.25rem" />}
-                />
-                <IconButton
-                  as="a"
-                  href="#"
-                  aria-label="Twitter"
-                  icon={<FaTwitter fontSize="1.25rem" />}
-                />
-              </ButtonGroup>
-            </Stack>
-            <Text fontSize="sm" color="subtle">
-              &copy; {new Date().getFullYear()} Sonr, Inc. All rights reserved.
-            </Text>
-          </Stack>
-        </Container>
+        <Footer />
       </Box>
     </main>
   );
