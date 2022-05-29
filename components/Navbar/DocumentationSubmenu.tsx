@@ -20,7 +20,7 @@ import { items, tutorials } from "../../models/docsData";
 export const ResourcesSubmenu = (props: UseDisclosureProps) => {
   const { isOpen } = props;
   return (
-    <Box position="absolute" boxSize="full">
+    <Box position="absolute" boxSize="full" zIndex={isOpen ? "dropdown" : -1}>
       <SlideFade in={isOpen}>
         <Box
           bg="bg-surface"

@@ -7,15 +7,17 @@ import {
   HStack,
   Input,
   Stack,
+  Image,
   StackProps,
   Text,
   useBreakpointValue,
 } from "@chakra-ui/react";
 import * as React from "react";
-import { Logo } from "./Logo";
 import { signIn, useSession } from "next-auth/react";
 import { ChangeEvent, KeyboardEventHandler, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { Logo } from "./Logo";
+import { Colors } from "../styles/nebula/colors";
 
 export const SignInForm = (props: StackProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -53,14 +55,14 @@ export const SignInForm = (props: StackProps) => {
   return (
     <Stack spacing="8" {...props}>
       <Stack spacing="6">
-        {isMobile && <Logo />}
+        {isMobile && <Logo type="White" size="md" />}
         <Stack spacing={{ base: "2", md: "3" }} textAlign="center">
           <Heading size={useBreakpointValue({ base: "xs", md: "sm" })}>
-            Log in to your account
+            Access with Sonr Account
           </Heading>
           <HStack spacing="1" justify="center">
             <Text color="muted">Don't have an account?</Text>
-            <Button variant="link" colorScheme="blue">
+            <Button variant="link" color={Colors.secondary3}>
               Sign up
             </Button>
           </HStack>
@@ -71,11 +73,11 @@ export const SignInForm = (props: StackProps) => {
           <FormControl>
             <FormLabel htmlFor="email">Email</FormLabel>
             <Input
-              name="email"
+              name="did"
               type="email"
-              id="email"
+              id="did"
               autoComplete="home email"
-              placeholder="Enter your email"
+              placeholder="angelo.snr or Account Address"
               value={email}
               onChange={updateEmail}
               onKeyDown={handleKeyDown}
@@ -83,7 +85,7 @@ export const SignInForm = (props: StackProps) => {
           </FormControl>
         </Stack>
         <HStack justify="space-between">
-          <Button variant="link" colorScheme="blue" size="sm">
+          <Button variant="link" color={Colors.secondary3} size="sm">
             Recover account
           </Button>
         </HStack>

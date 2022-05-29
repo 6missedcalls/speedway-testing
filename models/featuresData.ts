@@ -4,36 +4,36 @@ import { IoRocketSharp } from 'react-icons/io5'
 
 export const features = [
   {
-    name: '210+ Components',
-    description: 'Chakra UI Pro has 210+ componentsto help you develop your project faster.',
+    name: 'NFT Schemas',
+    description: 'Define Types for Verifiable Objects on your Sonr powered App.',
     icon: BsStars,
   },
-  {
-    name: 'Production Ready',
-    description:
-      'Effortlessly create your next production-ready experience with Chakra UI Pro components.',
-    icon: IoRocketSharp,
-  },
-  {
-    name: 'Light & Dark',
-    description: 'All components support a light and a dark color mode out of the box.',
+    {
+    name: 'IPFS Storage',
+    description: 'Leverage decentralized storage for uploading application or user specific assets',
     icon: BsFillMoonFill,
   },
   {
-    name: 'Themeable',
+    name: 'Hosting',
     description:
-      "Your style. Your blue. Customize the components as you need them. It's that simple.",
+      "Host simple static websites on the Sonr Network, backed with IPFS.",
     icon: FaPaintBrush,
   },
   {
-    name: 'Fully Responsive',
-    description: 'Responsive components that look great on mobile, tablet and desktop.',
+    name: 'Realtime Streams',
+    description:
+      'Create connected realtime channels of data with defined messages.',
+    icon: IoRocketSharp,
+  },
+  {
+    name: 'Graph',
+    description: 'Visualize the interactions between the key components of your application',
     icon: FaExpandAlt,
   },
   {
-    name: 'Accessible',
+    name: 'Functions',
     description:
-      "Accessibility first. That's why we pay attention to accessibility right from the start.",
+      "Deploy simple Javascript functions to interact with your App's components.",
     icon: FaAccessibleIcon,
   },
 ]

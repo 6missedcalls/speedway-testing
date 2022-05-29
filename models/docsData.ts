@@ -6,19 +6,19 @@ export const items = [
     links: [
       {
         title: 'Highway SDK',
-        description: 'Danish lollipop marzipan dragée gingerbread tart wafer sweet.',
+        description: 'The first fully comprehensive set of developer tools for the DWeb.',
         href: '#',
         icon: FiBarChart,
       },
       {
         title: 'Blockchain API',
-        description: 'Macaroon tiramisu tart bonbon apple pie jujubes brownie.',
+        description: 'Read more about the structure of our blockchain and network',
         href: '#',
         icon: FiRepeat,
       },
       {
         title: 'Motor Plugins',
-        description: 'hupa chups donut caramels chocolate cake toffee.',
+        description: 'Get started with our frontend plugins for your app.',
         href: '#',
         icon: FiMousePointer,
       },
@@ -54,13 +54,13 @@ export const tutorials = [
     title: 'Tutorials',
     links: [
       {
-        title: 'Get started with Chakra UI',
+        title: 'Get started with DID Login',
         description: 'Danish lollipop marzipan dragée gingerbread tart wafer sweet.',
         previewImage: 'https://tinyurl.com/2p95wh2z',
         href: '#',
       },
       {
-        title: 'Create your first component',
+        title: 'Create your first Sonr Powered App',
         description: 'Macaroon tiramisu tart bonbon apple pie jujubes brownie.',
         previewImage: 'https://tinyurl.com/4hhtd52m',
         href: '#',

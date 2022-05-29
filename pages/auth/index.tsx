@@ -6,6 +6,7 @@ import {
   HStack,
   DarkMode,
   Heading,
+  Image,
   AvatarGroup,
   Avatar,
   Center,
@@ -15,8 +16,8 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 import * as React from "react";
-import { Logo } from "../../components/Logo";
 import { SignInForm } from "../../components/SignInForm";
+import { Logo } from "../../components/Logo";
 
 const Home: NextPage = () => {
   return (
@@ -39,7 +40,7 @@ const Home: NextPage = () => {
               color="on-accent"
             >
               <Flex align="center" h="24">
-                <Logo />
+                <Logo type="White" size="md" />
               </Flex>
               <Flex flex="1" align="center">
                 <Stack spacing="8">
@@ -85,7 +86,7 @@ const Home: NextPage = () => {
               </Flex>
               <Flex align="center" h="24">
                 <Text color="on-accent-subtle" fontSize="sm">
-                  © 2022 Chakra UI. All rights reserved.
+                  © 2022 Sonr Inc. All rights reserved.
                 </Text>
               </Flex>
             </Flex>

@@ -3,6 +3,7 @@ import {
   Icon,
   Link,
   Popover,
+  PopoverProps,
   PopoverContent,
   PopoverTrigger,
   SimpleGrid,
@@ -10,7 +11,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import * as React from "react";
-import { items } from "./resourceData";
+import { items } from "../../models/resourceData";
 import { PopoverIcon } from "../../models/PopoverIcon";
 
 export const ResourcesPopover = () => (
