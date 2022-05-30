@@ -19,9 +19,24 @@ import { FaPlay } from "react-icons/fa";
 import * as Logos from "../../components/Brands";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Footer";
+import {
+  Terminal,
+  commandWord,
+  useEventQueue,
+  textLine,
+  textWord,
+} from "crt-terminal";
+
+const bannerText = `
+Hello world!
+
+And not only world
+`;
 
 const Home: NextPage = () => {
   const { isOpen, onClose, onOpen } = useDisclosure({ defaultIsOpen: false });
+  const eventQueue = useEventQueue();
+  const { print } = eventQueue.handlers;
   return (
     <main>
       <Navbar style={"light"} />
@@ -90,29 +105,24 @@ const Home: NextPage = () => {
               rounded="lg"
               overflow="hidden"
             >
-              <Img
-                alt="Screenshot of Envelope App"
-                src="https://res.cloudinary.com/chakra-ui-pro/image/upload/v1621085270/pro-website/app-screenshot-light_kit2sp.png"
-              />
-              <Circle
-                size="20"
-                as="button"
-                bg="white"
-                shadow="lg"
-                color="blue.600"
-                position="absolute"
-                top="50%"
-                left="50%"
-                transform="translate3d(-50%, -50%, 0)"
-                fontSize="xl"
-                transition="all 0.2s"
-                _groupHover={{
-                  transform: "translate3d(-50%, -50%, 0) scale(1.05)",
-                }}
-              >
-                <VisuallyHidden>Play demo video</VisuallyHidden>
-                <FaPlay />
-              </Circle>
+              <div style={{ width: "1000px", height: "600px" }}>
+                <Terminal
+                  queue={eventQueue}
+                  banner={[
+                    textLine({ words: [textWord({ characters: bannerText })] }),
+                  ]}
+                  onCommand={(command) =>
+                    print([
+                      textLine({
+                        words: [
+                          textWord({ characters: "You entered command: " }),
+                          commandWord({ characters: command, prompt: ">" }),
+                        ],
+                      }),
+                    ])
+                  }
+                />
+              </div>
             </Box>
           </Box>
         </Box>
