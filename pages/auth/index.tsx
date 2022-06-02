@@ -40,7 +40,7 @@ const Home: NextPage = () => {
               color="on-accent"
             >
               <Flex align="center" h="24">
-                <Logo type="White" size="md" />
+                <Logo type="White" size="sm" />
               </Flex>
               <Flex flex="1" align="center">
                 <Stack spacing="8">

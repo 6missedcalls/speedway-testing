@@ -5,20 +5,14 @@ import {
   Stack,
   Text,
   Button,
-  Circle,
-  Img,
   LightMode,
   SimpleGrid,
   useDisclosure,
-  useColorMode as mode,
-  VisuallyHidden,
 } from "@chakra-ui/react";
 import * as React from "react";
 
-import { FaPlay } from "react-icons/fa";
 import * as Logos from "../../components/Brands";
 import { Navbar } from "../../components/Navbar";
-import { Footer } from "../../components/Footer";
 import {
   Terminal,
   commandWord,
