@@ -25,5 +25,4 @@ func BroadcastTx(w http.ResponseWriter, r *http.Request) {
 		JsonResponse(w, fmt.Errorf("must supply a valid username i.e. foo@bar.com"), http.StatusBadRequest)
 		return
 	}
-
 }
