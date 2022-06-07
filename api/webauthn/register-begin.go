@@ -23,7 +23,7 @@ func BeginRegistration(w http.ResponseWriter, r *http.Request) {
 
 	if err := Setup(); err != nil {
 		log.Printf("error setting up webauthn: %v", err)
-		http.Error(w, "error setting up webauthn", http.StatusInternalServerError)
+		JsonResponse(w, "error setting up webauthn", http.StatusInternalServerError)
 		return
 	}
 

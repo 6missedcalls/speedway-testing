@@ -31,25 +31,74 @@ export const SignInForm = (props: StackProps) => {
     }
   });
 
+  // Base64 to ArrayBuffer
+  function bufferDecode(value: string) {
+    return Buffer.from(value, "base64");
+  }
+
+  // ArrayBuffer to URLBase64
+  function bufferEncode(value: any) {
+    return Buffer.from(value)
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=/g, "");
+  }
+
   const register = (username: String) => {
-    fetch("/api/webauthn/register-begin.go&username=" + username)
+    fetch("api/webauthn/register-begin?username=" + username)
       .then((response) => response.json())
       .then((createCredentialOptions) => {
+        createCredentialOptions.publicKey.challenge = bufferDecode(
+          createCredentialOptions.publicKey.challenge
+        );
+        createCredentialOptions.publicKey.user.id = bufferDecode(
+          createCredentialOptions.publicKey.user.id
+        );
+        if (createCredentialOptions.publicKey.excludeCredentials) {
+          for (
+            var i = 0;
+            i < createCredentialOptions.publicKey.excludeCredentials.length;
+            i++
+          ) {
+            createCredentialOptions.publicKey.excludeCredentials[i].id =
+              bufferDecode(
+                createCredentialOptions.publicKey.excludeCredentials[i].id
+              );
+          }
+        }
+
         navigator.credentials
           .create(createCredentialOptions)
-          .then((credential) => {
+          .then((credential: any) => {
+            if (credential === null) {
+              return;
+            }
+            console.log(credential);
+            let attestationObject = credential.response.attestationObject;
+            let clientDataJSON = credential.response.clientDataJSON;
+            let rawId = credential.rawId;
+
             const requestOptions = {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(credential),
+              body: JSON.stringify({
+                id: credential.id,
+                rawId: bufferEncode(rawId),
+                type: credential.type,
+                response: {
+                  attestationObject: bufferEncode(attestationObject),
+                  clientDataJSON: bufferEncode(clientDataJSON),
+                },
+              }),
             };
             fetch(
-              "/api/webauthn/register-finish.go&username=" + username,
+              "/api/webauthn/register-finish?username=" + username,
               requestOptions
             )
               .then((response) => response.json())
               .then((data) => {
-                console.log("result: ", data);
+                alert("successfully registered " + username + "!");
               });
           });
       });
@@ -99,7 +148,6 @@ export const SignInForm = (props: StackProps) => {
               placeholder="angelo.snr or Account Address"
               value={email}
               onChange={updateEmail}
-              onSubmit={register(email)}
             />
           </FormControl>
         </Stack>
