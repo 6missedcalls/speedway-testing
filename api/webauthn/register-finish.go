@@ -44,10 +44,9 @@ func (db *userdb) GetUser(name string) (*did.Document, error) {
 
 // PutUser stores a new user by the user's username
 func (db *userdb) PutUser(user *did.Document) {
-
 	db.mu.Lock()
 	defer db.mu.Unlock()
-	db.users[user.ID.ID] = user
+	db.users[user.AlsoKnownAs[0]] = user
 }
 
 func FinishRegistration(w http.ResponseWriter, r *http.Request) {

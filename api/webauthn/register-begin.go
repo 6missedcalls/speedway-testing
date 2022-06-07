@@ -31,17 +31,9 @@ func BeginRegistration(w http.ResponseWriter, r *http.Request) {
 	user, err := userDB.GetUser(username)
 	// user doesn't exist, create new user
 	if err != nil {
-		baseDid, err := did.ParseDID(fmt.Sprintf("did:snr:%s", username))
-		if err != nil {
-			log.Println(err)
-			JsonResponse(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
 		doc := did.Document{
-			ID: *baseDid,
+			AlsoKnownAs: []string{username},
 		}
-
 		userDB.PutUser(&doc)
 	}
 
@@ -82,13 +74,11 @@ type User struct {
 
 // NewUser creates and returns a new User
 func NewUser(name string, displayName string) *User {
-
 	user := &User{}
 	user.id = randomUint64()
 	user.name = name
 	user.displayName = displayName
-	// user.credentials = []webauthn.Credential{}
-
+	user.credentials = []webauthn.Credential{}
 	return user
 }
 
