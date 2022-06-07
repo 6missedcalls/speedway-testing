@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 
 	"github.com/duo-labs/webauthn/protocol"
 	"github.com/duo-labs/webauthn/webauthn"
+	"github.com/sonr-io/sonr/pkg/did"
 )
 
 func BeginRegistration(w http.ResponseWriter, r *http.Request) {
@@ -31,13 +31,22 @@ func BeginRegistration(w http.ResponseWriter, r *http.Request) {
 	user, err := userDB.GetUser(username)
 	// user doesn't exist, create new user
 	if err != nil {
-		displayName := strings.Split(username, "@")[0]
-		user = NewUser(username, displayName)
-		userDB.PutUser(user)
+		baseDid, err := did.ParseDID(fmt.Sprintf("did:snr:%s", username))
+		if err != nil {
+			log.Println(err)
+			JsonResponse(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		doc := did.Document{
+			ID: *baseDid,
+		}
+
+		userDB.PutUser(&doc)
 	}
 
 	registerOptions := func(credCreationOpts *protocol.PublicKeyCredentialCreationOptions) {
-		credCreationOpts.CredentialExcludeList = user.CredentialExcludeList()
+		credCreationOpts.CredentialExcludeList = user.WebAuthnCredentialExcludeList()
 	}
 
 	// generate PublicKeyCredentialCreationOptions, session data

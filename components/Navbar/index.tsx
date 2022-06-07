@@ -19,6 +19,7 @@ import { Colors } from "../../styles/nebula/colors";
 import { Logo } from "../Logo";
 import { ResourcesSubmenu } from "./DocumentationSubmenu";
 import { ResourcesPopover } from "./ResourcesPopover";
+import { getProviders, signIn } from "next-auth/react";
 
 export const Navbar = (props: { style: "light" | "dark" }) => {
   const isDesktop = useBreakpointValue({ base: false, lg: true });
@@ -75,6 +76,9 @@ export const Navbar = (props: { style: "light" | "dark" }) => {
                 <Button
                   color={props.style == "dark" ? "white" : "black"}
                   variant="ghost"
+                  onClick={() => {
+                    window.location.href = "/auth/signin";
+                  }}
                 >
                   Login
                 </Button>
@@ -82,7 +86,7 @@ export const Navbar = (props: { style: "light" | "dark" }) => {
                   mr={"1rem"}
                   variant="primary"
                   onClick={() => {
-                    window.location.href = "/auth";
+                    window.location.href = "/auth/new-user";
                   }}
                 >
                   Register
