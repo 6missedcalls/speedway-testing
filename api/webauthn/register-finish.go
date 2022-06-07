@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/fxamacker/cbor"
+	"github.com/sonr-io/sonr/pkg/crypto"
 	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/sonr/pkg/did/ssi"
 )
@@ -50,6 +52,7 @@ func (db *userdb) PutUser(user *did.Document) {
 }
 
 func FinishRegistration(w http.ResponseWriter, r *http.Request) {
+
 	// get username/friendly name
 	vals := r.URL.Query()
 	username := vals.Get("username")
@@ -82,25 +85,45 @@ func FinishRegistration(w http.ResponseWriter, r *http.Request) {
 		JsonResponse(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
 	baseDid, err := did.ParseDID(fmt.Sprintf("did:snr:%s", username))
 	if err != nil {
 		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusInternalServerError)
+		JsonResponse(w, err.Error(), http.StatusConflict)
 		return
 	}
+
 	keyDid, err := did.ParseDID(fmt.Sprintf("did:snr:%s#%s-%s", username, os, label))
+	if err != nil {
+		log.Println(err)
+		JsonResponse(w, err.Error(), http.StatusConflict)
+		return
+	}
+
+	key := crypto.COSEKey{}
+	err = cbor.Unmarshal(credential.PublicKey, &key)
+	if err != nil {
+		log.Println(err)
+		JsonResponse(w, err.Error(), http.StatusExpectationFailed)
+		return
+	}
+
+	pubKey, err := crypto.DecodePublicKey(&key)
+	if err != nil {
+		log.Println(err)
+		JsonResponse(w, err.Error(), http.StatusExpectationFailed)
+		return
+	}
+
+	vm, err := did.NewVerificationMethod(*baseDid, ssi.JsonWebKey2020, *keyDid, pubKey)
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	vm, err := did.NewVerificationMethod(*baseDid, ssi.JsonWebKey2020, *keyDid, credential.PublicKey)
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	// Save the new credential
 	user.AddAuthenticationMethod(vm)
+	userDB.PutUser(user)
 	JsonResponse(w, user, http.StatusOK)
 }

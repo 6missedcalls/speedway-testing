@@ -13,6 +13,7 @@ require (
 	github.com/cosmos/cosmos-sdk v0.44.5
 	github.com/duo-labs/webauthn v0.0.0-20220330035159-03696f3d4499
 	github.com/duo-labs/webauthn.io v0.0.0-20200929144140-c031a3e0f95d
+	github.com/fxamacker/cbor v1.5.1
 	github.com/hsanjuan/ipfs-lite v1.3.0
 	github.com/ipfs/go-cid v0.1.0
 	github.com/ipfs/go-datastore v0.5.1
