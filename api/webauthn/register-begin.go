@@ -28,22 +28,22 @@ func BeginRegistration(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get user
-	user, err := userDB.GetUser(username)
+	doc, err := userDB.GetUser(username)
 	// user doesn't exist, create new user
 	if err != nil {
-		doc := did.Document{
+		doc = &did.Document{
 			AlsoKnownAs: []string{username},
 		}
-		userDB.PutUser(&doc)
+		userDB.PutUser(doc)
 	}
 
 	registerOptions := func(credCreationOpts *protocol.PublicKeyCredentialCreationOptions) {
-		credCreationOpts.CredentialExcludeList = user.WebAuthnCredentialExcludeList()
+		credCreationOpts.CredentialExcludeList = doc.WebAuthnCredentialExcludeList()
 	}
 
 	// generate PublicKeyCredentialCreationOptions, session data
 	options, sessionData, err := webAuthn.BeginRegistration(
-		user,
+		doc,
 		registerOptions,
 	)
 
