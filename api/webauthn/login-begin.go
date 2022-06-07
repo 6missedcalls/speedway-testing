@@ -70,7 +70,7 @@ func BeginLogin(w http.ResponseWriter, r *http.Request) {
 
 func Setup() error {
 	var err error
-	if webAuthn != nil {
+	if webAuthn == nil {
 		webAuthn, err = webauthn.New(&webauthn.Config{
 			RPDisplayName: "Sonr - Highway",         // Display Name for your site
 			RPID:          "highway.sh",             // Generally the domain name for your site
@@ -83,11 +83,11 @@ func Setup() error {
 		}
 	}
 
-	if userDB != nil {
+	if userDB == nil {
 		userDB = DB()
 	}
 
-	if sessionStore != nil {
+	if sessionStore == nil {
 		sessionStore, err = session.NewStore()
 		if err != nil {
 			log.Println(err)
