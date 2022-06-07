@@ -5,14 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
-	"github.com/duo-labs/webauthn.io/session"
-	"github.com/duo-labs/webauthn/webauthn"
 )
-
-var webAuthn *webauthn.WebAuthn
-var userDB *userdb
-var sessionStore *session.Store
 
 // from: https://github.com/duo-labs/webauthn.io/blob/3f03b482d21476f6b9fb82b2bf1458ff61a61d41/server/response.go#L15
 func JsonResponse(w http.ResponseWriter, d interface{}, c int) {

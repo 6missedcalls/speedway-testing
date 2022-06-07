@@ -1,39 +1,39 @@
 package handler
 
 import (
-	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/duo-labs/webauthn.io/session"
 	"github.com/duo-labs/webauthn/webauthn"
 
 	"github.com/sonr-io/sonr/pkg/did"
-	rt "github.com/sonr-io/sonr/x/registry/types"
 	//	client "github.com/sonr-io/webauthn-vercel/webauthn"
 )
+
+var webAuthn *webauthn.WebAuthn
+var userDB *userdb
+var sessionStore *session.Store
 
 func BeginLogin(w http.ResponseWriter, r *http.Request) {
 	// get username/friendly name
 	vals := r.URL.Query()
 	username := vals.Get("username")
-	base := os.Getenv("BLOCKCHAIN_API_URL")
 	if username == "" {
 		JsonResponse(w, fmt.Errorf("must supply a valid username i.e. foo@bar.com"), http.StatusBadRequest)
 		return
 	}
 
-	resp, err := http.Get(fmt.Sprintf("%s/sonr-io/sonr/registry/who_is_alias/%s", base, username))
+	resp, err := http.Get(fmt.Sprintf("/query/whois-alias&username=%s", username))
 	if err != nil {
 		log.Printf("error getting user '%s': %v", username, err)
 		http.Error(w, "error getting user", http.StatusInternalServerError)
 		return
 	}
 
-	target := rt.QueryWhoIsAliasResponse{}
-	err = json.NewDecoder(resp.Body).Decode(&target)
+	buf, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Printf("error decoding user '%s': %v", username, err)
 		http.Error(w, "error decoding user", http.StatusInternalServerError)
@@ -42,7 +42,6 @@ func BeginLogin(w http.ResponseWriter, r *http.Request) {
 
 	// Unmarshal Document from JSON
 	doc := did.Document{}
-	buf := target.GetWhoIs().GetDidDocument()
 	err = doc.UnmarshalJSON(buf)
 	if err != nil {
 		log.Printf("error decoding user '%s': %v", username, err)
@@ -71,21 +70,29 @@ func BeginLogin(w http.ResponseWriter, r *http.Request) {
 
 func Setup() error {
 	var err error
-	webAuthn, err = webauthn.New(&webauthn.Config{
-		RPDisplayName: "Sonr - Highway",         // Display Name for your site
-		RPID:          "highway.sh",             // Generally the domain name for your site
-		RPOrigin:      "https://www.highway.sh", // The origin URL for WebAuthn requests
-	})
-	if err != nil {
-		log.Println(err)
-		return err
+	if webAuthn != nil {
+		webAuthn, err = webauthn.New(&webauthn.Config{
+			RPDisplayName: "Sonr - Highway",         // Display Name for your site
+			RPID:          "highway.sh",             // Generally the domain name for your site
+			RPOrigin:      "https://www.highway.sh", // The origin URL for WebAuthn requests
+		})
+
+		if err != nil {
+			log.Println(err)
+			return err
+		}
 	}
 
-	userDB = DB()
-	sessionStore, err = session.NewStore()
-	if err != nil {
-		log.Println(err)
-		return err
+	if userDB != nil {
+		userDB = DB()
+	}
+
+	if sessionStore != nil {
+		sessionStore, err = session.NewStore()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
 	}
 	return nil
 }

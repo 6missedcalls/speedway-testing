@@ -13,7 +13,6 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 import * as React from "react";
-import { signIn, useSession } from "next-auth/react";
 import { ChangeEvent, KeyboardEventHandler, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Logo } from "./Logo";
@@ -25,7 +24,6 @@ export const SignInForm = (props: StackProps) => {
   const [isValid, setIsValid] = useState(false);
 
   const router = useRouter();
-  const { status } = useSession();
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -33,22 +31,37 @@ export const SignInForm = (props: StackProps) => {
     }
   });
 
-  async function signInWithEmail() {
-    return signIn("email", { email });
-  }
-
-  async function handleSignIn() {
-    await signInWithEmail();
-  }
+  const register = (username: String) => {
+    fetch("/api/webauthn/register-begin.go&username=" + username)
+      .then((response) => response.json())
+      .then((createCredentialOptions) => {
+        navigator.credentials
+          .create(createCredentialOptions)
+          .then((credential) => {
+            const requestOptions = {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(credential),
+            };
+            fetch(
+              "/api/webauthn/register-finish.go&username=" + username,
+              requestOptions
+            )
+              .then((response) => response.json())
+              .then((data) => {
+                console.log("result: ", data);
+              });
+          });
+      });
+  };
 
   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key === "Enter") {
-      return handleSignIn();
+      return register(email);
     }
   };
 
   function updateEmail(e: ChangeEvent<HTMLInputElement>) {
-    setIsValid(e.target.validity.valid);
     setEmail(e.target.value);
   }
 
@@ -62,7 +75,13 @@ export const SignInForm = (props: StackProps) => {
           </Heading>
           <HStack spacing="1" justify="center">
             <Text color="muted">Don't have an account?</Text>
-            <Button variant="link" color={Colors.secondary3}>
+            <Button
+              variant="link"
+              color={Colors.secondary3}
+              onClick={() => {
+                register(email);
+              }}
+            >
               Sign up
             </Button>
           </HStack>
@@ -80,7 +99,7 @@ export const SignInForm = (props: StackProps) => {
               placeholder="angelo.snr or Account Address"
               value={email}
               onChange={updateEmail}
-              onKeyDown={handleKeyDown}
+              onSubmit={register(email)}
             />
           </FormControl>
         </Stack>

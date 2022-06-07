@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-
+import ReactDOM from "react-dom";
 import {
   Box,
   Flex,
@@ -20,6 +20,7 @@ import { SignInForm } from "../../components/SignInForm";
 import { Logo } from "../../components/Logo";
 
 const Home: NextPage = () => {
+
   return (
     <Flex
       minH={{ base: "auto", md: "100vh" }}
