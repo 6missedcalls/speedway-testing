@@ -47,6 +47,8 @@ func BeginRegistration(w http.ResponseWriter, r *http.Request) {
 		registerOptions,
 	)
 
+	options.Response.User.DisplayName = username
+
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusInternalServerError)

@@ -55,6 +55,7 @@ export const SignInForm = (props: StackProps) => {
         createCredentialOptions.publicKey.user.id = bufferDecode(
           createCredentialOptions.publicKey.user.id
         );
+        createCredentialOptions.publicKey.user.displayName = username;
         if (createCredentialOptions.publicKey.excludeCredentials) {
           for (
             var i = 0;
