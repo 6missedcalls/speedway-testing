@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/duo-labs/webauthn.io/session"
+	"github.com/duo-labs/webauthn/protocol"
 	"github.com/duo-labs/webauthn/webauthn"
 
 	"github.com/sonr-io/sonr/pkg/did"
@@ -72,9 +73,10 @@ func Setup() error {
 	var err error
 	if webAuthn == nil {
 		webAuthn, err = webauthn.New(&webauthn.Config{
-			RPDisplayName: "Sonr - Highway",         // Display Name for your site
-			RPID:          "highway.sh",             // Generally the domain name for your site
-			RPOrigin:      "https://www.highway.sh", // The origin URL for WebAuthn requests
+			RPDisplayName:         "Sonr - Highway",         // Display Name for your site
+			RPID:                  "highway.sh",             // Generally the domain name for your site
+			RPOrigin:              "https://www.highway.sh", // The origin URL for WebAuthn requests
+			AttestationPreference: protocol.PreferDirectAttestation,
 		})
 
 		if err != nil {

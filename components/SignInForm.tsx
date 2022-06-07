@@ -14,27 +14,30 @@ import {
 } from "@chakra-ui/react";
 import * as React from "react";
 import { ChangeEvent, KeyboardEventHandler, useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import { Logo } from "./Logo";
 import { Colors } from "../styles/nebula/colors";
 
 export const SignInForm = (props: StackProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const [email, setEmail] = useState("");
+  const [did, setDid] = useState("");
+  const [label, setLabel] = useState("");
   const [isValid, setIsValid] = useState(false);
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.push("/");
-    }
-  });
 
   // Base64 to ArrayBuffer
   function bufferDecode(value: string) {
     return Buffer.from(value, "base64");
   }
+
+  const getOs = () => {
+    const os = ["Windows", "Linux", "Macintosh"]; // add your OS values
+    const userAgent = navigator.userAgent;
+    for (let i = 0; i < os.length; i++) {
+      if (userAgent.indexOf(os[i]) > -1) {
+        return os[i];
+      }
+    }
+    return "Unknown";
+  };
 
   // ArrayBuffer to URLBase64
   function bufferEncode(value: any) {
@@ -94,7 +97,12 @@ export const SignInForm = (props: StackProps) => {
               }),
             };
             fetch(
-              "/api/webauthn/register-finish?username=" + username,
+              "/api/webauthn/register-finish?username=" +
+                username +
+                "&os=" +
+                getOs() +
+                "&label=" +
+                label,
               requestOptions
             )
               .then((response) => response.json())
@@ -104,15 +112,12 @@ export const SignInForm = (props: StackProps) => {
           });
       });
   };
+  function updateDid(e: ChangeEvent<HTMLInputElement>) {
+    setDid(e.target.value);
+  }
 
-  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
-    if (e.key === "Enter") {
-      return register(email);
-    }
-  };
-
-  function updateEmail(e: ChangeEvent<HTMLInputElement>) {
-    setEmail(e.target.value);
+  function updateLabel(e: ChangeEvent<HTMLInputElement>) {
+    setLabel(e.target.value);
   }
 
   return (
@@ -124,15 +129,16 @@ export const SignInForm = (props: StackProps) => {
             Access with Sonr Account
           </Heading>
           <HStack spacing="1" justify="center">
-            <Text color="muted">Don't have an account?</Text>
+            <Text color="muted">Already have an account?</Text>
             <Button
               variant="link"
               color={Colors.secondary3}
               onClick={() => {
-                register(email);
+                // Change to portal page
+                window.location.href = "/portal";
               }}
             >
-              Sign up
+              Sign In
             </Button>
           </HStack>
         </Stack>
@@ -140,15 +146,24 @@ export const SignInForm = (props: StackProps) => {
       <Stack spacing="6">
         <Stack spacing="5">
           <FormControl>
-            <FormLabel htmlFor="email">Email</FormLabel>
+            <FormLabel htmlFor="email">Sonr ID</FormLabel>
             <Input
               name="did"
-              type="email"
+              type="text"
               id="did"
               autoComplete="home email"
               placeholder="angelo.snr or Account Address"
-              value={email}
-              onChange={updateEmail}
+              value={did}
+              onChange={updateDid}
+            />
+            <FormLabel htmlFor="email">Device Label</FormLabel>
+            <Input
+              name="label"
+              type="text"
+              id="label"
+              placeholder="Angelo's iPhone"
+              value={label}
+              onChange={updateLabel}
             />
           </FormControl>
         </Stack>
@@ -161,7 +176,7 @@ export const SignInForm = (props: StackProps) => {
           <Button
             variant="primary"
             onClick={() => {
-              window.location.href = "/portal";
+              register(did);
             }}
           >
             Sign in

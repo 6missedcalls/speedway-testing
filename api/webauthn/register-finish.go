@@ -50,7 +50,6 @@ func (db *userdb) PutUser(user *did.Document) {
 }
 
 func FinishRegistration(w http.ResponseWriter, r *http.Request) {
-
 	// get username/friendly name
 	vals := r.URL.Query()
 	username := vals.Get("username")
@@ -103,5 +102,5 @@ func FinishRegistration(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user.AddAuthenticationMethod(vm)
-	JsonResponse(w, "Registration Success", http.StatusOK)
+	JsonResponse(w, user, http.StatusOK)
 }
