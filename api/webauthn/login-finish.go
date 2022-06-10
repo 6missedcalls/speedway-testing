@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"github.com/sonr-io/highway/x/user"
 )
 
 // from: https://github.com/duo-labs/webauthn.io/blob/3f03b482d21476f6b9fb82b2bf1458ff61a61d41/server/response.go#L15
@@ -28,7 +29,7 @@ func FinishLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get user
-	user, err := userDB.GetUser(username)
+	usr, err := user.DB.GetUser(username)
 
 	// user doesn't exist
 	if err != nil {
@@ -38,7 +39,7 @@ func FinishLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// load the session data
-	sessionData, err := sessionStore.GetWebauthnSession("authentication", r)
+	sessionData, err := user.SessionStore.GetWebauthnSession("authentication", r)
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusBadRequest)
@@ -48,7 +49,7 @@ func FinishLogin(w http.ResponseWriter, r *http.Request) {
 	// in an actual implementation, we should perform additional checks on
 	// the returned 'credential', i.e. check 'credential.Authenticator.CloneWarning'
 	// and then increment the credentials counter
-	_, err = webAuthn.FinishLogin(user, sessionData, r)
+	_, err = user.WebAuthn.FinishLogin(usr, sessionData, r)
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusBadRequest)

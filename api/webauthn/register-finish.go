@@ -4,55 +4,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"sync"
 
-	"github.com/fxamacker/cbor"
-	"github.com/sonr-io/sonr/pkg/crypto"
-	"github.com/sonr-io/sonr/pkg/did"
-	"github.com/sonr-io/sonr/pkg/did/ssi"
+	"github.com/sonr-io/highway/x/user"
+	//	rt "github.com/sonr-io/sonr/x/registry/types"
 )
 
-type userdb struct {
-	users map[string]*did.Document
-	mu    sync.RWMutex
-}
-
-var db *userdb
-
-// DB returns a userdb singleton
-func DB() *userdb {
-
-	if db == nil {
-		db = &userdb{
-			users: make(map[string]*did.Document),
-		}
-	}
-
-	return db
-}
-
-// GetUser returns a *User by the user's username
-func (db *userdb) GetUser(name string) (*did.Document, error) {
-
-	db.mu.Lock()
-	defer db.mu.Unlock()
-	user, ok := db.users[name]
-	if !ok {
-		return &did.Document{}, fmt.Errorf("error getting user '%s': does not exist", name)
-	}
-
-	return user, nil
-}
-
-// PutUser stores a new user by the user's username
-func (db *userdb) PutUser(user *did.Document) {
-	db.mu.Lock()
-	defer db.mu.Unlock()
-	db.users[user.AlsoKnownAs[0]] = user
-}
-
 func FinishRegistration(w http.ResponseWriter, r *http.Request) {
-
 	// get username/friendly name
 	vals := r.URL.Query()
 	username := vals.Get("username")
@@ -63,7 +20,7 @@ func FinishRegistration(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// get user
-	user, err := userDB.GetUser(username)
+	usr, err := user.DB.GetUser(username)
 	// user doesn't exist
 	if err != nil {
 		log.Println(err)
@@ -72,58 +29,35 @@ func FinishRegistration(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// load the session data
-	sessionData, err := sessionStore.GetWebauthnSession("registration", r)
+	sessionData, err := user.SessionStore.GetWebauthnSession("registration", r)
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	credential, err := webAuthn.FinishRegistration(user, sessionData, r)
+	credential, err := user.WebAuthn.FinishRegistration(usr, sessionData, r)
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	baseDid, err := did.ParseDID(fmt.Sprintf("did:snr:%s", username))
+	err = usr.AddCredential(credential, os, label)
 	if err != nil {
 		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusConflict)
+		JsonResponse(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	keyDid, err := did.ParseDID(fmt.Sprintf("did:snr:%s#%s-%s", username, os, label))
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusConflict)
-		return
-	}
-
-	key := crypto.COSEKey{}
-	err = cbor.Unmarshal(credential.PublicKey, &key)
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusExpectationFailed)
-		return
-	}
-
-	pubKey, err := crypto.DecodePublicKey(&key)
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusExpectationFailed)
-		return
-	}
-
-	vm, err := did.NewVerificationMethod(*baseDid, ssi.JsonWebKey2020, *keyDid, pubKey)
+	// Save the new credential
+	// user.AddAuthenticationMethod(vm)
+	user.DB.PutUser(usr)
+	jsonResp, err := usr.Document.MarshalJSON()
 	if err != nil {
 		log.Println(err)
 		JsonResponse(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	// Save the new credential
-	user.AddAuthenticationMethod(vm)
-	userDB.PutUser(user)
-	JsonResponse(w, user, http.StatusOK)
+	JsonResponse(w, jsonResp, http.StatusOK)
 }

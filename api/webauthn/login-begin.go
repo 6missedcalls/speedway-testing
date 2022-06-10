@@ -5,18 +5,10 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-
-	"github.com/duo-labs/webauthn.io/session"
-	"github.com/duo-labs/webauthn/protocol"
-	"github.com/duo-labs/webauthn/webauthn"
-
-	"github.com/sonr-io/sonr/pkg/did"
+	//	"github.com/sonr-io/sonr/pkg/did"
+	//	"github.com/sonr-io/highway/x/user"
 	//	client "github.com/sonr-io/webauthn-vercel/webauthn"
 )
-
-var webAuthn *webauthn.WebAuthn
-var userDB *userdb
-var sessionStore *session.Store
 
 func BeginLogin(w http.ResponseWriter, r *http.Request) {
 	// get username/friendly name
@@ -41,60 +33,30 @@ func BeginLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Unmarshal Document from JSON
-	doc := did.Document{}
-	err = doc.UnmarshalJSON(buf)
-	if err != nil {
-		log.Printf("error decoding user '%s': %v", username, err)
-		http.Error(w, "error decoding user", http.StatusInternalServerError)
-		return
-	}
+	// // Unmarshal Document from JSON
+	// doc := did.Document{}
+	// err = doc.UnmarshalJSON(buf)
+	// if err != nil {
+	// 	log.Printf("error decoding user '%s': %v", username, err)
+	// 	http.Error(w, "error decoding user", http.StatusInternalServerError)
+	// 	return
+	// }
 
-	// generate PublicKeyCredentialRequestOptions, session data
-	options, sessionData, err := webAuthn.BeginLogin(&doc)
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	// // generate PublicKeyCredentialRequestOptions, session data
+	// options, sessionData, err := user.WebAuthn.BeginLogin(&doc)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	JsonResponse(w, err.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
 
-	// store session data as marshaled JSON
-	err = sessionStore.SaveWebauthnSession("authentication", sessionData, r, w)
-	if err != nil {
-		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	// // store session data as marshaled JSON
+	// err = user.SessionStore.SaveWebauthnSession("authentication", sessionData, r, w)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	JsonResponse(w, err.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
 
-	JsonResponse(w, options, http.StatusOK)
-}
-
-func Setup() error {
-	var err error
-	if webAuthn == nil {
-		webAuthn, err = webauthn.New(&webauthn.Config{
-			RPDisplayName:         "Sonr - Highway",         // Display Name for your site
-			RPID:                  "highway.sh",             // Generally the domain name for your site
-			RPOrigin:              "https://www.highway.sh", // The origin URL for WebAuthn requests
-			AttestationPreference: protocol.PreferDirectAttestation,
-		})
-
-		if err != nil {
-			log.Println(err)
-			return err
-		}
-	}
-
-	if userDB == nil {
-		userDB = DB()
-	}
-
-	if sessionStore == nil {
-		sessionStore, err = session.NewStore()
-		if err != nil {
-			log.Println(err)
-			return err
-		}
-	}
-	return nil
+	JsonResponse(w, buf, http.StatusOK)
 }

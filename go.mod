@@ -9,15 +9,9 @@ replace (
 )
 
 require (
-	github.com/AlecAivazis/survey/v2 v2.3.4
-	github.com/cosmos/cosmos-sdk v0.44.5
+	github.com/cosmos/btcutil v1.0.4
 	github.com/duo-labs/webauthn v0.0.0-20220330035159-03696f3d4499
 	github.com/duo-labs/webauthn.io v0.0.0-20200929144140-c031a3e0f95d
-	github.com/fxamacker/cbor v1.5.1
-	github.com/hsanjuan/ipfs-lite v1.3.0
-	github.com/ipfs/go-cid v0.1.0
-	github.com/ipfs/go-datastore v0.5.1
-	github.com/ipld/go-ipld-prime v0.14.2
 	github.com/kataras/go-events v0.0.3
 	github.com/kataras/golog v0.1.7
 	github.com/libp2p/go-libp2p-http v0.2.1
@@ -27,8 +21,6 @@ require (
 	github.com/matrix-org/util v0.0.0-20200807132607-55161520e1d4
 	github.com/prometheus/client_golang v1.12.1
 	github.com/sirupsen/logrus v1.8.1
-	github.com/sonr-io/sonr v0.0.2
-	github.com/spf13/cobra v1.4.0
-	github.com/spf13/viper v1.10.1
-	go.buf.build/grpc/go/sonr-io/blockchain v1.3.7
+	github.com/sonr-io/sonr v0.1.3
+	github.com/spf13/cobra v1.4.0 // indirect
 )
