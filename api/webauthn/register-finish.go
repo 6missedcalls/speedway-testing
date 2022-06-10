@@ -24,7 +24,7 @@ func FinishRegistration(w http.ResponseWriter, r *http.Request) {
 	// user doesn't exist
 	if err != nil {
 		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusBadRequest)
+		JsonResponse(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
@@ -32,21 +32,21 @@ func FinishRegistration(w http.ResponseWriter, r *http.Request) {
 	sessionData, err := user.SessionStore.GetWebauthnSession("registration", r)
 	if err != nil {
 		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusBadRequest)
+		JsonResponse(w, err.Error(), http.StatusBadGateway)
 		return
 	}
 
 	credential, err := user.WebAuthn.FinishRegistration(usr, sessionData, r)
 	if err != nil {
 		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusBadRequest)
+		JsonResponse(w, err.Error(), http.StatusNetworkAuthenticationRequired)
 		return
 	}
 
 	err = usr.AddCredential(credential, os, label)
 	if err != nil {
 		log.Println(err)
-		JsonResponse(w, err.Error(), http.StatusBadRequest)
+		JsonResponse(w, err.Error(), http.StatusNetworkAuthenticationRequired)
 		return
 	}
 
