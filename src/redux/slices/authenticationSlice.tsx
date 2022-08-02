@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
+import { RootState } from '../store'
 
 export interface AuthenticationState {
   isLogged: boolean
@@ -19,7 +20,8 @@ export const authenticationSlice = createSlice({
   },
 })
 
-// Action creators are generated for each case reducer function
 export const { setIsLogged } = authenticationSlice.actions
+
+export const selectIsLogged = ((state: RootState) => state.authentication.isLogged)
 
 export default authenticationSlice.reducer

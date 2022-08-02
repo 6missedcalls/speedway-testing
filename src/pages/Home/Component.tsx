@@ -1,17 +1,25 @@
-import { useDispatch, useSelector } from "react-redux"
-import { setIsLogged } from "../../redux/slices/authenticationSlice"
-import { RootState } from "../../redux/store"
+interface HomeComponentProps {
+    isLogged: boolean;
+    login: () => void;
+    logout: () => void;
+    goToDashboard: () => void;
+}
 
-function HomeComponent(){
-    const isLogged = useSelector((state: RootState) => state.authentication.isLogged)
-    const dispatch = useDispatch()
-  
+function HomeComponent({
+    isLogged,
+    login,
+    logout,
+    goToDashboard
+}: HomeComponentProps){
     return (
         <div>
             <h1>Home</h1><br />
-            User logged: {isLogged.toString()}<br />
-            <button onClick={() => dispatch(setIsLogged(true))}>Click to Login</button><br />
-            <button onClick={() => dispatch(setIsLogged(false))}>Click to Logout</button><br />
+            User logged: {isLogged.toString()}
+            <br /><br />
+            <button onClick={login}>Click to Login</button><br />
+            <button onClick={logout}>Click to Logout</button><br />
+            <br /><br />
+            <button onClick={goToDashboard}>Click to go to Dashboard</button><br />
         </div>
     )
 }
