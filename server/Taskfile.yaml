@@ -1,0 +1,27 @@
+version: "3"
+vars:
+  VERSION: v0.0.1-test
+tasks:
+  webserver:run:prod:
+    cmds:
+      - go run main.go
+    env:
+      GIN_MODE: "release"
+      RPDisplayName: "Sonr - Nebula"
+      RPID: "localhost"
+      RPOrigin: "http://0.0.0.0:8080"
+      Address: "0.0.0.0:8080"
+      StaticDir: "./build"
+      SONR_RPC_ADDR_PUBLIC: 137.184.190.146:9090
+
+  webserver:run:debug:
+    cmds:
+      - go run main.go
+    env:
+      GIN_MODE: "debug"
+      RPDisplayName: "Sonr - Nebula"
+      RPID: "localhost"
+      RPOrigin: "http://localhost:8080"
+      Address: "localhost:8080"
+      StaticDir: "./build"
+      SONR_RPC_ADDR_PUBLIC: 137.184.190.146:9090
