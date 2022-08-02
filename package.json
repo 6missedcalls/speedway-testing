@@ -25,7 +25,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "clean-npm": "rm -rf node_modules && rm -rf package-lock.json",
+    "move-build": "rm -rf server/build && npm run build && mv build server/"
   },
   "eslintConfig": {
     "extends": [
