@@ -7,7 +7,9 @@ app.use(bodyParser.json())
 const db = {
   accounts: [],
   apps: [],
-
+  buckets: [],
+  schemas: [],
+  objects: [],
 };
 
 app.post('/api/v1/account/create', (req, res) => {
@@ -36,7 +38,7 @@ app.post('/api/v1/account/login', (req, res) => {
 })
 
 app.get('/api/v1/app', (req, res) => {
-  res.json([])
+  res.json(db.apps)
 })
 
 app.post('/api/v1/app', (req, res) => {
@@ -44,7 +46,7 @@ app.post('/api/v1/app', (req, res) => {
 })
 
 app.get('/api/v1/bucket', (req, res) => {
-  res.json([])
+  res.json(db.buckets)
 })
 
 app.post('/api/v1/bucket', (req, res) => {
@@ -56,7 +58,7 @@ app.put('/api/v1/bucket', (req, res) => {
 })
 
 app.get('/api/v1/schema', (req, res) => {
-  res.json([])
+  res.json(db.schemas)
 })
 
 app.post('/api/v1/schema', (req, res) => {
@@ -64,7 +66,7 @@ app.post('/api/v1/schema', (req, res) => {
 })
 
 app.get('/api/v1/object', (req, res) => {
-  res.json([])
+  res.json(db.objects)
 })
 
 app.post('/api/v1/object', (req, res) => {
