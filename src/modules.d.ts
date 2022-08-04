@@ -1,0 +1,1 @@
+declare module '@sonr-io/react-components';
