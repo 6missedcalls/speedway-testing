@@ -1,0 +1,11 @@
+{
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon node ."
+  },
+  "devDependencies": {
+    "express": "^4.18.1",
+    "nodemon": "^2.0.15"
+  }
+}
