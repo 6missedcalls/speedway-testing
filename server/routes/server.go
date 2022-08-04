@@ -25,7 +25,6 @@ type NebulaServer struct {
 	Router     *gin.Engine
 	HttpServer *http.Server
 	Config     *ServerConfig
-	ChainIntr  *Chain
 }
 
 func New(options ServerOptions) (*NebulaServer, error) {
@@ -46,11 +45,10 @@ func New(options ServerOptions) (*NebulaServer, error) {
 	store := NewDB()
 
 	srvr := NebulaServer{
-		Auth:      webauthn,
-		Store:     store,
-		Router:    gin.Default(),
-		Config:    &config,
-		ChainIntr: config.ChainIntr,
+		Auth:   webauthn,
+		Store:  store,
+		Router: gin.Default(),
+		Config: &config,
 	}
 
 	srvr.HttpServer = &http.Server{
@@ -62,10 +60,10 @@ func New(options ServerOptions) (*NebulaServer, error) {
 }
 
 func (ns *NebulaServer) ConfigureRoutes() error {
-	ns.Router.GET("/api/webauthn/register-begin", ns.BeginRegistration)
-	ns.Router.POST("/api/webauthn/register-finish", ns.FinishRegistration)
-	ns.Router.GET("/api/webauthn/login-begin", ns.BeginLogin)
-	ns.Router.POST("/api/webauthn/login-finish", ns.FinishLogin)
+	// ns.Router.GET("/api/webauthn/register-begin", ns.BeginRegistration)
+	// ns.Router.POST("/api/webauthn/register-finish", ns.FinishRegistration)
+	// ns.Router.GET("/api/webauthn/login-begin", ns.BeginLogin)
+	// ns.Router.POST("/api/webauthn/login-finish", ns.FinishLogin)
 	ns.Router.POST("/api/v1/account/create", ns.CreateAccount)
 	ns.Router.POST("/api/v1/account/login", ns.LoginAccount)
 

@@ -6,7 +6,6 @@ type ServerConfig struct {
 	RPOrigin      string
 	StaticDir     string
 	Address       string
-	ChainIntr     *Chain
 }
 
 type ServerOptions = func(credCreationOpts *ServerConfig)

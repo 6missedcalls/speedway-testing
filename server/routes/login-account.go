@@ -3,16 +3,37 @@ package nebula
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"os"
 
 	"github.com/gin-gonic/gin"
-	// mtr "github.com/sonr-io/sonr/pkg/motor" // TODO: Wait for PR to be merged
+	mtr "github.com/sonr-io/sonr/pkg/motor" // TODO: Wait for PR to be merged
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 type LoginRequestBody struct {
-	Did       string `json:"did"`
-	Password  string `json:"password"`
-	AesPskKey []byte `json:"aesPskKey"`
+	Did      string `json:"did"`
+	Password string `json:"password"`
+}
+
+func loadKey(path string) ([]byte, error) {
+	var file *os.File
+	if _, err := os.Stat(path); err != nil {
+		if os.IsNotExist(err) {
+			return nil, err
+		}
+		return nil, err
+	}
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	data, err := ioutil.ReadAll(file)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	return data, nil
 }
 
 func (ns *NebulaServer) LoginAccount(c *gin.Context) {
@@ -25,28 +46,33 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 		})
 		return
 	}
-	// TODO: If Login is Successful return 200 with a token
-	// TODO: If Login is Unsuccessful return 401 with a message
-	req, err := json.Marshal(rtmv1.LoginRequest{
+	aesPskKey, err := loadKey("./PSK.key")
+	if err != nil {
+		fmt.Println("err", err)
+	}
+	req := (rtmv1.LoginRequest{
 		Did:       body.Did,
 		Password:  body.Password,
-		AesPskKey: body.AesPskKey,
+		AesPskKey: aesPskKey,
 	})
 	if err != nil {
 		fmt.Println("err", err)
 	}
 	fmt.Println("request", req)
-	// m := mtr.EmptyMotor("Test_Device")
-	// res, err := m.Login(req)
-	// if err != nil {
-	// 	fmt.Println("err", err)
-	// }
-	// fmt.Println("Result", res)
-	// fmt.Println("DIDDocument", m.DIDDocument)
-	// fmt.Println("Address", m.Address)
-	// fmt.Println("Balance", m.Balance())
-
-	c.JSON(200, gin.H{
-		"message": "Account logged in",
-	})
+	m := mtr.EmptyMotor("Test_Device")
+	res, err := m.Login(req)
+	if err != nil {
+		fmt.Println("err", err)
+	}
+	fmt.Println("Result", res)
+	if res.Success {
+		c.JSON(200, gin.H{
+			"Address":     m.Address,
+			"DIDDocument": m.DIDDocument,
+		})
+	} else {
+		c.JSON(500, gin.H{
+			"error": "Account login failed",
+		})
+	}
 }

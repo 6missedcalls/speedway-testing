@@ -14,20 +14,12 @@ func main() {
 	Address := os.Getenv("Address")
 	StaticDir := os.Getenv("StaticDir")
 
-	chainInter, err := nebula.NewChain()
-
-	if err != nil {
-		fmt.Printf("Error while standing up server: %s", err.Error())
-		return
-	}
-
 	srvr, err := nebula.New(func(options *nebula.ServerConfig) {
 		options.RPDisplayName = RPDisplayName
 		options.RPID = RPID
 		options.RPOrigin = RPOrigin
 		options.Address = Address
 		options.StaticDir = StaticDir
-		options.ChainIntr = &chainInter
 	})
 
 	if err != nil {

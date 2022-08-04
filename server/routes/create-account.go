@@ -3,16 +3,31 @@ package nebula
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/sonr/pkg/crypto"
 
-	// mtr "github.com/sonr-io/sonr/internal/motor" // TODO: Wait for PR to be merged
+	mtr "github.com/sonr-io/sonr/pkg/motor"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 type CARequestBody struct {
 	Password string `json:"password"`
+}
+
+func storeKey(name string, key []byte) error {
+	// TODO: use a better way to store keys
+	file, err := os.Create(name)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	_, err = file.Write(key)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (ns *NebulaServer) CreateAccount(c *gin.Context) {
@@ -31,7 +46,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 		fmt.Println("err", err)
 	}
 	fmt.Println("aesKey", aesKey)
-	req, err := json.Marshal(rtmv1.CreateAccountRequest{
+	req := (rtmv1.CreateAccountRequest{
 		Password:  body.Password,
 		AesDscKey: aesKey,
 	})
@@ -39,16 +54,16 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	if err != nil {
 		fmt.Println("reqBytes err", err)
 	}
-	// TODO: If CreateAccount is Successful return 200
-	// TODO: If CreateAccount is Unsuccessful return 401 with a message
-	// m := mtr.EmptyMotor("Test_Device")
-	// res, err := m.CreateAccount(req)
-	// if err != nil {
-	// 	fmt.Println("err", err)
-	// }
-	// fmt.Println(res)
-	c.JSON(200, gin.H{
-		"message": "Account created",
-	})
 
+	m := mtr.EmptyMotor("Test_Device")
+	res, err := m.CreateAccount(req)
+	if err != nil {
+		fmt.Println("err", err)
+	}
+	c.JSON(200, gin.H{
+		"Address": res.Address,
+	})
+	if storeKey("PSK.key", res.AesPsk) != nil {
+		fmt.Println("err", err)
+	}
 }
