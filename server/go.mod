@@ -16,7 +16,8 @@ require (
 	github.com/gin-gonic/contrib v0.0.0-20201101042839-6a891bf89f19
 	github.com/gin-gonic/gin v1.7.7
 	github.com/shengdoushi/base58 v1.0.0
-	github.com/sonr-io/sonr v0.3.0-beta.0.0.20220711215224-abed535ab9da // TODO: revert this when beta/mpc gets merged into master
-	go.buf.build/grpc/go/sonr-io/motor v1.4.22
-	google.golang.org/grpc v1.46.2
+	github.com/sonr-io/sonr v0.3.0-beta.0.0.20220804200305-8674ad0d31e3 // TODO: revert this when beta/mpc gets merged into master
+	go.buf.build/grpc/go/sonr-io/blockchain v1.3.7 // indirect
+	go.buf.build/grpc/go/sonr-io/motor v1.4.27
+	google.golang.org/grpc v1.48.0
 )
