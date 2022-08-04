@@ -1,8 +1,8 @@
 import SonrLogoSvg from "../../assets/svgs/SonrLogo"
-import { NebulaIcon } from '@sonr-io/react-components'
+import { NebulaIcon } from '@sonr-io/nebula-react'
 import DashboardSvg from "../../assets/svgs/DashBoard"
 import ButtonGroup from "./components/ButtonsGroup"
-import { Button } from '@sonr-io/react-components'
+import { Button } from '@sonr-io/nebula-react'
 import { NavigateFunction } from "react-router-dom"
 import { 
     ROUTE_SCHEMAS, 

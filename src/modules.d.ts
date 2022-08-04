@@ -1,1 +1,1 @@
-declare module '@sonr-io/react-components';
+declare module '@sonr-io/nebula-react';

@@ -1,4 +1,4 @@
-import { Button } from '@sonr-io/react-components'
+import { Button } from '@sonr-io/nebula-react'
 import { NavigateFunction } from 'react-router-dom';
 
 interface Ibutton {
