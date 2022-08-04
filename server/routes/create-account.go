@@ -61,7 +61,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 		fmt.Println("err", err)
 	}
 	c.JSON(200, gin.H{
-		"Address": res.Address,
+		"Did": res.Address,
 	})
 	if storeKey("PSK.key", res.AesPsk) != nil {
 		fmt.Println("err", err)

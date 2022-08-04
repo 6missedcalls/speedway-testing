@@ -27,3 +27,4 @@ yarn-error.log*
 speedway-cli/AES.key
 .gitignore
 speedway-cli/PSK.key
+server/PSK.key
