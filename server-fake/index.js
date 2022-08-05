@@ -14,7 +14,7 @@ const db = {
 
 app.post('/api/v1/account/create', (req, res) => {
   if (!req.body.username || !req.body.password) {
-    res.json({success: false})
+    res.status(400).send()
     return
   }
 
@@ -30,7 +30,7 @@ app.post('/api/v1/account/login', (req, res) => {
   const account = _.find(db.accounts, {username: req.body.username})
 
   if (!account || account.password !== req.body.password) {
-    res.json({success: false})
+    res.status(400).send()
     return
   }
 
