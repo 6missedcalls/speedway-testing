@@ -6,6 +6,7 @@ const app = express()
 app.use(bodyParser.json())
 
 const db = {}
+let sessionDid = null
 
 app.post('/api/v1/account/create', (req, res) => {
   const did = md5(Math.random())
@@ -30,17 +31,30 @@ app.post('/api/v1/account/login', (req, res) => {
     return
   }
 
+  sessionDid = account.did
   res.json({Address: account.did})
 })
 
 app.get('/api/v1/bucket', (req, res) => {
-  res.json(db.buckets)
+  const session = db[sessionDid]
+  if (!session) {
+    res.status(500).send()
+    return
+  }
+
+  res.json(session.buckets)
 })
 
 app.post('/api/v1/bucket', (req, res) => {
-  const did = uuid()
+  const session = db[sessionDid]
+  if (!session) {
+    res.status(500).send()
+    return
+  }
 
-  db.buckets.push({did})
+  const did = md5(Math.random())
+
+  session.buckets.push({did})
 
   res.json({Did: did})
 })
@@ -50,25 +64,49 @@ app.put('/api/v1/bucket', (req, res) => {
 })
 
 app.get('/api/v1/schema', (req, res) => {
-  res.json(db.schemas)
+  const session = db[sessionDid]
+  if (!session) {
+    res.status(500).send()
+    return
+  }
+
+  res.json(session.schemas)
 })
 
 app.post('/api/v1/schema', (req, res) => {
-  const did = uuid()
+  const session = db[sessionDid]
+  if (!session) {
+    res.status(500).send()
+    return
+  }
 
-  db.schemas.push({did})
+  const did = md5(Math.random())
+
+  session.schemas.push({did})
 
   res.json({Did: did})
 })
 
 app.get('/api/v1/object', (req, res) => {
-  res.json(db.objects)
+  const session = db[sessionDid]
+  if (!session) {
+    res.status(500).send()
+    return
+  }
+
+  res.json(session.objects)
 })
 
 app.post('/api/v1/object', (req, res) => {
-  const did = uuid()
+  const session = db[sessionDid]
+  if (!session) {
+    res.status(500).send()
+    return
+  }
 
-  db.objects.push({did})
+  const did = md5(Math.random())
+
+  session.objects.push({did})
 
   res.json({Did: did})
 })
