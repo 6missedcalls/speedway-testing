@@ -39,6 +39,7 @@ module.exports = {
       },
       boxShadow: {
         xxl: '0 4px 12px -4px rgba(22, 34, 51, 0.12)',
+        '3xl': '0px 8px 16px -4px rgba(22, 34, 51, 0.12)'
       },
       backdropBlur: {
         xxl: '18px',
