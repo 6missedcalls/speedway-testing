@@ -1,6 +1,6 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import _ from 'lodash';
+import express from 'express'
+import bodyParser from 'body-parser'
+import _ from 'lodash'
 const app = express()
 app.use(bodyParser.json())
 
@@ -10,7 +10,7 @@ const db = {
   buckets: [],
   schemas: [],
   objects: [],
-};
+}
 
 app.post('/api/v1/account/create', (req, res) => {
   if (!req.body.username || !req.body.password) {
