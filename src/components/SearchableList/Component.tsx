@@ -12,7 +12,7 @@ function renderSchemaHeaders(list: any){
         <>
             {keys.map((key: any, index: number) => {
                 return (
-                    <th key={`${key}-${index}`}>{key}</th>
+                    <th className="px-4" key={`${key}-${index}`}>{key}</th>
                 )
             })}
         </>
@@ -46,16 +46,16 @@ function SearchableListComponent({ list, type }: SearchableListComponentProps){
                 />
             </div>
             {/* list */}
-            <table className="w-full text-left p-4">
-                <tr className="h-10 bg-button-subtle items-center px-4 text-button-subtle text-custom-xs">
+            <table className="w-full text-left">
+                <tr className="h-10 bg-button-subtle items-center px-4 py-5 text-button-subtle text-custom-xs px-4 py-5">
                     {renderHeaders({ type, list })}
                 </tr>
                 {list.map((row: any) => {
                     const rowKeys = Object.keys(row)
                     return (
-                        <tr className="">
+                        <tr>
                             {rowKeys.map((key: string, index: number) => (
-                                <td key={`${key}-${index}`}>{row[key]}</td>
+                                <td className="px-4 py-5" key={`${key}-${index}`}>{row[key]}</td>
                             ))}
                         </tr>
                     )
