@@ -35,27 +35,24 @@ app.post('/api/v1/account/login', (req, res) => {
   res.json({Address: account.did})
 })
 
-app.get('/api/v1/bucket', (req, res) => {
+app.use((req, res, next) => {
   const session = db[sessionDid]
   if (!session) {
     res.status(500).send()
     return
   }
 
-  res.json(session.buckets)
+  req.session = session
+  next()
+})
+
+app.get('/api/v1/bucket', (req, res) => {
+  res.json(req.session.buckets)
 })
 
 app.post('/api/v1/bucket', (req, res) => {
-  const session = db[sessionDid]
-  if (!session) {
-    res.status(500).send()
-    return
-  }
-
   const did = md5(Math.random())
-
-  session.buckets.push({did})
-
+  req.session.buckets.push({did})
   res.json({Did: did})
 })
 
@@ -64,50 +61,22 @@ app.put('/api/v1/bucket', (req, res) => {
 })
 
 app.get('/api/v1/schema', (req, res) => {
-  const session = db[sessionDid]
-  if (!session) {
-    res.status(500).send()
-    return
-  }
-
-  res.json(session.schemas)
+  res.json(req.session.schemas)
 })
 
 app.post('/api/v1/schema', (req, res) => {
-  const session = db[sessionDid]
-  if (!session) {
-    res.status(500).send()
-    return
-  }
-
   const did = md5(Math.random())
-
-  session.schemas.push({did})
-
+  req.session.schemas.push({did})
   res.json({Did: did})
 })
 
 app.get('/api/v1/object', (req, res) => {
-  const session = db[sessionDid]
-  if (!session) {
-    res.status(500).send()
-    return
-  }
-
-  res.json(session.objects)
+  res.json(req.session.objects)
 })
 
 app.post('/api/v1/object', (req, res) => {
-  const session = db[sessionDid]
-  if (!session) {
-    res.status(500).send()
-    return
-  }
-
   const did = md5(Math.random())
-
-  session.objects.push({did})
-
+  req.session.objects.push({did})
   res.json({Did: did})
 })
 
