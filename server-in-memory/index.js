@@ -5,24 +5,25 @@ import md5 from 'md5'
 const app = express()
 app.use(bodyParser.json())
 
-const db = {
-  accounts: [],
-  buckets: [],
-  schemas: [],
-  objects: [],
-}
+const db = {}
 
 app.post('/api/v1/account/create', (req, res) => {
   const did = md5(Math.random())
   const password = req.body.password || ""
 
-  db.accounts.push({did, password})
+  db[did] = {
+    did,
+    password,
+    schemas: [],
+    buckets: [],
+    objects: [],
+  }
 
   res.json({Did: did})
 })
 
 app.post('/api/v1/account/login', (req, res) => {
-  const account = _.find(db.accounts, {did: req.body.did})
+  const account = db[req.body.did]
 
   if (!account || account.password !== req.body.password) {
     res.status(500).send()
