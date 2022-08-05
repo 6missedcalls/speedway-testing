@@ -1,14 +1,11 @@
-import { useSelector } from "react-redux"
-import { selectIsLogged } from "../../redux/slices/authenticationSlice"
 import SideMenu from "../SideMenu"
 
 interface BaseLayoutComponentProps {
-    children: any
+    isLogged: boolean;
+    children: any;
 }
 
-function BaseLayoutComponent({ children }: BaseLayoutComponentProps){
-    const isLogged = useSelector(selectIsLogged)
-  
+function BaseLayoutComponent({ isLogged, children }: BaseLayoutComponentProps){
     return (
         <div className="flex">
             {isLogged && <SideMenu />}
