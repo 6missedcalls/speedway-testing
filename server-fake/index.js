@@ -1,6 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import _ from 'lodash'
+import { v4 as uuid } from 'uuid'
 const app = express()
 app.use(bodyParser.json())
 
@@ -13,17 +14,12 @@ const db = {
 }
 
 app.post('/api/v1/account/create', (req, res) => {
-  if (!req.body.username || !req.body.password) {
-    res.status(400).send()
-    return
-  }
+  const did = uuid()
+  const password = req.body.password || ""
 
-  db.accounts.push({
-    username: req.body.username,
-    password: req.body.password,
-  })
+  db.accounts.push({did, password})
 
-  res.json({success: true})
+  res.json({Did: did})
 })
 
 app.post('/api/v1/account/login', (req, res) => {
