@@ -23,14 +23,14 @@ app.post('/api/v1/account/create', (req, res) => {
 })
 
 app.post('/api/v1/account/login', (req, res) => {
-  const account = _.find(db.accounts, {username: req.body.username})
+  const account = _.find(db.accounts, {did: req.body.did})
 
   if (!account || account.password !== req.body.password) {
-    res.status(400).send()
+    res.status(500).send()
     return
   }
 
-  res.json({success: true})
+  res.json({Address: account.did})
 })
 
 app.get('/api/v1/app', (req, res) => {
