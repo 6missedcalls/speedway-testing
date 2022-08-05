@@ -1,7 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import _ from 'lodash'
-import { v4 as uuid } from 'uuid'
+import md5 from 'md5'
 const app = express()
 app.use(bodyParser.json())
 
@@ -13,7 +13,7 @@ const db = {
 }
 
 app.post('/api/v1/account/create', (req, res) => {
-  const did = uuid()
+  const did = md5(Math.random())
   const password = req.body.password || ""
 
   db.accounts.push({did, password})
