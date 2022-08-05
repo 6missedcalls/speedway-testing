@@ -63,5 +63,5 @@ app.post('/api/v1/object', (req, res) => {
 
 const port = 8080
 app.listen(port, () => {
-  console.log(`server-fake listening on port ${port}`)
+  console.log(`server-in-memory listening on port ${port}`)
 })
