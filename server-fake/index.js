@@ -38,7 +38,7 @@ app.get('/api/v1/app', (req, res) => {
 })
 
 app.post('/api/v1/app', (req, res) => {
-  res.json({success: false})
+  res.status(500).send()
 })
 
 app.get('/api/v1/bucket', (req, res) => {
@@ -46,11 +46,11 @@ app.get('/api/v1/bucket', (req, res) => {
 })
 
 app.post('/api/v1/bucket', (req, res) => {
-  res.json({success: false})
+  res.status(500).send()
 })
 
 app.put('/api/v1/bucket', (req, res) => {
-  res.json({success: false})
+  res.status(500).send()
 })
 
 app.get('/api/v1/schema', (req, res) => {
@@ -58,7 +58,7 @@ app.get('/api/v1/schema', (req, res) => {
 })
 
 app.post('/api/v1/schema', (req, res) => {
-  res.json({success: false})
+  res.status(500).send()
 })
 
 app.get('/api/v1/object', (req, res) => {
@@ -66,7 +66,7 @@ app.get('/api/v1/object', (req, res) => {
 })
 
 app.post('/api/v1/object', (req, res) => {
-  res.json({success: false})
+  res.status(500).send()
 })
 
 
