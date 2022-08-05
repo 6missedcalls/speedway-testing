@@ -7,7 +7,6 @@ app.use(bodyParser.json())
 
 const db = {
   accounts: [],
-  apps: [],
   buckets: [],
   schemas: [],
   objects: [],
@@ -31,14 +30,6 @@ app.post('/api/v1/account/login', (req, res) => {
   }
 
   res.json({Address: account.did})
-})
-
-app.get('/api/v1/app', (req, res) => {
-  res.json(db.apps)
-})
-
-app.post('/api/v1/app', (req, res) => {
-  res.status(500).send()
 })
 
 app.get('/api/v1/bucket', (req, res) => {
