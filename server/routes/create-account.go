@@ -40,7 +40,6 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 		})
 		return
 	}
-	// TODO: Add better validation
 	aesKey, err := crypto.NewAesKey()
 	if err != nil {
 		fmt.Println("err", err)

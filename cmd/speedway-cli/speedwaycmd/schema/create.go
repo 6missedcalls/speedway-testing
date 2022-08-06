@@ -90,7 +90,8 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			schemaReq := rtmv1.CreateSchemaRequest{
 				Label: schemaLabel,
 				Fields: map[string]rtmv1.CreateSchemaRequest_SchemaKind{
-					"helloWorld": rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRING,
+					"hello": rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRING,
+					"int":   rtmv1.CreateSchemaRequest_SCHEMA_KIND_INT,
 				},
 			}
 			schemaRes, err := m.CreateSchema(schemaReq)

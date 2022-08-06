@@ -2,6 +2,7 @@ package nebula
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
@@ -10,8 +11,11 @@ import (
 
 // create a struct to hold the command line flags for the command
 type CreateSchemaRequest struct {
-	SchemaLabel  string   `json:"label"`
-	SchemaFields []string `json:"fields"`
+	Did          string `json:"did"`
+	Password     string `json:"password"`
+	SchemaLabel  string `json:"label"`
+	SchemaFields string `json:"fields"`
+	// make Schema Fields
 }
 
 func (ns *NebulaServer) CreateSchema(c *gin.Context) {
@@ -24,16 +28,43 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 		})
 		return
 	}
-	// create a new schema request object
-	req := (rtmv1.CreateSchemaRequest{
-		Label:  r.SchemaLabel,
-		Fields: r.SchemaFields,
-	})
-	// create the motor
 	m := mtr.EmptyMotor("Test_Device")
-	// create the schema
-	res, err := m.CreateSchema(req)
+	// TODO: Call login from registry service
+	aesPskKey, err := loadKey("./PSK.key")
 	if err != nil {
+		fmt.Println("err", err)
+	}
+	// * Create a new login & create schema request
+	// Create a new login request
+	loginRequest := (rtmv1.LoginRequest{
+		Did:       r.Did,
+		Password:  r.Password,
+		AesPskKey: aesPskKey,
+	})
+	loginResponse, err := m.Login(loginRequest)
+	// if login fails, return error
+	if loginResponse.Success != true {
+		c.JSON(400, gin.H{
+			"error": "Login failed",
+		})
+		return
+	}
+	fmt.Println("loginResponse", loginResponse)
+	// Create a new create schema request
+	createSchemaRequest := (rtmv1.CreateSchemaRequest{
+		Label: r.SchemaLabel,
+		Fields: map[string]rtmv1.CreateSchemaRequest_SchemaKind{
+			"hello": rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRING,
+		},
+	})
+
+	fmt.Println("createSchemaRequest", createSchemaRequest)
+	// Create a new motor client and login
+
+	// create the schema
+	res, err := m.CreateSchema(createSchemaRequest)
+	if err != nil {
+		fmt.Println("Create Schema Error: ", err)
 		c.JSON(500, gin.H{
 			"error": err.Error(),
 		})

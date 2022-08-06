@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	RPDisplayName = "Sonr - Highway"
+	RPDisplayName = "Sonr - Speedway"
 	RPID          = "localhost"
 	RPOrigin      = "http://localhost:8080"
 )
@@ -60,12 +60,14 @@ func New(options ServerOptions) (*NebulaServer, error) {
 }
 
 func (ns *NebulaServer) ConfigureRoutes() error {
+	// * WebAuthn API routes (Working but currently disabled for testing) ** Thanks Josh :D **
 	// ns.Router.GET("/api/webauthn/register-begin", ns.BeginRegistration)
 	// ns.Router.POST("/api/webauthn/register-finish", ns.FinishRegistration)
 	// ns.Router.GET("/api/webauthn/login-begin", ns.BeginLogin)
 	// ns.Router.POST("/api/webauthn/login-finish", ns.FinishLogin)
 	ns.Router.POST("/api/v1/account/create", ns.CreateAccount)
 	ns.Router.POST("/api/v1/account/login", ns.LoginAccount)
+	// ! Comment line 71 if Schema Create is throwing errors
 	ns.Router.POST("/api/v1/schema/create", ns.CreateSchema)
 
 	// not great, but we dont want to dupllicate the build folder.
