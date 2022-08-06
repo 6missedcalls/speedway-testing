@@ -1445,9 +1445,7 @@ github.com/kami-zh/go-capturer v0.0.0-20171211120116-e492ea43421d/go.mod h1:P2vi
 github.com/karalabe/usb v0.0.0-20190919080040-51dc0efba356/go.mod h1:Od972xHfMJowv7NGVDiWVxk2zxnWgjLlJzE+F4F7AGU=
 github.com/kataras/go-events v0.0.3 h1:o5YK53uURXtrlg7qE/vovxd/yKOJcLuFtPQbf1rYMC4=
 github.com/kataras/go-events v0.0.3/go.mod h1:bFBgtzwwzrag7kQmGuU1ZaVxhK2qseYPQomXoVEMsj4=
-github.com/kataras/golog v0.1.7 h1:0TY5tHn5L5DlRIikepcaRR/6oInIr9AiWsxzt0vvlBE=
 github.com/kataras/golog v0.1.7/go.mod h1:jOSQ+C5fUqsNSwurB/oAHq1IFSb0KI3l6GMa7xB6dZA=
-github.com/kataras/pio v0.0.10 h1:b0qtPUqOpM2O+bqa5wr2O6dN4cQNwSmFd6HQqgVae0g=
 github.com/kataras/pio v0.0.10/go.mod h1:gS3ui9xSD+lAUpbYnjOGiQyY7sUMJO+EHpiRzhtZ5no=
 github.com/katzenpost/core v0.0.7/go.mod h1:UXMLmMXlBHrhMXhWTy4DvCXqwTRLOh4DP/mR1Cm1sR8=
 github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51/go.mod h1:CzGEWj7cYgsdH8dAjBGEr58BoE7ScuLd+fwFZ44+/x8=
@@ -2579,8 +2577,6 @@ github.com/sonr-io/go-keychain v0.0.0-20220701165513-84cc180cb501/go.mod h1:ot4H
 github.com/sonr-io/keyring v1.2.2-0.20220701165800-b4428a8aad16/go.mod h1:dwyQStd/Ds1kIAABy34eceeYk0lvEmjeDneq0C377yc=
 github.com/sonr-io/multi-party-sig v0.7.0 h1:cRpctyTdbgeOm+JBdY/HcHv3dD7lX3JWtw+P77xmvOw=
 github.com/sonr-io/multi-party-sig v0.7.0/go.mod h1:Bl4/pohbzwlfiHpYaf9sM/hkV71u1SUPQHDEaHOamfo=
-github.com/sonr-io/sonr v0.3.0-beta.0.0.20220803162053-f1ae387f77ba h1:qxg5OB9MVGe2w3/Tv74/RG+FdDXgdWQVfseXUWTjR48=
-github.com/sonr-io/sonr v0.3.0-beta.0.0.20220803162053-f1ae387f77ba/go.mod h1:jrOSMkla+lb3GLsKyUeJSv/W1TsYchdKg50ZIVaZdfg=
 github.com/sonr-io/sonr v0.3.0-beta.0.0.20220804200305-8674ad0d31e3 h1:QM0Cm5billMyldLgA72cMVuB1L9LaVIb9aorGa9Jvhg=
 github.com/sonr-io/sonr v0.3.0-beta.0.0.20220804200305-8674ad0d31e3/go.mod h1:pzgZ/zPSI9Cm4V5MH0nA56jJEqTBpMJAMBYHJQ5b5e8=
 github.com/sony/gobreaker v0.4.1/go.mod h1:ZKptC7FHNvhBz7dN2LGjPVBz2sZJmc0/PkyDJOjmxWY=
@@ -2864,14 +2860,6 @@ github.com/zmap/zlint v0.0.0-20190806154020-fd021b4cfbeb/go.mod h1:29UiAJNsiVdvT
 github.com/zmap/zlint/v3 v3.1.0/go.mod h1:L7t8s3sEKkb0A2BxGy1IWrxt1ZATa1R4QfJZaQOD3zU=
 github.com/zondax/hid v0.9.0 h1:eiT3P6vNxAEVxXMw66eZUAAnU2zD33JBkfG/EnfAKl8=
 github.com/zondax/hid v0.9.0/go.mod h1:l5wttcP0jwtdLjqjMMWFVEE7d1zO0jvSPA9OPZxWpEM=
-go.buf.build/grpc/go/cosmos/cosmos-proto v1.3.8/go.mod h1:NaBdTr4tS+gPK02uLRjgFY/PEQU/0jb7HjRAuaQkiPc=
-go.buf.build/grpc/go/cosmos/cosmos-sdk v1.3.52 h1:FBDOzM9Flw7DVVGhttEHPU1q9O03efsNiXlGH2kOP9s=
-go.buf.build/grpc/go/cosmos/cosmos-sdk v1.3.52/go.mod h1:xoj76Mv+glMZbbBRkbRbEu8HD2hh7igfOamQS4me8ng=
-go.buf.build/grpc/go/cosmos/gogo-proto v1.3.1 h1:movzgRYHiYXq/rd5Fo5KnMtYizbCKlvbEGafqwU2AkU=
-go.buf.build/grpc/go/cosmos/gogo-proto v1.3.1/go.mod h1:Oacq9kdGMFBOTGB/CrAMpHc7GwkJg1P1d0gKF6X0kuU=
-go.buf.build/grpc/go/sonr-io/blockchain v1.3.7 h1:XRr0pkZG12nbsWnvWfQggECwS4UwvBK4BNoYNioJ1fA=
-go.buf.build/grpc/go/sonr-io/blockchain v1.3.7/go.mod h1:kh09boSnQtZNONulz1c/8vPaa9ae4XkiYIANi/vNVks=
-go.buf.build/grpc/go/sonr-io/motor v1.4.24/go.mod h1:6SsVxJlKbyf3gkEZ7pNsOXOG9kOab5P17JuhvvOeUZM=
 go.buf.build/grpc/go/sonr-io/motor v1.4.27 h1:RYDTMxj4Zv0sA4BJVx27ZumiA4bcZvcfxMvzNV1VuCs=
 go.buf.build/grpc/go/sonr-io/motor v1.4.27/go.mod h1:6SsVxJlKbyf3gkEZ7pNsOXOG9kOab5P17JuhvvOeUZM=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=

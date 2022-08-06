@@ -1,4 +1,4 @@
-module github.com/sonr-io/speedway
+module github.com/sonr-io/speedway/cmd
 
 go 1.16
 
@@ -12,7 +12,7 @@ replace (
 
 require (
 	github.com/kataras/golog v0.1.7
-	github.com/sonr-io/sonr v0.3.0-beta.0.0.20220803162053-f1ae387f77ba
+	github.com/sonr-io/sonr v0.3.0-beta.0.0.20220804202621-ea10a5fb3eea
 	github.com/spf13/cobra v1.5.0
 	go.buf.build/grpc/go/sonr-io/motor v1.4.27
 )

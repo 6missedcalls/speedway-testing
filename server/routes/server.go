@@ -66,6 +66,7 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	// ns.Router.POST("/api/webauthn/login-finish", ns.FinishLogin)
 	ns.Router.POST("/api/v1/account/create", ns.CreateAccount)
 	ns.Router.POST("/api/v1/account/login", ns.LoginAccount)
+	ns.Router.POST("/api/v1/schema/create", ns.CreateSchema)
 
 	// not great, but we dont want to dupllicate the build folder.
 	ns.Router.Use(static.Serve("/", static.LocalFile(ns.Config.StaticDir, true)))

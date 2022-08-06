@@ -8,9 +8,6 @@
 # testing
 /coverage
 
-# development
-/cmd
-
 # production
 /build
 
