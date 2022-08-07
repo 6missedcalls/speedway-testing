@@ -1,4 +1,4 @@
-package speedwayschema
+package schema
 
 import (
 	"context"
@@ -73,20 +73,20 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			selectSchemaKind := promptui.Select{
 				Label: "Select a Schema Field",
 				Items: []string{
-					"CreateSchemaRequest_SCHEMA_KIND_UNRECOGNIZED",
-					"CreateSchemaRequest_SCHEMA_KIND_MAP",
-					"CreateSchemaRequest_SCHEMA_KIND_LIST",
-					"CreateSchemaRequest_SCHEMA_KIND_UNIT",
-					"CreateSchemaRequest_SCHEMA_KIND_BOOL",
-					"CreateSchemaRequest_SCHEMA_KIND_INT",
-					"CreateSchemaRequest_SCHEMA_KIND_FLOAT",
-					"CreateSchemaRequest_SCHEMA_KIND_STRING",
-					"CreateSchemaRequest_SCHEMA_KIND_BYTES",
-					"CreateSchemaRequest_SCHEMA_KIND_LINK",
-					"CreateSchemaRequest_SCHEMA_KIND_STRUCT",
-					"CreateSchemaRequest_SCHEMA_KIND_UNION",
-					"CreateSchemaRequest_SCHEMA_KIND_ENUM",
-					"CreateSchemaRequest_SCHEMA_KIND_ANY",
+					"UNRECOGNIZED",
+					"MAP",
+					"LIST",
+					"UNIT",
+					"BOOL",
+					"INT",
+					"FLOAT",
+					"STRING",
+					"BYTES",
+					"LINK",
+					"STRUCT",
+					"UNION",
+					"ENUM",
+					"ANY",
 				},
 			}
 			_, result, err := selectSchemaKind.Run()
@@ -94,36 +94,34 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				fmt.Printf("Prompt failed %v\n", err)
 				return
 			}
-			schemaKind := rtmv1.CreateSchemaRequest_SCHEMA_KIND_UNRECOGNIZED
+			schemaKind := rtmv1.CreateSchemaRequest_SCHEMA_KIND_ANY
 			switch result {
-			case "CreateSchemaRequest_SCHEMA_KIND_UNRECOGNIZED":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_UNRECOGNIZED
-			case "CreateSchemaRequest_SCHEMA_KIND_MAP":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_MAP
-			case "CreateSchemaRequest_SCHEMA_KIND_LIST":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LIST
-			case "CreateSchemaRequest_SCHEMA_KIND_UNIT":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_UNIT
-			case "CreateSchemaRequest_SCHEMA_KIND_BOOL":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_BOOL
-			case "CreateSchemaRequest_SCHEMA_KIND_INT":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_INT
-			case "CreateSchemaRequest_SCHEMA_KIND_FLOAT":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_FLOAT
-			case "CreateSchemaRequest_SCHEMA_KIND_STRING":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRING
-			case "CreateSchemaRequest_SCHEMA_KIND_BYTES":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_BYTES
-			case "CreateSchemaRequest_SCHEMA_KIND_LINK":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LINK
-			case "CreateSchemaRequest_SCHEMA_KIND_STRUCT":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRUCT
-			case "CreateSchemaRequest_SCHEMA_KIND_UNION":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_UNION
-			case "CreateSchemaRequest_SCHEMA_KIND_ENUM":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_ENUM
-			case "CreateSchemaRequest_SCHEMA_KIND_ANY":
+			case "ANY":
 				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_ANY
+			case "MAP":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_MAP
+			case "LIST":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LIST
+			case "UNIT":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_UNIT
+			case "BOOL":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_BOOL
+			case "INT":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_INT
+			case "FLOAT":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_FLOAT
+			case "STRING":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRING
+			case "BYTES":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_BYTES
+			case "LINK":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LINK
+			case "STRUCT":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRUCT
+			case "UNION":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_UNION
+			case "ENUM":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_ENUM
 			}
 			pskKey, err := loadKey("PSK.key")
 			if pskKey == nil || len(pskKey) != 32 {

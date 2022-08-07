@@ -1,4 +1,4 @@
-package MotorRegistry
+package registry
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 func BootstrapRegistryCommand(ctx context.Context) (registryCmd *cobra.Command) {
 	registryCmd = &cobra.Command{
 		Use:   "registry",
-		Short: "Provides commands for managing registries on the Sonr network",
+		Short: "Provides commands for managing accounts on the Sonr network",
 		Run:   func(cmd *cobra.Command, args []string) {},
 	}
 	registryCmd.AddCommand(bootstrapCreateAccountCommand(ctx))

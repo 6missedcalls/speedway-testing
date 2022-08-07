@@ -1,4 +1,4 @@
-package MotorRegistry
+package registry
 
 import (
 	"context"
@@ -21,16 +21,13 @@ func storeKey(name string, key []byte) error {
 	}
 	defer file.Close()
 	_, err = file.Write(key)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Command) {
 	createCmd = &cobra.Command{
 		Use:   "register",
-		Short: "Use: registry register -p <password>",
+		Short: "Use: registry register",
 
 		Run: func(cmd *cobra.Command, args []string) {
 			validate := func(input string) error {
@@ -45,7 +42,7 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 			}
 			result, err := prompt.Run()
 			if err != nil {
-				fmt.Printf("Prompt failed %v\n", err)
+				fmt.Printf("Prompt failed %s\n", err)
 				return
 			}
 			aesKey, err := crypto.NewAesKey()

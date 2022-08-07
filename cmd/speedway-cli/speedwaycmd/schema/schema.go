@@ -1,4 +1,4 @@
-package speedwayschema
+package schema
 
 import (
 	"context"

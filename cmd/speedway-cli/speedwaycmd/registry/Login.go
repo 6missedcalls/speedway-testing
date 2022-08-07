@@ -1,4 +1,4 @@
-package MotorRegistry
+package registry
 
 import (
 	"context"
@@ -83,7 +83,5 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 			}
 		},
 	}
-	loginCmd.Flags().StringP("did", "d", "", "did")
-	loginCmd.Flags().StringP("password", "p", "", "password")
 	return
 }
