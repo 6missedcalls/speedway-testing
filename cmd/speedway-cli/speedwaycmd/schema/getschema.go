@@ -108,14 +108,11 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 				return
 			}
 			// print result
-			fmt.Printf("%+v\n", whatIs)
-			// take cid from result and query
-			cid := whatIs.Schema.Cid
-			fmt.Println(chalk.Green.Color, "Field CID:", cid)
+			fmt.Println(chalk.Blue, "Schema:", whatIs.Schema)
 			// create a new get request to ipfs.sonr.ws with cid
-			getReq, err := http.NewRequest("GET", "https://ipfs.sonr.ws/ipfs/"+cid, nil)
+			getReq, err := http.NewRequest("GET", "https://ipfs.sonr.ws/ipfs/"+whatIs.Schema.Cid, nil)
 			if err != nil {
-				fmt.Printf("NewRequest failed %v\n", err)
+				fmt.Printf("Request to IPFS failed %v\n", err)
 				return
 			}
 			// get the file from ipfs.sonr.ws
@@ -130,8 +127,13 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 				fmt.Printf("ReadAll failed %v\n", err)
 				return
 			}
-			// print response body
-			fmt.Printf("%s\n", body)
+			definition := &st.SchemaDefinition{}
+			if err = definition.Unmarshal(body); err != nil {
+				fmt.Printf("error unmarshalling body: %s", err)
+				return
+			}
+			// print response
+			fmt.Println(chalk.Green, "%s\n", definition, chalk.Reset)
 		},
 	}
 	return
