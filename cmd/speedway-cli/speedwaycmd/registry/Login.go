@@ -1,9 +1,9 @@
 package registry
 
 import (
+	"io/ioutil"
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/manifoldco/promptui"
@@ -12,24 +12,21 @@ import (
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
-func loadKey(path string) ([]byte, error) {
+func loadKey(name string) ([]byte, error) {
 	var file *os.File
-	if _, err := os.Stat(path); err != nil {
+	if _, err := os.Stat(fmt.Sprintf("%s/%s", os.Getenv("HOME"), ".speedway/keys/"+name)); err != nil {
 		if os.IsNotExist(err) {
 			return nil, err
 		}
 		return nil, err
 	}
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	data, err := ioutil.ReadAll(file)
+	file, err := os.Open(fmt.Sprintf("%s/%s", os.Getenv("HOME"), ".speedway/keys/"+name))
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
-	return data, nil
+	data, err := ioutil.ReadAll(file)
+	return data, err
 }
 
 func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {

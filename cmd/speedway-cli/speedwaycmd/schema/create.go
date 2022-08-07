@@ -12,30 +12,27 @@ import (
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
-func loadKey(path string) ([]byte, error) {
+func loadKey(name string) ([]byte, error) {
 	var file *os.File
-	if _, err := os.Stat(path); err != nil {
+	if _, err := os.Stat(fmt.Sprintf("%s/%s", os.Getenv("HOME"), ".speedway/keys/"+name)); err != nil {
 		if os.IsNotExist(err) {
 			return nil, err
 		}
 		return nil, err
 	}
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	data, err := ioutil.ReadAll(file)
+	file, err := os.Open(fmt.Sprintf("%s/%s", os.Getenv("HOME"), ".speedway/keys/"+name))
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
-	return data, nil
+	data, err := ioutil.ReadAll(file)
+	return data, err
 }
 
 func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.Command) {
 	createSchemaCmd = &cobra.Command{
-		Use:   "createSchema",
-		Short: "Use: createSchema",
+		Use:   "create",
+		Short: "Use: create",
 
 		Run: func(cmd *cobra.Command, args []string) {
 			prompt := promptui.Prompt{
@@ -46,18 +43,40 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				fmt.Printf("Prompt failed %v\n", err)
 				return
 			}
-			prompt = promptui.Prompt{
-				Label: "Enter your Password",
+			aesKey, err := loadKey("AES.key")
+			if aesKey == nil || len(aesKey) != 32 {
+				fmt.Println("Please provide a valid pskKey")
 			}
-			password, err := prompt.Run()
 			if err != nil {
 				fmt.Printf("Prompt failed %v\n", err)
 				return
 			}
-			prompt = promptui.Prompt{
-				Label: "Enter your Schema Label",
+			pskKey, err := loadKey("PSK.key")
+			if pskKey == nil || len(pskKey) != 32 {
+				fmt.Println("Please provide a valid pskKey")
 			}
-			schemaLabel, err := prompt.Run()
+			if err != nil {
+				fmt.Printf("Prompt failed %v\n", err)
+				return
+			}
+			loginRequest := rtmv1.LoginRequest{
+				Did:       did,
+				AesDscKey: aesKey,
+				AesPskKey: pskKey,
+			}
+			m := mtr.EmptyMotor("Speedway_Node")
+			loginResult, err := m.Login(loginRequest)
+			if loginResult.Success {
+				fmt.Println("Login success")
+			} else {
+				fmt.Println("Login failed")
+				fmt.Println(err)
+			}
+			fmt.Println("Creating schema...")
+			schemaPrompt := promptui.Prompt{
+				Label: "Enter the Schema Label",
+			}
+			schemaLabel, err := schemaPrompt.Run()
 			if err != nil {
 				fmt.Printf("Prompt failed %v\n", err)
 				return
@@ -125,35 +144,10 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			case "ENUM":
 				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_ENUM
 			}
-
 			if err != nil {
 				fmt.Printf("Prompt failed %v\n", err)
 				return
 			}
-			// TODO: add the schemaKind to the schemaFields
-			// TODO: append the schemaFields to the schemaFields array
-
-			pskKey, err := loadKey("PSK.key")
-			if pskKey == nil || len(pskKey) != 32 {
-				fmt.Println("Please provide a valid pskKey")
-			}
-			if err != nil {
-				fmt.Println("reqBytes err", err)
-			}
-			loginRequest := rtmv1.LoginRequest{
-				Did:       did,
-				Password:  password,
-				AesPskKey: pskKey,
-			}
-			m := mtr.EmptyMotor("Test_Node")
-			loginResult, err := m.Login(loginRequest)
-			if loginResult.Success {
-				fmt.Println("Login success")
-			} else {
-				fmt.Println("Login failed")
-				fmt.Println(err)
-			}
-			fmt.Println("Creating schema...")
 			createSchemaRequest := rtmv1.CreateSchemaRequest{
 				Label: schemaLabel,
 				Fields: map[string]rtmv1.CreateSchemaRequest_SchemaKind{
@@ -162,6 +156,9 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			}
 			fmt.Println("Schema request: ", createSchemaRequest)
 			createSchemaResult, err := m.CreateSchema(createSchemaRequest)
+			if err != nil {
+				fmt.Println("Create schema err: ", err)
+			}
 			fmt.Println(createSchemaResult)
 		},
 	}
