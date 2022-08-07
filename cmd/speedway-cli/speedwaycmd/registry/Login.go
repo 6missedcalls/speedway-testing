@@ -1,14 +1,15 @@
 package registry
 
 import (
-	"io/ioutil"
 	"context"
 	"fmt"
-	"os"
-
+	"
+	"github.com/denisbrodbeck/machineid"
 	"github.com/manifoldco/promptui"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
-	"github.com/spf13/cobra"
+	"github.com/spf13/cobra""
+	"io/ioutil"
+	"os
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
@@ -66,7 +67,11 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 				fmt.Println("reqBytes err", err)
 			}
 			fmt.Println("request", req)
-			m := mtr.EmptyMotor("Test Node")
+			hwid, err := machineid.ID()
+			if err != nil {
+				fmt.Println("err", err)
+			}
+			m := mtr.EmptyMotor(hwid)
 			res, err := m.Login(req)
 			if err != nil {
 				fmt.Println("err", err)

@@ -4,8 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 
+	"github.com/denisbrodbeck/machineid"
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/sonr/pkg/crypto"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
@@ -68,7 +70,11 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 			if err != nil {
 				fmt.Println("reqBytes err", err)
 			}
-			m := mtr.EmptyMotor("Speedway_Node")
+			hwid, err := machineid.ID()
+			if err != nil {
+				log.Fatal(err)
+			}
+			m := mtr.EmptyMotor(hwid)
 			res, err := m.CreateAccount(req)
 			if err != nil {
 				fmt.Println("err", err)
