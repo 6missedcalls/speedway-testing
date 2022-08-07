@@ -38,7 +38,7 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 
 		Run: func(cmd *cobra.Command, args []string) {
 			prompt := promptui.Prompt{
-				Label: "Enter your DID",
+				Label: "Enter your Address",
 			}
 			did, err := prompt.Run()
 			if err != nil {

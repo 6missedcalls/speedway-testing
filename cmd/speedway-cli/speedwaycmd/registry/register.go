@@ -83,6 +83,7 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 			}
 			storeKey("PSK.key", res.AesPsk)
 			fmt.Println(chalk.Green, "Create Account Response: ", res, chalk.Reset)
+			fmt.Println(chalk.Bold, "Address: ", res.Address, chalk.Reset)
 		},
 	}
 	return

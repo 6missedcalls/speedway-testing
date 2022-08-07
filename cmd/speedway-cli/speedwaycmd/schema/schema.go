@@ -13,5 +13,6 @@ func BootstrapSchemaCommand(ctx context.Context) (schemaCmd *cobra.Command) {
 		Run:   func(cmd *cobra.Command, args []string) {},
 	}
 	schemaCmd.AddCommand(bootstrapCreateSchemaCommand(ctx))
+	schemaCmd.AddCommand(bootstrapQuerySchemaCommand(ctx))
 	return
 }
