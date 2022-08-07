@@ -1,7 +1,29 @@
 # Speedway CLI (WIP)
 
-## Current CLI Commands
-Create Account: `speedway-registry createAccount <password>` (WIP) ✅  Working
+## Registry
+Create an account with the `create` command.
 
-Login Account: `speedway-registry loginAccount <DID> <password>` (WIP) 🧪 Needs Testing
+```bash
+speedway registry register
+```
+
+Login to an existing account with the `login` command.
+
+```bash
+speedway registry login
+```
+## Schema
+Create a new schema with the `create` command.
+
+```bash
+speedway schema create
+```
+
+Query a schema with the `query` command.
+
+```bash
+speedway schema query
+```
+
+
 
