@@ -12,7 +12,6 @@ replace (
 
 require (
 	github.com/kataras/golog v0.1.7
-	github.com/manifoldco/promptui v0.9.0
 	github.com/sonr-io/sonr v0.3.0-beta.0.0.20220804202621-ea10a5fb3eea
 	github.com/spf13/cobra v1.5.0
 	go.buf.build/grpc/go/sonr-io/motor v1.4.27
