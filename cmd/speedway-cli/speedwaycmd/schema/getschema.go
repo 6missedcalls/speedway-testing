@@ -3,6 +3,8 @@ package schema
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 
 	"github.com/denisbrodbeck/machineid"
 	"github.com/manifoldco/promptui"
@@ -107,6 +109,29 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 			}
 			// print result
 			fmt.Printf("%+v\n", whatIs)
+			// take cid from result and query
+			cid := whatIs.Schema.Cid
+			fmt.Println(chalk.Green.Color, "Field CID:", cid)
+			// create a new get request to ipfs.sonr.ws with cid
+			getReq, err := http.NewRequest("GET", "https://ipfs.sonr.ws/ipfs/"+cid, nil)
+			if err != nil {
+				fmt.Printf("NewRequest failed %v\n", err)
+				return
+			}
+			// get the file from ipfs.sonr.ws
+			resp, err := http.DefaultClient.Do(getReq)
+			if err != nil {
+				fmt.Printf("Do failed %v\n", err)
+				return
+			}
+			// read the file
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				fmt.Printf("ReadAll failed %v\n", err)
+				return
+			}
+			// print response body
+			fmt.Printf("%s\n", body)
 		},
 	}
 	return
