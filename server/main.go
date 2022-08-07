@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	nebula "github.com/sonr-io/nebula/routes"
+	nebula "github.com/sonr-io/speedway/server/routes"
 )
 
 func main() {

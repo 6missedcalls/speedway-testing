@@ -1,4 +1,4 @@
-module github.com/sonr-io/nebula
+module github.com/sonr-io/speedway
 
 go 1.16
 
@@ -15,8 +15,11 @@ require (
 	github.com/duo-labs/webauthn.io v0.0.0-20200929144140-c031a3e0f95d
 	github.com/gin-gonic/contrib v0.0.0-20201101042839-6a891bf89f19
 	github.com/gin-gonic/gin v1.7.7
+	github.com/kataras/golog v0.1.7
+	github.com/manifoldco/promptui v0.9.0
 	github.com/shengdoushi/base58 v1.0.0
 	github.com/sonr-io/sonr v0.3.0-beta.0.0.20220804200305-8674ad0d31e3 // TODO: revert this when beta/mpc gets merged into master
+	github.com/spf13/cobra v1.4.0
 	go.buf.build/grpc/go/sonr-io/motor v1.4.27
 	google.golang.org/grpc v1.48.0
 )
