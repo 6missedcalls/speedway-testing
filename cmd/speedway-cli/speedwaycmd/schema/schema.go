@@ -13,7 +13,5 @@ func BootstrapSchemaCommand(ctx context.Context) (schemaCmd *cobra.Command) {
 		Run:   func(cmd *cobra.Command, args []string) {},
 	}
 	schemaCmd.AddCommand(bootstrapCreateSchemaCommand(ctx))
-	schemaCmd.PersistentFlags().StringP("did", "", "", "Your DID")
-	schemaCmd.PersistentFlags().StringP("password", "p", "", "Your Vault Password")
 	return
 }

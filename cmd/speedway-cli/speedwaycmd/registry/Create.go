@@ -2,9 +2,11 @@ package MotorRegistry
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 
+	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/sonr/pkg/crypto"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	"github.com/spf13/cobra"
@@ -31,9 +33,19 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 		Short: "Use: registry register -p <password>",
 
 		Run: func(cmd *cobra.Command, args []string) {
-			password, _ := cmd.Flags().GetString("password")
-			if password == "" {
-				fmt.Println("Please provide a password")
+			validate := func(input string) error {
+				if len(input) < 8 {
+					return errors.New("password must be at least 8 characters")
+				}
+				return nil
+			}
+			prompt := promptui.Prompt{
+				Label:    "Password",
+				Validate: validate,
+			}
+			result, err := prompt.Run()
+			if err != nil {
+				fmt.Printf("Prompt failed %v\n", err)
 				return
 			}
 			aesKey, err := crypto.NewAesKey()
@@ -43,7 +55,7 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 			storeKey("AES.key", aesKey)
 			fmt.Println("aesKey", aesKey)
 			req := rtmv1.CreateAccountRequest{
-				Password:  password,
+				Password:  result,
 				AesDscKey: aesKey,
 			}
 			fmt.Println("request", req)

@@ -6,21 +6,11 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/manifoldco/promptui"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	"github.com/spf13/cobra"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
-
-// create a struct to hold the command line flags for the command
-type CreateSchemaFlags struct {
-	Did      string
-	Password string
-
-	// Schema Flags
-	SchemaLabel       string
-	SchemaFieldsNames map[string]string
-	SchemaFields      map[string]string
-}
 
 func loadKey(path string) ([]byte, error) {
 	var file *os.File
@@ -45,26 +35,63 @@ func loadKey(path string) ([]byte, error) {
 func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.Command) {
 	createSchemaCmd = &cobra.Command{
 		Use:   "createSchema",
-		Short: "Use: createSchema -did <did> -password <password> -schemaLabel <schemaLabel> -schemaFields <schemaFields>",
+		Short: "Use: createSchema -did <did> -password <password> -schemaLabel <schemaLabel>",
 
 		Run: func(cmd *cobra.Command, args []string) {
-			did, _ := cmd.Flags().GetString("did")
-			password, _ := cmd.Flags().GetString("password")
-			if len(args) < 1 {
-				fmt.Println("Please provide a schema name")
+			prompt := promptui.Prompt{
+				Label: "Enter your DID",
+			}
+			did, err := prompt.Run()
+			if err != nil {
+				fmt.Printf("Prompt failed %v\n", err)
 				return
 			}
-			schemaLabel, _ := cmd.Flags().GetString("schemaLabel")
-			schemaNames, _ := cmd.Flags().GetStringSlice("SchemaFieldsNames")
-			fields, _ := cmd.Flags().GetStringSlice("schemaFields")
-			// combine schema names and fields into a map
-			schemaFields := make(map[string]string)
-			for i := 0; i < len(schemaNames); i++ {
-				schemaFields[schemaNames[i]] = fields[i]
+			prompt = promptui.Prompt{
+				Label: "Enter your Password",
 			}
-			fmt.Print("schemaFields", schemaFields)
-			if did == "" || password == "" || schemaLabel == "" || len(schemaFields) == 0 {
-				fmt.Println("Please provide a did, password, schemaLabel and schemaFields")
+			password, err := prompt.Run()
+			if err != nil {
+				fmt.Printf("Prompt failed %v\n", err)
+				return
+			}
+			prompt = promptui.Prompt{
+				Label: "Enter your Schema Label",
+			}
+			schemaLabel, err := prompt.Run()
+			if err != nil {
+				fmt.Printf("Prompt failed %v\n", err)
+				return
+			}
+			prompt = promptui.Prompt{
+				Label: "Enter your Schema Fields",
+			}
+			schemaFields, err := prompt.Run()
+			if err != nil {
+				fmt.Printf("Prompt failed %v\n", err)
+				return
+			}
+			selectSchemaKind := promptui.Select{
+				Label: "Select a Schema Field",
+				Items: []string{
+					"CreateSchemaRequest_SCHEMA_KIND_UNRECOGNIZED",
+					"CreateSchemaRequest_SCHEMA_KIND_MAP",
+					"CreateSchemaRequest_SCHEMA_KIND_LIST",
+					"CreateSchemaRequest_SCHEMA_KIND_UNIT",
+					"CreateSchemaRequest_SCHEMA_KIND_BOOL",
+					"CreateSchemaRequest_SCHEMA_KIND_INT",
+					"CreateSchemaRequest_SCHEMA_KIND_FLOAT",
+					"CreateSchemaRequest_SCHEMA_KIND_STRING",
+					"CreateSchemaRequest_SCHEMA_KIND_BYTES",
+					"CreateSchemaRequest_SCHEMA_KIND_LINK",
+					"CreateSchemaRequest_SCHEMA_KIND_STRUCT",
+					"CreateSchemaRequest_SCHEMA_KIND_UNION",
+					"CreateSchemaRequest_SCHEMA_KIND_ENUM",
+					"CreateSchemaRequest_SCHEMA_KIND_ANY",
+				},
+			}
+			_, result, err := selectSchemaKind.Run()
+			if err != nil {
+				fmt.Printf("Prompt failed %v\n", err)
 				return
 			}
 			pskKey, err := loadKey("PSK.key")
@@ -85,23 +112,24 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				fmt.Println("Login success")
 			} else {
 				fmt.Println("Login failed")
+				fmt.Println(err)
 			}
 			fmt.Println("Creating schema...")
-			schemaReq := rtmv1.CreateSchemaRequest{
-				Label: schemaLabel,
+			createSchemaRequest := rtmv1.CreateSchemaRequest{
+				Label: "TestUser",
 				Fields: map[string]rtmv1.CreateSchemaRequest_SchemaKind{
-					"hello": rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRING,
-					"int":   rtmv1.CreateSchemaRequest_SCHEMA_KIND_INT,
+					schemaLabel: rtmv1.CreateSchemaRequest_SCHEMA_KIND_ANY,
 				},
 			}
-			schemaRes, err := m.CreateSchema(schemaReq)
-			if err != nil {
-				fmt.Println("Create schema failed:", err)
+			fmt.Println("Schema request: ", createSchemaRequest)
+			res, err = m.CreateSchema(createSchemaRequest)
+			if res.Success {
+				fmt.Println("Schema created")
+			} else {
+				fmt.Println("Schema creation failed")
+				fmt.Println(err)
 			}
-			fmt.Println("Schema created:", schemaRes)
 		},
 	}
-	createSchemaCmd.Flags().StringP("did", "d", "", "did")
-	createSchemaCmd.Flags().StringP("password", "p", "", "password")
 	return
 }

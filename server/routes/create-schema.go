@@ -9,13 +9,11 @@ import (
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
-// create a struct to hold the command line flags for the command
 type CreateSchemaRequest struct {
 	Did          string `json:"did"`
 	Password     string `json:"password"`
 	SchemaLabel  string `json:"label"`
 	SchemaFields string `json:"fields"`
-	// make Schema Fields
 }
 
 func (ns *NebulaServer) CreateSchema(c *gin.Context) {
@@ -52,10 +50,8 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	fmt.Println("loginResponse", loginResponse)
 	// Create a new create schema request
 	createSchemaRequest := (rtmv1.CreateSchemaRequest{
-		Label: r.SchemaLabel,
-		Fields: map[string]rtmv1.CreateSchemaRequest_SchemaKind{
-			"hello": rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRING,
-		},
+		Label:  r.SchemaLabel,
+		Fields: r.SchemaFields,
 	})
 
 	fmt.Println("createSchemaRequest", createSchemaRequest)
