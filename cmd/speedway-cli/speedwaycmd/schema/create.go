@@ -70,10 +70,10 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				fmt.Printf("Prompt failed %v\n", err)
 				return
 			}
+			// for every schemaFields, prompt for the type of the field
 			selectSchemaKind := promptui.Select{
 				Label: "Select a Schema Field",
 				Items: []string{
-					"UNRECOGNIZED",
 					"MAP",
 					"LIST",
 					"UNIT",
@@ -90,10 +90,12 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				},
 			}
 			_, result, err := selectSchemaKind.Run()
+
 			if err != nil {
 				fmt.Printf("Prompt failed %v\n", err)
 				return
 			}
+
 			schemaKind := rtmv1.CreateSchemaRequest_SCHEMA_KIND_ANY
 			switch result {
 			case "ANY":
@@ -123,6 +125,14 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			case "ENUM":
 				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_ENUM
 			}
+
+			if err != nil {
+				fmt.Printf("Prompt failed %v\n", err)
+				return
+			}
+			// TODO: add the schemaKind to the schemaFields
+			// TODO: append the schemaFields to the schemaFields array
+
 			pskKey, err := loadKey("PSK.key")
 			if pskKey == nil || len(pskKey) != 32 {
 				fmt.Println("Please provide a valid pskKey")
@@ -130,13 +140,13 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			if err != nil {
 				fmt.Println("reqBytes err", err)
 			}
-			req := rtmv1.LoginRequest{
+			loginRequest := rtmv1.LoginRequest{
 				Did:       did,
 				Password:  password,
 				AesPskKey: pskKey,
 			}
 			m := mtr.EmptyMotor("Test_Node")
-			loginResult, err := m.Login(req)
+			loginResult, err := m.Login(loginRequest)
 			if loginResult.Success {
 				fmt.Println("Login success")
 			} else {

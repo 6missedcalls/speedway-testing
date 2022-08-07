@@ -9,6 +9,7 @@ import (
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
+// create a struct to hold the command line flags for the command
 type CreateSchemaRequest struct {
 	Did          string `json:"did"`
 	Password     string `json:"password"`
