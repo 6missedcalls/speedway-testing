@@ -3,13 +3,12 @@ package registry
 import (
 	"context"
 	"fmt"
-	"
+	"io/ioutil"
+	"os"
 	"github.com/denisbrodbeck/machineid"
 	"github.com/manifoldco/promptui"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
-	"github.com/spf13/cobra""
-	"io/ioutil"
-	"os
+	"github.com/spf13/cobra"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
