@@ -10,6 +10,7 @@ import (
 	"github.com/manifoldco/promptui"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	"github.com/spf13/cobra"
+	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
@@ -44,9 +45,10 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				fmt.Printf("Prompt failed %v\n", err)
 				return
 			}
+			fmt.Println(chalk.Bold, "Attempting auto login with DID: "+did, chalk.Reset)
 			aesKey, err := loadKey("AES.key")
 			if aesKey == nil || len(aesKey) != 32 {
-				fmt.Println("Please provide a valid pskKey")
+				fmt.Println(chalk.Yellow.Color("Please provide a valid aesKey"))
 			}
 			if err != nil {
 				fmt.Printf("Prompt failed %v\n", err)
@@ -54,7 +56,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			}
 			pskKey, err := loadKey("PSK.key")
 			if pskKey == nil || len(pskKey) != 32 {
-				fmt.Println("Please provide a valid pskKey")
+				fmt.Println(chalk.Yellow.Color("Please provide a valid pskKey"))
 			}
 			if err != nil {
 				fmt.Printf("Prompt failed %v\n", err)
@@ -72,10 +74,11 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			m := mtr.EmptyMotor(hwid)
 			loginResult, err := m.Login(loginRequest)
 			if loginResult.Success {
-				fmt.Println("Login success")
+				fmt.Println(chalk.Green.Color("Login Successful"))
 			} else {
-				fmt.Println("Login failed")
+				fmt.Println(chalk.Red.Color("Login Failed"))
 				fmt.Println(err)
+				os.Exit(1)
 			}
 			fmt.Println("Creating schema...")
 			schemaPrompt := promptui.Prompt{
@@ -159,12 +162,13 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 					schemaFields: schemaKind,
 				},
 			}
-			fmt.Println("Schema request: ", createSchemaRequest)
+			fmt.Println(chalk.Yellow, "Schema request: ", createSchemaRequest)
 			createSchemaResult, err := m.CreateSchema(createSchemaRequest)
 			if err != nil {
-				fmt.Println("Create schema err: ", err)
+				fmt.Println(chalk.Red.Color("Create Schema Failed"))
 			}
-			fmt.Println(createSchemaResult)
+			fmt.Println(chalk.Green.Color("Create Schema Successful"))
+			fmt.Println("Schema: ", createSchemaResult)
 		},
 	}
 	return

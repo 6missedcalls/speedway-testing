@@ -20,6 +20,7 @@ require (
 	github.com/shengdoushi/base58 v1.0.0
 	github.com/sonr-io/sonr v0.3.0-beta.0.0.20220804200305-8674ad0d31e3 // TODO: revert this when beta/mpc gets merged into master
 	github.com/spf13/cobra v1.4.0
+	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31
 	go.buf.build/grpc/go/sonr-io/motor v1.4.27
 	google.golang.org/grpc v1.48.0
 )

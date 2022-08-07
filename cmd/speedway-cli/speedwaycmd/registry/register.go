@@ -12,6 +12,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/crypto"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	"github.com/spf13/cobra"
+	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
@@ -61,14 +62,15 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 				fmt.Println("err", err)
 			}
 			storeKey("AES.key", aesKey)
-			fmt.Println("aesKey", aesKey)
+			fmt.Println(chalk.Bold, "aesKey", aesKey, chalk.Reset)
 			req := rtmv1.CreateAccountRequest{
 				Password:  result,
 				AesDscKey: aesKey,
 			}
-			fmt.Println("request", req)
+			fmt.Println(chalk.Green, "Creating account...", chalk.Reset)
+			fmt.Println(chalk.Yellow, "Create Account Request: ", req, chalk.Reset)
 			if err != nil {
-				fmt.Println("reqBytes err", err)
+				fmt.Println(chalk.Red, "Create Account Error: ", err, chalk.Reset)
 			}
 			hwid, err := machineid.ID()
 			if err != nil {
@@ -80,7 +82,7 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 				fmt.Println("err", err)
 			}
 			storeKey("PSK.key", res.AesPsk)
-			fmt.Println("res", res)
+			fmt.Println(chalk.Green, "Create Account Response: ", res, chalk.Reset)
 		},
 	}
 	return

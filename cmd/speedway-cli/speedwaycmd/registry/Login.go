@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+
 	"github.com/denisbrodbeck/machineid"
 	"github.com/manifoldco/promptui"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	"github.com/spf13/cobra"
+	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
@@ -53,7 +55,7 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 			}
 			pskKey, err := loadKey("PSK.key")
 			if pskKey == nil || len(pskKey) != 32 {
-				fmt.Println("Please provide a valid pskKey")
+				fmt.Println(chalk.Yellow, "Please provide a valid pskKey", chalk.Reset)
 				return
 			}
 			fmt.Println("pskKey", pskKey)
@@ -63,9 +65,8 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 				AesPskKey: pskKey,
 			}
 			if err != nil {
-				fmt.Println("reqBytes err", err)
+				fmt.Println(chalk.Red, "Error: %s", err)
 			}
-			fmt.Println("request", req)
 			hwid, err := machineid.ID()
 			if err != nil {
 				fmt.Println("err", err)
@@ -73,14 +74,14 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 			m := mtr.EmptyMotor(hwid)
 			res, err := m.Login(req)
 			if err != nil {
-				fmt.Println("err", err)
+				fmt.Println(chalk.Red, "Login Error: %s", err)
 			}
-			fmt.Println("res", res)
+			fmt.Println(chalk.Green, "Login Response: %s", res)
 			if res.Success {
 				fmt.Println("DIDDocument", m.DIDDocument)
 				fmt.Println("Address", m.Address)
 			} else {
-				fmt.Println("Login failed")
+				fmt.Println(chalk.Red, "Login failed")
 			}
 		},
 	}
