@@ -68,8 +68,8 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 				fmt.Println("err", err)
 			}
 			storeKey("PSK.key", res.AesPsk)
+			fmt.Println("res", res)
 		},
 	}
-	createCmd.Flags().StringP("password", "p", "", "password")
 	return
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	MotorRegistry "github.com/sonr-io/speedway/cmd/speedway-cli/speedwaycmd/registry"
+	SpeedwaySchema "github.com/sonr-io/speedway/cmd/speedway-cli/speedwaycmd/schema"
 	"github.com/spf13/cobra"
 )
 
@@ -20,6 +21,6 @@ func bootstrapRootCommand(ctx context.Context) (rootCmd *cobra.Command) {
 		// Run: func(cmd *cobra.Command, args []string) {},
 	}
 	rootCmd.AddCommand(MotorRegistry.BootstrapRegistryCommand(ctx))
-	// rootCmd.AddCommand(SpeedwaySchema.BootstrapSchemaCommand(ctx))
+	rootCmd.AddCommand(SpeedwaySchema.BootstrapSchemaCommand(ctx))
 	return
 }

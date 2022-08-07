@@ -35,7 +35,7 @@ func loadKey(path string) ([]byte, error) {
 func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.Command) {
 	createSchemaCmd = &cobra.Command{
 		Use:   "createSchema",
-		Short: "Use: createSchema -did <did> -password <password> -schemaLabel <schemaLabel>",
+		Short: "Use: createSchema",
 
 		Run: func(cmd *cobra.Command, args []string) {
 			prompt := promptui.Prompt{
@@ -94,6 +94,37 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				fmt.Printf("Prompt failed %v\n", err)
 				return
 			}
+			schemaKind := rtmv1.CreateSchemaRequest_SCHEMA_KIND_UNRECOGNIZED
+			switch result {
+			case "CreateSchemaRequest_SCHEMA_KIND_UNRECOGNIZED":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_UNRECOGNIZED
+			case "CreateSchemaRequest_SCHEMA_KIND_MAP":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_MAP
+			case "CreateSchemaRequest_SCHEMA_KIND_LIST":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LIST
+			case "CreateSchemaRequest_SCHEMA_KIND_UNIT":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_UNIT
+			case "CreateSchemaRequest_SCHEMA_KIND_BOOL":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_BOOL
+			case "CreateSchemaRequest_SCHEMA_KIND_INT":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_INT
+			case "CreateSchemaRequest_SCHEMA_KIND_FLOAT":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_FLOAT
+			case "CreateSchemaRequest_SCHEMA_KIND_STRING":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRING
+			case "CreateSchemaRequest_SCHEMA_KIND_BYTES":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_BYTES
+			case "CreateSchemaRequest_SCHEMA_KIND_LINK":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LINK
+			case "CreateSchemaRequest_SCHEMA_KIND_STRUCT":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRUCT
+			case "CreateSchemaRequest_SCHEMA_KIND_UNION":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_UNION
+			case "CreateSchemaRequest_SCHEMA_KIND_ENUM":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_ENUM
+			case "CreateSchemaRequest_SCHEMA_KIND_ANY":
+				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_ANY
+			}
 			pskKey, err := loadKey("PSK.key")
 			if pskKey == nil || len(pskKey) != 32 {
 				fmt.Println("Please provide a valid pskKey")
@@ -107,8 +138,8 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				AesPskKey: pskKey,
 			}
 			m := mtr.EmptyMotor("Test_Node")
-			res, err := m.Login(req)
-			if res.Success {
+			loginResult, err := m.Login(req)
+			if loginResult.Success {
 				fmt.Println("Login success")
 			} else {
 				fmt.Println("Login failed")
@@ -116,19 +147,14 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			}
 			fmt.Println("Creating schema...")
 			createSchemaRequest := rtmv1.CreateSchemaRequest{
-				Label: "TestUser",
+				Label: schemaLabel,
 				Fields: map[string]rtmv1.CreateSchemaRequest_SchemaKind{
-					schemaLabel: rtmv1.CreateSchemaRequest_SCHEMA_KIND_ANY,
+					schemaFields: schemaKind,
 				},
 			}
 			fmt.Println("Schema request: ", createSchemaRequest)
-			res, err = m.CreateSchema(createSchemaRequest)
-			if res.Success {
-				fmt.Println("Schema created")
-			} else {
-				fmt.Println("Schema creation failed")
-				fmt.Println(err)
-			}
+			createSchemaResult, err := m.CreateSchema(createSchemaRequest)
+			fmt.Println(createSchemaResult)
 		},
 	}
 	return

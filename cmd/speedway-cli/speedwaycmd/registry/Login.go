@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/manifoldco/promptui"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	"github.com/spf13/cobra"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -34,13 +35,23 @@ func loadKey(path string) ([]byte, error) {
 func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 	loginCmd = &cobra.Command{
 		Use:   "login",
-		Short: "Use: speedway login -did <did> -password <password>",
+		Short: "Use: speedway registry login",
 
 		Run: func(cmd *cobra.Command, args []string) {
-			did, _ := cmd.Flags().GetString("did")
-			password, _ := cmd.Flags().GetString("password")
-			if did == "" || password == "" {
-				fmt.Println("Please provide a did and password")
+			prompt := promptui.Prompt{
+				Label: "Enter your DID",
+			}
+			did, err := prompt.Run()
+			if err != nil {
+				fmt.Printf("Prompt failed %v\n", err)
+				return
+			}
+			prompt = promptui.Prompt{
+				Label: "Enter your Password",
+			}
+			password, err := prompt.Run()
+			if err != nil {
+				fmt.Printf("Prompt failed %v\n", err)
 				return
 			}
 			pskKey, err := loadKey("PSK.key")
