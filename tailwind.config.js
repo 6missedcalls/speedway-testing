@@ -58,6 +58,8 @@ module.exports = {
       colors: {
         'outlined-disabled': 'var(--nds-semantic-color-border-outlined-disabled)',
         'brand-tertiary': 'var(--nds-semantic-color-brand-tertiary)',
+        'surface-button-subtle-hovered': 'var(--nds-semantic-color-surface-button-subtle-hovered)',
+        'button-subtle': 'var(--nds-semantic-color-on-button-subtle)',
         light: {
           default: 'var(--nds-semantic-color-text)'
         },
@@ -143,6 +145,7 @@ module.exports = {
       },
       backgroundColor: {
         'button-subtle': 'var(--nds-semantic-color-surface-button-subtle)',
+        'surface-button-subtle-hovered': 'var(--nds-semantic-color-surface-button-subtle-hovered)',
         gray: {
           '300-transparent': withOpacityValue('--color-gray-300-transparent')(0.5), 
           '900-transparent': withOpacityValue('--color-gray-900-transparent')(0.4), 

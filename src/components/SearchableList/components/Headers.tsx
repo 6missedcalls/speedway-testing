@@ -5,13 +5,14 @@ import SchemaHeaders from "./SchemaHeaders";
 interface HeadersProps {
     type: listTypes;
     list: any;
+    schemaOrderAsc: boolean;
     toggleSchemaOrder: () => void;
 }
 
-function Headers({ type, list, toggleSchemaOrder }: HeadersProps){
+function Headers({ type, list, toggleSchemaOrder, schemaOrderAsc }: HeadersProps){
     switch(type){
         case listTypes.schema:
-            return SchemaHeaders({ toggleSchemaOrder })
+            return SchemaHeaders({ toggleSchemaOrder, schemaOrderAsc })
         case listTypes.object:
             return ObjectHeaders(list)
         default:

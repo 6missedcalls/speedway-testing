@@ -1,22 +1,30 @@
-import { Button } from '@sonr-io/nebula-react'
+import { Button, NebulaIcon } from '@sonr-io/nebula-react'
 import { listTypes } from '../../utils/types'
 import Headers from './components/Headers'
 
 interface SearchableListComponentProps {
     type: listTypes;
+    fullListLength: number;
     list: any;
     paginationSize?: number;
     paginationCurrentPage: number;
     toggleSchemaOrder: () => void;
+    nextPage: () => void;
+    previousPage: () => void;
+    schemaOrderAsc: boolean;
     setPaginationCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 function SearchableListComponent({ 
     list, 
+    fullListLength,
     type, 
     paginationSize = 6,
     paginationCurrentPage,
     toggleSchemaOrder,
+    schemaOrderAsc,
+    nextPage,
+    previousPage
 }: SearchableListComponentProps){
     return (
         <div className="shadow-3xl rounded-2xl bg-white">
@@ -30,25 +38,39 @@ function SearchableListComponent({
                 
                 <thead>
                     <tr className="h-10 bg-button-subtle items-center px-4 py-5 text-button-subtle text-custom-xs px-4 py-5">
-                        {Headers({ type, list, toggleSchemaOrder })}
+                        {Headers({ type, list, toggleSchemaOrder, schemaOrderAsc })}
                     </tr> 
                 </thead>
                 <tbody>
-                    {list.map((row: any, index: number) => {
+                    {list.map((row: any, rowIndex: number) => {
                         const rowKeys = Object.keys(row)
                         return (
-                            <tr key={`listrow-${index}`}>
-                                {rowKeys.map((key: string, index: number) => {
+                            <tr key={`listrow-${rowIndex}`}>
+                                {rowKeys.map((key: string, itemIndex: number) => {
                                     if(key === 'id') return null
                                     return (
-                                        <td className="px-4 py-5" key={`${key}-${index}`}>{row[key]}</td>
+                                        <td className="px-4 py-5" key={`${key}-${itemIndex}`}>{row[key]}</td>
                                     )
                                 })}
                             </tr>
                         )
                     })}
                     <tr>
-                        <td className="px-4 py-5">{`${paginationCurrentPage} - ${paginationSize} of ${Math.ceil(list.length / paginationSize)}`}</td>
+                        <td className="px-4 py-5 flex">
+                            <NebulaIcon 
+                                className='cursor-pointer' 
+                                iconName='ArrowLeft2' 
+                                iconType='outline' 
+                                onClick={previousPage} 
+                            />
+                            <span>{`${paginationCurrentPage} - ${paginationSize} of ${fullListLength}`}</span>
+                            <NebulaIcon 
+                                className='cursor-pointer' 
+                                iconName='ArrowRight3' 
+                                iconType='outline' 
+                                onClick={nextPage} 
+                            />
+                        </td>
                     </tr>
                 </tbody>
             </table>
