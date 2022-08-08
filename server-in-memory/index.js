@@ -88,6 +88,22 @@ app.get('/api/v1/schema', (req, res) => {
   res.json(req.session.schemas)
 })
 
+app.get('/api/v1/schema/:accountdid/:did', (req, res) => {
+  if (req.params.accountdid !== sessionDid) {
+    res.status(400).send()
+    return
+  }
+
+  const schema = _.find(req.session.schemas, {did: req.params.did})
+
+  if (!schema) {
+    res.status(400).send()
+    return
+  }
+
+  res.json(schema)
+})
+
 app.post('/api/v1/schema/create', (req, res) => {
   const did = md5(Math.random())
   req.session.schemas.push({did})
