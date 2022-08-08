@@ -60,6 +60,17 @@ app.get('/api/v1/bucket', (req, res) => {
   res.json(req.session.buckets)
 })
 
+app.get('/api/v1/bucket/get/:cid', (req, res) => {
+  const bucket = _.find(req.session.buckets, {cid: req.params.cid})
+
+  if (!bucket) {
+    res.status(400).send()
+    return
+  }
+
+  res.json(bucket)
+})
+
 app.post('/api/v1/bucket/create', (req, res) => {
   const cid = md5(Math.random())
   req.session.buckets.push({cid})
@@ -88,6 +99,17 @@ app.post('/api/v1/schema/create', (req, res) => {
 
 app.get('/api/v1/object', (req, res) => {
   res.json(req.session.objects)
+})
+
+app.get('/api/v1/object/get/:cid', (req, res) => {
+  const object = _.find(req.session.objects, {cid: req.params.cid})
+
+  if (!object) {
+    res.status(400).send()
+    return
+  }
+
+  res.json(object)
 })
 
 app.post('/api/v1/object/create', (req, res) => {
