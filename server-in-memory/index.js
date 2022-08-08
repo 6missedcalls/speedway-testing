@@ -51,9 +51,9 @@ app.get('/api/v1/bucket', (req, res) => {
 })
 
 app.post('/api/v1/bucket/create', (req, res) => {
-  const did = md5(Math.random())
-  req.session.buckets.push({did})
-  res.json({Did: did})
+  const cid = md5(Math.random())
+  req.session.buckets.push({cid})
+  res.json({Cid: cid})
 })
 
 app.put('/api/v1/bucket', (req, res) => {
@@ -75,9 +75,9 @@ app.get('/api/v1/object', (req, res) => {
 })
 
 app.post('/api/v1/object/create', (req, res) => {
-  const did = md5(Math.random())
-  req.session.objects.push({did})
-  res.json({Did: did})
+  const cid = md5(Math.random())
+  req.session.objects.push({cid})
+  res.json({Cid: cid})
 })
 
 
