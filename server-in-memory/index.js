@@ -1,46 +1,58 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import _ from 'lodash'
-import { v4 as uuid } from 'uuid'
+import md5 from 'md5'
 const app = express()
 app.use(bodyParser.json())
 
-const db = {
-  accounts: [],
-  buckets: [],
-  schemas: [],
-  objects: [],
-}
+const db = {}
+let sessionDid = null
 
 app.post('/api/v1/account/create', (req, res) => {
-  const did = uuid()
+  const did = md5(Math.random())
   const password = req.body.password || ""
 
-  db.accounts.push({did, password})
+  db[did] = {
+    did,
+    password,
+    schemas: [],
+    buckets: [],
+    objects: [],
+  }
 
   res.json({Did: did})
 })
 
 app.post('/api/v1/account/login', (req, res) => {
-  const account = _.find(db.accounts, {did: req.body.did})
+  const account = db[req.body.did]
 
   if (!account || account.password !== req.body.password) {
     res.status(500).send()
     return
   }
 
+  sessionDid = account.did
   res.json({Address: account.did})
 })
 
+app.use((req, res, next) => {
+  const session = db[sessionDid]
+  if (!session) {
+    res.status(500).send()
+    return
+  }
+
+  req.session = session
+  next()
+})
+
 app.get('/api/v1/bucket', (req, res) => {
-  res.json(db.buckets)
+  res.json(req.session.buckets)
 })
 
 app.post('/api/v1/bucket', (req, res) => {
-  const did = uuid()
-
-  db.buckets.push({did})
-
+  const did = md5(Math.random())
+  req.session.buckets.push({did})
   res.json({Did: did})
 })
 
@@ -49,26 +61,22 @@ app.put('/api/v1/bucket', (req, res) => {
 })
 
 app.get('/api/v1/schema', (req, res) => {
-  res.json(db.schemas)
+  res.json(req.session.schemas)
 })
 
 app.post('/api/v1/schema', (req, res) => {
-  const did = uuid()
-
-  db.schemas.push({did})
-
+  const did = md5(Math.random())
+  req.session.schemas.push({did})
   res.json({Did: did})
 })
 
 app.get('/api/v1/object', (req, res) => {
-  res.json(db.objects)
+  res.json(req.session.objects)
 })
 
 app.post('/api/v1/object', (req, res) => {
-  const did = uuid()
-
-  db.objects.push({did})
-
+  const did = md5(Math.random())
+  req.session.objects.push({did})
   res.json({Did: did})
 })
 
