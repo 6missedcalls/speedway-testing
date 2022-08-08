@@ -50,7 +50,7 @@ app.get('/api/v1/bucket', (req, res) => {
   res.json(req.session.buckets)
 })
 
-app.post('/api/v1/bucket', (req, res) => {
+app.post('/api/v1/bucket/create', (req, res) => {
   const did = md5(Math.random())
   req.session.buckets.push({did})
   res.json({Did: did})
@@ -64,7 +64,7 @@ app.get('/api/v1/schema', (req, res) => {
   res.json(req.session.schemas)
 })
 
-app.post('/api/v1/schema', (req, res) => {
+app.post('/api/v1/schema/create', (req, res) => {
   const did = md5(Math.random())
   req.session.schemas.push({did})
   res.json({Did: did})
@@ -74,7 +74,7 @@ app.get('/api/v1/object', (req, res) => {
   res.json(req.session.objects)
 })
 
-app.post('/api/v1/object', (req, res) => {
+app.post('/api/v1/object/create', (req, res) => {
   const did = md5(Math.random())
   req.session.objects.push({did})
   res.json({Did: did})
