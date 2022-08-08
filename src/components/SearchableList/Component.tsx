@@ -27,25 +27,30 @@ function SearchableListComponent({
                 />
             </div>
             <table className="w-full text-left">
-                <tr className="h-10 bg-button-subtle items-center px-4 py-5 text-button-subtle text-custom-xs px-4 py-5">
-                    {Headers({ type, list, toggleSchemaOrder })}
-                </tr>
-                {list.map((row: any) => {
-                    const rowKeys = Object.keys(row)
-                    return (
-                        <tr>
-                            {rowKeys.map((key: string, index: number) => {
-                                if(key === 'id') return null
-                                return (
-                                    <td className="px-4 py-5" key={`${key}-${index}`}>{row[key]}</td>
-                                )
-                            })}
-                        </tr>
-                    )
-                })}
-                <tr>
-                    <td className="px-4 py-5">{`${paginationCurrentPage} - ${paginationSize} of ${Math.ceil(list.length / paginationSize)}`}</td>
-                </tr>
+                
+                <thead>
+                    <tr className="h-10 bg-button-subtle items-center px-4 py-5 text-button-subtle text-custom-xs px-4 py-5">
+                        {Headers({ type, list, toggleSchemaOrder })}
+                    </tr> 
+                </thead>
+                <tbody>
+                    {list.map((row: any, index: number) => {
+                        const rowKeys = Object.keys(row)
+                        return (
+                            <tr key={`listrow-${index}`}>
+                                {rowKeys.map((key: string, index: number) => {
+                                    if(key === 'id') return null
+                                    return (
+                                        <td className="px-4 py-5" key={`${key}-${index}`}>{row[key]}</td>
+                                    )
+                                })}
+                            </tr>
+                        )
+                    })}
+                    <tr>
+                        <td className="px-4 py-5">{`${paginationCurrentPage} - ${paginationSize} of ${Math.ceil(list.length / paginationSize)}`}</td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     )
