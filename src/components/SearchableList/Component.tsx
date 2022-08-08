@@ -1,4 +1,5 @@
 import { Button, NebulaIcon } from '@sonr-io/nebula-react'
+import React from 'react';
 import { listTypes } from '../../utils/types'
 import Headers from './components/Headers'
 
@@ -13,23 +14,27 @@ interface SearchableListComponentProps {
     previousPage: () => void;
     schemaOrderAsc: boolean;
     setPaginationCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+    setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+    totalPages: number;
 }
 
 function SearchableListComponent({ 
     list, 
-    fullListLength,
     type, 
-    paginationSize = 6,
     paginationCurrentPage,
     toggleSchemaOrder,
     schemaOrderAsc,
     nextPage,
-    previousPage
+    previousPage,
+    totalPages,
+    setSearchTerm
 }: SearchableListComponentProps){
     return (
         <div className="shadow-3xl rounded-2xl bg-white">
             <div className="flex justify-between p-6 w-full">
-                <input type="text" />
+                <input type="text" 
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(event.target.value)}
+                />
                 <Button 
                     label="New"
                 />
@@ -63,7 +68,7 @@ function SearchableListComponent({
                                 iconType='outline' 
                                 onClick={previousPage} 
                             />
-                            <span>{`${paginationCurrentPage} - ${paginationSize} of ${fullListLength}`}</span>
+                            <span>{`${paginationCurrentPage} of ${totalPages}`}</span>
                             <NebulaIcon 
                                 className='cursor-pointer' 
                                 iconName='ArrowRight3' 

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { listTypes } from "../../utils/types"
 import SearchableListComponent from "./Component"
+
 interface SearchableListContainerProps {
     list: Array<any>;
     type: listTypes;
@@ -10,9 +11,22 @@ interface SearchableListContainerProps {
 
 function SearchableListContainer({ list, type, paginationSize = 6 }: SearchableListContainerProps){
     const [schemaOrderAsc, setSchemaOrderAsc] = useState(true)
-    const [paginationCurrentPage, setPaginationCurrentPage] = useState(2)
+    const [searchTerm, setSearchTerm] = useState('')
+    const [paginationCurrentPage, setPaginationCurrentPage] = useState(1)
     const [finalList, setFinalList] = useState<Array<any>>([]);
+    const [totalPages, setTotalPages] = useState(Math.ceil(list.length/paginationSize))
     
+    useEffect(() => {
+        if(searchTerm){
+            const filteredList = getFilteredList(list)
+            setFinalList(getPaginatedList(filteredList))
+            setTotalPages(Math.ceil(filteredList.length/paginationSize))
+        }else {
+            setTotalPages(Math.ceil(list.length/paginationSize))
+            setFinalList(getPaginatedList(list))
+        }
+    }, [searchTerm])
+
     useEffect(() => {
         if(type === listTypes.schema){
             toggleOrderBySchemaName()
@@ -47,8 +61,11 @@ function SearchableListContainer({ list, type, paginationSize = 6 }: SearchableL
         return paginatedList
     }
 
+    function getFilteredList(previousList: Array<any>){
+        return [...previousList].filter((item) => item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1)
+    }
+
     function nextPage() {
-        const totalPages = Math.ceil(list.length/paginationSize)
         if(paginationCurrentPage + 1 <= totalPages) {
             setPaginationCurrentPage(paginationCurrentPage + 1)
         }
@@ -72,6 +89,8 @@ function SearchableListContainer({ list, type, paginationSize = 6 }: SearchableL
             schemaOrderAsc={schemaOrderAsc}
             nextPage={nextPage}
             previousPage={previousPage}
+            totalPages={totalPages}
+            setSearchTerm={setSearchTerm}
         />
     )
 }
