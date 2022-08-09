@@ -6,7 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
-	"github.com/sonr-io/speedway/pkg/hwid"
+	"github.com/sonr-io/speedway/internal/hwid"
+	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -51,11 +52,11 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	m := mtr.EmptyMotor(hwid)
 
 	// TODO: Call login from registry service
-	aesKey, err := loadKey("AES.key")
+	aesKey, err := storage.LoadKey("AES.key")
 	if err != nil {
 		fmt.Println("err", err)
 	}
-	aesPskKey, err := loadKey("PSK.key")
+	aesPskKey, err := storage.LoadKey("PSK.key")
 	if err != nil {
 		fmt.Println("err", err)
 	}
@@ -80,10 +81,10 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	}
 	fmt.Println("loginResponse", loginResponse)
 	// Create a new create schema request
-	createSchemaRequest := (rtmv1.CreateSchemaRequest{
+	createSchemaRequest := rtmv1.CreateSchemaRequest{
 		Label:  r.SchemaLabel,
 		Fields: r.SchemaField,
-	})
+	}
 	fmt.Println("createSchemaRequest", createSchemaRequest)
 
 	// create the schema

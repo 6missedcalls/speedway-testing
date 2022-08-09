@@ -10,7 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	st "github.com/sonr-io/sonr/x/schema/types"
-	"github.com/sonr-io/speedway/pkg/hwid"
+	"github.com/sonr-io/speedway/internal/hwid"
+	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -52,22 +53,25 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 		return
 	}
 	m := mtr.EmptyMotor(hwid)
+
 	// TODO: Call login from registry service
-	aesKey, err := loadKey("AES.key")
+	aesKey, err := storage.LoadKey("AES.key")
 	if err != nil {
 		fmt.Println("err", err)
 	}
-	aesPskKey, err := loadKey("PSK.key")
+	aesPskKey, err := storage.LoadKey("PSK.key")
 	if err != nil {
 		fmt.Println("err", err)
 	}
+
 	// * Create a new login & create schema request
 	// Create a new login request
-	loginRequest := (rtmv1.LoginRequest{
+	loginRequest := rtmv1.LoginRequest{
 		Did:       r.Address,
 		AesDscKey: aesKey,
 		AesPskKey: aesPskKey,
-	})
+	}
+
 	loginResponse, err := m.Login(loginRequest)
 	// if login fails, return error
 	if loginResponse.Success {
@@ -80,11 +84,13 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 		return
 	}
 	fmt.Println("loginResponse", loginResponse)
+
 	// Create a new create schema request
 	querySchema := rtmv1.QueryWhatIsRequest{
 		Creator: r.Creator,
 		Did:     r.Schema,
 	}
+
 	querySchemaResponse, err := m.QueryWhatIs(context.Background(), querySchema)
 	// deserialize result
 	whatIs := &st.WhatIs{}
@@ -95,6 +101,7 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	}
 	// print result
 	fmt.Println(chalk.Blue, "Schema:", whatIs.Schema)
+
 	// create a new get request to ipfs.sonr.ws with cid
 	getReq, err := http.NewRequest("GET", "https://ipfs.sonr.ws/ipfs/"+whatIs.Schema.Cid, nil)
 	if err != nil {

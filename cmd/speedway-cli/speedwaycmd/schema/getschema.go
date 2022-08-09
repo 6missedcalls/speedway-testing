@@ -6,10 +6,11 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/denisbrodbeck/machineid"
 	"github.com/manifoldco/promptui"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	st "github.com/sonr-io/sonr/x/schema/types"
+	"github.com/sonr-io/speedway/internal/hwid"
+	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/spf13/cobra"
 	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -28,47 +29,32 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 				fmt.Printf("Prompt failed %v\n", err)
 				return
 			}
-			// load keys
-			aesKey, err := loadKey("AES.key")
+			fmt.Println(chalk.Yellow, "Attempting auto login with DID: "+did, chalk.Reset)
+			aesKey, err := storage.LoadKey("AES.key")
 			if aesKey == nil || len(aesKey) != 32 {
 				fmt.Println(chalk.Yellow.Color("Please provide a valid aesKey"))
 			}
-			if err != nil {
-				fmt.Println(chalk.Yellow.Color("Please provide a valid pskKey"))
-			}
-			pskKey, err := loadKey("PSK.key")
+			pskKey, err := storage.LoadKey("PSK.key")
 			if pskKey == nil || len(pskKey) != 32 {
 				fmt.Println(chalk.Yellow.Color("Please provide a valid pskKey"))
 			}
-			if err != nil {
-				fmt.Println(chalk.Yellow.Color("Please provide a valid pskKey"))
-			}
-			// get hwid
-			hwid, err := machineid.ID()
-			if err != nil {
-				fmt.Printf("Prompt failed %v\n", err)
-				return
-			}
-			// create new motor
-			m := mtr.EmptyMotor(hwid)
-			// create login request
-			loginReq := &rtmv1.LoginRequest{
+			loginRequest := rtmv1.LoginRequest{
 				Did:       did,
 				AesDscKey: aesKey,
 				AesPskKey: pskKey,
 			}
-			// login
-			loginRes, err := m.Login(*loginReq)
-			if loginRes.Success {
-				fmt.Println(chalk.Green.Color("Login successful"))
-			} else {
-				fmt.Println(chalk.Red.Color("Login failed"))
-			}
+			hwid, err := hwid.GetHwid()
 			if err != nil {
-				fmt.Printf("Prompt failed %v\n", err)
-				return
+				fmt.Println(chalk.Red, "Hwid Error: %s", err)
 			}
-			fmt.Println("loginRes", loginRes)
+			m := mtr.EmptyMotor(hwid)
+			loginResult, err := m.Login(loginRequest)
+			if loginResult.Success {
+				fmt.Println(chalk.Green.Color("Login Successful"))
+			} else {
+				fmt.Println(chalk.Red.Color("Login Failed"))
+				fmt.Println(err)
+			}
 			// get schema
 			creatorPrompt := promptui.Prompt{
 				Label: "Enter Creator DID",

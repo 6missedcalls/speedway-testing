@@ -3,13 +3,13 @@ package schema
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 
-	"github.com/denisbrodbeck/machineid"
 	"github.com/manifoldco/promptui"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	st "github.com/sonr-io/sonr/x/schema/types"
+	"github.com/sonr-io/speedway/internal/hwid"
+	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/spf13/cobra"
 	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -50,23 +50,6 @@ func convertSchemaKind(kind string) rtmv1.CreateSchemaRequest_SchemaKind {
 	return schemaKind
 }
 
-func loadKey(name string) ([]byte, error) {
-	var file *os.File
-	if _, err := os.Stat(fmt.Sprintf("%s/%s", os.Getenv("HOME"), ".speedway/keys/"+name)); err != nil {
-		if os.IsNotExist(err) {
-			return nil, err
-		}
-		return nil, err
-	}
-	file, err := os.Open(fmt.Sprintf("%s/%s", os.Getenv("HOME"), ".speedway/keys/"+name))
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-	data, err := ioutil.ReadAll(file)
-	return data, err
-}
-
 func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.Command) {
 	createSchemaCmd = &cobra.Command{
 		Use:   "create",
@@ -81,31 +64,23 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				fmt.Printf("Prompt failed %v\n", err)
 				return
 			}
-			fmt.Println(chalk.Bold, "Attempting auto login with DID: "+did, chalk.Reset)
-			aesKey, err := loadKey("AES.key")
+			fmt.Println(chalk.Yellow, "Attempting auto login with DID: "+did, chalk.Reset)
+			aesKey, err := storage.LoadKey("AES.key")
 			if aesKey == nil || len(aesKey) != 32 {
 				fmt.Println(chalk.Yellow.Color("Please provide a valid aesKey"))
 			}
-			if err != nil {
-				fmt.Printf("Prompt failed %v\n", err)
-				return
-			}
-			pskKey, err := loadKey("PSK.key")
+			pskKey, err := storage.LoadKey("PSK.key")
 			if pskKey == nil || len(pskKey) != 32 {
 				fmt.Println(chalk.Yellow.Color("Please provide a valid pskKey"))
-			}
-			if err != nil {
-				fmt.Printf("Prompt failed %v\n", err)
-				return
 			}
 			loginRequest := rtmv1.LoginRequest{
 				Did:       did,
 				AesDscKey: aesKey,
 				AesPskKey: pskKey,
 			}
-			hwid, err := machineid.ID()
+			hwid, err := hwid.GetHwid()
 			if err != nil {
-				fmt.Println("err", err)
+				fmt.Println(chalk.Red, "Hwid Error: %s", err)
 			}
 			m := mtr.EmptyMotor(hwid)
 			loginResult, err := m.Login(loginRequest)
@@ -113,7 +88,6 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				fmt.Println(chalk.Green.Color("Login Successful"))
 			} else {
 				fmt.Println(chalk.Red.Color("Login Failed"))
-				fmt.Println(err)
 				os.Exit(1)
 			}
 			fmt.Println(chalk.Green, "Creating schema...", chalk.Reset)
@@ -178,6 +152,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				Fields: fields,
 			}
 
+			// create schema
 			fmt.Println(chalk.Yellow, "Schema request: ", createSchemaRequest)
 			createSchemaResult, err := m.CreateSchema(createSchemaRequest)
 			if err != nil {

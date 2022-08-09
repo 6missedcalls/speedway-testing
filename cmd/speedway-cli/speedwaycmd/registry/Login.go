@@ -3,33 +3,15 @@ package registry
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
-	"os"
 
-	"github.com/denisbrodbeck/machineid"
 	"github.com/manifoldco/promptui"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
+	"github.com/sonr-io/speedway/internal/hwid"
+	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/spf13/cobra"
 	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
-
-func loadKey(name string) ([]byte, error) {
-	var file *os.File
-	if _, err := os.Stat(fmt.Sprintf("%s/%s", os.Getenv("HOME"), ".speedway/keys/"+name)); err != nil {
-		if os.IsNotExist(err) {
-			return nil, err
-		}
-		return nil, err
-	}
-	file, err := os.Open(fmt.Sprintf("%s/%s", os.Getenv("HOME"), ".speedway/keys/"+name))
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-	data, err := ioutil.ReadAll(file)
-	return data, err
-}
 
 func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 	loginCmd = &cobra.Command{
@@ -53,7 +35,7 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 				fmt.Printf("Prompt failed %v\n", err)
 				return
 			}
-			pskKey, err := loadKey("PSK.key")
+			pskKey, err := storage.LoadKey("PSK.key")
 			if pskKey == nil || len(pskKey) != 32 {
 				fmt.Println(chalk.Yellow, "Please provide a valid pskKey", chalk.Reset)
 				return
@@ -67,9 +49,9 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 			if err != nil {
 				fmt.Println(chalk.Red, "Error: %s", err)
 			}
-			hwid, err := machineid.ID()
+			hwid, err := hwid.GetHwid()
 			if err != nil {
-				fmt.Println("err", err)
+				fmt.Println(chalk.Red, "Hwid Error: %s", err)
 			}
 			m := mtr.EmptyMotor(hwid)
 			res, err := m.Login(req)

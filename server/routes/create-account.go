@@ -3,11 +3,11 @@ package nebula
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/sonr/pkg/crypto"
-	"github.com/sonr-io/speedway/pkg/hwid"
+	"github.com/sonr-io/speedway/internal/hwid"
+	"github.com/sonr-io/speedway/internal/storage"
 
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -15,26 +15,6 @@ import (
 
 type CARequestBody struct {
 	Password string `json:"password"`
-}
-
-func storeKey(name string, key []byte) error {
-	homedir, err := os.UserHomeDir()
-	if err != nil {
-		return err
-	}
-	if _, err := os.Stat(homedir + "/.speedway/keys/" + name); os.IsNotExist(err) {
-		err := os.MkdirAll(homedir+"/.speedway/keys/", 0700)
-		if err != nil {
-			return err
-		}
-	}
-	store, err := os.Create(homedir + "/.speedway/keys/" + name)
-	if err != nil {
-		return err
-	}
-	_, err = store.Write(key)
-	defer store.Close()
-	return err
 }
 
 // @BasePath /api/v1
@@ -63,14 +43,15 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 		fmt.Println("err", err)
 	}
 	fmt.Println("aesKey", aesKey)
-	req := (rtmv1.CreateAccountRequest{
+	req := rtmv1.CreateAccountRequest{
 		Password:  body.Password,
 		AesDscKey: aesKey,
-	})
+	}
 	fmt.Println("request", req)
 	if err != nil {
 		fmt.Println("reqBytes err", err)
 	}
+
 	// get hwid
 	hwid, err := hwid.GetHwid()
 	if err != nil {
@@ -85,7 +66,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"Address": res.Address,
 	})
-	if storeKey(res.Address, aesKey) != nil {
+	if storage.StoreKey(res.Address, aesKey) != nil {
 		fmt.Println("err", err)
 	}
 }
