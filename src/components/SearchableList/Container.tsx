@@ -10,7 +10,7 @@ interface SearchableListContainerProps {
 }
 
 function SearchableListContainer({ initialList, type, paginationSize = 6 }: SearchableListContainerProps){
-    const [schemaOrderAsc, setSchemaOrderAsc] = useState(true)
+    const [orderAsc, setOrderAsc] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
     const [paginationCurrentPage, setPaginationCurrentPage] = useState(1)
     const [list, setList] = useState<Array<any>>([]);
@@ -24,19 +24,19 @@ function SearchableListContainer({ initialList, type, paginationSize = 6 }: Sear
         }else {
             setTotalPages(Math.ceil((initialList.length + 1) / paginationSize))
         }
-    }, [searchTerm, schemaOrderAsc, paginationCurrentPage])
+    }, [searchTerm, orderAsc, paginationCurrentPage])
 
-    function toggleSchemaOrder(){
-        setSchemaOrderAsc(!schemaOrderAsc)
+    function toggleOrder(){
+        setOrderAsc(!orderAsc)
     }
 
     function getList(){
-        return getFilteredList(getPaginatedList(getOrderedList(initialList)))
+        return getPaginatedList(getFilteredList(getOrderedList(initialList)))
     }
 
     function getOrderedList(previousList: Array<any>){
         let orderedList;
-        if(schemaOrderAsc){
+        if(orderAsc){
             orderedList = [...previousList].sort((a: any, b: any) => a.name > b.name ? 1 : -1)
             return orderedList
         } else {
@@ -46,9 +46,10 @@ function SearchableListContainer({ initialList, type, paginationSize = 6 }: Sear
     }
 
     function getPaginatedList(previousList: Array<any>){
-        return [...previousList].filter((_: any, index: number) => {
+        const paginated = [...previousList].filter((_: any, index: number) => {
             return index < (paginationSize * paginationCurrentPage) && index >= (paginationSize * (paginationCurrentPage - 1))
         })
+        return paginated
     }
 
     function getFilteredList(previousList: Array<any>){
@@ -76,8 +77,8 @@ function SearchableListContainer({ initialList, type, paginationSize = 6 }: Sear
             paginationSize={paginationSize}
             paginationCurrentPage={paginationCurrentPage}
             setPaginationCurrentPage={setPaginationCurrentPage}
-            toggleSchemaOrder={toggleSchemaOrder}
-            schemaOrderAsc={schemaOrderAsc}
+            toggleOrder={toggleOrder}
+            orderAsc={orderAsc}
             nextPage={nextPage}
             previousPage={previousPage}
             totalPages={totalPages}

@@ -9,10 +9,10 @@ interface SearchableListComponentProps {
     list: any;
     paginationSize?: number;
     paginationCurrentPage: number;
-    toggleSchemaOrder: () => void;
+    toggleOrder: () => void;
     nextPage: () => void;
     previousPage: () => void;
-    schemaOrderAsc: boolean;
+    orderAsc: boolean;
     setPaginationCurrentPage: React.Dispatch<React.SetStateAction<number>>;
     setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
     totalPages: number;
@@ -22,8 +22,8 @@ function SearchableListComponent({
     list, 
     type, 
     paginationCurrentPage,
-    toggleSchemaOrder,
-    schemaOrderAsc,
+    toggleOrder,
+    orderAsc,
     nextPage,
     previousPage,
     totalPages,
@@ -43,7 +43,7 @@ function SearchableListComponent({
                 
                 <thead>
                     <tr className="h-10 bg-button-subtle items-center px-4 py-5 text-button-subtle text-custom-xs px-4 py-5">
-                        {Headers({ type, list, toggleSchemaOrder, schemaOrderAsc })}
+                        {Headers({ type, list, toggleOrder, orderAsc })}
                     </tr> 
                 </thead>
                 <tbody>
