@@ -13,7 +13,7 @@ import (
 )
 
 type LoginRequestBody struct {
-	Did      string `json:"did"`
+	Address  string `json:"address"`
 	Password string `json:"password"`
 }
 
@@ -55,12 +55,12 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 		})
 		return
 	}
-	aesPskKey, err := loadKey("./PSK.key")
+	aesPskKey, err := loadKey("PSK.key")
 	if err != nil {
 		fmt.Println("err", err)
 	}
 	req := (rtmv1.LoginRequest{
-		Did:       body.Did,
+		Did:       body.Address,
 		Password:  body.Password,
 		AesPskKey: aesPskKey,
 	})

@@ -12,9 +12,9 @@ import (
 )
 
 type CreateSchemaRequest struct {
-	Did          string `json:"did"`    // DID of the user
-	SchemaLabel  string `json:"label"`  // Label of the schema
-	SchemaFields string `json:"fields"` // Fields of the schema
+	Address      string `json:"address"` // DID of the user
+	SchemaLabel  string `json:"label"`   // Label of the schema
+	SchemaFields string `json:"fields"`  // Fields of the schema
 }
 
 // @BasePath /api/v1
@@ -23,7 +23,7 @@ type CreateSchemaRequest struct {
 // @Description Create a schema utilizing motor client. Returns the WhatIs of the schema created.
 // @Tags schema
 // @Produce json
-// @Param did query string true "DID of the user"
+// @Param address query string true "Address of the user"
 // @Param label query string true "Label of the schema"
 // @Param fields query string true "Fields of the schema"
 // @Success 	 200  {object}  rtmv1.CreateSchemaResponse
@@ -62,7 +62,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	// * Create a new login & create schema request
 	// Create a new login request
 	loginRequest := (rtmv1.LoginRequest{
-		Did:       r.Did,
+		Did:       r.Address,
 		AesDscKey: aesKey,
 		AesPskKey: aesPskKey,
 	})

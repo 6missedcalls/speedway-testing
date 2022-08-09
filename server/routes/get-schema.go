@@ -16,7 +16,7 @@ import (
 )
 
 type QuerySchema struct {
-	Did     string `json:"did"`
+	Address string `json:"address"`
 	Creator string `json:"creator"`
 	Schema  string `json:"schema"`
 }
@@ -64,7 +64,7 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	// * Create a new login & create schema request
 	// Create a new login request
 	loginRequest := (rtmv1.LoginRequest{
-		Did:       r.Did,
+		Did:       r.Address,
 		AesDscKey: aesKey,
 		AesPskKey: aesPskKey,
 	})

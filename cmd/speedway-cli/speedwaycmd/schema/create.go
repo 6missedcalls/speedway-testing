@@ -15,6 +15,41 @@ import (
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
+func convertSchemaKind(kind string) rtmv1.CreateSchemaRequest_SchemaKind {
+
+	schemaKind := rtmv1.CreateSchemaRequest_SCHEMA_KIND_ANY
+	switch kind {
+	case "ANY":
+		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_ANY
+	case "MAP":
+		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_MAP
+	case "LIST":
+		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LIST
+	case "UNIT":
+		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_UNIT
+	case "BOOL":
+		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_BOOL
+	case "INT":
+		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_INT
+	case "FLOAT":
+		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_FLOAT
+	case "STRING":
+		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRING
+	case "BYTES":
+		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_BYTES
+	case "LINK":
+		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LINK
+	case "STRUCT":
+		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRUCT
+	case "UNION":
+		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_UNION
+	case "ENUM":
+		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_ENUM
+	}
+
+	return schemaKind
+}
+
 func loadKey(name string) ([]byte, error) {
 	var file *os.File
 	if _, err := os.Stat(fmt.Sprintf("%s/%s", os.Getenv("HOME"), ".speedway/keys/"+name)); err != nil {
@@ -90,79 +125,59 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				fmt.Printf("Prompt failed %v\n", err)
 				return
 			}
+			fields := make(map[string]rtmv1.CreateSchemaRequest_SchemaKind)
 			prompt = promptui.Prompt{
 				Label: "Enter your Schema Fields",
 			}
-			schemaFields, err := prompt.Run()
-			if err != nil {
-				fmt.Printf("Prompt failed %v\n", err)
-				return
+			var repeat string
+			for repeat != "n" {
+				// make schemaFields []string
+				schemaField, err := prompt.Run()
+				if err != nil {
+					fmt.Printf("Prompt failed %v\n", err)
+					return
+				}
+				// for every schemaFields, prompt for the type of the field
+				selectSchemaKind := promptui.Select{
+					Label: "Select a Schema Field",
+					Items: []string{
+						"MAP",
+						"LIST",
+						"UNIT",
+						"BOOL",
+						"INT",
+						"FLOAT",
+						"STRING",
+						"BYTES",
+						"LINK",
+						"STRUCT",
+						"UNION",
+						"ENUM",
+						"ANY",
+					},
+				}
+				_, result, err := selectSchemaKind.Run()
+				if err != nil {
+					fmt.Printf("Prompt failed %v\n", err)
+					return
+				}
+				sk := convertSchemaKind(result)
+				fields[schemaField] = sk
+				repeatPrompt := promptui.Prompt{
+					Label: "Repeat?",
+				}
+				repeat, err = repeatPrompt.Run()
+				if err != nil {
+					fmt.Printf("Prompt failed %v\n", err)
+					return
+				}
 			}
-			// for every schemaFields, prompt for the type of the field
-			selectSchemaKind := promptui.Select{
-				Label: "Select a Schema Field",
-				Items: []string{
-					"MAP",
-					"LIST",
-					"UNIT",
-					"BOOL",
-					"INT",
-					"FLOAT",
-					"STRING",
-					"BYTES",
-					"LINK",
-					"STRUCT",
-					"UNION",
-					"ENUM",
-					"ANY",
-				},
-			}
-			_, result, err := selectSchemaKind.Run()
 
-			if err != nil {
-				fmt.Printf("Prompt failed %v\n", err)
-				return
-			}
-
-			schemaKind := rtmv1.CreateSchemaRequest_SCHEMA_KIND_ANY
-			switch result {
-			case "ANY":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_ANY
-			case "MAP":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_MAP
-			case "LIST":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LIST
-			case "UNIT":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_UNIT
-			case "BOOL":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_BOOL
-			case "INT":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_INT
-			case "FLOAT":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_FLOAT
-			case "STRING":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRING
-			case "BYTES":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_BYTES
-			case "LINK":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LINK
-			case "STRUCT":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRUCT
-			case "UNION":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_UNION
-			case "ENUM":
-				schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_ENUM
-			}
-			if err != nil {
-				fmt.Printf("Prompt failed %v\n", err)
-				return
-			}
 			createSchemaRequest := rtmv1.CreateSchemaRequest{
-				Label: schemaLabel,
-				Fields: map[string]rtmv1.CreateSchemaRequest_SchemaKind{
-					schemaFields: schemaKind,
-				},
+				Label:  schemaLabel,
+				Fields: fields,
 			}
+
 			fmt.Println(chalk.Yellow, "Schema request: ", createSchemaRequest)
 			createSchemaResult, err := m.CreateSchema(createSchemaRequest)
 			if err != nil {
