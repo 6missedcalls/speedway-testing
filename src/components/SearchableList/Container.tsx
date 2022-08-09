@@ -14,44 +14,40 @@ function SearchableListContainer({ list, type, paginationSize = 6 }: SearchableL
     const [searchTerm, setSearchTerm] = useState('')
     const [paginationCurrentPage, setPaginationCurrentPage] = useState(1)
     const [finalList, setFinalList] = useState<Array<any>>([]);
-    const [totalPages, setTotalPages] = useState(Math.ceil(list.length/paginationSize))
+    const [totalPages, setTotalPages] = useState(Math.ceil((list.length + 1) / paginationSize))
     
     useEffect(() => {
+        const finalListAfterSearch = getFinalList()
+        setFinalList(finalListAfterSearch)
         if(searchTerm){
-            const filteredList = getFilteredList(list)
-            setFinalList(getPaginatedList(filteredList))
-            setTotalPages(Math.ceil(filteredList.length/paginationSize))
+            setTotalPages(Math.ceil((finalListAfterSearch.length + 1) / paginationSize))
         }else {
-            setTotalPages(Math.ceil(list.length/paginationSize))
-            setFinalList(getPaginatedList(list))
+            setTotalPages(Math.ceil((list.length + 1) / paginationSize))
         }
     }, [searchTerm])
 
     useEffect(() => {
-        if(type === listTypes.schema){
-            toggleOrderBySchemaName()
-        } else {
-            const paginatedList = getPaginatedList(list)
-            setFinalList(paginatedList)
-        }
+        const paginatedList = getFinalList()
+        setFinalList(paginatedList)
     }, [schemaOrderAsc, paginationCurrentPage])
 
     function toggleSchemaOrder(){
         setSchemaOrderAsc(!schemaOrderAsc)
     }
 
-    function toggleOrderBySchemaName(){
+    function getFinalList(){
+        return getFilteredList(getPaginatedList(getOrderedList(list)))
+    }
+
+    function getOrderedList(previousList: Array<any>){
         let orderedList;
         if(schemaOrderAsc){
-            orderedList = [...list].sort((a: any, b: any) => a.name > b.name ? 1 : -1)
-            setFinalList(orderedList)
+            orderedList = [...previousList].sort((a: any, b: any) => a.name > b.name ? 1 : -1)
+            return orderedList
         } else {
-            orderedList = [...list].sort((a: any, b: any) => a.name < b.name ? 1 : -1)
-            setFinalList(orderedList)
+            orderedList = [...previousList].sort((a: any, b: any) => a.name < b.name ? 1 : -1)
+           return orderedList
         }
-
-        const paginatedList = getPaginatedList(orderedList)
-        setFinalList(paginatedList)
     }
 
     function getPaginatedList(previousList: Array<any>){
@@ -62,6 +58,7 @@ function SearchableListContainer({ list, type, paginationSize = 6 }: SearchableL
     }
 
     function getFilteredList(previousList: Array<any>){
+        if(!searchTerm) return previousList
         return [...previousList].filter((item) => item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1)
     }
 
