@@ -30,7 +30,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "clean-npm": "rm -rf node_modules && rm -rf package-lock.json",
-    "move-build": "rm -rf server/build && npm run build && mv build server/"
+    "move-build": "rm -rf server/build && npm run build && mv build server/",
+    "lint-fix": "prettier --write ."
   },
   "eslintConfig": {
     "extends": [
@@ -51,6 +52,7 @@
     ]
   },
   "devDependencies": {
+    "prettier": "2.7.1",
     "tailwindcss": "3.1.2"
   }
 }
