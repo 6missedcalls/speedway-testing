@@ -20,9 +20,9 @@ function SearchableListContainer({ initialList, type, paginationSize = 6 }: Sear
         const processedList = getList()
         setList(processedList)
         if(searchTerm){
-            setTotalPages(Math.ceil((processedList.length + 1) / paginationSize))
+            setTotalPages(Math.round((processedList.length + 1) / paginationSize))
         }else {
-            setTotalPages(Math.ceil((initialList.length + 1) / paginationSize))
+            setTotalPages(Math.round((initialList.length + 1) / paginationSize))
         }
     }, [searchTerm, orderAsc, paginationCurrentPage])
 
