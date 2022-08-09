@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/sonr/pkg/crypto"
+	"github.com/sonr-io/speedway/pkg/hwid"
 
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -17,17 +18,23 @@ type CARequestBody struct {
 }
 
 func storeKey(name string, key []byte) error {
-	// TODO: use a better way to store keys
-	file, err := os.Create(name)
+	homedir, err := os.UserHomeDir()
 	if err != nil {
 		return err
 	}
-	defer file.Close()
-	_, err = file.Write(key)
+	if _, err := os.Stat(homedir + "/.speedway/keys/" + name); os.IsNotExist(err) {
+		err := os.MkdirAll(homedir+"/.speedway/keys/", 0700)
+		if err != nil {
+			return err
+		}
+	}
+	store, err := os.Create(homedir + "/.speedway/keys/" + name)
 	if err != nil {
 		return err
 	}
-	return nil
+	_, err = store.Write(key)
+	defer store.Close()
+	return err
 }
 
 func (ns *NebulaServer) CreateAccount(c *gin.Context) {
@@ -40,6 +47,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 		})
 		return
 	}
+
 	aesKey, err := crypto.NewAesKey()
 	if err != nil {
 		fmt.Println("err", err)
@@ -53,8 +61,12 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	if err != nil {
 		fmt.Println("reqBytes err", err)
 	}
-
-	m := mtr.EmptyMotor("Test_Device")
+	// get hwid
+	hwid, err := hwid.GetHwid()
+	if err != nil {
+		fmt.Println("err", err)
+	}
+	m := mtr.EmptyMotor(hwid)
 	res, err := m.CreateAccount(req)
 	if err != nil {
 		fmt.Println("err", err)
@@ -62,7 +74,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"Did": res.Address,
 	})
-	if storeKey("PSK.key", res.AesPsk) != nil {
+	if storeKey(res.Address, aesKey) != nil {
 		fmt.Println("err", err)
 	}
 }

@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	mtr "github.com/sonr-io/sonr/pkg/motor" // TODO: Wait for PR to be merged
+	"github.com/sonr-io/speedway/pkg/hwid"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
@@ -16,24 +17,21 @@ type LoginRequestBody struct {
 	Password string `json:"password"`
 }
 
-func loadKey(path string) ([]byte, error) {
+func loadKey(name string) ([]byte, error) {
 	var file *os.File
-	if _, err := os.Stat(path); err != nil {
+	if _, err := os.Stat(fmt.Sprintf("%s/%s", os.Getenv("HOME"), ".speedway/keys/"+name)); err != nil {
 		if os.IsNotExist(err) {
 			return nil, err
 		}
 		return nil, err
 	}
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	data, err := ioutil.ReadAll(file)
+	file, err := os.Open(fmt.Sprintf("%s/%s", os.Getenv("HOME"), ".speedway/keys/"+name))
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
-	return data, nil
+	data, err := ioutil.ReadAll(file)
+	return data, err
 }
 
 func (ns *NebulaServer) LoginAccount(c *gin.Context) {
@@ -59,7 +57,11 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 		fmt.Println("err", err)
 	}
 	fmt.Println("request", req)
-	m := mtr.EmptyMotor("Test_Device")
+	hwid, err := hwid.GetHwid()
+	if err != nil {
+		fmt.Println("err", err)
+	}
+	m := mtr.EmptyMotor(hwid)
 	res, err := m.Login(req)
 	if err != nil {
 		fmt.Println("err", err)

@@ -69,6 +69,7 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	ns.Router.POST("/api/v1/account/login", ns.LoginAccount)
 	// ! Comment line 71 if Schema Create is throwing errors
 	ns.Router.POST("/api/v1/schema/create", ns.CreateSchema)
+	ns.Router.POST("/api/v1/schema/get", ns.QuerySchema)
 
 	// not great, but we dont want to dupllicate the build folder.
 	ns.Router.Use(static.Serve("/", static.LocalFile(ns.Config.StaticDir, true)))

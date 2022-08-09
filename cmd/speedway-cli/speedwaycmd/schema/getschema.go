@@ -93,7 +93,6 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 				Did:     schemaDid,
 			}
 
-			// marshall request
 			// query schema
 			querySchemaRes, err := m.QueryWhatIs(context.Background(), querySchema)
 			if err != nil {
@@ -133,7 +132,7 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 				return
 			}
 			// print response
-			fmt.Println(chalk.Green, "%s\n", definition, chalk.Reset)
+			fmt.Println(chalk.Green, "\n", definition, chalk.Reset)
 		},
 	}
 	return

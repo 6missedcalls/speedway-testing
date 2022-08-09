@@ -1,26 +1,30 @@
 package nebula
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
+	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/pkg/hwid"
 	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 // create a struct to hold the command line flags for the command
-type CreateSchemaRequest struct {
-	Did          string `json:"did"`
-	SchemaLabel  string `json:"label"`
-	SchemaFields string `json:"fields"`
+type QuerySchema struct {
+	Did     string `json:"did"`
+	Creator string `json:"creator"`
+	Schema  string `json:"schema"`
 }
 
-func (ns *NebulaServer) CreateSchema(c *gin.Context) {
+func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	rBody := c.Request.Body
-	var r CreateSchemaRequest
+	var r QuerySchema
 	err := json.NewDecoder(rBody).Decode(&r)
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -28,8 +32,6 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 		})
 		return
 	}
-	// take SchemaFields and convert it to map[string]CreateSchemaRequest_SchemaKind
-	var fields map[string]rtmv1.CreateSchemaRequest_SchemaKind = make(map[string]rtmv1.CreateSchemaRequest_SchemaKind)
 
 	hwid, err := hwid.GetHwid()
 	if err != nil {
@@ -68,24 +70,46 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	}
 	fmt.Println("loginResponse", loginResponse)
 	// Create a new create schema request
-	createSchemaRequest := (rtmv1.CreateSchemaRequest{
-		Label:  r.SchemaLabel,
-		Fields: fields,
-	})
-
-	fmt.Println("createSchemaRequest", createSchemaRequest)
-	// Create a new motor client and login
-
-	// create the schema
-	res, err := m.CreateSchema(createSchemaRequest)
+	querySchema := rtmv1.QueryWhatIsRequest{
+		Creator: r.Creator,
+		Did:     r.Schema,
+	}
+	querySchemaResponse, err := m.QueryWhatIs(context.Background(), querySchema)
+	// deserialize result
+	whatIs := &st.WhatIs{}
+	err = whatIs.Unmarshal(querySchemaResponse.WhatIs)
 	if err != nil {
-		fmt.Println("Create Schema Error: ", err)
-		c.JSON(500, gin.H{
-			"error": err.Error(),
-		})
+		fmt.Printf("Unmarshal failed %v\n", err)
 		return
 	}
+	// print result
+	fmt.Println(chalk.Blue, "Schema:", whatIs.Schema)
+	// create a new get request to ipfs.sonr.ws with cid
+	getReq, err := http.NewRequest("GET", "https://ipfs.sonr.ws/ipfs/"+whatIs.Schema.Cid, nil)
+	if err != nil {
+		fmt.Printf("Request to IPFS failed %v\n", err)
+		return
+	}
+	// get the file from ipfs.sonr.ws
+	resp, err := http.DefaultClient.Do(getReq)
+	if err != nil {
+		fmt.Printf("Do failed %v\n", err)
+		return
+	}
+	// read the file
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("ReadAll failed %v\n", err)
+		return
+	}
+	definition := &st.SchemaDefinition{}
+	if err = definition.Unmarshal(body); err != nil {
+		fmt.Printf("error unmarshalling body: %s", err)
+		return
+	}
+	// print response
+	fmt.Println(chalk.Green, "\n", definition, chalk.Reset)
 	c.JSON(200, gin.H{
-		"schema": res,
+		"schema": definition,
 	})
 }
