@@ -117,9 +117,9 @@ paths:
       description: Create a schema utilizing motor client. Returns the WhatIs of the
         schema created.
       parameters:
-      - description: DID of the user
+      - description: Address of the user
         in: query
-        name: did
+        name: address
         required: true
         type: string
       - description: Label of the schema
