@@ -12,9 +12,9 @@ import (
 )
 
 type CreateSchemaRequest struct {
-	Address      string `json:"address"` // DID of the user
-	SchemaLabel  string `json:"label"`   // Label of the schema
-	SchemaFields string `json:"fields"`  // Fields of the schema
+	Address     string                                          `json:"address"` // DID of the user
+	SchemaLabel string                                          `json:"label"`   // Label of the schema
+	SchemaField map[string]rtmv1.CreateSchemaRequest_SchemaKind `json:"fields"`  // Fields of the schema
 }
 
 // @BasePath /api/v1
@@ -34,13 +34,12 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	var r CreateSchemaRequest
 	err := json.NewDecoder(rBody).Decode(&r)
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(400, gin.H{
 			"error": "Invalid request body",
 		})
 		return
 	}
-	// take SchemaFields and convert it to map[string]CreateSchemaRequest_SchemaKind
-	var fields map[string]rtmv1.CreateSchemaRequest_SchemaKind = make(map[string]rtmv1.CreateSchemaRequest_SchemaKind)
 
 	hwid, err := hwid.GetHwid()
 	if err != nil {
@@ -50,6 +49,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 		return
 	}
 	m := mtr.EmptyMotor(hwid)
+
 	// TODO: Call login from registry service
 	aesKey, err := loadKey("AES.key")
 	if err != nil {
@@ -66,6 +66,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 		AesDscKey: aesKey,
 		AesPskKey: aesPskKey,
 	})
+	// Login Response
 	loginResponse, err := m.Login(loginRequest)
 	// if login fails, return error
 	if loginResponse.Success {
@@ -81,11 +82,9 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	// Create a new create schema request
 	createSchemaRequest := (rtmv1.CreateSchemaRequest{
 		Label:  r.SchemaLabel,
-		Fields: fields,
+		Fields: r.SchemaField,
 	})
-
 	fmt.Println("createSchemaRequest", createSchemaRequest)
-	// Create a new motor client and login
 
 	// create the schema
 	res, err := m.CreateSchema(createSchemaRequest)
