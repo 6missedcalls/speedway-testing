@@ -12,7 +12,7 @@ function SchemasPageComponent({ list }: SchemasPageComponentProps){
                 Schemas
             </h1>
             <SearchableList 
-                list={list}
+                initialList={list}
                 type={listTypes.schema}
             />
         </div>
