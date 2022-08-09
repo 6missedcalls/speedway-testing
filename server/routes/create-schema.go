@@ -11,13 +11,24 @@ import (
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
-// create a struct to hold the command line flags for the command
 type CreateSchemaRequest struct {
-	Did          string `json:"did"`
-	SchemaLabel  string `json:"label"`
-	SchemaFields string `json:"fields"`
+	Did          string `json:"did"`    // DID of the user
+	SchemaLabel  string `json:"label"`  // Label of the schema
+	SchemaFields string `json:"fields"` // Fields of the schema
 }
 
+// @BasePath /api/v1
+// @Summary CreateSchema
+// @Schemes
+// @Description Create a schema utilizing motor client. Returns the WhatIs of the schema created.
+// @Tags schema
+// @Produce json
+// @Param did query string true "DID of the user"
+// @Param label query string true "Label of the schema"
+// @Param fields query string true "Fields of the schema"
+// @Success 	 200  {object}  rtmv1.CreateSchemaResponse
+// @Failure      500  {string}  message
+// @Router /schema/create [post]
 func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	rBody := c.Request.Body
 	var r CreateSchemaRequest

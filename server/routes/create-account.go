@@ -37,6 +37,16 @@ func storeKey(name string, key []byte) error {
 	return err
 }
 
+// @BasePath /api/v1
+// @Summary CreateAccount
+// @Schemes
+// @Description Create a new account on Sonr using the Registry module of Sonr's Blockchain.
+// @Tags account
+// @Produce json
+// @Param 		 password body string true "Password"
+// @Success 	 200  {string}  message "Did"
+// @Failure      500  {string}  message
+// @Router /account/create [post]
 func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	rBody := c.Request.Body
 	var body CARequestBody
@@ -71,8 +81,9 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	if err != nil {
 		fmt.Println("err", err)
 	}
+	// send res back to client as json response
 	c.JSON(200, gin.H{
-		"Did": res.Address,
+		"Address": res.Address,
 	})
 	if storeKey(res.Address, aesKey) != nil {
 		fmt.Println("err", err)

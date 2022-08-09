@@ -81,7 +81,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			fmt.Println("Creating schema...")
+			fmt.Println(chalk.Green, "Creating schema...", chalk.Reset)
 			schemaPrompt := promptui.Prompt{
 				Label: "Enter the Schema Label",
 			}

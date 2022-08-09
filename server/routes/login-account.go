@@ -34,6 +34,17 @@ func loadKey(name string) ([]byte, error) {
 	return data, err
 }
 
+// @BasePath /api/v1
+// @Summary LoginAccount
+// @Schemes
+// @Description Login to an existing account on Sonr using the Registry module of Sonr's Blockchain.
+// @Tags account
+// @Produce json
+// @Param 		 Did body string true "Did" example("snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
+// @Param 		 Password body string true "Password" example("Password")
+// @Success 200 {object} rtmv1.LoginResponse
+// @Failure      500  {string}  message
+// @Router /account/login [post]
 func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 	rBody := c.Request.Body
 	var body LoginRequestBody
@@ -69,12 +80,14 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 	fmt.Println("Result", res)
 	if res.Success {
 		c.JSON(200, gin.H{
+			"success":     true,
 			"Address":     m.Address,
 			"DIDDocument": m.DIDDocument,
 		})
 	} else {
 		c.JSON(500, gin.H{
-			"error": "Account login failed",
+			"success": false,
+			"error":   "Account login failed",
 		})
 	}
 }

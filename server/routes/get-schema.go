@@ -15,13 +15,24 @@ import (
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
-// create a struct to hold the command line flags for the command
 type QuerySchema struct {
 	Did     string `json:"did"`
 	Creator string `json:"creator"`
 	Schema  string `json:"schema"`
 }
 
+// @BasePath /api/v1
+// @Summary GetSchema
+// @Schemes
+// @Description Get a schema utilizing motor client. Returns the WhatIs of the schema that is retrieved.
+// @Tags schema
+// @Produce json
+// @Param did query string true "Did"
+// @Param creator query string true "Creator"
+// @Param schema query string true "Schema"
+// @Success      200  {object} st.SchemaDefinition
+// @Failure      500  {string} message error
+// @Router /schema/get [post]
 func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	rBody := c.Request.Body
 	var r QuerySchema

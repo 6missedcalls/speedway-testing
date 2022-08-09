@@ -1,0 +1,9 @@
+version: "3"
+vars:
+  VERSION: v0.0.1-test
+tasks:
+  swag:build:
+    cmds:
+      - swag init --parseDependency --parseInternal -g server/routes/server.go -o docs/ -ot yaml
+  
+  
