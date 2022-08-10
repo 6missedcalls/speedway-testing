@@ -32,7 +32,7 @@ export default ({ onSubmit }: Props) => {
 				</div>
 			}
 			content={
-				<div>
+				<div className="min-w-[315px]">
 					<h1 className="text-3xl mb-8">Create a New Account</h1>
 
 					<form onSubmit={_onSubmit}>
