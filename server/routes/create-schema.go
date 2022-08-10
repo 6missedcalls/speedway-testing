@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/speedway/internal/initmotor"
+	"github.com/sonr-io/speedway/internal/resolver"
 	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -43,7 +44,6 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 
 	m := initmotor.InitMotor()
 
-	// TODO: Call login from registry service
 	aesKey, err := storage.LoadKey("AES.key")
 	if err != nil {
 		fmt.Println("err", err)
@@ -88,7 +88,12 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(200, gin.H{
-		"schema": res,
-	})
+
+	whatIs := resolver.DeserializeWhatIs(res.WhatIs)
+	definition := resolver.ResolveIPFS(whatIs.Schema.Cid)
+	c.JSON(200,
+		gin.H{
+			"whatIs":     whatIs,
+			"definition": definition,
+		})
 }

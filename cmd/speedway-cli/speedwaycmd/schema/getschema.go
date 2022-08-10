@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/manifoldco/promptui"
-	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/resolver"
@@ -62,17 +61,9 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 				fmt.Printf("Command failed %v\n", err)
 				os.Exit(93)
 			}
-			// deserialize result
-			whatIs := &st.WhatIs{}
-			err = whatIs.Unmarshal(querySchemaRes.WhatIs)
-			if err != nil {
-				fmt.Printf("Command failed %v\n", err)
-				os.Exit(94)
-			}
-			// print result
-			fmt.Println(chalk.Blue, "Schema:", whatIs.Schema)
-
-			resolver.ResolveIPFS(whatIs.Schema.Cid)
+			whatIs := resolver.DeserializeWhatIs(querySchemaRes.WhatIs)
+			definition := resolver.ResolveIPFS(whatIs.Schema.Cid)
+			fmt.Println(chalk.Green, "Definition:", definition)
 		},
 	}
 	return

@@ -6,9 +6,9 @@ import (
 	"os"
 
 	"github.com/manifoldco/promptui"
-	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/prompts"
+	"github.com/sonr-io/speedway/internal/resolver"
 	"github.com/spf13/cobra"
 	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -125,13 +125,9 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			}
 			fmt.Println(chalk.Green.Color("Create Schema Successful"))
 			// desearialize the scehma result to get the schema did
-			whatIs := &st.WhatIs{}
-			err = whatIs.Unmarshal(createSchemaResult.WhatIs)
-			if err != nil {
-				fmt.Println(chalk.Red.Color("Unmarshal Failed"))
-			}
-			fmt.Println(chalk.Green.Color("Unmarshal Successful"))
-			fmt.Printf("Schema: %+v\n", whatIs)
+			whatIs := resolver.DeserializeWhatIs(createSchemaResult.WhatIs)
+			definition := resolver.ResolveIPFS(whatIs.Schema.Cid)
+			fmt.Println(chalk.Green, "Definition:", definition)
 		},
 	}
 	return

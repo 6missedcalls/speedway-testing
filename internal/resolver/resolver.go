@@ -10,6 +10,18 @@ import (
 	"github.com/ttacon/chalk"
 )
 
+// Unmarshal WhatIs and return a QueryWhatIsResponse
+func DeserializeWhatIs(whatis []byte) *st.WhatIs {
+	whatIs := &st.WhatIs{}
+	err := whatIs.Unmarshal(whatis)
+	if err != nil {
+		fmt.Printf("Command failed %v\n", err)
+		panic(err)
+	}
+	fmt.Println(chalk.Blue, "Schema:", whatIs.Schema)
+	return whatIs
+}
+
 func ResolveIPFS(cid string) st.SchemaDefinition {
 	getReq, err := http.NewRequest("GET", "https://ipfs.sonr.ws/ipfs/"+cid, nil)
 	if err != nil {
@@ -34,6 +46,5 @@ func ResolveIPFS(cid string) st.SchemaDefinition {
 		os.Exit(0)
 	}
 	// print response
-	fmt.Println(chalk.Green, "\n", definition, chalk.Reset)
 	return *definition
 }
