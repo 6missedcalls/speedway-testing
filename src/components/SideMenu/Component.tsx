@@ -60,7 +60,7 @@ function SideMenuComponent({
     currentPath
 }: SideMenuComponentProps){
     return (
-        <div className="dark flex flex-col justify-between w-80 bg-brand-tertiary h-screen px-6 py-[42px]">
+        <div className="dark flex flex-col justify-between w-80 bg-brand-tertiary h-screen px-6 py-[42px] shrink-0">
             <div className="flex flex-col text-white w-full">
                 <div className="flex items-center w-full">
                     <div  className="w-11 h-11 mr-2.5">
