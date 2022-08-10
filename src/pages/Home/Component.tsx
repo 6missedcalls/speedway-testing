@@ -19,28 +19,35 @@ export default ({ navigate, onSubmit }: Props) => {
 	}
 
 	return (
-		<div>
-			<form onSubmit={_onSubmit}>
-				<label>Your Vault Password</label>
-				<br />
-				<input
-					type="password"
-					value={password}
-					onChange={_onChange}
-					className="border rounded"
-				/>
+		<div className="flex flex-1 flex-col min-h-screen">
+			<div className="flex flex-1 flex-row">
+				<div className="flex-1 bg-slate-900"></div>
+				<div className="flex items-center px-32">
+					<div>
+						<h1 className="text-3xl mb-8">Create a New Account</h1>
+						<form onSubmit={_onSubmit}>
+							<label className="block">Your Vault Password</label>
+							<input
+								type="password"
+								value={password}
+								onChange={_onChange}
+								className="border rounded mb-4 block w-full"
+							/>
 
-				<Button label={"Submit"} type="submit" />
-			</form>
-			<br />
-			<button
-				onClick={() => {
-					navigate("/dashboard")
-					dispatch(setIsLogged(true))
-				}}
-			>
-				skip
-			</button>
+							<button className="border rounded block w-full">Submit</button>
+						</form>
+						<button
+							className="mt-8 w-full"
+							onClick={() => {
+								navigate("/dashboard")
+								dispatch(setIsLogged(true))
+							}}
+						>
+							Skip authentication
+						</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	)
 }
