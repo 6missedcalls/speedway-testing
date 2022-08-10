@@ -3,6 +3,7 @@ package speedwaycmd
 import (
 	"context"
 
+	object "github.com/sonr-io/speedway/cmd/speedway-cli/speedwaycmd/object"
 	registry "github.com/sonr-io/speedway/cmd/speedway-cli/speedwaycmd/registry"
 	schema "github.com/sonr-io/speedway/cmd/speedway-cli/speedwaycmd/schema"
 	"github.com/spf13/cobra"
@@ -22,5 +23,6 @@ func bootstrapRootCommand(ctx context.Context) (rootCmd *cobra.Command) {
 	}
 	rootCmd.AddCommand(registry.BootstrapRegistryCommand(ctx))
 	rootCmd.AddCommand(schema.BootstrapSchemaCommand(ctx))
+	rootCmd.AddCommand(object.BootstrapObjectCommand(ctx))
 	return
 }

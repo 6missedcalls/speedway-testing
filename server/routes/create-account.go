@@ -25,7 +25,7 @@ type CARequestBody struct {
 // @Produce json
 // @Param 		 password body string true "Password"
 // @Success 	 200  {string}  message "Did"
-// @Failure      500  {string}  message
+// @Failure      500  {string}  message "Error"
 // @Router /account/create [post]
 func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	rBody := c.Request.Body
@@ -42,15 +42,12 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	if err != nil {
 		fmt.Println("err", err)
 	}
-	fmt.Println("aesKey", aesKey)
+
 	req := rtmv1.CreateAccountRequest{
 		Password:  body.Password,
 		AesDscKey: aesKey,
 	}
 	fmt.Println("request", req)
-	if err != nil {
-		fmt.Println("reqBytes err", err)
-	}
 
 	// get hwid
 	hwid, err := hwid.GetHwid()

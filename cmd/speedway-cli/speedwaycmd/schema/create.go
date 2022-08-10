@@ -9,7 +9,7 @@ import (
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/hwid"
-	"github.com/sonr-io/speedway/internal/storage"
+	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/spf13/cobra"
 	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -21,12 +21,8 @@ func convertSchemaKind(kind string) rtmv1.CreateSchemaRequest_SchemaKind {
 	switch kind {
 	case "ANY":
 		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_ANY
-	case "MAP":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_MAP
 	case "LIST":
 		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LIST
-	case "UNIT":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_UNIT
 	case "BOOL":
 		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_BOOL
 	case "INT":
@@ -39,12 +35,6 @@ func convertSchemaKind(kind string) rtmv1.CreateSchemaRequest_SchemaKind {
 		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_BYTES
 	case "LINK":
 		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LINK
-	case "STRUCT":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRUCT
-	case "UNION":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_UNION
-	case "ENUM":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_ENUM
 	}
 
 	return schemaKind
@@ -56,33 +46,15 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 		Short: "Use: create",
 
 		Run: func(cmd *cobra.Command, args []string) {
-			prompt := promptui.Prompt{
-				Label: "Enter your Address",
-			}
-			did, err := prompt.Run()
-			if err != nil {
-				fmt.Printf("Prompt failed %v\n", err)
-				return
-			}
-			fmt.Println(chalk.Yellow, "Attempting auto login with DID: "+did, chalk.Reset)
-			aesKey, err := storage.LoadKey("AES.key")
-			if aesKey == nil || len(aesKey) != 32 {
-				fmt.Println(chalk.Yellow.Color("Please provide a valid aesKey"))
-			}
-			pskKey, err := storage.LoadKey("PSK.key")
-			if pskKey == nil || len(pskKey) != 32 {
-				fmt.Println(chalk.Yellow.Color("Please provide a valid pskKey"))
-			}
-			loginRequest := rtmv1.LoginRequest{
-				Did:       did,
-				AesDscKey: aesKey,
-				AesPskKey: pskKey,
-			}
+			loginRequest := prompts.LoginPrompt()
+			fmt.Println(loginRequest)
+
 			hwid, err := hwid.GetHwid()
 			if err != nil {
 				fmt.Println(chalk.Red, "Hwid Error: %s", err)
 			}
 			m := mtr.EmptyMotor(hwid)
+
 			loginResult, err := m.Login(loginRequest)
 			if loginResult.Success {
 				fmt.Println(chalk.Green.Color("Login Successful"))
@@ -90,6 +62,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				fmt.Println(chalk.Red.Color("Login Failed"))
 				os.Exit(1)
 			}
+
 			fmt.Println(chalk.Green, "Creating schema...", chalk.Reset)
 			schemaPrompt := promptui.Prompt{
 				Label: "Enter the Schema Label",
@@ -100,9 +73,11 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				return
 			}
 			fields := make(map[string]rtmv1.CreateSchemaRequest_SchemaKind)
-			prompt = promptui.Prompt{
+
+			prompt := promptui.Prompt{
 				Label: "Enter your Schema Fields",
 			}
+
 			var repeat string
 			for repeat != "n" {
 				// make schemaFields []string
@@ -115,19 +90,14 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				selectSchemaKind := promptui.Select{
 					Label: "Select a Schema Field",
 					Items: []string{
-						"MAP",
+						"ANY",
 						"LIST",
-						"UNIT",
 						"BOOL",
 						"INT",
 						"FLOAT",
 						"STRING",
 						"BYTES",
 						"LINK",
-						"STRUCT",
-						"UNION",
-						"ENUM",
-						"ANY",
 					},
 				}
 				_, result, err := selectSchemaKind.Run()

@@ -22,6 +22,6 @@ require (
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31
-	go.buf.build/grpc/go/sonr-io/motor v1.4.27
+	go.buf.build/grpc/go/sonr-io/motor v1.4.29
 	google.golang.org/grpc v1.48.0
 )

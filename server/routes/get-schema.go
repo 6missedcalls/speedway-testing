@@ -4,13 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/hwid"
+	"github.com/sonr-io/speedway/internal/resolver"
 	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -102,32 +101,6 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	// print result
 	fmt.Println(chalk.Blue, "Schema:", whatIs.Schema)
 
-	// create a new get request to ipfs.sonr.ws with cid
-	getReq, err := http.NewRequest("GET", "https://ipfs.sonr.ws/ipfs/"+whatIs.Schema.Cid, nil)
-	if err != nil {
-		fmt.Printf("Request to IPFS failed %v\n", err)
-		return
-	}
-	// get the file from ipfs.sonr.ws
-	resp, err := http.DefaultClient.Do(getReq)
-	if err != nil {
-		fmt.Printf("Do failed %v\n", err)
-		return
-	}
-	// read the file
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Printf("ReadAll failed %v\n", err)
-		return
-	}
-	definition := &st.SchemaDefinition{}
-	if err = definition.Unmarshal(body); err != nil {
-		fmt.Printf("error unmarshalling body: %s", err)
-		return
-	}
-	// print response
-	fmt.Println(chalk.Green, "\n", definition, chalk.Reset)
-	c.JSON(200, gin.H{
-		"schema": definition,
-	})
+	definition := resolver.ResolveIPFS(whatIs.Schema.Cid)
+	c.JSON(200, definition)
 }

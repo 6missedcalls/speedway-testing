@@ -2880,8 +2880,9 @@ github.com/zmap/zlint v0.0.0-20190806154020-fd021b4cfbeb/go.mod h1:29UiAJNsiVdvT
 github.com/zmap/zlint/v3 v3.1.0/go.mod h1:L7t8s3sEKkb0A2BxGy1IWrxt1ZATa1R4QfJZaQOD3zU=
 github.com/zondax/hid v0.9.0 h1:eiT3P6vNxAEVxXMw66eZUAAnU2zD33JBkfG/EnfAKl8=
 github.com/zondax/hid v0.9.0/go.mod h1:l5wttcP0jwtdLjqjMMWFVEE7d1zO0jvSPA9OPZxWpEM=
-go.buf.build/grpc/go/sonr-io/motor v1.4.27 h1:RYDTMxj4Zv0sA4BJVx27ZumiA4bcZvcfxMvzNV1VuCs=
 go.buf.build/grpc/go/sonr-io/motor v1.4.27/go.mod h1:6SsVxJlKbyf3gkEZ7pNsOXOG9kOab5P17JuhvvOeUZM=
+go.buf.build/grpc/go/sonr-io/motor v1.4.29 h1:McIncCwFE1cqlNCpW/2TcpPD46a+XUXwn0+9zt8r5xU=
+go.buf.build/grpc/go/sonr-io/motor v1.4.29/go.mod h1:6SsVxJlKbyf3gkEZ7pNsOXOG9kOab5P17JuhvvOeUZM=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.5/go.mod h1:G5EMThwa9y8QZGBClrRx5EY+Yw9kAhnjy3bSjsnlVTQ=

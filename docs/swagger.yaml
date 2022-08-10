@@ -73,7 +73,7 @@ paths:
           schema:
             type: string
         "500":
-          description: Internal Server Error
+          description: Error
           schema:
             type: string
       summary: CreateAccount

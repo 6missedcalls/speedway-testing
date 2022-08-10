@@ -17,8 +17,8 @@ import (
 
 func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Command) {
 	createCmd = &cobra.Command{
-		Use:   "register",
-		Short: "Use: registry register",
+		Use:   "create",
+		Short: "Use: registry create",
 
 		Run: func(cmd *cobra.Command, args []string) {
 			validate := func(input string) error {
