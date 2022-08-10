@@ -1,4 +1,3 @@
-import { FormEvent } from "react"
 import { useNavigate } from "react-router"
 import Home from "./Component"
 

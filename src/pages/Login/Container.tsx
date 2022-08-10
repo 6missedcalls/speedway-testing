@@ -25,10 +25,11 @@ function LoginContainer() {
 
 	return (
 		<LoginComponent
-			login={login}
-			logout={logout}
-			goToDashboard={goToDashboard}
-			isLogged={isLogged}
+			navigate={navigate}
+			// login={login}
+			// logout={logout}
+			// goToDashboard={goToDashboard}
+			// isLogged={isLogged}
 		/>
 	)
 }

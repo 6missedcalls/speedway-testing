@@ -1,21 +1,22 @@
-interface LoginComponentProps {
-	isLogged: boolean
-	login: () => void
-	logout: () => void
-	goToDashboard: () => void
-}
+import AuthLayout from "../../components/AuthLayout"
 
-function LoginComponent({
-	isLogged,
-	login,
-	logout,
-	goToDashboard,
-}: LoginComponentProps) {
+type Props = {
+	navigate: (page: string) => void
+}
+export default ({ navigate }: Props) => {
 	return (
-		<div>
-			<h1>Login page</h1>
-		</div>
+		<AuthLayout
+			sidebarContent={
+				<div className="text-right">
+					<button
+						onClick={() => navigate("/")}
+						className="text-white border rounded"
+					>
+						Go to Registration
+					</button>
+				</div>
+			}
+			content={<div>login content</div>}
+		/>
 	)
 }
-
-export default LoginComponent
