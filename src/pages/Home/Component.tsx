@@ -1,4 +1,4 @@
-import { Button, LabelInput } from "@sonr-io/nebula-react"
+import { Button } from "@sonr-io/nebula-react"
 import { ChangeEvent, FormEvent, useState } from "react"
 import { useDispatch } from "react-redux"
 import { setIsLogged } from "../../redux/slices/authenticationSlice"
@@ -21,11 +21,13 @@ export default ({ navigate, onSubmit }: Props) => {
 	return (
 		<div>
 			<form onSubmit={_onSubmit}>
-				<LabelInput
-					label={"Your Vault Password"}
-					vertical={true}
+				<label>Your Vault Password</label>
+				<br />
+				<input
+					type="password"
 					value={password}
 					onChange={_onChange}
+					className="border rounded"
 				/>
 
 				<Button label={"Submit"} type="submit" />
@@ -37,7 +39,7 @@ export default ({ navigate, onSubmit }: Props) => {
 					dispatch(setIsLogged(true))
 				}}
 			>
-				skip for now
+				skip
 			</button>
 		</div>
 	)
