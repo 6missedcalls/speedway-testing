@@ -1,12 +1,12 @@
 export enum listTypes {
-    schema,
-    object
-} 
+	schema,
+	object,
+}
 
 export interface IlistItem {
-    name: string;
-    did: string;
-    version: number;
-    objects: number;
-    fieldCount: number;
+	name: string
+	did: string
+	version: number
+	objects: number
+	fieldCount: number
 }

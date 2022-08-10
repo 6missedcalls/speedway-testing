@@ -1,9 +1,7 @@
-import DocsAndSupportPageComponent from "./Component";
+import DocsAndSupportPageComponent from "./Component"
 
-function DocsAndSupportPageContainer(){
-    return (
-        <DocsAndSupportPageComponent />
-    )
+function DocsAndSupportPageContainer() {
+	return <DocsAndSupportPageComponent />
 }
 
 export default DocsAndSupportPageContainer

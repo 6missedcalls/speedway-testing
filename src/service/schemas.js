@@ -1,7 +1,7 @@
-export function getSchema(schemaId){
-    // get schema by id
+export function getSchema(schemaId) {
+	// get schema by id
 }
 
-export function getAllSchemas(){
-    // get all schemas for user
+export function getAllSchemas() {
+	// get all schemas for user
 }

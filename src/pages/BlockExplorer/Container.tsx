@@ -1,9 +1,7 @@
-import BlockExplorerPageComponent from "./Component";
+import BlockExplorerPageComponent from "./Component"
 
-function BlockExplorerPageContainer(){
-    return (
-        <BlockExplorerPageComponent />
-    )
+function BlockExplorerPageContainer() {
+	return <BlockExplorerPageComponent />
 }
 
 export default BlockExplorerPageContainer

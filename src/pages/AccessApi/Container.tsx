@@ -1,9 +1,7 @@
-import AccessApiPageComponent from "./Component";
+import AccessApiPageComponent from "./Component"
 
-function AccessApiPageContainer(){
-    return (
-        <AccessApiPageComponent />
-    )
+function AccessApiPageContainer() {
+	return <AccessApiPageComponent />
 }
 
 export default AccessApiPageContainer

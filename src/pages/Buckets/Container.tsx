@@ -1,9 +1,7 @@
-import BucketsPageComponent from "./Component";
+import BucketsPageComponent from "./Component"
 
-function BucketsPageContainer(){
-    return (
-        <BucketsPageComponent />
-    )
+function BucketsPageContainer() {
+	return <BucketsPageComponent />
 }
 
 export default BucketsPageContainer
