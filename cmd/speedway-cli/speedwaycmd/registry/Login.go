@@ -40,7 +40,6 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 				fmt.Println(chalk.Yellow, "Please provide a valid pskKey", chalk.Reset)
 				return
 			}
-			fmt.Println("pskKey", pskKey)
 			req := rtmv1.LoginRequest{
 				Did:       did,
 				Password:  password,
