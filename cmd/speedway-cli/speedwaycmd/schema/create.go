@@ -6,9 +6,8 @@ import (
 	"os"
 
 	"github.com/manifoldco/promptui"
-	mtr "github.com/sonr-io/sonr/pkg/motor"
 	st "github.com/sonr-io/sonr/x/schema/types"
-	"github.com/sonr-io/speedway/internal/hwid"
+	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/spf13/cobra"
 	"github.com/ttacon/chalk"
@@ -49,11 +48,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			loginRequest := prompts.LoginPrompt()
 			fmt.Println(loginRequest)
 
-			hwid, err := hwid.GetHwid()
-			if err != nil {
-				fmt.Println(chalk.Red, "Hwid Error: %s", err)
-			}
-			m := mtr.EmptyMotor(hwid)
+			m := initmotor.InitMotor()
 
 			loginResult, err := m.Login(loginRequest)
 			if loginResult.Success {

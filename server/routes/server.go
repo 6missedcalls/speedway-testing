@@ -1,4 +1,4 @@
-package nebula
+package routes
 
 // @title           Speedway API
 // @version         2.0

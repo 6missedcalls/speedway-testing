@@ -1,15 +1,14 @@
-package nebula
+package routes
 
 import (
 	"encoding/json"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/sonr/pkg/crypto"
-	"github.com/sonr-io/speedway/internal/hwid"
+	"github.com/sonr-io/sonr/pkg/crypto/mpc"
+	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/storage"
 
-	mtr "github.com/sonr-io/sonr/pkg/motor"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
@@ -38,7 +37,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 		return
 	}
 
-	aesKey, err := crypto.NewAesKey()
+	aesKey, err := mpc.NewAesKey()
 	if err != nil {
 		fmt.Println("err", err)
 	}
@@ -49,12 +48,8 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	}
 	fmt.Println("request", req)
 
-	// get hwid
-	hwid, err := hwid.GetHwid()
-	if err != nil {
-		fmt.Println("err", err)
-	}
-	m := mtr.EmptyMotor(hwid)
+	m := initmotor.InitMotor()
+
 	res, err := m.CreateAccount(req)
 	if err != nil {
 		fmt.Println("err", err)

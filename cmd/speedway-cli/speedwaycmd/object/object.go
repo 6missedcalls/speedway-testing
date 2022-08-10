@@ -12,5 +12,6 @@ func BootstrapObjectCommand(ctx context.Context) (objectCmd *cobra.Command) {
 		Short: "Provides commands for managing objects on the Sonr network",
 		Run:   func(cmd *cobra.Command, args []string) {},
 	}
+	objectCmd.AddCommand(BootstrapBuildObjectCommand(ctx))
 	return
 }

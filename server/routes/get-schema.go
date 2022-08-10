@@ -1,4 +1,4 @@
-package nebula
+package routes
 
 import (
 	"context"
@@ -6,9 +6,8 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	mtr "github.com/sonr-io/sonr/pkg/motor"
 	st "github.com/sonr-io/sonr/x/schema/types"
-	"github.com/sonr-io/speedway/internal/hwid"
+	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/resolver"
 	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/ttacon/chalk"
@@ -44,14 +43,7 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 		return
 	}
 
-	hwid, err := hwid.GetHwid()
-	if err != nil {
-		c.JSON(500, gin.H{
-			"error": "Could not get hardware id",
-		})
-		return
-	}
-	m := mtr.EmptyMotor(hwid)
+	m := initmotor.InitMotor()
 
 	// TODO: Call login from registry service
 	aesKey, err := storage.LoadKey("AES.key")

@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
-	mtr "github.com/sonr-io/sonr/pkg/motor"
-	"github.com/sonr-io/speedway/internal/hwid"
+
+	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/spf13/cobra"
 	"github.com/ttacon/chalk"
@@ -48,19 +48,16 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 			if err != nil {
 				fmt.Println(chalk.Red, "Error: %s", err)
 			}
-			hwid, err := hwid.GetHwid()
-			if err != nil {
-				fmt.Println(chalk.Red, "Hwid Error: %s", err)
-			}
-			m := mtr.EmptyMotor(hwid)
+
+			m := initmotor.InitMotor()
+
 			res, err := m.Login(req)
 			if err != nil {
 				fmt.Println(chalk.Red, "Login Error: %s", err)
 			}
 			fmt.Println(chalk.Green, "Login Response: %s", res)
 			if res.Success {
-				fmt.Println("DIDDocument", m.DIDDocument)
-				fmt.Println("Address", m.Address)
+				fmt.Println(chalk.Green, "Login Successful")
 			} else {
 				fmt.Println(chalk.Red, "Login failed")
 			}

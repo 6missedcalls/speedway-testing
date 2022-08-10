@@ -18,7 +18,7 @@ require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/manifoldco/promptui v0.9.0
 	github.com/shengdoushi/base58 v1.0.0
-	github.com/sonr-io/sonr v0.3.0-beta.0.0.20220804200305-8674ad0d31e3 // TODO: revert this when beta/mpc gets merged into master
+	github.com/sonr-io/sonr v0.3.1-0.20220810152136-277af0430cad // TODO: revert this when beta/mpc gets merged into master
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31

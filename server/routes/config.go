@@ -1,4 +1,4 @@
-package nebula
+package routes
 
 type ServerConfig struct {
 	RPDisplayName string

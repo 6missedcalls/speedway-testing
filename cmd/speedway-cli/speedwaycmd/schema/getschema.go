@@ -3,11 +3,11 @@ package schema
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/manifoldco/promptui"
-	mtr "github.com/sonr-io/sonr/pkg/motor"
 	st "github.com/sonr-io/sonr/x/schema/types"
-	"github.com/sonr-io/speedway/internal/hwid"
+	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/resolver"
 	"github.com/spf13/cobra"
@@ -23,19 +23,13 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 			loginRequest := prompts.LoginPrompt()
 			fmt.Println(loginRequest)
 
-			hwid, err := hwid.GetHwid()
-			if err != nil {
-				fmt.Println(chalk.Red, "Hwid Error: %s", err)
-			}
-
-			m := mtr.EmptyMotor(hwid)
+			m := initmotor.InitMotor()
 
 			loginResult, err := m.Login(loginRequest)
 			if loginResult.Success {
 				fmt.Println(chalk.Green.Color("Login Successful"))
 			} else {
-				fmt.Println(chalk.Red.Color("Login Failed"))
-				fmt.Println(err)
+				fmt.Println(chalk.Red.Color("Login Failed"), err)
 			}
 
 			// get schema
@@ -44,7 +38,7 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 			}
 			creator, err := creatorPrompt.Run()
 			if err != nil {
-				fmt.Printf("Prompt failed %v\n", err)
+				fmt.Printf("Command Failed %v\n", err)
 				return
 			}
 			didPrompt := promptui.Prompt{
@@ -52,8 +46,8 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 			}
 			schemaDid, err := didPrompt.Run()
 			if err != nil {
-				fmt.Printf("Prompt failed %v\n", err)
-				return
+				fmt.Printf("Command failed %v\n", err)
+				os.Exit(92)
 			}
 
 			// create new query schema request
@@ -65,15 +59,15 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 			// query schema
 			querySchemaRes, err := m.QueryWhatIs(context.Background(), querySchema)
 			if err != nil {
-				fmt.Printf("QuerySchema failed %v\n", err)
-				return
+				fmt.Printf("Command failed %v\n", err)
+				os.Exit(93)
 			}
 			// deserialize result
 			whatIs := &st.WhatIs{}
 			err = whatIs.Unmarshal(querySchemaRes.WhatIs)
 			if err != nil {
-				fmt.Printf("Unmarshal failed %v\n", err)
-				return
+				fmt.Printf("Command failed %v\n", err)
+				os.Exit(94)
 			}
 			// print result
 			fmt.Println(chalk.Blue, "Schema:", whatIs.Schema)

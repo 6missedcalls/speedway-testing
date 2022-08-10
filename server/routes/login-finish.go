@@ -1,4 +1,4 @@
-package nebula
+package routes
 
 import (
 	"fmt"

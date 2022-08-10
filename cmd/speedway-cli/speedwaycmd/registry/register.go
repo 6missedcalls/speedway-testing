@@ -6,9 +6,8 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
-	"github.com/sonr-io/sonr/pkg/crypto"
-	mtr "github.com/sonr-io/sonr/pkg/motor"
-	"github.com/sonr-io/speedway/internal/hwid"
+	"github.com/sonr-io/sonr/pkg/crypto/mpc"
+	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/spf13/cobra"
 	"github.com/ttacon/chalk"
@@ -33,10 +32,10 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 			}
 			result, err := prompt.Run()
 			if err != nil {
-				fmt.Printf("Prompt failed %s\n", err)
+				fmt.Printf("Command failed %s\n", err)
 				return
 			}
-			aesKey, err := crypto.NewAesKey()
+			aesKey, err := mpc.NewAesKey()
 			if err != nil {
 				fmt.Println("err", err)
 			}
@@ -51,11 +50,9 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 			if err != nil {
 				fmt.Println(chalk.Red, "Create Account Error: ", err, chalk.Reset)
 			}
-			hwid, err := hwid.GetHwid()
-			if err != nil {
-				fmt.Println(chalk.Red, "Hwid Error: %s", err)
-			}
-			m := mtr.EmptyMotor(hwid)
+
+			m := initmotor.InitMotor()
+
 			res, err := m.CreateAccount(req)
 			if err != nil {
 				fmt.Println("err", err)
