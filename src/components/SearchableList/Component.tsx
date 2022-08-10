@@ -63,14 +63,14 @@ function SearchableListComponent({
                     <tr>
                         <td className="px-4 py-5 flex">
                             <NebulaIcon 
-                                className='cursor-pointer' 
+                                className='cursor-pointer w-2 h-2' 
                                 iconName='ArrowLeft2' 
                                 iconType='outline' 
                                 onClick={previousPage} 
                             />
                             <span>{`${paginationCurrentPage} of ${totalPages}`}</span>
                             <NebulaIcon 
-                                className='cursor-pointer' 
+                                className='cursor-pointer w-2 h-2' 
                                 iconName='ArrowRight3' 
                                 iconType='outline' 
                                 onClick={nextPage} 

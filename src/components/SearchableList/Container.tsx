@@ -9,7 +9,7 @@ interface SearchableListContainerProps {
     paginationSize?: number;
 }
 
-function SearchableListContainer({ initialList, type, paginationSize = 6 }: SearchableListContainerProps){
+function SearchableListContainer({ initialList, type, paginationSize = 8 }: SearchableListContainerProps){
     const [orderAsc, setOrderAsc] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
     const [paginationCurrentPage, setPaginationCurrentPage] = useState(1)
@@ -20,9 +20,9 @@ function SearchableListContainer({ initialList, type, paginationSize = 6 }: Sear
         const processedList = getList()
         setList(processedList)
         if(searchTerm){
-            setTotalPages(Math.round((processedList.length + 1) / paginationSize))
+            setTotalPages(Math.ceil((processedList.length) / paginationSize))
         }else {
-            setTotalPages(Math.round((initialList.length + 1) / paginationSize))
+            setTotalPages(Math.ceil((initialList.length) / paginationSize))
         }
     }, [searchTerm, orderAsc, paginationCurrentPage])
 
