@@ -1,31 +1,19 @@
-import { useDispatch } from "react-redux"
-import { setIsLogged } from "../../redux/slices/authenticationSlice"
+import { Button, LabelInput } from "@sonr-io/nebula-react"
+import React from "react"
 
-interface HomeComponentProps {
-	navigate: (page: string) => void
-}
-
-function HomeComponent({ navigate }: HomeComponentProps) {
-	const dispatch = useDispatch()
+const Home = () => {
+	const createAccount = (event: React.FormEvent) => {
+		console.log("ok")
+		event.preventDefault()
+	}
 
 	return (
-		<div>
-			<h1>Home</h1>
-			<br />
-			<ul>
-				<li
-					className="cursor-pointer"
-					onClick={() => {
-						// Fake login
-						dispatch(setIsLogged(true))
-						navigate("/dashboard")
-					}}
-				>
-					Click here to Login
-				</li>
-			</ul>
-		</div>
+		<form onSubmit={createAccount}>
+			<LabelInput label={"Your Vault Password"} vertical={true} />
+
+			<Button label={"Submit"} type="submit" />
+		</form>
 	)
 }
 
-export default HomeComponent
+export default Home

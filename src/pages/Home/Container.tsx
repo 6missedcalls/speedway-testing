@@ -2,9 +2,9 @@ import { useNavigate } from "react-router"
 import HomeComponent from "./Component"
 
 function HomeContainer() {
-	const navigate = useNavigate()
+	// const navigate = useNavigate()
 
-	return <HomeComponent navigate={navigate} />
+	return <HomeComponent />
 }
 
 export default HomeContainer
