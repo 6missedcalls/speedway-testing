@@ -1,8 +1,6 @@
-import { useNavigate } from "react-router"
 import Home from "./Component"
 
 export default () => {
-	const navigate = useNavigate()
 	const createAccount = (password: string) => {
 		fetch("http://localhost:8080/api/v1/account/create", {
 			method: "POST",
@@ -12,5 +10,5 @@ export default () => {
 			.then((response) => response.json())
 			.then((body) => alert(JSON.stringify(body)))
 	}
-	return <Home navigate={navigate} onSubmit={createAccount} />
+	return <Home onSubmit={createAccount} />
 }

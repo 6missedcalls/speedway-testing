@@ -1,16 +1,16 @@
-import { Button } from "@sonr-io/nebula-react"
 import { ChangeEvent, FormEvent, useState } from "react"
+import { useNavigate } from "react-router"
 import { useDispatch } from "react-redux"
 import AuthLayout from "../../components/AuthLayout"
 import { setIsLogged } from "../../redux/slices/authenticationSlice"
 
 type Props = {
-	navigate: (page: string) => void
 	onSubmit: (password: string) => void
 }
-export default ({ navigate, onSubmit }: Props) => {
+export default ({ onSubmit }: Props) => {
 	const [password, setPassword] = useState("")
 	const dispatch = useDispatch()
+	const navigate = useNavigate()
 	const _onChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setPassword(event.target.value)
 	}

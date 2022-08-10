@@ -5,15 +5,16 @@ import {
 	SetStateAction,
 	useState,
 } from "react"
+import { useNavigate } from "react-router"
 import AuthLayout from "../../components/AuthLayout"
 
 type Props = {
-	navigate: (page: string) => void
 	onSubmit: (walletAddress: string, password: string) => void
 }
-export default ({ navigate, onSubmit }: Props) => {
+export default ({ onSubmit }: Props) => {
 	const [walletAddress, setWalletAddress] = useState("")
 	const [password, setPassword] = useState("")
+	const navigate = useNavigate()
 	const _onChange =
 		(setStateAction: Dispatch<SetStateAction<string>>) =>
 		(event: ChangeEvent<HTMLInputElement>) => {
