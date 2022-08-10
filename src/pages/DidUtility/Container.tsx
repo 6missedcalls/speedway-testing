@@ -1,9 +1,7 @@
-import DidUtilityPageComponent from "./Component";
+import DidUtilityPageComponent from "./Component"
 
-function DidUtilityPageContainer(){
-    return (
-        <DidUtilityPageComponent />
-    )
+function DidUtilityPageContainer() {
+	return <DidUtilityPageComponent />
 }
 
 export default DidUtilityPageContainer

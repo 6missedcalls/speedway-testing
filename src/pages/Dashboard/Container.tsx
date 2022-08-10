@@ -1,9 +1,7 @@
 import DashboardComponent from "./Component"
 
-function DashboardContainer(){
-    return (
-        <DashboardComponent />
-    )
+function DashboardContainer() {
+	return <DashboardComponent />
 }
 
 export default DashboardContainer

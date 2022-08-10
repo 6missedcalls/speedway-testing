@@ -1,9 +1,7 @@
-import ObjectsPageComponent from "./Component";
+import ObjectsPageComponent from "./Component"
 
-function ObjectsPageContainer(){
-    return (
-        <ObjectsPageComponent />
-    )
+function ObjectsPageContainer() {
+	return <ObjectsPageComponent />
 }
 
 export default ObjectsPageContainer

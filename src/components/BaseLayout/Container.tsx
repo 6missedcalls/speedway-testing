@@ -3,18 +3,13 @@ import { selectIsLogged } from "../../redux/slices/authenticationSlice"
 import BaseLayoutComponent from "./Component"
 
 interface BaseLayoutContainerProps {
-    children: any
+	children: any
 }
 
-function BaseLayoutContainer({ children }: BaseLayoutContainerProps){
-    const isLogged = useSelector(selectIsLogged)
-  
-    return (
-        <BaseLayoutComponent 
-            isLogged={isLogged}
-            children={children}
-        />
-    )
+function BaseLayoutContainer({ children }: BaseLayoutContainerProps) {
+	const isLogged = useSelector(selectIsLogged)
+
+	return <BaseLayoutComponent isLogged={isLogged} children={children} />
 }
 
 export default BaseLayoutContainer
