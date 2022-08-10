@@ -21,10 +21,19 @@ export default ({ navigate, onSubmit }: Props) => {
 	return (
 		<div className="flex flex-1 flex-col min-h-screen">
 			<div className="flex flex-1 flex-row">
-				<div className="flex-1 bg-slate-900"></div>
-				<div className="flex items-center px-32">
+				<div className="flex-1 bg-[#1D1A27] p-16 text-right">
+					<button
+						onClick={() => navigate("/login")}
+						className="text-white border rounded"
+					>
+						Go to Login
+					</button>
+				</div>
+
+				<div className="flex items-center p-16">
 					<div>
 						<h1 className="text-3xl mb-8">Create a New Account</h1>
+
 						<form onSubmit={_onSubmit}>
 							<label className="block">Your Vault Password</label>
 							<input
@@ -36,6 +45,7 @@ export default ({ navigate, onSubmit }: Props) => {
 
 							<button className="border rounded block w-full">Submit</button>
 						</form>
+
 						<button
 							className="mt-8 w-full"
 							onClick={() => {
