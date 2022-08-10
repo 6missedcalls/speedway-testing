@@ -54,6 +54,20 @@ const mockSchemaList = [{
     version: 1,
     objects: 4,
     fieldCount: 3,
+},{
+    id: 9,
+    name: "Movies",
+    did: "ghe3...ui76",
+    version: 1,
+    objects: 4,
+    fieldCount: 3,
+},{
+    id: 10,
+    name: "Hardware",
+    did: "ghe3...ui76",
+    version: 1,
+    objects: 4,
+    fieldCount: 3,
 }]
 
 export default mockSchemaList
