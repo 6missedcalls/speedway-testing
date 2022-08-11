@@ -2,6 +2,13 @@ import Modal from "react-modal"
 
 Modal.setAppElement("#root")
 
+interface AppModalComponentProps {
+	modalIsOpen: boolean
+	closeModal: () => void
+	getModalParent: () => React.MutableRefObject<null> | null
+	renderModalContent: () => JSX.Element | null
+}
+
 function AppModalComponent({
 	modalIsOpen,
 	closeModal,

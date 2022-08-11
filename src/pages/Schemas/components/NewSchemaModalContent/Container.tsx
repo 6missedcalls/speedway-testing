@@ -1,21 +1,7 @@
 import { useContext, useState } from "react"
 import { AppModalContext } from "../../../../contexts/appModalContext/appModalContext"
+import { Iproperty, handlePropertyChangeProps } from "../../../../utils/types"
 import NewSchemaModalContentComponent from "./Component"
-
-interface IchangedProperty {
-	name?: string
-	type?: string
-}
-
-export interface Iproperty {
-	name: string
-	type: string
-}
-
-export interface handlePropertyChangeProps {
-	index: number
-	data: IchangedProperty
-}
 
 const emptyProperty = {
 	name: "",

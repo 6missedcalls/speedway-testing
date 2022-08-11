@@ -1,8 +1,9 @@
+import { handlePropertyChangeProps, Iproperty } from "../../../../utils/types"
 import SchemaPropertyComponent from "./Component"
 
 interface SchemaPropertyContainerProps {
-	handlePropertyChange: any
-	property: any
+	handlePropertyChange: ({ index, data }: handlePropertyChangeProps) => void
+	property: Iproperty
 	propertyIndex: number
 }
 

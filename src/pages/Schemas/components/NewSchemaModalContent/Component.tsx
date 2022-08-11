@@ -1,5 +1,5 @@
+import { Iproperty, handlePropertyChangeProps } from "../../../../utils/types"
 import SchemaPropertyLine from "../SchemaPropertyLine"
-import { handlePropertyChangeProps, Iproperty } from "./Container"
 
 interface NewSchemaModalContentComponentProps {
 	closeModal: () => void
