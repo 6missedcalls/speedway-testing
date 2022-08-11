@@ -29,7 +29,7 @@ func LoginPrompt() rtmv1.LoginRequest {
 	fmt.Println(chalk.Yellow, "Attempting auto login with DID: "+did, chalk.Reset)
 	aesKey, err := storage.LoadKey("AES.key")
 	if aesKey == nil || len(aesKey) != 32 {
-		fmt.Println(chalk.Yellow.Color("Please provide a valid aesKey"))
+		fmt.Println(chalk.Yellow.Color("Please add this device to your current account or make another account"))
 	}
 	if err != nil {
 		fmt.Println(chalk.Red, "AES Key Error: %s", err)
@@ -37,7 +37,7 @@ func LoginPrompt() rtmv1.LoginRequest {
 	}
 	pskKey, err := storage.LoadKey("PSK.key")
 	if pskKey == nil || len(pskKey) != 32 {
-		fmt.Println(chalk.Yellow.Color("Please provide a valid pskKey"))
+		fmt.Println(chalk.Yellow.Color("Please add this device to your current account or make another account"))
 	}
 	if err != nil {
 		fmt.Println(chalk.Red, "PSK Key Error: %s", err)

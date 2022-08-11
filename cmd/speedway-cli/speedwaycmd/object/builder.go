@@ -118,7 +118,6 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 					fmt.Printf("Command failed %v\n", err)
 					return
 				}
-				objBuilder.Set(name, value)
 			}
 
 			// build the object

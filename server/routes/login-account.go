@@ -57,16 +57,16 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 		fmt.Println("err", err)
 	}
 	fmt.Println("Result", res)
-	if res.Success {
+	if !res.Success {
+		c.JSON(500, gin.H{
+			"error": "Login failed",
+		})
+	} else {
 		c.JSON(200, gin.H{
 			"success":     true,
 			"Address":     m.Address,
 			"DIDDocument": m.DIDDocument,
 		})
-	} else {
-		c.JSON(500, gin.H{
-			"success": false,
-			"error":   "Account login failed",
-		})
 	}
+
 }
