@@ -30,6 +30,7 @@ module.exports = {
 				"custom-3xl": "var(--nds-core-font-3xl)",
 			},
 			letterSpacing: {
+				"custom-x2wider": "0.04em",
 				"custom-tight": "-0.01em",
 				"custom-tighter": "-0.02em",
 				"custom-x2tighter": "-0.04em",
@@ -53,15 +54,20 @@ module.exports = {
 				"4xl": "2rem",
 			},
 			border: {
+				default: "var(--nds-semantic-color-border-input)",
 				"custom-white": "var(--nds-core-border-white)",
 			},
 			colors: {
+				placeholder: "var(--nds-semantic-color-text-placeholder)",
+				"default-border": "var(--nds-semantic-color-border-input)",
+				default: "var(--nds-semantic-color-text)",
 				"outlined-disabled":
 					"var(--nds-semantic-color-border-outlined-disabled)",
 				"brand-tertiary": "var(--nds-semantic-color-brand-tertiary)",
 				"surface-button-subtle-hovered":
 					"var(--nds-semantic-color-surface-button-subtle-hovered)",
 				"button-subtle": "var(--nds-semantic-color-on-button-subtle)",
+				"button-transparent": "var(--nds-semantic-color-on-button-transparent)",
 				light: {
 					default: "var(--nds-semantic-color-text)",
 				},
@@ -136,6 +142,7 @@ module.exports = {
 			},
 			textColor: {
 				emphasis: "var(--nds-semantic-color-text-emphasis)",
+				default: "var(--nds-semantic-color-text)",
 				"button-transparent": "var(--nds-semantic-color-on-button-transparent)",
 				subdued: "var(--nds-semantic-color-text-subdued)",
 				"button-highlight": "var(--nds-semantic-color-on-button-highlight)",

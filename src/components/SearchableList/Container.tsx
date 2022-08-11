@@ -25,12 +25,17 @@ function SearchableListContainer({
 	useEffect(() => {
 		const processedList = getList()
 		setList(processedList)
+	}, [searchTerm, orderAsc, paginationCurrentPage])
+
+	useEffect(() => {
 		if (searchTerm) {
-			setTotalPages(Math.ceil(processedList.length / paginationSize))
+			const filteredListLenght = getFilteredList(initialList).length
+			setPaginationCurrentPage(1)
+			setTotalPages(Math.ceil(filteredListLenght / paginationSize))
 		} else {
 			setTotalPages(Math.ceil(initialList.length / paginationSize))
 		}
-	}, [searchTerm, orderAsc, paginationCurrentPage])
+	}, [searchTerm])
 
 	function toggleOrder() {
 		setOrderAsc(!orderAsc)
@@ -62,6 +67,7 @@ function SearchableListContainer({
 				index >= paginationSize * (paginationCurrentPage - 1)
 			)
 		})
+		console.log("after paginated", paginated)
 		return paginated
 	}
 
@@ -98,7 +104,7 @@ function SearchableListContainer({
 			previousPage={previousPage}
 			totalPages={totalPages}
 			setSearchTerm={setSearchTerm}
-			handleOpenModal={handleOpenModal}
+			onClickNewItem={handleOpenModal}
 		/>
 	)
 }

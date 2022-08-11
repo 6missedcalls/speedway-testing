@@ -3,7 +3,11 @@ import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import modalContentMap from "../../utils/modalContentMap"
 import AppModalComponent from "./Component"
 
-function AppModalContainer({ children, getModalParent }: any) {
+interface AppModalContainerProps {
+	getModalParent: () => React.MutableRefObject<null> | null
+}
+
+function AppModalContainer({ getModalParent }: AppModalContainerProps) {
 	const { modalIsOpen, closeModal, content } = useContext(AppModalContext)
 
 	function renderModalContent() {
@@ -21,7 +25,6 @@ function AppModalContainer({ children, getModalParent }: any) {
 			closeModal={closeModal}
 			renderModalContent={renderModalContent}
 			modalIsOpen={modalIsOpen}
-			children={children}
 			getModalParent={getModalParent}
 		/>
 	)

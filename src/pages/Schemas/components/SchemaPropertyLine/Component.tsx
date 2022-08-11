@@ -13,6 +13,7 @@ function SchemaPropertyComponent({
 		<div className="flex justify-between">
 			<input
 				type="text"
+				className="border-default-border tracking-custom-tight placeholder:text-placeholder py-2 px-3 border outline-0 rounded-md text-sm"
 				placeholder="Property Name"
 				onChange={(event) =>
 					handlePropertyChange({

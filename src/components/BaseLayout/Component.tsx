@@ -18,7 +18,7 @@ function BaseLayoutComponent({ isLogged, children }: BaseLayoutComponentProps) {
 	const getModalParent = () => modalParentRef.current
 
 	return (
-		<div className="flex">
+		<div className="flex font-['Manrope']">
 			{isLogged && <SideMenu />}
 			<div className="w-full relative" id="test" ref={modalParentRef}>
 				{children}
