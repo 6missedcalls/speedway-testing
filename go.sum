@@ -2596,8 +2596,8 @@ github.com/sonr-io/go-keychain v0.0.0-20220701165513-84cc180cb501/go.mod h1:ot4H
 github.com/sonr-io/keyring v1.2.2-0.20220701165800-b4428a8aad16/go.mod h1:dwyQStd/Ds1kIAABy34eceeYk0lvEmjeDneq0C377yc=
 github.com/sonr-io/multi-party-sig v0.7.0 h1:cRpctyTdbgeOm+JBdY/HcHv3dD7lX3JWtw+P77xmvOw=
 github.com/sonr-io/multi-party-sig v0.7.0/go.mod h1:Bl4/pohbzwlfiHpYaf9sM/hkV71u1SUPQHDEaHOamfo=
-github.com/sonr-io/sonr v0.3.1-0.20220810152136-277af0430cad h1:Qk+ICojyj5q27zCHXBD25AhwqbiC320IENe6lvCeZ5g=
-github.com/sonr-io/sonr v0.3.1-0.20220810152136-277af0430cad/go.mod h1:SLDd1dzhIc3IFXgZVZtxOLenHqQRym2erYDl70a+Uqk=
+github.com/sonr-io/sonr v0.3.1-0.20220810233442-08adde388f50 h1:Q3ewAKPhmW/+vvpPikxcMxpHNv1yC4cZ2Y4JKFFARFc=
+github.com/sonr-io/sonr v0.3.1-0.20220810233442-08adde388f50/go.mod h1:JyhyyjEvQm2SO0YMD0xPBu0u2ukab+PQqZXnqDdLUeI=
 github.com/sony/gobreaker v0.4.1/go.mod h1:ZKptC7FHNvhBz7dN2LGjPVBz2sZJmc0/PkyDJOjmxWY=
 github.com/sourcegraph/annotate v0.0.0-20160123013949-f4cad6c6324d/go.mod h1:UdhH50NIW0fCiwBSr0co2m7BnFLdv4fQTgdqdJTHFeE=
 github.com/sourcegraph/go-diff v0.5.1/go.mod h1:j2dHj3m8aZgQO8lMTcTnBcXkRRRqi34cd2MNlA9u1mE=
@@ -2885,8 +2885,8 @@ github.com/zmap/zlint v0.0.0-20190806154020-fd021b4cfbeb/go.mod h1:29UiAJNsiVdvT
 github.com/zmap/zlint/v3 v3.1.0/go.mod h1:L7t8s3sEKkb0A2BxGy1IWrxt1ZATa1R4QfJZaQOD3zU=
 github.com/zondax/hid v0.9.0 h1:eiT3P6vNxAEVxXMw66eZUAAnU2zD33JBkfG/EnfAKl8=
 github.com/zondax/hid v0.9.0/go.mod h1:l5wttcP0jwtdLjqjMMWFVEE7d1zO0jvSPA9OPZxWpEM=
-go.buf.build/grpc/go/sonr-io/motor v1.4.29 h1:McIncCwFE1cqlNCpW/2TcpPD46a+XUXwn0+9zt8r5xU=
-go.buf.build/grpc/go/sonr-io/motor v1.4.29/go.mod h1:6SsVxJlKbyf3gkEZ7pNsOXOG9kOab5P17JuhvvOeUZM=
+go.buf.build/grpc/go/sonr-io/motor v1.4.30 h1:NmBi9YQBDIV1R+VSFFEVk2uW21eu4eE1WeIBqePNaNg=
+go.buf.build/grpc/go/sonr-io/motor v1.4.30/go.mod h1:6SsVxJlKbyf3gkEZ7pNsOXOG9kOab5P17JuhvvOeUZM=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.5/go.mod h1:G5EMThwa9y8QZGBClrRx5EY+Yw9kAhnjy3bSjsnlVTQ=

@@ -13,5 +13,6 @@ func BootstrapObjectCommand(ctx context.Context) (objectCmd *cobra.Command) {
 		Run:   func(cmd *cobra.Command, args []string) {},
 	}
 	objectCmd.AddCommand(BootstrapBuildObjectCommand(ctx))
+	objectCmd.AddCommand(BootstrapGetObjectCommand(ctx))
 	return
 }

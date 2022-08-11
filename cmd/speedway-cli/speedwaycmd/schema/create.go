@@ -64,7 +64,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			}
 			schemaLabel, err := schemaPrompt.Run()
 			if err != nil {
-				fmt.Printf("Prompt failed %v\n", err)
+				fmt.Printf("Command failed %v\n", err)
 				return
 			}
 			fields := make(map[string]rtmv1.CreateSchemaRequest_SchemaKind)
@@ -74,11 +74,11 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			}
 
 			var repeat string
-			for repeat != "n" {
+			for repeat != "n" && repeat != "N" {
 				// make schemaFields []string
 				schemaField, err := prompt.Run()
 				if err != nil {
-					fmt.Printf("Prompt failed %v\n", err)
+					fmt.Printf("Command failed %v\n", err)
 					return
 				}
 				// for every schemaFields, prompt for the type of the field
@@ -103,11 +103,11 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				sk := convertSchemaKind(result)
 				fields[schemaField] = sk
 				repeatPrompt := promptui.Prompt{
-					Label: "Repeat?",
+					Label: "Repeat? (Y/N)",
 				}
 				repeat, err = repeatPrompt.Run()
 				if err != nil {
-					fmt.Printf("Prompt failed %v\n", err)
+					fmt.Printf("Command failed %v\n", err)
 					return
 				}
 			}

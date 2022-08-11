@@ -51,8 +51,13 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 			}
 			fmt.Printf("%v\n", querySchema.WhatIs)
 
+			// deserialize the whatis
 			whatIs := resolver.DeserializeWhatIs(querySchema.WhatIs)
-			definition := resolver.ResolveIPFS(whatIs.Schema.Cid)
+			if err != nil {
+				fmt.Printf("Command failed %v\n", err)
+				panic(err)
+			}
+			fmt.Println(chalk.Green, "Deserialized WhatIs:", whatIs)
 
 			// create new object builder
 			objBuilder, err := m.NewObjectBuilder(SchemaDid)
@@ -60,39 +65,33 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				fmt.Printf("Command failed %v\n", err)
 				panic(err)
 			}
+			definition := resolver.ResolveIPFS(whatIs.Schema.Cid)
+			fmt.Println(chalk.Green, "Resolved Schema:", definition)
 
-			labelPrompt := promptui.Prompt{
-				Label: "Enter a label for the object",
+			objectLabel := promptui.Prompt{
+				Label: "Enter Object Label",
 			}
-			label, err := labelPrompt.Run()
+			label, err := objectLabel.Run()
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				panic(err)
 			}
 			objBuilder.SetLabel(label)
 
+			// todo - prompt for fields
 			for range definition.Fields {
-				validate := func(input string) error {
-					for _, field := range definition.Fields {
-						if field.Name == input {
-							return nil
-						}
-					}
-					return fmt.Errorf("%s is not a valid field name", input)
-				}
 				namePrompt := promptui.Prompt{
-					Label:    "Enter a name for the field",
-					Validate: validate,
-				}
-				fieldPrompt := promptui.Prompt{
-					Label: "Enter a value for the field",
+					Label: "Enter Field Name",
 				}
 				name, err := namePrompt.Run()
 				if err != nil {
 					fmt.Printf("Command failed %v\n", err)
 					panic(err)
 				}
-				value, err := fieldPrompt.Run()
+				valuePrompt := promptui.Prompt{
+					Label: "Enter Field Value",
+				}
+				value, err := valuePrompt.Run()
 				if err != nil {
 					fmt.Printf("Command failed %v\n", err)
 					panic(err)
@@ -100,24 +99,21 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				objBuilder.Set(name, value)
 			}
 
-			// TODO - fix upload
-
-			// build the object
-			toUpload, err := objBuilder.Build()
+			build, err := objBuilder.Build()
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				panic(err)
 			}
-			fmt.Printf("%v\n", toUpload)
+			fmt.Printf("%v\n", build)
 
 			// upload the object
-			uploadResult, err := objBuilder.Upload()
+			upload, err := objBuilder.Upload()
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
+				panic(err)
 			}
-			fmt.Printf("%v\n", uploadResult)
+			fmt.Printf("%v\n", upload.Reference)
 
-			fmt.Println(objBuilder)
 		},
 	}
 	return
