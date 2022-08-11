@@ -16,6 +16,7 @@ interface SearchableListComponentProps {
 	setPaginationCurrentPage: React.Dispatch<React.SetStateAction<number>>
 	setSearchTerm: React.Dispatch<React.SetStateAction<string>>
 	totalPages: number
+	handleOpenModal: () => void
 }
 
 function SearchableListComponent({
@@ -28,6 +29,7 @@ function SearchableListComponent({
 	previousPage,
 	totalPages,
 	setSearchTerm,
+	handleOpenModal,
 }: SearchableListComponentProps) {
 	const isFirstPage = paginationCurrentPage === 1
 	const isLastPage = paginationCurrentPage === totalPages
@@ -40,7 +42,6 @@ function SearchableListComponent({
 						clear
 						iconName="SearchNormal1"
 						iconType="outline"
-						iconClassName="w-4"
 						placeholder="Search"
 						theme="light"
 						onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -48,7 +49,12 @@ function SearchableListComponent({
 						}
 					/>
 				</div>
-				<Button iconName="Add" iconType="outline" label="New" />
+				<Button
+					onClick={handleOpenModal}
+					iconName="Add"
+					iconType="outline"
+					label="New"
+				/>
 			</div>
 			<table className="w-full text-left">
 				<thead>

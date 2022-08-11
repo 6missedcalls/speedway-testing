@@ -8,6 +8,7 @@
 		--nds-semantic-color-brand-secondary: #ffffff;
 		--nds-semantic-color-brand-tertiary: #1d1a27;
 		--nds-semantic-color-bg: rgba(255, 255, 255, 0.95);
+		--nds-semantic-color-bg-gray-900-transparent: rgba(29, 26, 39, 0.5);
 		--nds-semantic-color-bg-secondary: #ffffff;
 		--nds-semantic-color-bg-accent: linear-gradient(
 			146deg,

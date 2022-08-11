@@ -7,12 +7,14 @@ interface SearchableListContainerProps {
 	initialList: Array<any>
 	type: listTypes
 	paginationSize?: number
+	handleOpenModal: () => void
 }
 
 function SearchableListContainer({
 	initialList,
 	type,
 	paginationSize = 8,
+	handleOpenModal,
 }: SearchableListContainerProps) {
 	const [orderAsc, setOrderAsc] = useState(true)
 	const [searchTerm, setSearchTerm] = useState("")
@@ -96,6 +98,7 @@ function SearchableListContainer({
 			previousPage={previousPage}
 			totalPages={totalPages}
 			setSearchTerm={setSearchTerm}
+			handleOpenModal={handleOpenModal}
 		/>
 	)
 }

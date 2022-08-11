@@ -159,9 +159,8 @@ module.exports = {
 					"300-transparent": withOpacityValue("--color-gray-300-transparent")(
 						0.5
 					),
-					"900-transparent": withOpacityValue("--color-gray-900-transparent")(
-						0.4
-					),
+					"900-transparent":
+						"var(--nds-semantic-color-bg-gray-900-transparent)",
 				},
 
 				"semi-transparent": withOpacityValue("--color-white-transparent")(0.5),
