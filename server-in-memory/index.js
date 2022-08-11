@@ -3,43 +3,46 @@ import cors from "cors"
 import bodyParser from "body-parser"
 import _ from "lodash"
 import md5 from "md5"
+import storage from "node-persist"
 
 const app = express()
 app.use(cors())
 app.use(bodyParser.json())
 
-/// INTERNAL STATE
+/// DEVELOPMENT
 
-const db = {
-	dev: {
-		did: "dev",
-		password: "dev",
-		schemas: [],
-		buckets: [],
-		objects: [],
-	},
-}
-let sessionDid = null
+app.get("/dump", async (req, res) => {
+	const data = await storage.values()
+	res.json({ data })
+})
+
+app.get("/reset", async (req, res) => {
+	await storage.clear()
+	const length = await storage.length()
+	res.json({ length })
+})
 
 /// AUTHENTICATION
 
-app.post("/api/v1/account/create", (req, res) => {
+let sessionDid = null
+
+app.post("/api/v1/account/create", async (req, res) => {
 	const did = md5(Math.random())
 	const password = req.body.password || ""
 
-	db[did] = {
+	await storage.setItem(did, {
 		did,
 		password,
 		schemas: [],
 		buckets: [],
 		objects: [],
-	}
+	})
 
 	res.json({ Did: did })
 })
 
-app.post("/api/v1/account/login", (req, res) => {
-	const account = db[req.body.did]
+app.post("/api/v1/account/login", async (req, res) => {
+	const account = await storage.getItem(req.body.did)
 
 	if (!account || account.password !== req.body.password) {
 		res.status(500).send()
@@ -50,25 +53,24 @@ app.post("/api/v1/account/login", (req, res) => {
 	res.json({ Address: account.did })
 })
 
-app.use((req, res, next) => {
-	const session = db[sessionDid]
-	if (!session) {
+app.use((_, res, next) => {
+	if (!sessionDid) {
 		res.status(500).send()
 		return
 	}
-
-	req.session = session
 	next()
 })
 
 /// BUCKETS
 
-app.get("/api/v1/bucket", (req, res) => {
-	res.json(req.session.buckets)
+app.get("/api/v1/bucket", async (req, res) => {
+	const session = await storage.getItem(sessionDid)
+	res.json(session.buckets)
 })
 
-app.get("/api/v1/bucket/get/:cid", (req, res) => {
-	const bucket = _.find(req.session.buckets, { cid: req.params.cid })
+app.get("/api/v1/bucket/get/:cid", async (req, res) => {
+	const session = await storage.getItem(sessionDid)
+	const bucket = _.find(session.buckets, { cid: req.params.cid })
 
 	if (!bucket) {
 		res.status(400).send()
@@ -78,29 +80,35 @@ app.get("/api/v1/bucket/get/:cid", (req, res) => {
 	res.json(bucket)
 })
 
-app.post("/api/v1/bucket/create", (req, res) => {
+app.post("/api/v1/bucket/create", async (req, res) => {
+	const session = await storage.getItem(sessionDid)
+
 	const cid = md5(Math.random())
-	req.session.buckets.push({ cid })
+	session.buckets.push({ cid })
+	await storage.setItem(sessionDid, session)
+
 	res.json({ Cid: cid })
 })
 
-app.put("/api/v1/bucket", (req, res) => {
+app.put("/api/v1/bucket", async (req, res) => {
 	res.status(500).send()
 })
 
 /// SCHEMAS
 
-app.get("/api/v1/schema", (req, res) => {
-	res.json(req.session.schemas)
+app.get("/api/v1/schema", async (req, res) => {
+	const session = await storage.getItem(sessionDid)
+	res.json(session.schemas)
 })
 
-app.get("/api/v1/schema/:accountdid/:did", (req, res) => {
+app.get("/api/v1/schema/:accountdid/:did", async (req, res) => {
 	if (req.params.accountdid !== sessionDid) {
 		res.status(400).send()
 		return
 	}
 
-	const schema = _.find(req.session.schemas, { did: req.params.did })
+	const session = await storage.getItem(sessionDid)
+	const schema = _.find(session.schemas, { did: req.params.did })
 
 	if (!schema) {
 		res.status(400).send()
@@ -110,20 +118,26 @@ app.get("/api/v1/schema/:accountdid/:did", (req, res) => {
 	res.json(schema)
 })
 
-app.post("/api/v1/schema/create", (req, res) => {
+app.post("/api/v1/schema/create", async (req, res) => {
+	const session = await storage.getItem(sessionDid)
+
 	const did = md5(Math.random())
-	req.session.schemas.push({ did })
+	session.schemas.push({ did })
+	await storage.setItem(sessionDid, session)
+
 	res.json({ Did: did })
 })
 
 /// OBJECTS
 
-app.get("/api/v1/object", (req, res) => {
-	res.json(req.session.objects)
+app.get("/api/v1/object", async (req, res) => {
+	const session = await storage.getItem(sessionDid)
+	res.json(session.objects)
 })
 
-app.get("/api/v1/object/get/:cid", (req, res) => {
-	const object = _.find(req.session.objects, { cid: req.params.cid })
+app.get("/api/v1/object/get/:cid", async (req, res) => {
+	const session = await storage.getItem(sessionDid)
+	const object = _.find(session.objects, { cid: req.params.cid })
 
 	if (!object) {
 		res.status(400).send()
@@ -133,14 +147,19 @@ app.get("/api/v1/object/get/:cid", (req, res) => {
 	res.json(object)
 })
 
-app.post("/api/v1/object/create", (req, res) => {
+app.post("/api/v1/object/create", async (req, res) => {
+	const session = await storage.getItem(sessionDid)
+
 	const cid = md5(Math.random())
-	req.session.objects.push({ cid })
+	session.objects.push({ cid })
+	await storage.setItem(sessionDid, session)
+
 	res.json({ Cid: cid })
 })
 
 /// SERVER
 
+await storage.init()
 const port = 8080
 app.listen(port, () => {
 	console.log(`server-in-memory listening on port ${port}`)

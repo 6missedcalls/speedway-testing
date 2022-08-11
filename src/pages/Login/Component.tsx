@@ -35,11 +35,6 @@ const Component = ({ onSubmit }: Props) => {
 					>
 						Go to Registration
 					</button>
-					<p className="mt-8">
-						TEST ACCOUNT
-						<br />
-						dev / dev
-					</p>
 				</div>
 			}
 			content={
