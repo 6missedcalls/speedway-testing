@@ -1,9 +1,11 @@
 import express from "express"
+import cors from "cors"
 import bodyParser from "body-parser"
 import _ from "lodash"
 import md5 from "md5"
 
 const app = express()
+app.use(cors())
 app.use(bodyParser.json())
 
 /// INTERNAL STATE

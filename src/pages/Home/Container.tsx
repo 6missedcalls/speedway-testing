@@ -1,10 +1,17 @@
+import { FormEvent } from "react"
 import { useNavigate } from "react-router"
-import HomeComponent from "./Component"
+import Home from "./Component"
 
-function HomeContainer() {
+export default () => {
 	const navigate = useNavigate()
-
-	return <HomeComponent navigate={navigate} />
+	const createAccount = (password: string) => {
+		fetch("http://localhost:8080/api/v1/account/create", {
+			method: "POST",
+			headers: { "content-type": "application/json" },
+			body: JSON.stringify({ password }),
+		})
+			.then((response) => response.json())
+			.then((body) => alert(JSON.stringify(body)))
+	}
+	return <Home navigate={navigate} onSubmit={createAccount} />
 }
-
-export default HomeContainer
