@@ -33,6 +33,8 @@ function SearchableListComponent({
 }: SearchableListComponentProps) {
 	const isFirstPage = paginationCurrentPage === 1
 	const isLastPage = paginationCurrentPage === totalPages
+	const previousPageButtonClass = isFirstPage ? "opacity-40" : "cursor-pointer"
+	const nextPageButtonClass = isLastPage ? "opacity-40" : "cursor-pointer"
 
 	return (
 		<div className="shadow-3xl rounded-2xl bg-white">
@@ -87,11 +89,7 @@ function SearchableListComponent({
 								<div className="flex justify-center items-center ">
 									<div
 										className={`
-                                            ${
-																							isFirstPage
-																								? "opacity-40"
-																								: "cursor-pointer"
-																						}
+                                            ${previousPageButtonClass}
                                             flex justify-center items-center bg-button-subtle rounded-md w-8 h-8
                                         `}
 										onClick={() => (isFirstPage ? null : previousPage())}
@@ -105,11 +103,7 @@ function SearchableListComponent({
 									<span className="block mx-4">{`${paginationCurrentPage} of ${totalPages}`}</span>
 									<div
 										className={`
-                                            ${
-																							isLastPage
-																								? "opacity-40"
-																								: "cursor-pointer"
-																						}
+                                            ${nextPageButtonClass}
                                             flex justify-center items-center bg-button-subtle rounded-md w-8 h-8
                                         `}
 										onClick={() => (isLastPage ? null : nextPage())}
