@@ -36,7 +36,7 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 			}
 			pskKey, err := storage.LoadKey("PSK.key")
 			if pskKey == nil || len(pskKey) != 32 {
-				fmt.Println(chalk.Yellow, "Please provide a valid pskKey", chalk.Reset)
+				fmt.Println(chalk.Yellow, "Please add this device to your current account or make another account", chalk.Reset)
 				return
 			}
 			req := rtmv1.LoginRequest{
@@ -54,6 +54,7 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 				fmt.Println(chalk.Green, "Login Successful")
 			} else {
 				fmt.Println(chalk.Red, "Login failed")
+				return
 			}
 		},
 	}

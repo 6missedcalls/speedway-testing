@@ -11,10 +11,7 @@ import (
 func InitMotor() mtr.MotorNode {
 	fmt.Println(chalk.Yellow, "Initializing motor...")
 
-	hwid, err := hwid.GetHwid()
-	if err != nil {
-		fmt.Println(chalk.Red, "Hwid Error: %s", err)
-	}
+	hwid := hwid.GetHwid()
 	m := mtr.EmptyMotor(hwid)
 
 	fmt.Println(chalk.Green, "Motor initialized", m)

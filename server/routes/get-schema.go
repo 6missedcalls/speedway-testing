@@ -64,6 +64,10 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	}
 
 	loginResponse, err := m.Login(loginRequest)
+	if err != nil {
+		fmt.Println("err", err)
+		return
+	}
 	// if login fails, return error
 	if loginResponse.Success {
 		fmt.Println(chalk.Green, "Login successful")
@@ -93,6 +97,10 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	// print result
 	fmt.Println(chalk.Blue, "Schema:", whatIs.Schema)
 
-	definition := resolver.ResolveIPFS(whatIs.Schema.Cid)
+	definition, err := resolver.ResolveIPFS(whatIs.Schema.Cid)
+	if err != nil {
+		fmt.Println("err", err)
+		return
+	}
 	c.JSON(200, definition)
 }

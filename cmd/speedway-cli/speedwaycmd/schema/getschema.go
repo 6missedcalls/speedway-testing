@@ -3,7 +3,6 @@ package schema
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/initmotor"
@@ -46,24 +45,28 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 			schemaDid, err := didPrompt.Run()
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
-				os.Exit(92)
+				return
 			}
 
 			// create new query schema request
-			querySchema := rtmv1.QueryWhatIsRequest{
+			querySchemaReq := rtmv1.QueryWhatIsRequest{
 				Creator: creator,
 				Did:     schemaDid,
 			}
 
 			// query schema
-			querySchemaRes, err := m.QueryWhatIs(context.Background(), querySchema)
+			querySchemaRes, err := m.QueryWhatIs(context.Background(), querySchemaReq)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
-				os.Exit(93)
+				return
 			}
 
 			whatIs := resolver.DeserializeWhatIs(querySchemaRes.WhatIs)
-			definition := resolver.ResolveIPFS(whatIs.Schema.Cid)
+			definition, err := resolver.ResolveIPFS(whatIs.Schema.Cid)
+			if err != nil {
+				fmt.Printf("Command failed %v\n", err)
+				return
+			}
 			fmt.Println(chalk.Green, "Definition:", definition)
 		},
 	}

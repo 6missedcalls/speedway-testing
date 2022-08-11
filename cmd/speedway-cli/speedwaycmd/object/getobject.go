@@ -26,18 +26,19 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 				fmt.Println(chalk.Green.Color("Login Successful"))
 			} else {
 				fmt.Println(chalk.Red.Color("Login Failed"), err)
+				return
 			}
 
 			// Prompt for the object CID
 			cidPrompt := promptui.Prompt{
 				Label: "Enter the CID of the object to get",
 			}
-			CID, err := cidPrompt.Run()
+			cid, err := cidPrompt.Run()
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				panic(err)
 			}
-			fmt.Println(chalk.Green, "CID:", CID)
+			fmt.Println(chalk.Green, "CID:", cid)
 
 			// Query the object with ObjectClient type
 

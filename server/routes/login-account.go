@@ -50,10 +50,7 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 		fmt.Println("err", err)
 	}
 	fmt.Println("request", req)
-	hwid, err := hwid.GetHwid()
-	if err != nil {
-		fmt.Println("err", err)
-	}
+	hwid := hwid.GetHwid()
 	m := mtr.EmptyMotor(hwid)
 	res, err := m.Login(req)
 	if err != nil {

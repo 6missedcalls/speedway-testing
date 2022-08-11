@@ -3,7 +3,6 @@ package schema
 import (
 	"context"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/manifoldco/promptui"
@@ -52,11 +51,15 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			m := initmotor.InitMotor()
 
 			loginResult, err := m.Login(loginRequest)
+			if err != nil {
+				fmt.Println(chalk.Red.Color("Login Failed"), err)
+				return
+			}
 			if loginResult.Success {
 				fmt.Println(chalk.Green.Color("Login Successful"))
 			} else {
 				fmt.Println(chalk.Red.Color("Login Failed"))
-				os.Exit(1)
+				return
 			}
 
 			fmt.Println(chalk.Green, "Creating schema...", chalk.Reset)
@@ -123,11 +126,16 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			createSchemaResult, err := m.CreateSchema(createSchemaRequest)
 			if err != nil {
 				fmt.Println(chalk.Red.Color("Create Schema Failed"))
+				return
 			}
 			fmt.Println(chalk.Green.Color("Create Schema Successful"))
 			// desearialize the scehma result to get the schema did
 			whatIs := resolver.DeserializeWhatIs(createSchemaResult.WhatIs)
-			definition := resolver.ResolveIPFS(whatIs.Schema.Cid)
+			definition, err := resolver.ResolveIPFS(whatIs.Schema.Cid)
+			if err != nil {
+				fmt.Println(chalk.Red.Color("Resolve IPFS Failed"))
+				return
+			}
 			fmt.Println(chalk.Green, "Definition:", definition)
 		},
 	}

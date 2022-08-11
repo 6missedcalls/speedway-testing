@@ -61,6 +61,10 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	})
 	// Login Response
 	loginResponse, err := m.Login(loginRequest)
+	if err != nil {
+		fmt.Println("err", err)
+		return
+	}
 	// if login fails, return error
 	if loginResponse.Success {
 		fmt.Println(chalk.Green, "Login successful")
@@ -90,7 +94,11 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	}
 
 	whatIs := resolver.DeserializeWhatIs(res.WhatIs)
-	definition := resolver.ResolveIPFS(whatIs.Schema.Cid)
+	definition, err := resolver.ResolveIPFS(whatIs.Schema.Cid)
+	if err != nil {
+		fmt.Println("err", err)
+		return
+	}
 	c.JSON(200,
 		gin.H{
 			"whatIs":     whatIs,

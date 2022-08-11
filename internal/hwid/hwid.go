@@ -4,10 +4,10 @@ import (
 	"github.com/denisbrodbeck/machineid"
 )
 
-func GetHwid() (string, error) {
+func GetHwid() string {
 	hwid, err := machineid.ID()
 	if err != nil {
-		return "", err
+		return "Error getting hwid"
 	}
-	return hwid, nil
+	return hwid
 }

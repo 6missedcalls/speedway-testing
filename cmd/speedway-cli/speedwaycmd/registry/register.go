@@ -54,6 +54,7 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 			res, err := account.CreateAccount(req)
 			if err != nil {
 				fmt.Println("err", err)
+				return
 			}
 			storage.StoreKey("PSK.key", res.AesPsk)
 			fmt.Println(chalk.Green, "Create Account Response: ", res, chalk.Reset)

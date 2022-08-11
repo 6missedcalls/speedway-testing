@@ -7,9 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/speedway/internal/initmotor"
-	"github.com/sonr-io/speedway/internal/resolver"
 	"github.com/sonr-io/speedway/internal/storage"
-	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
@@ -50,12 +48,15 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 
 	// Load keys
 	aesKey, err := storage.LoadKey("AES.key")
+	// return err from loadkey
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println(err)
+		return
 	}
 	aesPskKey, err := storage.LoadKey("PSK.key")
 	if err != nil {
 		fmt.Println("err", err)
+		return
 	}
 
 	// Build request
@@ -75,7 +76,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 		fmt.Println("err", err)
 	}
 	fmt.Println("Result", res)
-	if res.Success != true {
+	if !res.Success {
 		c.JSON(500, gin.H{
 			"error": res,
 		})
@@ -91,10 +92,6 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 		panic(err)
 	}
 	fmt.Printf("%v\n", querySchema.WhatIs)
-
-	// deserialize the whatis
-	whatIs := resolver.DeserializeWhatIs(querySchema.WhatIs)
-	fmt.Println(chalk.Green, "Deserialized WhatIs:", whatIs)
 
 	// Initialize NewObjectBuilder
 	objBuilder, err := m.NewObjectBuilder(body.SchemaDid)
