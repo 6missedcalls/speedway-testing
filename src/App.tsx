@@ -7,7 +7,7 @@ import {
 	ROUTE_DASHBOARD,
 	ROUTE_DID_UTILITY,
 	ROUTE_DOCS_AND_SUPPORT,
-	ROUTE_HOME,
+	ROUTE_SIGNUP,
 	ROUTE_LOGIN,
 	ROUTE_OBJECTS,
 	ROUTE_SCHEMAS,
@@ -16,7 +16,7 @@ import "./App.css"
 import "./index.css"
 import PrivateRoute from "./components/PrivateRoute"
 import Dashboard from "./pages/Dashboard"
-import Home from "./pages/Home"
+import Signup from "./pages/Signup"
 import Login from "./pages/Login"
 import BaseLayout from "./components/BaseLayout"
 import NotFound from "./pages/NotFound"
@@ -33,7 +33,7 @@ function App() {
 		<BrowserRouter>
 			<BaseLayout>
 				<Routes>
-					<Route path={ROUTE_HOME} element={<Home />} />
+					<Route path={ROUTE_SIGNUP} element={<Signup />} />
 					<Route path={ROUTE_LOGIN} element={<Login />} />
 					<Route path={ROUTE_DOCS_AND_SUPPORT} element={<DocsAndSupport />} />
 					<Route

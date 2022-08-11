@@ -1,9 +1,6 @@
-import { FormEvent } from "react"
-import { useNavigate } from "react-router"
-import Home from "./Component"
+import Signup from "./Component"
 
-export default () => {
-	const navigate = useNavigate()
+const Container = () => {
 	const createAccount = (password: string) => {
 		fetch("http://localhost:8080/api/v1/account/create", {
 			method: "POST",
@@ -13,5 +10,7 @@ export default () => {
 			.then((response) => response.json())
 			.then((body) => alert(JSON.stringify(body)))
 	}
-	return <Home navigate={navigate} onSubmit={createAccount} />
+	return <Signup onSubmit={createAccount} />
 }
+
+export default Container

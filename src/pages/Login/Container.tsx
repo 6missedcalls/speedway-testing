@@ -1,36 +1,17 @@
-import { useDispatch, useSelector } from "react-redux"
-import { useNavigate } from "react-router"
-import {
-	selectIsLogged,
-	setIsLogged,
-} from "../../redux/slices/authenticationSlice"
 import LoginComponent from "./Component"
 
-function LoginContainer() {
-	const navigate = useNavigate()
-	const isLogged = useSelector(selectIsLogged)
-	const dispatch = useDispatch()
-
-	function login() {
-		dispatch(setIsLogged(true))
+const Container = () => {
+	const login = (walletAddress: string, password: string) => {
+		fetch("http://localhost:8080/api/v1/account/login", {
+			method: "POST",
+			headers: { "content-type": "application/json" },
+			body: JSON.stringify({ did: walletAddress, password }),
+		})
+			.then((response) => response.json())
+			.then((body) => alert(JSON.stringify(body)))
 	}
 
-	function logout() {
-		dispatch(setIsLogged(false))
-	}
-
-	function goToDashboard() {
-		navigate("/dashboard")
-	}
-
-	return (
-		<LoginComponent
-			login={login}
-			logout={logout}
-			goToDashboard={goToDashboard}
-			isLogged={isLogged}
-		/>
-	)
+	return <LoginComponent onSubmit={login} />
 }
 
-export default LoginContainer
+export default Container

@@ -1,6 +1,6 @@
-export const ROUTE_HOME = "/"
+export const ROUTE_LOGIN = "/"
+export const ROUTE_SIGNUP = "/signup"
 export const ROUTE_DASHBOARD = "/dashboard"
-export const ROUTE_LOGIN = "/login"
 export const ROUTE_SCHEMAS = "/schema"
 export const ROUTE_OBJECTS = "/objects"
 export const ROUTE_BUCKETS = "/buckets"
