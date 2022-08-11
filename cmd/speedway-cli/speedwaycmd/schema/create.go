@@ -74,7 +74,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			}
 
 			var repeat string
-			for repeat != "n" && repeat != "N" {
+			for strings.ToLower(repeat) != "n"  ||  strings.ToLower(repeat) != "no" ||  strings.ToLower(repeat) != "exit" ||  strings.ToLower(repeat) != "stop" ||  strings.ToLower(repeat) != "quit" {
 				// make schemaFields []string
 				schemaField, err := prompt.Run()
 				if err != nil {
