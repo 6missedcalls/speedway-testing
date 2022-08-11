@@ -2,6 +2,21 @@ import { useContext, useState } from "react"
 import { AppModalContext } from "../../../../contexts/appModalContext/appModalContext"
 import NewSchemaModalContentComponent from "./Component"
 
+interface IchangedProperty {
+	name?: string
+	type?: string
+}
+
+export interface Iproperty {
+	name: string
+	type: string
+}
+
+export interface handlePropertyChangeProps {
+	index: number
+	data: IchangedProperty
+}
+
 const emptyProperty = {
 	name: "",
 	type: "string",
@@ -10,13 +25,15 @@ const emptyProperty = {
 function NewSchemaModalContentContainer() {
 	const { closeModal } = useContext(AppModalContext)
 	const [schemaName, setSchemaName] = useState("")
-	const [properties, setProperties] = useState<Array<any>>([emptyProperty])
+	const [properties, setProperties] = useState<Array<Iproperty>>([
+		emptyProperty,
+	])
 
 	function addProperty() {
 		setProperties([...properties, emptyProperty])
 	}
 
-	function handlePropertyChange({ index, data }: any) {
+	function handlePropertyChange({ index, data }: handlePropertyChangeProps) {
 		const newProperties = [...properties]
 		newProperties.splice(index, 1, {
 			...properties[index],

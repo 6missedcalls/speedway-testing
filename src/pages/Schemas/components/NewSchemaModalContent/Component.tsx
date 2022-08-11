@@ -1,10 +1,11 @@
 import SchemaPropertyLine from "../SchemaPropertyLine"
+import { handlePropertyChangeProps, Iproperty } from "./Container"
 
 interface NewSchemaModalContentComponentProps {
 	closeModal: () => void
-	properties: Array<any>
-	handlePropertyChange: any
-	addProperty: any
+	properties: Array<Iproperty>
+	handlePropertyChange: ({ index, data }: handlePropertyChangeProps) => void
+	addProperty: () => void
 	schemaName: string
 	setSchemaName: React.Dispatch<React.SetStateAction<string>>
 	saveSchema: () => void
