@@ -1,4 +1,4 @@
-package nebula
+package routes
 
 import (
 	"fmt"
@@ -66,7 +66,7 @@ func (ns *NebulaServer) FinishRegistration(c *gin.Context) {
 
 	// Save the new credential
 	ns.Store.PutUser(usr)
-	convertedCred := WebAuthnToCredential(credential)
+	// convertedCred := WebAuthnToCredential(credential)
 
 	if err != nil {
 		log.Println(err)
@@ -77,5 +77,5 @@ func (ns *NebulaServer) FinishRegistration(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, convertedCred)
+	// c.JSON(http.StatusOK, convertedCred)
 }

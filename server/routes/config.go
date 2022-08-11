@@ -1,4 +1,4 @@
-package nebula
+package routes
 
 type ServerConfig struct {
 	RPDisplayName string
@@ -6,7 +6,6 @@ type ServerConfig struct {
 	RPOrigin      string
 	StaticDir     string
 	Address       string
-	ChainIntr     *Chain
 }
 
 type ServerOptions = func(credCreationOpts *ServerConfig)

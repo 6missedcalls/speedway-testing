@@ -1,4 +1,15 @@
-package nebula
+package routes
+
+// @title           Speedway API
+// @version         2.0
+// @description     Create accounts, schemas, buckets and objects in a scalable way utilizing the Sonr architecture.
+// @termsOfService  https://sonr.io/terms
+// @contact.name   	API Support
+// @contact.url    	https://sonr.io/
+// @contact.email  	team@sonr.io
+// @license.name 		OpenGLv3
+// @host      			localhost:8080
+// @BasePath  			/api/v1
 
 import (
 	"context"
@@ -14,7 +25,7 @@ import (
 )
 
 var (
-	RPDisplayName = "Sonr - Highway"
+	RPDisplayName = "Sonr - Speedway"
 	RPID          = "localhost"
 	RPOrigin      = "http://localhost:8080"
 )
@@ -25,7 +36,6 @@ type NebulaServer struct {
 	Router     *gin.Engine
 	HttpServer *http.Server
 	Config     *ServerConfig
-	ChainIntr  *Chain
 }
 
 func New(options ServerOptions) (*NebulaServer, error) {
@@ -46,11 +56,10 @@ func New(options ServerOptions) (*NebulaServer, error) {
 	store := NewDB()
 
 	srvr := NebulaServer{
-		Auth:      webauthn,
-		Store:     store,
-		Router:    gin.Default(),
-		Config:    &config,
-		ChainIntr: config.ChainIntr,
+		Auth:   webauthn,
+		Store:  store,
+		Router: gin.Default(),
+		Config: &config,
 	}
 
 	srvr.HttpServer = &http.Server{
@@ -62,14 +71,25 @@ func New(options ServerOptions) (*NebulaServer, error) {
 }
 
 func (ns *NebulaServer) ConfigureRoutes() error {
-	ns.Router.GET("/api/webauthn/register-begin", ns.BeginRegistration)
-	ns.Router.POST("/api/webauthn/register-finish", ns.FinishRegistration)
-	ns.Router.GET("/api/webauthn/login-begin", ns.BeginLogin)
-	ns.Router.POST("/api/webauthn/login-finish", ns.FinishLogin)
+	// * WebAuthn API routes (Working but currently disabled for testing) ** Thanks Josh :D **
+	// Webauthn Routes
+	// ns.Router.GET("/api/webauthn/register-begin", ns.BeginRegistration)
+	// ns.Router.POST("/api/webauthn/register-finish", ns.FinishRegistration)
+	// ns.Router.GET("/api/webauthn/login-begin", ns.BeginLogin)
+	// ns.Router.POST("/api/webauthn/login-finish", ns.FinishLogin)
+
+	// Account Routes
 	ns.Router.POST("/api/v1/account/create", ns.CreateAccount)
 	ns.Router.POST("/api/v1/account/login", ns.LoginAccount)
 
-	// not great, but we dont want to dupllicate the build folder.
+	// Schema Routes
+	ns.Router.POST("/api/v1/schema/create", ns.CreateSchema)
+	ns.Router.POST("/api/v1/schema/get", ns.QuerySchema)
+
+	// Object Routes
+	ns.Router.POST("/api/v1/object/build", ns.BuildObject)
+
+	// Serve Static Route
 	ns.Router.Use(static.Serve("/", static.LocalFile(ns.Config.StaticDir, true)))
 
 	return nil

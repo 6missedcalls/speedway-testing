@@ -1,20 +1,32 @@
-package nebula
+package routes
 
 import (
 	"encoding/json"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	// mtr "github.com/sonr-io/sonr/pkg/motor" // TODO: Wait for PR to be merged
+	mtr "github.com/sonr-io/sonr/pkg/motor" // TODO: Wait for PR to be merged
+	"github.com/sonr-io/speedway/internal/hwid"
+	"github.com/sonr-io/speedway/internal/storage"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 type LoginRequestBody struct {
-	Did       string `json:"did"`
-	Password  string `json:"password"`
-	AesPskKey []byte `json:"aesPskKey"`
+	Address  string `json:"address"`
+	Password string `json:"password"`
 }
 
+// @BasePath /api/v1
+// @Summary LoginAccount
+// @Schemes
+// @Description Login to an existing account on Sonr using the Registry module of Sonr's Blockchain.
+// @Tags account
+// @Produce json
+// @Param 		 Did body string true "Did" example("snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
+// @Param 		 Password body string true "Password" example("Password")
+// @Success 200 {object} rtmv1.LoginResponse
+// @Failure      500  {string}  message
+// @Router /account/login [post]
 func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 	rBody := c.Request.Body
 	var body LoginRequestBody
@@ -25,28 +37,36 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 		})
 		return
 	}
-	// TODO: If Login is Successful return 200 with a token
-	// TODO: If Login is Unsuccessful return 401 with a message
-	req, err := json.Marshal(rtmv1.LoginRequest{
-		Did:       body.Did,
+	aesPskKey, err := storage.LoadKey("PSK.key")
+	if err != nil {
+		fmt.Println("err", err)
+	}
+	req := (rtmv1.LoginRequest{
+		Did:       body.Address,
 		Password:  body.Password,
-		AesPskKey: body.AesPskKey,
+		AesPskKey: aesPskKey,
 	})
 	if err != nil {
 		fmt.Println("err", err)
 	}
 	fmt.Println("request", req)
-	// m := mtr.EmptyMotor("Test_Device")
-	// res, err := m.Login(req)
-	// if err != nil {
-	// 	fmt.Println("err", err)
-	// }
-	// fmt.Println("Result", res)
-	// fmt.Println("DIDDocument", m.DIDDocument)
-	// fmt.Println("Address", m.Address)
-	// fmt.Println("Balance", m.Balance())
+	hwid := hwid.GetHwid()
+	m := mtr.EmptyMotor(hwid)
+	res, err := m.Login(req)
+	if err != nil {
+		fmt.Println("err", err)
+	}
+	fmt.Println("Result", res)
+	if !res.Success {
+		c.JSON(500, gin.H{
+			"error": "Login failed",
+		})
+	} else {
+		c.JSON(200, gin.H{
+			"success":     true,
+			"Address":     m.Address,
+			"DIDDocument": m.DIDDocument,
+		})
+	}
 
-	c.JSON(200, gin.H{
-		"message": "Account logged in",
-	})
 }

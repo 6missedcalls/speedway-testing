@@ -1,13 +1,14 @@
-package nebula
+package routes
 
 import (
 	"encoding/json"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/sonr/pkg/crypto"
+	"github.com/sonr-io/sonr/pkg/crypto/mpc"
+	"github.com/sonr-io/speedway/internal/account"
+	"github.com/sonr-io/speedway/internal/storage"
 
-	// mtr "github.com/sonr-io/sonr/internal/motor" // TODO: Wait for PR to be merged
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
@@ -15,6 +16,16 @@ type CARequestBody struct {
 	Password string `json:"password"`
 }
 
+// @BasePath /api/v1
+// @Summary CreateAccount
+// @Schemes
+// @Description Create a new account on Sonr using the Registry module of Sonr's Blockchain.
+// @Tags account
+// @Produce json
+// @Param 		 password body string true "Password"
+// @Success 	 200  {string}  message "Did"
+// @Failure      500  {string}  message "Error"
+// @Router /account/create [post]
 func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	rBody := c.Request.Body
 	var body CARequestBody
@@ -25,30 +36,30 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 		})
 		return
 	}
-	// TODO: Add better validation
-	aesKey, err := crypto.NewAesKey()
+
+	aesKey, err := mpc.NewAesKey()
 	if err != nil {
 		fmt.Println("err", err)
 	}
-	fmt.Println("aesKey", aesKey)
-	req, err := json.Marshal(rtmv1.CreateAccountRequest{
+	if storage.StoreKey("AES.key", aesKey) != nil {
+		fmt.Println("err", err)
+	}
+
+	req := rtmv1.CreateAccountRequest{
 		Password:  body.Password,
 		AesDscKey: aesKey,
-	})
-	fmt.Println("request", req)
-	if err != nil {
-		fmt.Println("reqBytes err", err)
 	}
-	// TODO: If CreateAccount is Successful return 200
-	// TODO: If CreateAccount is Unsuccessful return 401 with a message
-	// m := mtr.EmptyMotor("Test_Device")
-	// res, err := m.CreateAccount(req)
-	// if err != nil {
-	// 	fmt.Println("err", err)
-	// }
-	// fmt.Println(res)
-	c.JSON(200, gin.H{
-		"message": "Account created",
-	})
+	fmt.Println("request", req)
 
+	res, err := account.CreateAccount(req)
+	if err != nil {
+		fmt.Println("err", err)
+	}
+	// send res back to client as json response
+	c.JSON(200, gin.H{
+		"Address": res.Address,
+	})
+	if storage.StoreKey("PSK.key", res.AesPsk) != nil {
+		fmt.Println("err", err)
+	}
 }

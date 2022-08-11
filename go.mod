@@ -1,4 +1,4 @@
-module github.com/sonr-io/nebula
+module github.com/sonr-io/speedway
 
 go 1.16
 
@@ -11,12 +11,17 @@ replace (
 )
 
 require (
+	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/duo-labs/webauthn v0.0.0-20220330035159-03696f3d4499
 	github.com/duo-labs/webauthn.io v0.0.0-20200929144140-c031a3e0f95d
 	github.com/gin-gonic/contrib v0.0.0-20201101042839-6a891bf89f19
-	github.com/gin-gonic/gin v1.7.7
+	github.com/gin-gonic/gin v1.8.1
+	github.com/manifoldco/promptui v0.9.0
 	github.com/shengdoushi/base58 v1.0.0
-	github.com/sonr-io/sonr v0.3.0-beta.0.0.20220711215224-abed535ab9da // TODO: revert this when beta/mpc gets merged into master
-	go.buf.build/grpc/go/sonr-io/motor v1.4.22
-	google.golang.org/grpc v1.46.2
+	github.com/sonr-io/sonr v0.3.1-0.20220810233442-08adde388f50 // TODO: revert this when beta/mpc gets merged into master
+	github.com/spf13/cobra v1.4.0
+	github.com/stretchr/testify v1.8.0 // indirect
+	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31
+	go.buf.build/grpc/go/sonr-io/motor v1.4.30
+	google.golang.org/grpc v1.48.0
 )
