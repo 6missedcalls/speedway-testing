@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
-	"github.com/sonr-io/speedway/internal/initmotor"
+	"github.com/sonr-io/speedway/internal/account"
 	"github.com/sonr-io/speedway/internal/storage"
 
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -51,9 +51,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	}
 	fmt.Println("request", req)
 
-	m := initmotor.InitMotor()
-
-	res, err := m.CreateAccount(req)
+	res, err := account.CreateAccount(req)
 	if err != nil {
 		fmt.Println("err", err)
 	}
