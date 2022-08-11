@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/initmotor"
@@ -74,7 +75,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			}
 
 			var repeat string
-			for strings.ToLower(repeat) != "n"  ||  strings.ToLower(repeat) != "no" ||  strings.ToLower(repeat) != "exit" ||  strings.ToLower(repeat) != "stop" ||  strings.ToLower(repeat) != "quit" {
+			for strings.ToLower(repeat) != "n" || strings.ToLower(repeat) != "no" || strings.ToLower(repeat) != "exit" || strings.ToLower(repeat) != "stop" || strings.ToLower(repeat) != "quit" {
 				// make schemaFields []string
 				schemaField, err := prompt.Run()
 				if err != nil {
