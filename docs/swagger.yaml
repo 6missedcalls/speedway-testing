@@ -12,6 +12,15 @@ definitions:
       success:
         type: boolean
     type: object
+  object.ObjectReference:
+    properties:
+      cid:
+        type: string
+      did:
+        type: string
+      label:
+        type: string
+    type: object
   types.SchemaDefinition:
     properties:
       creator:
@@ -33,6 +42,8 @@ definitions:
       field:
         description: Type of a single schema property
         type: integer
+      link:
+        type: string
       link_kind:
         description: Optional field for a link context if `SchemaKind` is of type
           `Link`
@@ -112,6 +123,52 @@ paths:
       summary: LoginAccount
       tags:
       - account
+  /object/build:
+    post:
+      description: Build an object on Sonr using the object module of Sonr's Blockchain.
+      parameters:
+      - description: Address
+        example: '"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+        in: body
+        name: Address
+        required: true
+        schema:
+          type: string
+      - description: SchemaDid
+        example: '"did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+        in: body
+        name: SchemaDid
+        required: true
+        schema:
+          type: string
+      - description: Label
+        example: '"MyObject"'
+        in: body
+        name: Label
+        required: true
+        schema:
+          type: string
+      - description: Object
+        in: body
+        name: Object
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/object.ObjectReference'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: BuildObject
+      tags:
+      - object
   /schema/create:
     post:
       description: Create a schema utilizing motor client. Returns the WhatIs of the

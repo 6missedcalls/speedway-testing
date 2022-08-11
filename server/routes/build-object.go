@@ -28,8 +28,9 @@ type BuildObjectBody struct {
 // @Produce json
 // @Param 		 Address body string true "Address" example("snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
 // @Param 		 SchemaDid body string true "SchemaDid" example("did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
+// @Param 		 Label body string true "Label" example("MyObject")
 // @Param 		 Object body map[string]interface{} true "Object" example({"name": "John Doe"})
-// @Success 200 {object} rtmv1.BuildObjectResponse
+// @Success 200 {object} object.ObjectReference
 // @Failure      500  {string}  message
 // @Router /object/build [post]
 func (ns *NebulaServer) BuildObject(c *gin.Context) {
