@@ -10,7 +10,15 @@ app.use(bodyParser.json())
 
 /// INTERNAL STATE
 
-const db = {}
+const db = {
+	dev: {
+		did: "dev",
+		password: "dev",
+		schemas: [],
+		buckets: [],
+		objects: [],
+	},
+}
 let sessionDid = null
 
 /// AUTHENTICATION
