@@ -13,6 +13,8 @@ import (
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
+// ! Speak to Nick about JSON versus what I'm doing now
+
 func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Command) {
 	buildObjCmd = &cobra.Command{
 		Use:   "build",
