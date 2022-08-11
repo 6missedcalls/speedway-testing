@@ -125,7 +125,8 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				fmt.Printf("Command failed %v\n", err)
 				panic(err)
 			}
-			fmt.Printf("%v\n", upload.Reference)
+			fmt.Printf("Upload: %v\n", upload.Reference)
+
 		},
 	}
 	return
