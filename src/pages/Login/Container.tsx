@@ -1,6 +1,6 @@
 import LoginComponent from "./Component"
 
-function LoginContainer() {
+const Container = () => {
 	const login = (walletAddress: string, password: string) => {
 		fetch("http://localhost:8080/api/v1/account/login", {
 			method: "POST",
@@ -14,4 +14,4 @@ function LoginContainer() {
 	return <LoginComponent onSubmit={login} />
 }
 
-export default LoginContainer
+export default Container

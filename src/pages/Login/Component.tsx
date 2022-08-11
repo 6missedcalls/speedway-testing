@@ -11,7 +11,7 @@ import AuthLayout from "../../components/AuthLayout"
 type Props = {
 	onSubmit: (walletAddress: string, password: string) => void
 }
-export default ({ onSubmit }: Props) => {
+const Component = ({ onSubmit }: Props) => {
 	const [walletAddress, setWalletAddress] = useState("")
 	const [password, setPassword] = useState("")
 	const navigate = useNavigate()
@@ -30,7 +30,7 @@ export default ({ onSubmit }: Props) => {
 			sidebarContent={
 				<div className="text-right">
 					<button
-						onClick={() => navigate("/")}
+						onClick={() => navigate("/signup")}
 						className="text-white border rounded"
 					>
 						Go to Registration
@@ -64,3 +64,5 @@ export default ({ onSubmit }: Props) => {
 		/>
 	)
 }
+
+export default Component

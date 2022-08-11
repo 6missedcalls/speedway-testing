@@ -4,7 +4,7 @@ type Props = {
 	sidebarContent: ReactNode
 	content: ReactNode
 }
-export default ({ content, sidebarContent }: Props) => {
+const Component = ({ content, sidebarContent }: Props) => {
 	return (
 		<div className="flex flex-1 flex-col min-h-screen">
 			<div className="flex flex-1 flex-row">
@@ -17,3 +17,5 @@ export default ({ content, sidebarContent }: Props) => {
 		</div>
 	)
 }
+
+export default Component

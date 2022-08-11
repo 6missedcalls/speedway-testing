@@ -1,6 +1,6 @@
-import Home from "./Component"
+import Signup from "./Component"
 
-export default () => {
+const Container = () => {
 	const createAccount = (password: string) => {
 		fetch("http://localhost:8080/api/v1/account/create", {
 			method: "POST",
@@ -10,5 +10,7 @@ export default () => {
 			.then((response) => response.json())
 			.then((body) => alert(JSON.stringify(body)))
 	}
-	return <Home onSubmit={createAccount} />
+	return <Signup onSubmit={createAccount} />
 }
+
+export default Container

@@ -7,7 +7,7 @@ import { setIsLogged } from "../../redux/slices/authenticationSlice"
 type Props = {
 	onSubmit: (password: string) => void
 }
-export default ({ onSubmit }: Props) => {
+const Component = ({ onSubmit }: Props) => {
 	const [password, setPassword] = useState("")
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
@@ -24,7 +24,7 @@ export default ({ onSubmit }: Props) => {
 			sidebarContent={
 				<div className="text-right">
 					<button
-						onClick={() => navigate("/login")}
+						onClick={() => navigate("/")}
 						className="text-white border rounded"
 					>
 						Go to Login
@@ -61,3 +61,5 @@ export default ({ onSubmit }: Props) => {
 		/>
 	)
 }
+
+export default Component
