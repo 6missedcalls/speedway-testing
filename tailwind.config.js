@@ -152,6 +152,7 @@ module.exports = {
 				},
 			},
 			backgroundColor: {
+				"surface-default": "var(--nds-semantic-color-surface-default)",
 				"button-subtle": "var(--nds-semantic-color-surface-button-subtle)",
 				"surface-button-subtle-hovered":
 					"var(--nds-semantic-color-surface-button-subtle-hovered)",
