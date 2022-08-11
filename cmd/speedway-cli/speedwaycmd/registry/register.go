@@ -7,7 +7,7 @@ import (
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
-	"github.com/sonr-io/speedway/internal/initmotor"
+	"github.com/sonr-io/speedway/internal/account"
 	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/spf13/cobra"
 	"github.com/ttacon/chalk"
@@ -40,7 +40,7 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 				fmt.Println("err", err)
 			}
 			storage.StoreKey("AES.key", aesKey)
-			fmt.Println(chalk.Bold, "aesKey", aesKey, chalk.Reset)
+
 			req := rtmv1.CreateAccountRequest{
 				Password:  result,
 				AesDscKey: aesKey,
@@ -51,9 +51,7 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 				fmt.Println(chalk.Red, "Create Account Error: ", err, chalk.Reset)
 			}
 
-			m := initmotor.InitMotor()
-
-			res, err := m.CreateAccount(req)
+			res, err := account.CreateAccount(req)
 			if err != nil {
 				fmt.Println("err", err)
 			}

@@ -39,7 +39,7 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 			}
 			fmt.Println(chalk.Green, "CID:", CID)
 
-			// Query the object with ObjectClient interface
+			// Query the object with ObjectClient type
 
 		},
 	}

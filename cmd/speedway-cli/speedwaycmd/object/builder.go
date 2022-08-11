@@ -53,10 +53,6 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 
 			// deserialize the whatis
 			whatIs := resolver.DeserializeWhatIs(querySchema.WhatIs)
-			if err != nil {
-				fmt.Printf("Command failed %v\n", err)
-				panic(err)
-			}
 			fmt.Println(chalk.Green, "Deserialized WhatIs:", whatIs)
 
 			// create new object builder
@@ -65,6 +61,7 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				fmt.Printf("Command failed %v\n", err)
 				panic(err)
 			}
+
 			definition := resolver.ResolveIPFS(whatIs.Schema.Cid)
 			fmt.Println(chalk.Green, "Resolved Schema:", definition)
 
@@ -78,16 +75,25 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 			}
 			objBuilder.SetLabel(label)
 
-			// todo - prompt for fields
 			for range definition.Fields {
+				validate := func(input string) error {
+					for _, field := range definition.Fields {
+						if field.Name == input {
+							return nil
+						}
+					}
+					return fmt.Errorf("%s is not a valid field", input)
+				}
 				namePrompt := promptui.Prompt{
-					Label: "Enter Field Name",
+					Label:    "Enter Field Name",
+					Validate: validate,
 				}
 				name, err := namePrompt.Run()
 				if err != nil {
 					fmt.Printf("Command failed %v\n", err)
 					panic(err)
 				}
+
 				valuePrompt := promptui.Prompt{
 					Label: "Enter Field Value",
 				}
@@ -99,6 +105,7 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				objBuilder.Set(name, value)
 			}
 
+			// build the object
 			build, err := objBuilder.Build()
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
@@ -113,7 +120,6 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				panic(err)
 			}
 			fmt.Printf("%v\n", upload.Reference)
-
 		},
 	}
 	return
