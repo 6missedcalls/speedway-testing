@@ -10,8 +10,9 @@ import AuthLayout from "../../components/AuthLayout"
 
 type Props = {
 	onSubmit: (walletAddress: string, password: string) => void
+	error: boolean
 }
-const Component = ({ onSubmit }: Props) => {
+const Component = ({ onSubmit, error }: Props) => {
 	const [walletAddress, setWalletAddress] = useState("")
 	const [password, setPassword] = useState("")
 	const navigate = useNavigate()
@@ -42,20 +43,27 @@ const Component = ({ onSubmit }: Props) => {
 					<h1 className="text-3xl mb-8">Login to Your Vault</h1>
 
 					<form onSubmit={_onSubmit}>
-						<label className="block">Wallet Address</label>
-						<input
-							value={walletAddress}
-							onChange={_onChange(setWalletAddress)}
-							className="border rounded mb-4 block w-full"
-						/>
+						<div className="mb-4">
+							<label className="block">Wallet Address</label>
+							<input
+								value={walletAddress}
+								onChange={_onChange(setWalletAddress)}
+								className="border rounded block w-full"
+							/>
+						</div>
 
-						<label className="block">Your Vault Password</label>
-						<input
-							type="password"
-							value={password}
-							onChange={_onChange(setPassword)}
-							className="border rounded mb-4 block w-full"
-						/>
+						<div className="mb-4">
+							<label className="block">Your Vault Password</label>
+							<input
+								type="password"
+								value={password}
+								onChange={_onChange(setPassword)}
+								className="border rounded block w-full"
+							/>
+							{error && (
+								<div className="text-red-800 text-sm">Invalid password</div>
+							)}
+						</div>
 
 						<button className="border rounded block w-full">Submit</button>
 					</form>

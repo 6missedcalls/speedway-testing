@@ -1,7 +1,10 @@
+import { useState } from "react"
 import LoginComponent from "./Component"
 
 const Container = () => {
+	const [error, setError] = useState(false)
 	const login = (walletAddress: string, password: string) => {
+		setError(false)
 		fetch("http://localhost:8080/api/v1/account/login", {
 			method: "POST",
 			headers: { "content-type": "application/json" },
@@ -9,9 +12,10 @@ const Container = () => {
 		})
 			.then((response) => response.json())
 			.then((body) => alert(JSON.stringify(body)))
+			.catch(() => setError(true))
 	}
 
-	return <LoginComponent onSubmit={login} />
+	return <LoginComponent onSubmit={login} error={error} />
 }
 
 export default Container
