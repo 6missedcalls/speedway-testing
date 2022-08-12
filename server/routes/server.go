@@ -88,6 +88,7 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 
 	// Object Routes
 	ns.Router.POST("/api/v1/object/build", ns.BuildObject)
+	ns.Router.POST("/api/v1/object/get", ns.GetObject)
 
 	// Serve Static Route
 	ns.Router.Use(static.Serve("/", static.LocalFile(ns.Config.StaticDir, true)))
