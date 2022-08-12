@@ -30,10 +30,7 @@ const Component = ({ onSubmit, error }: Props) => {
 		<AuthLayout
 			sidebarContent={
 				<div className="text-right text-white">
-					<button
-						onClick={() => navigate("/signup")}
-						className="border rounded"
-					>
+					<button onClick={() => navigate("/signup")}>
 						Go to Registration
 					</button>
 				</div>
