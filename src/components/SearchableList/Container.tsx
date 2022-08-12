@@ -7,7 +7,7 @@ interface SearchableListContainerProps {
 	initialList: Array<any>
 	type: listTypes
 	paginationSize?: number
-	handleOpenModal: () => void
+	handleOpenModal?: () => void
 }
 
 function SearchableListContainer({
@@ -67,7 +67,6 @@ function SearchableListContainer({
 				index >= paginationSize * (paginationCurrentPage - 1)
 			)
 		})
-		console.log("after paginated", paginated)
 		return paginated
 	}
 

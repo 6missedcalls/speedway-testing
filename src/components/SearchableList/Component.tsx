@@ -16,7 +16,7 @@ interface SearchableListComponentProps {
 	setPaginationCurrentPage: React.Dispatch<React.SetStateAction<number>>
 	setSearchTerm: React.Dispatch<React.SetStateAction<string>>
 	totalPages: number
-	onClickNewItem: () => void
+	onClickNewItem?: () => void
 }
 
 function SearchableListComponent({
@@ -51,12 +51,14 @@ function SearchableListComponent({
 						}
 					/>
 				</div>
-				<Button
-					onClick={onClickNewItem}
-					iconName="Add"
-					iconType="outline"
-					label="New"
-				/>
+				{onClickNewItem && (
+					<Button
+						onClick={onClickNewItem}
+						iconName="Add"
+						iconType="outline"
+						label="New"
+					/>
+				)}
 			</div>
 			<table className="w-full text-left">
 				<thead>
