@@ -6,6 +6,7 @@ import (
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/account"
+	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/spf13/cobra"
 	"github.com/ttacon/chalk"
@@ -47,8 +48,8 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 			if err != nil {
 				fmt.Println(chalk.Red, "Error: %s", err)
 			}
-
-			res, err := account.Login(req)
+			m := initmotor.InitMotor()
+			res, err := account.Login(m, req)
 			fmt.Println(chalk.Yellow, "Login Response: %s", res)
 			if res.Success {
 				fmt.Println(chalk.Green, "Login Successful")
