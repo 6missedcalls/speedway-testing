@@ -4,7 +4,7 @@ import modalContentMap from "../../utils/modalContentMap"
 import AppModalComponent from "./Component"
 
 interface AppModalContainerProps {
-	getModalParent: () => React.MutableRefObject<null> | null
+	getModalParent: () => HTMLElement
 }
 
 function AppModalContainer({ getModalParent }: AppModalContainerProps) {
@@ -21,7 +21,6 @@ function AppModalContainer({ getModalParent }: AppModalContainerProps) {
 
 	return (
 		<AppModalComponent
-			constent={content}
 			closeModal={closeModal}
 			renderModalContent={renderModalContent}
 			modalIsOpen={modalIsOpen}

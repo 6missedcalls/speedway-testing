@@ -6,8 +6,10 @@ import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 
 interface BaseLayoutComponentProps {
 	isLogged: boolean
-	children: any
+	children: React.ReactNode
 }
+
+type getModalParentType = () => HTMLElement
 
 function BaseLayoutComponent({ isLogged, children }: BaseLayoutComponentProps) {
 	const { closeModal } = useContext(AppModalContext)
@@ -15,7 +17,7 @@ function BaseLayoutComponent({ isLogged, children }: BaseLayoutComponentProps) {
 
 	useDetectOutsideClick({ ref: modalParentRef, callback: closeModal })
 
-	const getModalParent = () => modalParentRef.current
+	const getModalParent: getModalParentType = () => modalParentRef.current!
 
 	return (
 		<div className="flex font-['Manrope']">

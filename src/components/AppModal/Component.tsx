@@ -5,7 +5,7 @@ Modal.setAppElement("#root")
 interface AppModalComponentProps {
 	modalIsOpen: boolean
 	closeModal: () => void
-	getModalParent: () => React.MutableRefObject<null> | null
+	getModalParent: () => HTMLElement
 	renderModalContent: () => JSX.Element | null
 }
 
@@ -14,7 +14,7 @@ function AppModalComponent({
 	closeModal,
 	getModalParent,
 	renderModalContent,
-}: any) {
+}: AppModalComponentProps) {
 	return (
 		<div>
 			<Modal
