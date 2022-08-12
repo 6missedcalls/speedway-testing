@@ -10,3 +10,18 @@ export interface IlistItem {
 	objects: number
 	fieldCount: number
 }
+
+export interface IchangedProperty {
+	name?: string
+	type?: string
+}
+
+export interface Iproperty {
+	name: string
+	type: string
+}
+
+export interface handlePropertyChangeProps {
+	index: number
+	data: IchangedProperty
+}
