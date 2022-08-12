@@ -1,14 +1,13 @@
 package routes
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/resolver"
+	"github.com/sonr-io/speedway/internal/retrieve"
 	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -80,27 +79,17 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	}
 	fmt.Println("loginResponse", loginResponse)
 
-	// Create a new create schema request
-	querySchema := rtmv1.QueryWhatIsRequest{
-		Creator: r.Creator,
-		Did:     r.Schema,
-	}
-
-	querySchemaResponse, err := m.QueryWhatIs(context.Background(), querySchema)
-	// deserialize result
-	whatIs := &st.WhatIs{}
-	err = whatIs.Unmarshal(querySchemaResponse.WhatIs)
-	if err != nil {
-		fmt.Printf("Unmarshal failed %v\n", err)
+	schema, err := retrieve.GetSchema(m, r.Creator, r.Schema)
+	if schema.WhatIs == nil {
+		fmt.Printf("Command failed %v\n", err)
 		return
 	}
-	// print result
-	fmt.Println(chalk.Blue, "Schema:", whatIs.Schema)
-
+	whatIs := resolver.DeserializeWhatIs(schema.WhatIs)
 	definition, err := resolver.ResolveIPFS(whatIs.Schema.Cid)
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Printf("Command failed %v\n", err)
 		return
 	}
+
 	c.JSON(200, definition)
 }

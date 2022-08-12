@@ -36,3 +36,20 @@ func GetObject(m motor.MotorNode, schemaDid string, cid string) (map[string]inte
 
 	return getObject, nil
 }
+
+func GetSchema(m motor.MotorNode, creator string, schemaDid string) (rtmv1.QueryWhatIsResponse, error) {
+	// create new query schema request
+	querySchemaReq := rtmv1.QueryWhatIsRequest{
+		Creator: creator,
+		Did:     schemaDid,
+	}
+
+	// query schema
+	querySchemaRes, err := m.QueryWhatIs(context.Background(), querySchemaReq)
+	if err != nil {
+		fmt.Printf("Command failed %v\n", err)
+		return rtmv1.QueryWhatIsResponse{}, err
+	}
+
+	return querySchemaRes, nil
+}
