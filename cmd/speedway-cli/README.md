@@ -56,4 +56,30 @@ Query a schema with the `query` command.
 go run main.go schema query
 ```
 
+## Object
+
+*If Built/Installed*
+
+Build an object with the `build` command.
+```bash
+speedway object build
+```
+
+Get an object with the `get` command.
+
+```bash
+speedway object get
+```
+
+*If Not Built/Installed*
+
+Build an object with the `build` command.
+```bash
+go run main.go object build
+```
+
+Get an object with the `get` command.
+```
+go run main.go object get
+```
 
