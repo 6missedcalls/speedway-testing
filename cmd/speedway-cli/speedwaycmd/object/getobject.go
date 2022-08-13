@@ -14,9 +14,9 @@ import (
 
 func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command) {
 	getObjectCmd = &cobra.Command{
-		Use:   "query",
-		Short: "Use: query",
-		Long:  "Use: query",
+		Use:   "get",
+		Short: "Use: get",
+		Long:  "Use: get",
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
