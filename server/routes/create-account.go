@@ -23,7 +23,7 @@ type CARequestBody struct {
 // @Tags account
 // @Produce json
 // @Param 		 password body string true "Password"
-// @Success 	 200  {string}  message "Did"
+// @Success 	 200  {string}  message "Address"
 // @Failure      500  {string}  message "Error"
 // @Router /account/create [post]
 func (ns *NebulaServer) CreateAccount(c *gin.Context) {

@@ -39,14 +39,15 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 			if err != nil {
 				fmt.Println("err", err)
 			}
-			storage.StoreKey("aes.key", aesKey)
+			if storage.StoreKey("aes.key", aesKey) != nil {
+				fmt.Println("err", err)
+			}
 
 			req := rtmv1.CreateAccountRequest{
 				Password:  result,
 				AesDscKey: aesKey,
 			}
-			fmt.Println(chalk.Green, "Creating account...", chalk.Reset)
-			fmt.Println(chalk.Yellow, "Create Account Request: ", req, chalk.Reset)
+			fmt.Println(chalk.Yellow, "Creating account...", chalk.Reset)
 			if err != nil {
 				fmt.Println(chalk.Red, "Create Account Error: ", err, chalk.Reset)
 			}
@@ -56,7 +57,11 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 				fmt.Println("err", err)
 				return
 			}
-			storage.StoreKey("psk.key", res.AesPsk)
+
+			if storage.StoreKey("aes.key", aesKey) != nil {
+				fmt.Println("err", err)
+			}
+
 			fmt.Println(chalk.Green, "Create Account Response: ", res, chalk.Reset)
 			fmt.Println(chalk.Bold, "Address: ", res.Address, chalk.Reset)
 		},
