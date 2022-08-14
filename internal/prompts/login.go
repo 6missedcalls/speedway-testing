@@ -22,7 +22,7 @@ func fallbackLoginPrompt() (string, error) {
 	}
 	did, err := prompt.Run()
 	if err != nil {
-		fmt.Printf("Prompt failed %v\n", err)
+		fmt.Printf("Command failed %v\n", err)
 		return "", err
 	}
 	return did, nil
