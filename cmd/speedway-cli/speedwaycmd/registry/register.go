@@ -58,10 +58,6 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 				return
 			}
 
-			if storage.StoreKey("aes.key", aesKey) != nil {
-				fmt.Println("err", err)
-			}
-
 			fmt.Println(chalk.Green, "Create Account Response: ", res, chalk.Reset)
 			fmt.Println(chalk.Bold, "Address: ", res.Address, chalk.Reset)
 		},

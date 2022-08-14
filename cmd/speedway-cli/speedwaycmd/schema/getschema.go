@@ -19,7 +19,6 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 		Short: "Use: speedway schema query",
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
-			fmt.Println(loginRequest)
 
 			m := initmotor.InitMotor()
 

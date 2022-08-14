@@ -15,6 +15,14 @@ func CreateAccount(req rtmv1.CreateAccountRequest) (rtmv1.CreateAccountResponse,
 	if err != nil {
 		fmt.Println("err", err)
 	}
-	storage.StoreKey("PSK.key", res.AesPsk)
+
+	if storage.StoreKey("psk.key", res.AesPsk) != nil {
+		fmt.Println("err", err)
+	}
+
+	if storage.StoreInfo("address.snr", m) != nil {
+		fmt.Println("err", err)
+	}
+
 	return res, err
 }

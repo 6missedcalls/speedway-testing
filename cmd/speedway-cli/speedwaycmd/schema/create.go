@@ -46,7 +46,6 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
-			fmt.Println(loginRequest)
 
 			m := initmotor.InitMotor()
 
