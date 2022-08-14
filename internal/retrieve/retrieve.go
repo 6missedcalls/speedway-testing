@@ -53,3 +53,5 @@ func GetSchema(m motor.MotorNode, creator string, schemaDid string) (rtmv1.Query
 
 	return querySchemaRes, nil
 }
+
+// TODO: Add GetBucket when implemented

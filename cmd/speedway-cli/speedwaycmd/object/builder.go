@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
+	"github.com/sonr-io/speedway/internal/account"
 	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/resolver"
@@ -25,7 +26,7 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 
 			m := initmotor.InitMotor()
 
-			loginResult, err := m.Login(loginRequest)
+			loginResult, err := account.Login(m, loginRequest)
 			if loginResult.Success {
 				fmt.Println(chalk.Green.Color("Login Successful"))
 			} else {
@@ -81,39 +82,17 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				return
 			}
 			objBuilder.SetLabel(label)
-			if err != nil {
-				fmt.Printf("Command failed %v\n", err)
-				return
-			}
 
-			validate := func(input string) error {
-				for _, field := range definition.Fields {
-					if field.Name == input {
-						return nil
-					}
-				}
-				return fmt.Errorf("%s is not a valid field", input)
-			}
-
-			for range definition.Fields {
-				namePrompt := promptui.Prompt{
-					Label:    "Enter Field Name",
-					Validate: validate,
-				}
-				name, err := namePrompt.Run()
-				if err != nil {
-					fmt.Printf("Command failed %v\n", err)
-					return
-				}
+			for _, field := range definition.Fields {
 				valuePrompt := promptui.Prompt{
-					Label: "Enter Field Value",
+					Label: "Enter Field Value for " + field.Name,
 				}
 				value, err := valuePrompt.Run()
 				if err != nil {
 					fmt.Printf("Command failed %v\n", err)
 					return
 				}
-				err = objBuilder.Set(name, value)
+				err = objBuilder.Set(field.Name, value)
 				if err != nil {
 					fmt.Printf("Command failed %v\n", err)
 					return

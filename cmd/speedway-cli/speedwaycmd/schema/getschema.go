@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
+	"github.com/sonr-io/speedway/internal/account"
 	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/resolver"
@@ -22,7 +23,7 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 
 			m := initmotor.InitMotor()
 
-			loginResult, err := m.Login(loginRequest)
+			loginResult, err := account.Login(m, loginRequest)
 			if loginResult.Success {
 				fmt.Println(chalk.Green.Color("Login Successful"))
 			} else {

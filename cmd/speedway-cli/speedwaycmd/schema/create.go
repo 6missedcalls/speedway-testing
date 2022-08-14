@@ -3,9 +3,9 @@ package schema
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/manifoldco/promptui"
+	"github.com/sonr-io/speedway/internal/account"
 	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/resolver"
@@ -49,7 +49,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 
 			m := initmotor.InitMotor()
 
-			loginResult, err := m.Login(loginRequest)
+			loginResult, err := account.Login(m, loginRequest)
 			if err != nil {
 				fmt.Println(chalk.Red.Color("Login Failed"), err)
 				return
@@ -77,7 +77,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			}
 
 			var repeat string
-			for strings.ToLower(repeat) != "n" || strings.ToLower(repeat) != "no" || strings.ToLower(repeat) != "exit" || strings.ToLower(repeat) != "stop" || strings.ToLower(repeat) != "quit" {
+			for repeat != "N" {
 				// make schemaFields []string
 				schemaField, err := prompt.Run()
 				if err != nil {
@@ -135,6 +135,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				fmt.Println(chalk.Red.Color("Resolve IPFS Failed"))
 				return
 			}
+			fmt.Println(chalk.Green, "Schema Created: ", createSchemaResult)
 			fmt.Println(chalk.Green, "Definition:", definition)
 		},
 	}
