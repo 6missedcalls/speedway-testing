@@ -32,7 +32,6 @@ func GetObject(m motor.MotorNode, schemaDid string, cid string) (map[string]inte
 		fmt.Println(chalk.Red.Color("Error"), err)
 		return nil, err
 	}
-	fmt.Println(chalk.Green.Color("Successfuly retrieved object"))
 
 	return getObject, nil
 }

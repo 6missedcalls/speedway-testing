@@ -130,13 +130,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			fmt.Println(chalk.Green.Color("Create Schema Successful"))
 			// desearialize the scehma result to get the schema did
 			whatIs := resolver.DeserializeWhatIs(createSchemaResult.WhatIs)
-			definition, err := resolver.ResolveIPFS(whatIs.Schema.Cid)
-			if err != nil {
-				fmt.Println(chalk.Red.Color("Resolve IPFS Failed"))
-				return
-			}
-			fmt.Println(chalk.Green, "Schema Created: ", createSchemaResult)
-			fmt.Println(chalk.Green, "Definition:", definition)
+			fmt.Println(chalk.Green, "Schema WhatIs: ", whatIs.Schema)
 		},
 	}
 	return
