@@ -44,13 +44,13 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 	m := initmotor.InitMotor()
 
 	// Load keys
-	aesKey, err := storage.LoadKey("AES.key")
+	aesKey, err := storage.LoadKey("aes.key")
 	// return err from loadkey
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	aesPskKey, err := storage.LoadKey("PSK.key")
+	aesPskKey, err := storage.LoadKey("psk.key")
 	if err != nil {
 		fmt.Println("err", err)
 		return

@@ -47,13 +47,13 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	m := initmotor.InitMotor()
 
 	// Load keys
-	aesKey, err := storage.LoadKey("AES.key")
+	aesKey, err := storage.LoadKey("aes.key")
 	// return err from loadkey
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	aesPskKey, err := storage.LoadKey("PSK.key")
+	aesPskKey, err := storage.LoadKey("psk.key")
 	if err != nil {
 		fmt.Println("err", err)
 		return
@@ -74,6 +74,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	res, err := m.Login(req)
 	if err != nil {
 		fmt.Println("err", err)
+		return
 	}
 	fmt.Println("Result", res)
 	if !res.Success {
@@ -89,7 +90,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	})
 	if err != nil {
 		fmt.Printf("Command failed %v\n", err)
-		panic(err)
+		return
 	}
 	fmt.Printf("%v\n", querySchema.WhatIs)
 

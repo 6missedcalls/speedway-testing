@@ -28,7 +28,7 @@ type QuerySchema struct {
 // @Param did query string true "Did"
 // @Param creator query string true "Creator"
 // @Param schema query string true "Schema"
-// @Success      200  {object} st.SchemaDefinition
+// @Success      200  {object} types.SchemaDefinition
 // @Failure      500  {string} message error
 // @Router /schema/get [post]
 func (ns *NebulaServer) QuerySchema(c *gin.Context) {
@@ -45,11 +45,11 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	m := initmotor.InitMotor()
 
 	// TODO: Call login from registry service
-	aesKey, err := storage.LoadKey("AES.key")
+	aesKey, err := storage.LoadKey("aes.key")
 	if err != nil {
 		fmt.Println("err", err)
 	}
-	aesPskKey, err := storage.LoadKey("PSK.key")
+	aesPskKey, err := storage.LoadKey("psk.key")
 	if err != nil {
 		fmt.Println("err", err)
 	}
@@ -84,6 +84,7 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 		fmt.Printf("Command failed %v\n", err)
 		return
 	}
+	fmt.Println("schema", schema)
 	whatIs := resolver.DeserializeWhatIs(schema.WhatIs)
 	definition, err := resolver.ResolveIPFS(whatIs.Schema.Cid)
 	if err != nil {

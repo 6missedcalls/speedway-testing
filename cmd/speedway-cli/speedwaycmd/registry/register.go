@@ -39,7 +39,7 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 			if err != nil {
 				fmt.Println("err", err)
 			}
-			storage.StoreKey("AES.key", aesKey)
+			storage.StoreKey("aes.key", aesKey)
 
 			req := rtmv1.CreateAccountRequest{
 				Password:  result,
@@ -56,7 +56,7 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 				fmt.Println("err", err)
 				return
 			}
-			storage.StoreKey("PSK.key", res.AesPsk)
+			storage.StoreKey("psk.key", res.AesPsk)
 			fmt.Println(chalk.Green, "Create Account Response: ", res, chalk.Reset)
 			fmt.Println(chalk.Bold, "Address: ", res.Address, chalk.Reset)
 		},

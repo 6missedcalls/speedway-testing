@@ -35,7 +35,7 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 				fmt.Printf("Prompt failed %v\n", err)
 				return
 			}
-			pskKey, err := storage.LoadKey("PSK.key")
+			pskKey, err := storage.LoadKey("psk.key")
 			if pskKey == nil || len(pskKey) != 32 {
 				fmt.Println(chalk.Yellow, "Please add this device to your current account or make another account", chalk.Reset)
 				return

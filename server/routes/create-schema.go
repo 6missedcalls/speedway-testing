@@ -44,11 +44,11 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 
 	m := initmotor.InitMotor()
 
-	aesKey, err := storage.LoadKey("AES.key")
+	aesKey, err := storage.LoadKey("aes.key")
 	if err != nil {
 		fmt.Println("err", err)
 	}
-	aesPskKey, err := storage.LoadKey("PSK.key")
+	aesPskKey, err := storage.LoadKey("psk.key")
 	if err != nil {
 		fmt.Println("err", err)
 	}
