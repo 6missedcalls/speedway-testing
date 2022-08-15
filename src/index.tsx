@@ -2,16 +2,22 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import "./index.css"
 import "@sonr-io/nebula-react/dist/esm/index.css"
+import "@fontsource/manrope/400.css"
+import "@fontsource/manrope/600.css"
+import "@fontsource/manrope/800.css"
 import App from "./App"
 import reportWebVitals from "./reportWebVitals"
 import { store } from "./redux/store"
 import { Provider } from "react-redux"
+import { AppModalProvider } from "./contexts/appModalContext/appModalContext"
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement)
 root.render(
 	<React.StrictMode>
 		<Provider store={store}>
-			<App />
+			<AppModalProvider>
+				<App />
+			</AppModalProvider>
 		</Provider>
 	</React.StrictMode>
 )

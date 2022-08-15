@@ -7,12 +7,14 @@ interface SearchableListContainerProps {
 	initialList: Array<any>
 	type: listTypes
 	paginationSize?: number
+	handleOpenModal?: () => void
 }
 
 function SearchableListContainer({
 	initialList,
 	type,
 	paginationSize = 8,
+	handleOpenModal,
 }: SearchableListContainerProps) {
 	const [orderAsc, setOrderAsc] = useState(true)
 	const [searchTerm, setSearchTerm] = useState("")
@@ -23,12 +25,17 @@ function SearchableListContainer({
 	useEffect(() => {
 		const processedList = getList()
 		setList(processedList)
+	}, [searchTerm, orderAsc, paginationCurrentPage])
+
+	useEffect(() => {
 		if (searchTerm) {
-			setTotalPages(Math.ceil(processedList.length / paginationSize))
+			const filteredListLenght = getFilteredList(initialList).length
+			setPaginationCurrentPage(1)
+			setTotalPages(Math.ceil(filteredListLenght / paginationSize))
 		} else {
 			setTotalPages(Math.ceil(initialList.length / paginationSize))
 		}
-	}, [searchTerm, orderAsc, paginationCurrentPage])
+	}, [searchTerm])
 
 	function toggleOrder() {
 		setOrderAsc(!orderAsc)
@@ -96,6 +103,7 @@ function SearchableListContainer({
 			previousPage={previousPage}
 			totalPages={totalPages}
 			setSearchTerm={setSearchTerm}
+			onClickNewItem={handleOpenModal}
 		/>
 	)
 }

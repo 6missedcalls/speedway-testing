@@ -8,7 +8,7 @@ const Component = ({ content, sidebarContent }: Props) => {
 	return (
 		<div className="flex-1 flex flex-col min-h-screen">
 			<div className="flex-1 flex flex-row">
-				<div className="flex-1 dark bg-surface-default p-16">
+				<div className="flex-1 dark bg-surface-default text-default p-16">
 					{sidebarContent}
 				</div>
 

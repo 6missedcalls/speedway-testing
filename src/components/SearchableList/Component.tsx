@@ -16,6 +16,7 @@ interface SearchableListComponentProps {
 	setPaginationCurrentPage: React.Dispatch<React.SetStateAction<number>>
 	setSearchTerm: React.Dispatch<React.SetStateAction<string>>
 	totalPages: number
+	onClickNewItem?: () => void
 }
 
 function SearchableListComponent({
@@ -28,9 +29,12 @@ function SearchableListComponent({
 	previousPage,
 	totalPages,
 	setSearchTerm,
+	onClickNewItem,
 }: SearchableListComponentProps) {
 	const isFirstPage = paginationCurrentPage === 1
 	const isLastPage = paginationCurrentPage === totalPages
+	const previousPageButtonClass = isFirstPage ? "opacity-40" : "cursor-pointer"
+	const nextPageButtonClass = isLastPage ? "opacity-40" : "cursor-pointer"
 
 	return (
 		<div className="shadow-3xl rounded-2xl bg-white">
@@ -38,17 +42,25 @@ function SearchableListComponent({
 				<div className="w-80">
 					<Input
 						clear
+						className="w-4 fill-black"
 						iconName="SearchNormal1"
 						iconType="outline"
-						iconClassName="w-4"
 						placeholder="Search"
+						iconClassName="w-4 h-4"
 						theme="light"
 						onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
 							setSearchTerm(event.target.value)
 						}
 					/>
 				</div>
-				<Button iconName="Add" iconType="outline" label="New" />
+				{onClickNewItem && (
+					<Button
+						onClick={onClickNewItem}
+						iconName="Add"
+						iconType="outline"
+						label="New"
+					/>
+				)}
 			</div>
 			<table className="w-full text-left">
 				<thead>
@@ -81,11 +93,7 @@ function SearchableListComponent({
 								<div className="flex justify-center items-center ">
 									<div
 										className={`
-                                            ${
-																							isFirstPage
-																								? "opacity-40"
-																								: "cursor-pointer"
-																						}
+                                            ${previousPageButtonClass}
                                             flex justify-center items-center bg-button-subtle rounded-md w-8 h-8
                                         `}
 										onClick={() => (isFirstPage ? null : previousPage())}
@@ -99,11 +107,7 @@ function SearchableListComponent({
 									<span className="block mx-4">{`${paginationCurrentPage} of ${totalPages}`}</span>
 									<div
 										className={`
-                                            ${
-																							isLastPage
-																								? "opacity-40"
-																								: "cursor-pointer"
-																						}
+                                            ${nextPageButtonClass}
                                             flex justify-center items-center bg-button-subtle rounded-md w-8 h-8
                                         `}
 										onClick={() => (isLastPage ? null : nextPage())}

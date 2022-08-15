@@ -3,7 +3,7 @@ import { selectIsLogged } from "../../redux/slices/authenticationSlice"
 import BaseLayoutComponent from "./Component"
 
 interface BaseLayoutContainerProps {
-	children: any
+	children: React.ReactNode
 }
 
 function BaseLayoutContainer({ children }: BaseLayoutContainerProps) {
