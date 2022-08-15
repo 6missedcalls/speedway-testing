@@ -15,7 +15,6 @@
 		"@types/react": "18.0.15",
 		"@types/react-dom": "18.0.6",
 		"@types/react-modal": "^3.13.1",
-		"dotenv": "^16.0.1",
 		"fuse.js": "^6.6.2",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
