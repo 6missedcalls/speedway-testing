@@ -6,10 +6,10 @@ import (
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/account"
-	"github.com/sonr-io/speedway/internal/color"
 	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/retrieve"
+	"github.com/sonr-io/speedway/internal/status"
 	"github.com/spf13/cobra"
 )
 
@@ -25,13 +25,13 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 
 			loginResult, err := account.Login(m, loginRequest)
 			if err != nil {
-				fmt.Println(color.Error, "Error: %s", err)
+				fmt.Println(status.Error, "Error: %s", err)
 				return
 			}
 			if loginResult.Success {
-				fmt.Println(color.Success, "Login successful")
+				fmt.Println(status.Success, "Login successful")
 			} else {
-				fmt.Println(color.Error, "Login failed")
+				fmt.Println(status.Error, "Login failed")
 				return
 			}
 
@@ -41,7 +41,7 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 			}
 			schemaDid, err := schemaPrompt.Run()
 			if err != nil {
-				fmt.Println(color.Error, "Error: %s", err)
+				fmt.Println(status.Error, "Error: %s", err)
 				return
 			}
 

@@ -1,4 +1,4 @@
-package color
+package status
 
 import (
 	"github.com/ttacon/chalk"

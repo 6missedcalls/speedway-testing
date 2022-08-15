@@ -9,8 +9,8 @@ import (
 	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/resolver"
+	"github.com/sonr-io/speedway/internal/status"
 	"github.com/spf13/cobra"
-	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
@@ -51,17 +51,17 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 
 			loginResult, err := account.Login(m, loginRequest)
 			if err != nil {
-				fmt.Println(chalk.Red.Color("Login Failed"), err)
+				fmt.Println(status.Error, ("Login Error: "), err)
 				return
 			}
 			if loginResult.Success {
-				fmt.Println(chalk.Green.Color("Login Successful"))
+				fmt.Println(status.Success, ("Login Successful"))
 			} else {
-				fmt.Println(chalk.Red.Color("Login Failed"))
+				fmt.Println(status.Error, ("Login Failed"))
 				return
 			}
 
-			fmt.Println(chalk.Green, "Creating schema...", chalk.Reset)
+			fmt.Println(status.Info, "Creating schema...")
 			schemaPrompt := promptui.Prompt{
 				Label: "Enter the Schema Label",
 			}
@@ -121,16 +121,16 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			}
 
 			// create schema
-			fmt.Println(chalk.Yellow, "Schema request: ", createSchemaRequest)
+			fmt.Println(status.Debug, "Schema request: ", createSchemaRequest)
 			createSchemaResult, err := m.CreateSchema(createSchemaRequest)
 			if err != nil {
-				fmt.Println(chalk.Red.Color("Create Schema Failed"))
+				fmt.Println(status.Error, "CreateSchema Error: ", err)
 				return
 			}
-			fmt.Println(chalk.Green.Color("Create Schema Successful"))
+			fmt.Println(status.Success, "Create Schema Successful")
 			// desearialize the scehma result to get the schema did
 			whatIs := resolver.DeserializeWhatIs(createSchemaResult.WhatIs)
-			fmt.Println(chalk.Green, "Schema WhatIs: ", whatIs.Schema)
+			fmt.Println(status.Debug, "Schema WhatIs: ", whatIs.Schema)
 		},
 	}
 	return

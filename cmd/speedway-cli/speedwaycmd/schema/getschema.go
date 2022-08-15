@@ -10,8 +10,8 @@ import (
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/resolver"
 	"github.com/sonr-io/speedway/internal/retrieve"
+	"github.com/sonr-io/speedway/internal/status"
 	"github.com/spf13/cobra"
-	"github.com/ttacon/chalk"
 )
 
 func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Command) {
@@ -24,10 +24,14 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 			m := initmotor.InitMotor()
 
 			loginResult, err := account.Login(m, loginRequest)
+			if err != nil {
+				fmt.Println(status.Error, "Error: %s", err)
+				return
+			}
 			if loginResult.Success {
-				fmt.Println(chalk.Green.Color("Login Successful"))
+				fmt.Println(status.Success, "Login successful")
 			} else {
-				fmt.Println(chalk.Red.Color("Login Failed"), err)
+				fmt.Println(status.Error, "Login failed")
 			}
 
 			// get schema
@@ -59,7 +63,7 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fmt.Println(chalk.Green, "Definition:", definition)
+			fmt.Println(status.Debug, "Schema: %v\n", definition)
 
 		},
 	}
