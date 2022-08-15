@@ -1,43 +1,43 @@
 export const createAccount = async (password: string) => {
-    const url = `${process.env.REACT_APP_BASE_API}/account/create`
+	const url = `${process.env.REACT_APP_BASE_API}/account/create`
 
-    const payload = JSON.stringify({ password })
+	const payload = JSON.stringify({ password })
 
-    const options = {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: payload,
-    }
+	const options = {
+		method: "POST",
+		headers: { "content-type": "application/json" },
+		body: payload,
+	}
 
-    const response = await fetch(url, options)
-        
-    try {
-        const data = await response.json()
-        return data
-    } catch(err){
-        console.error(`Error calling ${url} with options:`, options)
-        console.error(`Raw error:`, err)
-    }
+	const response = await fetch(url, options)
+
+	try {
+		const data = await response.json()
+		return data
+	} catch (err) {
+		console.error(`Error calling ${url} with options:`, options)
+		console.error(`Raw error:`, err)
+	}
 }
 
 export const login = async (walletAddress: string, password: string) => {
-    const url = `${process.env.REACT_APP_BASE_API}/account/login`
+	const url = `${process.env.REACT_APP_BASE_API}/account/login`
 
-    const payload = JSON.stringify({ did: walletAddress, password })
+	const payload = JSON.stringify({ did: walletAddress, password })
 
-    const options = {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: payload,
-    }
+	const options = {
+		method: "POST",
+		headers: { "content-type": "application/json" },
+		body: payload,
+	}
 
-    const response = await fetch(url, options)
+	const response = await fetch(url, options)
 
-    try {
-        const data = await response.json()
-        return data
-    } catch(err){
-        console.error(`Error calling ${url} with options:`, options)
-        console.error(`Raw error:`, err)
-    }
+	try {
+		const data = await response.json()
+		return data
+	} catch (err) {
+		console.error(`Error calling ${url} with options:`, options)
+		console.error(`Raw error:`, err)
+	}
 }

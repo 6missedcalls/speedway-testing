@@ -22,24 +22,24 @@ interface createAccountProps {
 const initialState: AuthenticationState = {
 	isLogged: false,
 	loading: false,
-	error: false
+	error: false,
 }
 
 export const userLogin = createAsyncThunk(
-	'authentication/login',
-	async ({walletAddress, password}: loginProps) => {
-	  const data = await login(walletAddress, password)
-	  return data
+	"authentication/login",
+	async ({ walletAddress, password }: loginProps) => {
+		const data = await login(walletAddress, password)
+		return data
 	}
-  )
+)
 
-  export const userCreateAccount = createAsyncThunk(
-	'authentication/createAccount',
-	async ({ password}: createAccountProps) => {
-	  const data = await createAccount(password)
-	  return data
+export const userCreateAccount = createAsyncThunk(
+	"authentication/createAccount",
+	async ({ password }: createAccountProps) => {
+		const data = await createAccount(password)
+		return data
 	}
-  )
+)
 
 export const authenticationSlice = createSlice({
 	name: "authentication",
@@ -51,43 +51,43 @@ export const authenticationSlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder.addCase(userLogin.pending, (state) => {
-		  state.loading = true;
-		});
-	
+			state.loading = true
+		})
+
 		builder.addCase(userLogin.fulfilled, (state) => {
-		  state.loading = false;
-		  state.isLogged = true;
-		});
-	
+			state.loading = false
+			state.isLogged = true
+		})
+
 		builder.addCase(userLogin.rejected, (state) => {
-		  state.error = true;
-		  state.loading = false;
-		});
+			state.error = true
+			state.loading = false
+		})
 		builder.addCase(userCreateAccount.pending, (state) => {
-			state.loading = true;
-		});
-	
+			state.loading = true
+		})
+
 		builder.addCase(userCreateAccount.fulfilled, (state, action) => {
 			const { payload } = action
-			state.loading = false;
-			state.isLogged = true;
-			state.did = payload.Did;
-		});
-	
+			state.loading = false
+			state.isLogged = true
+			state.did = payload.Did
+		})
+
 		builder.addCase(userCreateAccount.rejected, (state) => {
-			state.error = true;
-			state.loading = false;
-		});
-	  },
+			state.error = true
+			state.loading = false
+		})
+	},
 })
 
 export const { setIsLogged } = authenticationSlice.actions
 
-export const selectIsLogged = (state: RootState) =>{
+export const selectIsLogged = (state: RootState) => {
 	return state.authentication.isLogged
 }
 
-export const selectLoginError = (state: RootState) =>{
+export const selectLoginError = (state: RootState) => {
 	return state.authentication.error
 }
 
