@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -79,7 +80,8 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	}
 	fmt.Println("loginResponse", loginResponse)
 
-	schema, err := retrieve.GetSchema(m, r.Creator, r.Schema)
+	ctx := context.Background()
+	schema, err := retrieve.GetSchema(ctx, m, r.Creator, r.Schema)
 	if schema.WhatIs == nil {
 		fmt.Printf("Command failed %v\n", err)
 		return

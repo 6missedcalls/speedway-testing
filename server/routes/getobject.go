@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -69,7 +70,8 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 	}
 	fmt.Println("response", resp)
 
-	object, err := retrieve.GetObject(m, body.SchemaDid, body.ObjectCid)
+	ctx := context.Background()
+	object, err := retrieve.GetObject(ctx, m, body.SchemaDid, body.ObjectCid)
 	if err != nil {
 		fmt.Printf("Command failed %v\n", err)
 		return
