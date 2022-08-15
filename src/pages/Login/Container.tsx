@@ -1,16 +1,21 @@
+import { useDispatch, useSelector } from "react-redux"
+import { selectIsLogged, userLogin } from "../../redux/slices/authenticationSlice"
 import LoginComponent from "./Component"
 
 const Container = () => {
-	const login = (walletAddress: string, password: string) => {
-		fetch("http://localhost:8080/api/v1/account/login", {
-			method: "POST",
-			headers: { "content-type": "application/json" },
-			body: JSON.stringify({ did: walletAddress, password }),
-		})
-			.then((response) => response.json())
-			.then((body) => alert(JSON.stringify(body)))
+	const dispatch = useDispatch<any>()
+	
+	function login(walletAddress: string, password: string){
+		if(!walletAddress || !password) {
+			console.error('Wallet address and password are required.')
+			return
+		}
+		dispatch(userLogin({ walletAddress, password }));
 	}
 
+	const state = useSelector(selectIsLogged)
+	console.log('logged', state)
+	
 	return <LoginComponent onSubmit={login} />
 }
 

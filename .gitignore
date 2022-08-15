@@ -17,6 +17,7 @@ server/PSK.key
 /.next
 
 # misc
+.env
 .DS_Store
 .env.local
 .env.development.local
