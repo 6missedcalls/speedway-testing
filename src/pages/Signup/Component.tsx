@@ -1,15 +1,12 @@
 import { ChangeEvent, FormEvent, useState } from "react"
 import { useNavigate } from "react-router"
-import { useDispatch } from "react-redux"
 import AuthLayout from "../../components/AuthLayout"
-import { setIsLogged } from "../../redux/slices/authenticationSlice"
 
 type Props = {
 	onSubmit: (password: string) => void
 }
 const Component = ({ onSubmit }: Props) => {
 	const [password, setPassword] = useState("")
-	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const _onChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setPassword(event.target.value)
@@ -22,13 +19,8 @@ const Component = ({ onSubmit }: Props) => {
 	return (
 		<AuthLayout
 			sidebarContent={
-				<div className="text-right">
-					<button
-						onClick={() => navigate("/")}
-						className="text-white border rounded"
-					>
-						Go to Login
-					</button>
+				<div className="text-right text-white">
+					<button onClick={() => navigate("/")}>Go to Login</button>
 				</div>
 			}
 			content={
@@ -46,16 +38,6 @@ const Component = ({ onSubmit }: Props) => {
 
 						<button className="border rounded block w-full">Submit</button>
 					</form>
-
-					<button
-						className="mt-8 w-full"
-						onClick={() => {
-							navigate("/dashboard")
-							dispatch(setIsLogged(true))
-						}}
-					>
-						Skip authentication
-					</button>
 				</div>
 			}
 		/>
