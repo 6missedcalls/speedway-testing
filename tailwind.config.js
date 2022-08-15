@@ -58,6 +58,8 @@ module.exports = {
 				"custom-white": "var(--nds-core-border-white)",
 			},
 			colors: {
+				"surface-button-primary":
+					"var(--nds-semantic-color-surface-button-primary)",
 				placeholder: "var(--nds-semantic-color-text-placeholder)",
 				"default-border": "var(--nds-semantic-color-border-input)",
 				default: "var(--nds-semantic-color-text)",

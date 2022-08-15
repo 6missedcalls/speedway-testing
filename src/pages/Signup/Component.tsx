@@ -1,6 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from "react"
 import { useNavigate } from "react-router"
 import AuthLayout from "../../components/AuthLayout"
+import { setIsLogged } from "../../redux/slices/authenticationSlice"
 
 type Props = {
 	onSubmit: (password: string) => void
@@ -11,7 +12,7 @@ const Component = ({ onSubmit }: Props) => {
 	const _onChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setPassword(event.target.value)
 	}
-	const check = fetch ("/api/v1/account/create", {
+	const check = fetch("/api/v1/account/create", {
 		method: "POST",
 		body: JSON.stringify({
 			password: password,
@@ -61,3 +62,6 @@ const Component = ({ onSubmit }: Props) => {
 }
 
 export default Component
+function dispatch(arg0: { payload: boolean; type: string }) {
+	throw new Error("Function not implemented.")
+}
