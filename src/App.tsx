@@ -11,6 +11,7 @@ import {
 	ROUTE_LOGIN,
 	ROUTE_OBJECTS,
 	ROUTE_SCHEMAS,
+	ROUTE_POST_SIGNUP,
 } from "./utils/constants"
 import "./App.css"
 import "./index.css"
@@ -27,6 +28,7 @@ import AccessApi from "./pages/AccessApi"
 import DidUtility from "./pages/DidUtility"
 import DocsAndSupport from "./pages/DocsAndSupport"
 import BlockExplorer from "./pages/BlockExplorer"
+import PostSignup from "./pages/PostSignup"
 
 function App() {
 	return (
@@ -36,6 +38,10 @@ function App() {
 					<Route path={ROUTE_SIGNUP} element={<Signup />} />
 					<Route path={ROUTE_LOGIN} element={<Login />} />
 					<Route path={ROUTE_DOCS_AND_SUPPORT} element={<DocsAndSupport />} />
+					<Route
+						path={ROUTE_POST_SIGNUP}
+						element={<PrivateRoute Component={PostSignup} />}
+					/>
 					<Route
 						path={ROUTE_DASHBOARD}
 						element={<PrivateRoute Component={Dashboard} />}

@@ -15,7 +15,7 @@ const Container = () => {
 			.then((response) => response.json())
 			.then(() => {
 				dispatch(setIsLogged(true))
-				navigate("/objects")
+				navigate("/post-signup")
 			})
 	}
 	return <Signup onSubmit={createAccount} />

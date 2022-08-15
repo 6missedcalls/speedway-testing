@@ -9,6 +9,7 @@ export const ROUTE_DID_UTILITY = "/did-utility"
 export const ROUTE_DOCS_AND_SUPPORT = "/docs-and-support"
 export const ROUTE_BLOCK_EXPLORER = "/block-explorer"
 export const ROUTE_404 = "/404"
+export const ROUTE_POST_SIGNUP = "/post-signup"
 
 // app modal context
 export const SET_MODAL_CONTENT = "SET_MODAL_CONTENT"
