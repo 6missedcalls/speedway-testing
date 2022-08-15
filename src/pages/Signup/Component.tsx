@@ -11,25 +11,10 @@ const Component = ({ onSubmit }: Props) => {
 	const _onChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setPassword(event.target.value)
 	}
-	const check = fetch ("/api/v1/account/create", {
-		method: "POST",
-		body: JSON.stringify({
-			password: password,
-		}),
-	})
+
 	const _onSubmit = (event: FormEvent) => {
 		event.preventDefault()
 		onSubmit(password)
-
-		check.then((res) => {
-			if (res.status === 200) {
-				dispatch(setIsLogged(true))
-				navigate("/dashboard")
-			} else {
-				dispatch(setIsLogged(false))
-				navigate("/login")
-			}
-		})
 	}
 
 	return (
