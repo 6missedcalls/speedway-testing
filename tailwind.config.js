@@ -70,6 +70,7 @@ module.exports = {
 					"var(--nds-semantic-color-surface-button-subtle-hovered)",
 				"button-subtle": "var(--nds-semantic-color-on-button-subtle)",
 				"button-transparent": "var(--nds-semantic-color-on-button-transparent)",
+				"button-outlined": "var(--nds-semantic-color-on-button-outlined)",
 				light: {
 					default: "var(--nds-semantic-color-text)",
 				},

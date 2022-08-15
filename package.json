@@ -15,6 +15,7 @@
 		"@types/react": "18.0.15",
 		"@types/react-dom": "18.0.6",
 		"@types/react-modal": "^3.13.1",
+		"copy-to-clipboard": "^3.3.2",
 		"fuse.js": "^6.6.2",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
@@ -29,7 +30,7 @@
 	"scripts": {
 		"analyze": "source-map-explorer 'build/static/js/*.js'",
 		"start": "react-scripts start",
-		"build": "react-scripts build",
+		"build": "BUILD_PATH=./server/build react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
 		"clean-npm": "rm -rf node_modules && rm -rf package-lock.json",

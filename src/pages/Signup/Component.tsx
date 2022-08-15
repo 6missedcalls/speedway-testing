@@ -1,7 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react"
 import { useNavigate } from "react-router"
-import AuthLayout from "../../components/AuthLayout"
-import { setIsLogged } from "../../redux/slices/authenticationSlice"
+import LayoutAuth from "../../components/LayoutAuth"
 
 type Props = {
 	onSubmit: (password: string) => void
@@ -12,31 +11,15 @@ const Component = ({ onSubmit }: Props) => {
 	const _onChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setPassword(event.target.value)
 	}
-	const check = fetch("/api/v1/account/create", {
-		method: "POST",
-		body: JSON.stringify({
-			password: password,
-		}),
-	})
 	const _onSubmit = (event: FormEvent) => {
 		event.preventDefault()
 		onSubmit(password)
-
-		check.then((res) => {
-			if (res.status === 200) {
-				dispatch(setIsLogged(true))
-				navigate("/dashboard")
-			} else {
-				dispatch(setIsLogged(false))
-				navigate("/login")
-			}
-		})
 	}
 
 	return (
-		<AuthLayout
+		<LayoutAuth
 			sidebarContent={
-				<div className="text-right text-white">
+				<div className="text-right">
 					<button onClick={() => navigate("/")}>Go to Login</button>
 				</div>
 			}
@@ -62,6 +45,3 @@ const Component = ({ onSubmit }: Props) => {
 }
 
 export default Component
-function dispatch(arg0: { payload: boolean; type: string }) {
-	throw new Error("Function not implemented.")
-}

@@ -6,7 +6,7 @@ import {
 	useState,
 } from "react"
 import { useNavigate } from "react-router"
-import AuthLayout from "../../components/AuthLayout"
+import LayoutAuth from "../../components/LayoutAuth"
 
 type Props = {
 	onSubmit: (walletAddress: string, password: string) => void
@@ -27,9 +27,9 @@ const Component = ({ onSubmit, error }: Props) => {
 	}
 
 	return (
-		<AuthLayout
+		<LayoutAuth
 			sidebarContent={
-				<div className="text-right text-white">
+				<div className="text-right">
 					<button onClick={() => navigate("/signup")}>
 						Go to Registration
 					</button>
