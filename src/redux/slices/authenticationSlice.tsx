@@ -27,17 +27,25 @@ const initialState: AuthenticationState = {
 
 export const userLogin = createAsyncThunk(
 	"authentication/login",
-	async ({ walletAddress, password }: loginProps) => {
-		const data = await login(walletAddress, password)
-		return data
+	async ({ walletAddress, password }: loginProps, thunkAPI) => {
+		try {
+			const data = await login(walletAddress, password)
+			return data
+		} catch (err) {
+			return thunkAPI.rejectWithValue(err)
+		}
 	}
 )
 
 export const userCreateAccount = createAsyncThunk(
 	"authentication/createAccount",
-	async ({ password }: createAccountProps) => {
-		const data = await createAccount(password)
-		return data
+	async ({ password }: createAccountProps, thunkAPI) => {
+		try {
+			const data = await createAccount(password)
+			return data
+		} catch (err) {
+			return thunkAPI.rejectWithValue(err)
+		}
 	}
 )
 

@@ -20,10 +20,6 @@ const Container = () => {
 	}, [isLogged, navigate])
 
 	function createAccount(password: string) {
-		if (!password) {
-			console.error("Password is required.")
-			return
-		}
 		dispatch(userCreateAccount({ password }))
 	}
 
