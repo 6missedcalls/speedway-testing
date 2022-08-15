@@ -1,16 +1,21 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../store"
-import { login } from "../../service/authentication"
+import { createAccount, login } from "../../service/authentication"
 
 export interface AuthenticationState {
 	isLogged: boolean
 	loading: boolean
 	error: boolean
+	did?: string
 }
 
 interface loginProps {
 	walletAddress: string
+	password: string
+}
+
+interface createAccountProps {
 	password: string
 }
 
@@ -23,8 +28,16 @@ const initialState: AuthenticationState = {
 export const userLogin = createAsyncThunk(
 	'authentication/login',
 	async ({walletAddress, password}: loginProps) => {
-	  const response = await login(walletAddress, password)
-	  return response.data
+	  const data = await login(walletAddress, password)
+	  return data
+	}
+  )
+
+  export const userCreateAccount = createAsyncThunk(
+	'authentication/createAccount',
+	async ({ password}: createAccountProps) => {
+	  const data = await createAccount(password)
+	  return data
 	}
   )
 
@@ -49,6 +62,21 @@ export const authenticationSlice = createSlice({
 		builder.addCase(userLogin.rejected, (state) => {
 		  state.error = true;
 		  state.loading = false;
+		});
+		builder.addCase(userCreateAccount.pending, (state) => {
+			state.loading = true;
+		});
+	
+		builder.addCase(userCreateAccount.fulfilled, (state, action) => {
+			const { payload } = action
+			state.loading = false;
+			state.isLogged = true;
+			state.did = payload.Did;
+		});
+	
+		builder.addCase(userCreateAccount.rejected, (state) => {
+			state.error = true;
+			state.loading = false;
 		});
 	  },
 })
