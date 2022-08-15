@@ -52,7 +52,7 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 			}
 
 			// Retrieve the object
-			object, err := retrieve.GetObject(m, schemaDid, cid)
+			object, err := retrieve.GetObject(ctx, m, schemaDid, cid)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return

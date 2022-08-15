@@ -46,7 +46,6 @@ func LoadInfo(name string) (string, error) {
 
 // AutoLoadKey loads the key from the ~/.speedway/keys directory if it exists
 // otherwise it returns an error
-
 func AutoLoadKey() ([]byte, []byte, error) {
 	aesKey, err := LoadKey("aes.key")
 	if aesKey == nil || len(aesKey) != 32 {

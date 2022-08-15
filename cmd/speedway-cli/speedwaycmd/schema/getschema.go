@@ -48,7 +48,7 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 				return
 			}
 
-			schema, err := retrieve.GetSchema(m, creator, schemaDid)
+			schema, err := retrieve.GetSchema(ctx, m, creator, schemaDid)
 			if schema.WhatIs == nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
