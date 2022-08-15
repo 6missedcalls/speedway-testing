@@ -1,5 +1,4 @@
-const BASE_API =
-	process.env.REACT_APP_BASE_API || "http://localhost:8080/api/v1"
+import { BASE_API } from "../utils/constants"
 
 export const createAccount = async (password: string) => {
 	const url = `${BASE_API}/account/create`
