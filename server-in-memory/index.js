@@ -42,9 +42,9 @@ app.post("/api/v1/account/create", async (req, res) => {
 })
 
 app.post("/api/v1/account/login", async (req, res) => {
-	const account = await storage.getItem(req.body.did)
+	const account = await storage.getItem(req.body.Address)
 
-	if (!account || account.password !== req.body.password) {
+	if (!account || account.password !== req.body.Password) {
 		res.status(500).send()
 		return
 	}
