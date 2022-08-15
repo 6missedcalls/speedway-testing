@@ -6,7 +6,7 @@ import { login } from "../../service/authentication"
 export interface AuthenticationState {
 	isLogged: boolean
 	loading: boolean
-	error?: string
+	error: boolean
 }
 
 interface loginProps {
@@ -16,7 +16,8 @@ interface loginProps {
 
 const initialState: AuthenticationState = {
 	isLogged: false,
-	loading: false
+	loading: false,
+	error: false
 }
 
 export const userLogin = createAsyncThunk(
@@ -46,7 +47,7 @@ export const authenticationSlice = createSlice({
 		});
 	
 		builder.addCase(userLogin.rejected, (state) => {
-		  state.error = 'Login failed.';
+		  state.error = true;
 		  state.loading = false;
 		});
 	  },
@@ -55,8 +56,11 @@ export const authenticationSlice = createSlice({
 export const { setIsLogged } = authenticationSlice.actions
 
 export const selectIsLogged = (state: RootState) =>{
-	console.log('state!', state)
 	return state.authentication.isLogged
+}
+
+export const selectLoginError = (state: RootState) =>{
+	return state.authentication.error
 }
 
 export default authenticationSlice.reducer

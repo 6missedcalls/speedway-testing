@@ -1,10 +1,21 @@
+import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { selectIsLogged, userLogin } from "../../redux/slices/authenticationSlice"
+import { useNavigate } from "react-router-dom"
+import { selectIsLogged, selectLoginError, userLogin } from "../../redux/slices/authenticationSlice"
 import LoginComponent from "./Component"
 
 const Container = () => {
 	const dispatch = useDispatch<any>()
-	
+	const navigate = useNavigate()
+	const isLogged = useSelector(selectIsLogged)
+	const error = useSelector(selectLoginError)
+
+	useEffect(() => {
+		if(isLogged){
+			navigate("/objects")
+		}
+	}, [isLogged, navigate])
+
 	function login(walletAddress: string, password: string){
 		if(!walletAddress || !password) {
 			console.error('Wallet address and password are required.')
@@ -12,11 +23,8 @@ const Container = () => {
 		}
 		dispatch(userLogin({ walletAddress, password }));
 	}
-
-	const state = useSelector(selectIsLogged)
-	console.log('logged', state)
 	
-	return <LoginComponent onSubmit={login} />
+	return <LoginComponent onSubmit={login} error={error} />
 }
 
 export default Container

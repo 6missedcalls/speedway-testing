@@ -42,7 +42,6 @@ app.post("/api/v1/account/create", async (req, res) => {
 })
 
 app.post("/api/v1/account/login", async (req, res) => {
-	console.log('oooi')
 	const account = await storage.getItem(req.body.did)
 
 	if (!account || account.password !== req.body.password) {
