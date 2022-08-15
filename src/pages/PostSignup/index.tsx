@@ -1,3 +1,4 @@
+import copy from "copy-to-clipboard"
 import { useLocation } from "react-router"
 
 const Component = () => {
@@ -17,7 +18,13 @@ const Component = () => {
 					If you lose or forget your SonrID you will lose access to your account
 					forever.
 				</p>
-				<button className="block py-3 rounded bg-primary w-full text-xl font-bold">
+				<button
+					onClick={() => copy(Did)}
+					className="block py-3 rounded border border-primary w-full text-xl text-button-outlined font-semibold mb-4 active:opacity-60"
+				>
+					Copy SonrID to Clipboard
+				</button>
+				<button className="block py-3 rounded bg-primary w-full text-xl font-semibold">
 					Complete Registration
 				</button>
 			</div>
