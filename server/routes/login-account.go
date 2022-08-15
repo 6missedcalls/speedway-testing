@@ -3,6 +3,7 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin" // TODO: Wait for PR to be merged
 	"github.com/sonr-io/speedway/internal/account"
@@ -54,14 +55,18 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 	res, err := account.Login(m, req)
 	if err != nil {
 		fmt.Println("err", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Login Error",
+		})
+		return
 	}
 	fmt.Println("Result", res)
 	if !res.Success {
-		c.JSON(500, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Login failed",
 		})
 	} else {
-		c.JSON(200, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"success":     true,
 			"Address":     m.GetAddress(),
 			"DIDDocument": m.GetDIDDocument(),

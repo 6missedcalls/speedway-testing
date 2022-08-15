@@ -67,6 +67,9 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	loginResponse, err := m.Login(loginRequest)
 	if err != nil {
 		fmt.Println("err", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Login Error",
+		})
 		return
 	}
 	// if login fails, return error

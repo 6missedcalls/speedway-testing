@@ -6,10 +6,10 @@ import (
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/account"
+	"github.com/sonr-io/speedway/internal/color"
 	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/spf13/cobra"
-	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
@@ -37,7 +37,7 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 			}
 			pskKey, err := storage.LoadKey("psk.key")
 			if pskKey == nil || len(pskKey) != 32 {
-				fmt.Println(chalk.Yellow, "Please add this device to your current account or make another account", chalk.Reset)
+				fmt.Println(color.Warning, "Please add this device to your current account or make another account")
 				return
 			}
 			req := rtmv1.LoginRequest{
@@ -46,19 +46,19 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 				AesPskKey: pskKey,
 			}
 			if err != nil {
-				fmt.Println(chalk.Red, "Error: %s", err)
+				fmt.Println(color.Error, "LoginRequest Error: %s", err)
 			}
 			m := initmotor.InitMotor()
 			res, err := account.Login(m, req)
 			if err != nil {
-				fmt.Println(chalk.Red, "Error: %s", err)
+				fmt.Println(color.Error, "Login Error: %s", err)
 				return
 			}
-			fmt.Println(chalk.Yellow, "Login Response: %s", res)
+			fmt.Println(color.Debug, "Login Response: %s", res)
 			if res.Success {
-				fmt.Println(chalk.Green, "Login Successful")
+				fmt.Println(color.Success, "Login Successful")
 			} else {
-				fmt.Println(chalk.Red, "Login failed")
+				fmt.Println(color.Error, "Login failed")
 				return
 			}
 		},

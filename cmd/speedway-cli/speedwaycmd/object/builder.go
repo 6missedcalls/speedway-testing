@@ -6,11 +6,11 @@ import (
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/account"
+	"github.com/sonr-io/speedway/internal/color"
 	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/resolver"
 	"github.com/spf13/cobra"
-	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
@@ -27,10 +27,14 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 			m := initmotor.InitMotor()
 
 			loginResult, err := account.Login(m, loginRequest)
+			if err != nil {
+				fmt.Println(color.Error, "Error: %s", err)
+				return
+			}
 			if loginResult.Success {
-				fmt.Println(chalk.Green.Color("Login Successful"))
+				fmt.Println(color.Success, "Login successful")
 			} else {
-				fmt.Println(chalk.Red.Color("Login Failed"), err)
+				fmt.Println(color.Error, "Login failed")
 				return
 			}
 
@@ -71,7 +75,7 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fmt.Println(chalk.Green, "Resolved Schema:", definition)
+			fmt.Println(color.Debug, "Resolved Schema:", definition)
 
 			objectLabel := promptui.Prompt{
 				Label: "Enter Object Label",
@@ -85,7 +89,7 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 
 			for _, field := range definition.Fields {
 				valuePrompt := promptui.Prompt{
-					Label: "Enter Field Value for " + field.Name,
+					Label: "Enter Value for " + field.Name,
 				}
 				value, err := valuePrompt.Run()
 				if err != nil {

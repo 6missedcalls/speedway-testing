@@ -68,6 +68,9 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 	resp, err := account.Login(m, loginRequest)
 	if err != nil {
 		fmt.Println("err", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Login Error",
+		})
 	}
 	fmt.Println("response", resp)
 

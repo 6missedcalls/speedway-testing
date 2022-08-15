@@ -45,44 +45,44 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 
 	m := initmotor.InitMotor()
 
-	aesKey, err := storage.LoadKey("aes.key")
+	aesKey, aesPskKey, err := storage.AutoLoadKey()
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println(chalk.Red.Color("Key Error: "), err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Key Error",
+		})
+		return
 	}
-	aesPskKey, err := storage.LoadKey("psk.key")
-	if err != nil {
-		fmt.Println("err", err)
-	}
-	// * Create a new login & create schema request
+
 	// Create a new login request
-	loginRequest := (rtmv1.LoginRequest{
+	loginRequest := rtmv1.LoginRequest{
 		Did:       r.Address,
 		AesDscKey: aesKey,
 		AesPskKey: aesPskKey,
-	})
+	}
+
 	// Login Response
 	loginResponse, err := m.Login(loginRequest)
 	if err != nil {
 		fmt.Println("err", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Login Error",
+		})
 		return
 	}
 	// if login fails, return error
-	if loginResponse.Success {
-		fmt.Println(chalk.Green, "Login successful")
-	} else {
-		fmt.Println(chalk.Red, "Login failed")
+	if !loginResponse.Success {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Login failed",
 		})
 		return
 	}
-	fmt.Println("loginResponse", loginResponse)
+
 	// Create a new create schema request
 	createSchemaRequest := rtmv1.CreateSchemaRequest{
 		Label:  r.SchemaLabel,
 		Fields: r.SchemaField,
 	}
-	fmt.Println("createSchemaRequest", createSchemaRequest)
 
 	// create the schema
 	res, err := m.CreateSchema(createSchemaRequest)
