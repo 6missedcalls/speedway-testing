@@ -1,5 +1,7 @@
 export const createAccount = async (password: string) => {
-	const url = `${process.env.REACT_APP_BASE_API}/account/create`
+	const url = `${
+		process.env.REACT_APP_BASE_API || "http://localhost:8080/api/v1"
+	}/account/create`
 
 	const payload = JSON.stringify({ password })
 
