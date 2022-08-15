@@ -43,16 +43,12 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 	// init motor
 	m := initmotor.InitMotor()
 
-	// Load keys
-	aesKey, err := storage.LoadKey("aes.key")
-	// return err from loadkey
+	// Get Keys
+	aesKey, pskKey, err := storage.AutoLoadKey()
 	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	aesPskKey, err := storage.LoadKey("psk.key")
-	if err != nil {
-		fmt.Println("err", err)
+		c.JSON(500, gin.H{
+			"error": "Error loading keys",
+		})
 		return
 	}
 
@@ -60,7 +56,7 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 	loginRequest := rtmv1.LoginRequest{
 		Did:       body.Address,
 		AesDscKey: aesKey,
-		AesPskKey: aesPskKey,
+		AesPskKey: pskKey,
 	}
 	if err != nil {
 		fmt.Println("err", err)
