@@ -11,7 +11,7 @@ const Component = ({ onSubmit }: Props) => {
 	const _onChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setPassword(event.target.value)
 	}
-	const check = fetch ("/api/v1/account/create", {
+	const check = fetch("/api/v1/account/create", {
 		method: "POST",
 		body: JSON.stringify({
 			password: password,
