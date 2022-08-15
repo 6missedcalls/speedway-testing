@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react"
 import { useNavigate } from "react-router"
-import AuthLayout from "../../components/AuthLayout"
+import LayoutAuth from "../../components/LayoutAuth"
 
 type Props = {
 	onSubmit: (password: string) => void
@@ -18,9 +18,9 @@ const Component = ({ onSubmit }: Props) => {
 	}
 
 	return (
-		<AuthLayout
+		<LayoutAuth
 			sidebarContent={
-				<div className="text-right text-white">
+				<div className="text-right">
 					<button onClick={() => navigate("/")}>Go to Login</button>
 				</div>
 			}

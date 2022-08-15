@@ -6,6 +6,7 @@ import Signup from "./Component"
 
 const Container = () => {
 	const navigate = useNavigate()
+
 	const dispatch = useDispatch<any>()
 	const isLogged = useSelector(selectIsLogged)
 	
@@ -21,7 +22,7 @@ const Container = () => {
 			console.error('Password is required.')
 			return
 		}
-		dispatch(userCreateAccount({ password }));
+		dispatch(userCreateAccount({ password }))
 	}
 
 	return <Signup onSubmit={createAccount} />

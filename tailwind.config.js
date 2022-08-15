@@ -58,6 +58,8 @@ module.exports = {
 				"custom-white": "var(--nds-core-border-white)",
 			},
 			colors: {
+				"surface-button-primary":
+					"var(--nds-semantic-color-surface-button-primary)",
 				placeholder: "var(--nds-semantic-color-text-placeholder)",
 				"default-border": "var(--nds-semantic-color-border-input)",
 				default: "var(--nds-semantic-color-text)",
@@ -68,6 +70,7 @@ module.exports = {
 					"var(--nds-semantic-color-surface-button-subtle-hovered)",
 				"button-subtle": "var(--nds-semantic-color-on-button-subtle)",
 				"button-transparent": "var(--nds-semantic-color-on-button-transparent)",
+				"button-outlined": "var(--nds-semantic-color-on-button-outlined)",
 				light: {
 					default: "var(--nds-semantic-color-text)",
 				},

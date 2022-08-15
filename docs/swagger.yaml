@@ -31,7 +31,7 @@ definitions:
       fields:
         description: the properties of this schema
         items:
-          $ref: '#/definitions/types.SchemaKindDefinition'
+          $ref: "#/definitions/types.SchemaKindDefinition"
         type: array
       label:
         description: an alternative reference point
@@ -45,7 +45,8 @@ definitions:
       link:
         type: string
       link_kind:
-        description: Optional field for a link context if `SchemaKind` is of type
+        description:
+          Optional field for a link context if `SchemaKind` is of type
           `Link`
         type: integer
       name:
@@ -57,7 +58,8 @@ info:
     email: team@sonr.io
     name: API Support
     url: https://sonr.io/
-  description: Create accounts, schemas, buckets and objects in a scalable way utilizing
+  description:
+    Create accounts, schemas, buckets and objects in a scalable way utilizing
     the Sonr architecture.
   license:
     name: OpenGLv3
@@ -67,17 +69,18 @@ info:
 paths:
   /account/create:
     post:
-      description: Create a new account on Sonr using the Registry module of Sonr's
+      description:
+        Create a new account on Sonr using the Registry module of Sonr's
         Blockchain.
       parameters:
-      - description: Password
-        in: body
-        name: password
-        required: true
-        schema:
-          type: string
+        - description: Password
+          in: body
+          name: password
+          required: true
+          schema:
+            type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: Did
@@ -89,152 +92,155 @@ paths:
             type: string
       summary: CreateAccount
       tags:
-      - account
+        - account
   /account/login:
     post:
-      description: Login to an existing account on Sonr using the Registry module
+      description:
+        Login to an existing account on Sonr using the Registry module
         of Sonr's Blockchain.
       parameters:
-      - description: Did
-        example: '"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
-        in: body
-        name: Did
-        required: true
-        schema:
-          type: string
-      - description: Password
-        example: '"Password"'
-        in: body
-        name: Password
-        required: true
-        schema:
-          type: string
+        - description: Did
+          example: '"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+          in: body
+          name: Did
+          required: true
+          schema:
+            type: string
+        - description: Password
+          example: '"Password"'
+          in: body
+          name: Password
+          required: true
+          schema:
+            type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/apiv1.LoginResponse'
+            $ref: "#/definitions/apiv1.LoginResponse"
         "500":
           description: Internal Server Error
           schema:
             type: string
       summary: LoginAccount
       tags:
-      - account
+        - account
   /object/build:
     post:
       description: Build an object on Sonr using the object module of Sonr's Blockchain.
       parameters:
-      - description: Address
-        example: '"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
-        in: body
-        name: Address
-        required: true
-        schema:
-          type: string
-      - description: SchemaDid
-        example: '"did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
-        in: body
-        name: SchemaDid
-        required: true
-        schema:
-          type: string
-      - description: Label
-        example: '"MyObject"'
-        in: body
-        name: Label
-        required: true
-        schema:
-          type: string
-      - description: Object
-        in: body
-        name: Object
-        required: true
-        schema:
-          additionalProperties: true
-          type: object
+        - description: Address
+          example: '"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+          in: body
+          name: Address
+          required: true
+          schema:
+            type: string
+        - description: SchemaDid
+          example: '"did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+          in: body
+          name: SchemaDid
+          required: true
+          schema:
+            type: string
+        - description: Label
+          example: '"MyObject"'
+          in: body
+          name: Label
+          required: true
+          schema:
+            type: string
+        - description: Object
+          in: body
+          name: Object
+          required: true
+          schema:
+            additionalProperties: true
+            type: object
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/object.ObjectReference'
+            $ref: "#/definitions/object.ObjectReference"
         "500":
           description: Internal Server Error
           schema:
             type: string
       summary: BuildObject
       tags:
-      - object
+        - object
   /schema/create:
     post:
-      description: Create a schema utilizing motor client. Returns the WhatIs of the
+      description:
+        Create a schema utilizing motor client. Returns the WhatIs of the
         schema created.
       parameters:
-      - description: Address of the user
-        in: query
-        name: address
-        required: true
-        type: string
-      - description: Label of the schema
-        in: query
-        name: label
-        required: true
-        type: string
-      - description: Fields of the schema
-        in: query
-        name: fields
-        required: true
-        type: string
+        - description: Address of the user
+          in: query
+          name: address
+          required: true
+          type: string
+        - description: Label of the schema
+          in: query
+          name: label
+          required: true
+          type: string
+        - description: Fields of the schema
+          in: query
+          name: fields
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/apiv1.CreateSchemaResponse'
+            $ref: "#/definitions/apiv1.CreateSchemaResponse"
         "500":
           description: Internal Server Error
           schema:
             type: string
       summary: CreateSchema
       tags:
-      - schema
+        - schema
   /schema/get:
     post:
-      description: Get a schema utilizing motor client. Returns the WhatIs of the
+      description:
+        Get a schema utilizing motor client. Returns the WhatIs of the
         schema that is retrieved.
       parameters:
-      - description: Did
-        in: query
-        name: did
-        required: true
-        type: string
-      - description: Creator
-        in: query
-        name: creator
-        required: true
-        type: string
-      - description: Schema
-        in: query
-        name: schema
-        required: true
-        type: string
+        - description: Did
+          in: query
+          name: did
+          required: true
+          type: string
+        - description: Creator
+          in: query
+          name: creator
+          required: true
+          type: string
+        - description: Schema
+          in: query
+          name: schema
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/types.SchemaDefinition'
+            $ref: "#/definitions/types.SchemaDefinition"
         "500":
           description: Internal Server Error
           schema:
             type: string
       summary: GetSchema
       tags:
-      - schema
+        - schema
 swagger: "2.0"
