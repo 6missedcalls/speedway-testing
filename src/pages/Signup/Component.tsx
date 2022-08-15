@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react"
 import { useNavigate } from "react-router"
-import AuthLayout from "../../components/AuthLayout"
+import LayoutAuth from "../../components/LayoutAuth"
 import { setIsLogged } from "../../redux/slices/authenticationSlice"
 
 type Props = {
@@ -34,7 +34,7 @@ const Component = ({ onSubmit }: Props) => {
 	}
 
 	return (
-		<AuthLayout
+		<LayoutAuth
 			sidebarContent={
 				<div className="text-right">
 					<button onClick={() => navigate("/")}>Go to Login</button>

@@ -3,7 +3,7 @@ import { Navigate } from "react-router"
 import { selectIsLogged } from "../../redux/slices/authenticationSlice"
 
 interface PrivateRouteProps {
-	Component: React.FC<any>
+	Component: React.FC
 }
 
 function PrivateRoute({ Component, ...props }: PrivateRouteProps) {
