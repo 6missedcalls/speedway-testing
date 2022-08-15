@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/speedway/internal/initmotor"
@@ -37,7 +38,7 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	var r QuerySchema
 	err := json.NewDecoder(rBody).Decode(&r)
 	if err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid request body",
 		})
 		return
@@ -73,7 +74,7 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 		fmt.Println(chalk.Green, "Login successful")
 	} else {
 		fmt.Println(chalk.Red, "Login failed")
-		c.JSON(500, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Login failed",
 		})
 		return
@@ -94,5 +95,5 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, definition)
+	c.JSON(http.StatusOK, definition)
 }

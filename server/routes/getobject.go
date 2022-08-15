@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/speedway/internal/account"
@@ -36,7 +37,7 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 	var body GetObject
 	err := json.NewDecoder(rBody).Decode(&body)
 	if err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid request body",
 		})
 		return
@@ -47,7 +48,7 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 	// Get Keys
 	aesKey, pskKey, err := storage.AutoLoadKey()
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Error loading keys",
 		})
 		return
@@ -76,5 +77,5 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 		fmt.Printf("Command failed %v\n", err)
 		return
 	}
-	c.JSON(200, object)
+	c.JSON(http.StatusOK, object)
 }

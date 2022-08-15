@@ -3,6 +3,7 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
@@ -31,7 +32,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	var body CARequestBody
 	err := json.NewDecoder(rBody).Decode(&body)
 	if err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid request body",
 		})
 		return
@@ -55,11 +56,8 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	if err != nil {
 		fmt.Println("err", err)
 	}
-	// send res back to client as json response
-	c.JSON(200, gin.H{
+
+	c.JSON(http.StatusOK, gin.H{
 		"Address": res.Address,
 	})
-	if storage.StoreKey("psk.key", res.AesPsk) != nil {
-		fmt.Println("err", err)
-	}
 }
