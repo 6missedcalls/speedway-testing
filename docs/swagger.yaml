@@ -80,7 +80,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Did
+          description: Address
           schema:
             type: string
         "500":
