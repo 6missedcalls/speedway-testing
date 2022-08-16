@@ -26,7 +26,7 @@ export const createAccount = async (password: string) => {
 export const login = async (walletAddress: string, password: string) => {
 	const url = `${BASE_API}/account/login`
 
-	const payload = JSON.stringify({ did: walletAddress, password })
+	const payload = JSON.stringify({ Address: walletAddress, Password: password })
 
 	const options = {
 		method: "POST",
