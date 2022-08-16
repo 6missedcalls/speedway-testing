@@ -1,27 +1,31 @@
-import { useState } from "react"
-import { useDispatch } from "react-redux"
-import { useNavigate } from "react-router"
-import { setIsLogged } from "../../redux/slices/authenticationSlice"
+import { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
+import {
+	selectIsLogged,
+	selectLoginError,
+	userLogin,
+} from "../../redux/slices/authenticationSlice"
 import LoginComponent from "./Component"
 
 const Container = () => {
-	const [error, setError] = useState(false)
+	const dispatch = useDispatch<any>()
 	const navigate = useNavigate()
-	const dispatch = useDispatch()
+	const isLogged = useSelector(selectIsLogged)
+	const error = useSelector(selectLoginError)
 
-	const login = (walletAddress: string, password: string) => {
-		setError(false)
-		fetch("http://localhost:8080/api/v1/account/login", {
-			method: "POST",
-			headers: { "content-type": "application/json" },
-			body: JSON.stringify({ did: walletAddress, password }),
-		})
-			.then((response) => response.json())
-			.then(() => {
-				dispatch(setIsLogged(true))
-				navigate("/objects")
-			})
-			.catch(() => setError(true))
+	useEffect(() => {
+		if (isLogged) {
+			navigate("/objects")
+		}
+	}, [isLogged, navigate])
+
+	function login(walletAddress: string, password: string) {
+		if (!walletAddress || !password) {
+			console.error("Wallet address and password are required.")
+			return
+		}
+		dispatch(userLogin({ walletAddress, password }))
 	}
 
 	return <LoginComponent onSubmit={login} error={error} />

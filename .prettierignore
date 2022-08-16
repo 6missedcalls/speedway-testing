@@ -5,3 +5,6 @@ public/
 server/
 cmd/
 docs/
+build/
+*.MD
+*.md

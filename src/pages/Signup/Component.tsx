@@ -11,6 +11,7 @@ const Component = ({ onSubmit }: Props) => {
 	const _onChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setPassword(event.target.value)
 	}
+
 	const _onSubmit = (event: FormEvent) => {
 		event.preventDefault()
 		onSubmit(password)

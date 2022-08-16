@@ -17,3 +17,6 @@ export const OPEN_MODAL = "OPEN_MODAL"
 export const CLOSE_MODAL = "CLOSE_MODAL"
 export const MODAL_CONTENT_NEW_SCHEMA = "MODAL_CONTENT_NEW_SCHEMA"
 export const MODAL_CONTENT_NEW_OBJECT = "MODAL_CONTENT_NEW_OBJECT"
+
+// APIs
+export const BASE_API = "http://localhost:8080/api/v1"
