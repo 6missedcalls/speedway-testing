@@ -75,8 +75,8 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				Label: "Enter your Schema Fields",
 			}
 
-			var repeat string
-			for repeat != "N" && repeat != "n" && repeat != "stop" && repeat != "STOP" && repeat != "exit" && repeat != "EXIT" {
+			var repeat bool
+			for !repeat {
 				// make schemaFields []string
 				schemaField, err := prompt.Run()
 				if err != nil {
@@ -104,14 +104,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				}
 				sk := convertSchemaKind(result)
 				fields[schemaField] = sk
-				repeatPrompt := promptui.Prompt{
-					Label: "Repeat? (Y/N)",
-				}
-				repeat, err = repeatPrompt.Run()
-				if err != nil {
-					fmt.Printf("Command failed %v\n", err)
-					return
-				}
+				repeat = prompts.QuitSelector()
 			}
 
 			createSchemaRequest := rtmv1.CreateSchemaRequest{

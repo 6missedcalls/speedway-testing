@@ -57,3 +57,19 @@ func LoginPrompt() rtmv1.LoginRequest {
 	}
 	return loginRequest
 }
+
+func QuitSelector() bool {
+	prompt := promptui.Select{
+		Label: "Finished with Schema?",
+		Items: []string{"Yes", "No"},
+	}
+	_, result, err := prompt.Run()
+	if err != nil {
+		fmt.Printf("Command failed %v\n", err)
+		return false
+	}
+	if result == "Yes" {
+		return true
+	}
+	return false
+}
