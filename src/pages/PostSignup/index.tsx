@@ -4,12 +4,12 @@ import { useLocation, useNavigate } from "react-router-dom"
 const Component = () => {
 	const navigate = useNavigate()
 	const { state } = useLocation()
-	const { Did } = state as { Did: string }
+	const { Address } = state as { Address: string }
 	return (
 		<div className="flex items-center dark text-default bg-surface-default h-screen">
 			<div className="ml-32 w-[480px]">
 				<h1 className="uppercase text-4xl font-extrabold mb-10 break-words leading-tight">
-					{Did}
+					{Address}
 				</h1>
 
 				<p className="text-xl mb-10">
@@ -23,7 +23,7 @@ const Component = () => {
 				</p>
 
 				<button
-					onClick={() => copy(Did)}
+					onClick={() => copy(Address)}
 					className="block py-3 rounded border border-primary w-full text-xl text-button-outlined font-semibold mb-4 active:opacity-60"
 				>
 					Copy SonrID to Clipboard

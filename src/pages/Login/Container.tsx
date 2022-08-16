@@ -14,7 +14,7 @@ const Container = () => {
 		fetch("http://localhost:8080/api/v1/account/login", {
 			method: "POST",
 			headers: { "content-type": "application/json" },
-			body: JSON.stringify({ did: walletAddress, password }),
+			body: JSON.stringify({ Address: walletAddress, Password: password }),
 		})
 			.then((response) => response.json())
 			.then(() => {
