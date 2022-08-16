@@ -33,7 +33,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	err := json.NewDecoder(rBody).Decode(&body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid request body",
+			"error": "Invalid Request Body",
 		})
 		return
 	}
@@ -41,9 +41,14 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	aesKey, err := mpc.NewAesKey()
 	if err != nil {
 		fmt.Println("err", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Could not generate AES key",
+		})
+		return
 	}
 	if storage.StoreKey("aes.key", aesKey) != nil {
-		fmt.Println("err", err)
+		fmt.Println("Storage Error: ", err)
+		return
 	}
 
 	req := rtmv1.CreateAccountRequest{
@@ -55,6 +60,10 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	res, err := account.CreateAccount(req)
 	if err != nil {
 		fmt.Println("err", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Could Not Create Account",
+		})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{

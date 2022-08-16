@@ -39,7 +39,7 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	err := json.NewDecoder(rBody).Decode(&r)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid request body",
+			"error": "Invalid Request Body",
 		})
 		return
 	}
@@ -50,7 +50,7 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	if err != nil {
 		fmt.Println(chalk.Red.Color("Key Error: "), err)
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Key Error",
+			"error": "Error Loading Keys",
 		})
 		return
 	}
@@ -65,7 +65,7 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 
 	loginResponse, err := m.Login(loginRequest)
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println("Login Error: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Login Error",
 		})
@@ -92,6 +92,9 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	definition, err := utils.ResolveIPFS(whatIs.Schema.Cid)
 	if err != nil {
 		fmt.Printf("Command failed %v\n", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error resolving IPFS",
+		})
 		return
 	}
 

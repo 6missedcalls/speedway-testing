@@ -38,7 +38,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid request body",
+			"error": "Invalid Request Body",
 		})
 		return
 	}
@@ -47,9 +47,9 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 
 	aesKey, aesPskKey, err := storage.AutoLoadKey()
 	if err != nil {
-		fmt.Println(chalk.Red.Color("Key Error: "), err)
+		fmt.Println(chalk.Red.Color("LoadKey Error: "), err)
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Key Error",
+			"error": "Error Loading Keys",
 		})
 		return
 	}
@@ -64,7 +64,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	// Login Response
 	loginResponse, err := m.Login(loginRequest)
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println("Login Error: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Login Error",
 		})
@@ -89,7 +89,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Create Schema Error: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
+			"error": "Could Not Create Schema",
 		})
 		return
 	}

@@ -38,7 +38,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	err := json.NewDecoder(rBody).Decode(&body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid request body",
+			"error": "Invalid Request Body",
 		})
 		return
 	}
@@ -50,7 +50,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	aesKey, aesPskKey, err := storage.AutoLoadKey()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Error loading keys",
+			"error": "Error Loading Keys",
 		})
 		return
 	}
@@ -62,13 +62,13 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 		AesPskKey: aesPskKey,
 	}
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println("Request Error: ", err)
 	}
 
 	// Login to Sonr
 	res, err := account.Login(m, req)
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println("Login Error: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Login Error",
 		})
@@ -77,7 +77,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	fmt.Println("Result", res)
 	if !res.Success {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": res,
+			"error": "Login Failed",
 		})
 	}
 
@@ -95,7 +95,10 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	// Initialize NewObjectBuilder
 	objBuilder, err := m.NewObjectBuilder(body.SchemaDid)
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println("ObjectBuilder Error: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "ObjectBuilder Error",
+		})
 	}
 
 	objBuilder.SetLabel(label)
@@ -109,9 +112,8 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	upload, err := objBuilder.Upload()
 	if err != nil {
 		fmt.Println("err", err)
-		// create 500 error response
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err,
+			"error": "Object Upload Failed",
 		})
 	}
 	c.JSON(http.StatusOK, gin.H{
