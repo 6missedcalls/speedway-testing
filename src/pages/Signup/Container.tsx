@@ -9,7 +9,6 @@ import Signup from "./Component"
 
 const Container = () => {
 	const navigate = useNavigate()
-
 	const dispatch = useDispatch<any>()
 	const isLogged = useSelector(selectIsLogged)
 
