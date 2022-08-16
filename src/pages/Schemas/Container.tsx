@@ -6,6 +6,8 @@ import {
 	userGetAllSchemas,
 } from "../../redux/slices/schemasSlice"
 import { MODAL_CONTENT_NEW_SCHEMA } from "../../utils/constants"
+import { obfuscateDid } from "../../utils/string"
+import { Ischema } from "../../utils/types"
 import SchemasPageComponent from "./Component"
 
 function SchemasPageContainer() {
@@ -22,10 +24,22 @@ function SchemasPageContainer() {
 		openModal()
 	}
 
+	function mapToListFormat(list: any) {
+		return list.map((item: Ischema) => {
+			return {
+				"Schema name": item.schema.label,
+				DID: obfuscateDid(item.did),
+				Objects: "",
+				Fields: "",
+			}
+		})
+	}
+
 	return (
 		<SchemasPageComponent
 			openNewSchemaModal={openNewSchemaModal}
-			list={schemasMetaDataList}
+			list={mapToListFormat(schemasMetaDataList)}
+			searchableAndSortableFieldKey="Schema name"
 		/>
 	)
 }

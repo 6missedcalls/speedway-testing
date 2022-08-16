@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { RootState } from "../store"
-import { Ischema } from "../../utils/types"
+import { InewSchema, Ischema } from "../../utils/types"
 import { createSchema, getAllSchemas } from "../../service/schemas"
 
 export interface SchemasState {
@@ -13,6 +13,10 @@ const initialState: SchemasState = {
 	list: [],
 	loading: false,
 	error: false,
+}
+
+interface userCreateSchemaProp {
+	schema: InewSchema
 }
 
 export const userGetAllSchemas = createAsyncThunk(
@@ -29,7 +33,7 @@ export const userGetAllSchemas = createAsyncThunk(
 
 export const userCreateSchema = createAsyncThunk(
 	"schemas/create",
-	async (schema: Ischema, thunkAPI) => {
+	async ({ schema }: userCreateSchemaProp, thunkAPI) => {
 		try {
 			const data = await createSchema(schema)
 			return data
@@ -51,7 +55,7 @@ export const schemasSlice = createSlice({
 		builder.addCase(userGetAllSchemas.fulfilled, (state, action) => {
 			const { payload } = action
 			state.loading = false
-			state.list = payload
+			state.list = payload.whatIs
 		})
 
 		builder.addCase(userGetAllSchemas.rejected, (state) => {
@@ -65,7 +69,16 @@ export const schemasSlice = createSlice({
 		builder.addCase(userCreateSchema.fulfilled, (state, action) => {
 			const { payload } = action
 			state.loading = false
-			state.list.push(payload)
+
+			state.list.push({
+				did: payload.whatIs.did,
+				schema: {
+					did: payload.whatIs.did,
+					label: payload.definition.label,
+				},
+				creator: payload.definition.creator,
+				is_active: true,
+			})
 		})
 
 		builder.addCase(userCreateSchema.rejected, (state) => {
@@ -74,6 +87,10 @@ export const schemasSlice = createSlice({
 		})
 	},
 })
+
+export const selectSchemasLoading = (state: RootState) => {
+	return state.schemas.loading
+}
 
 export const selectSchemasMetaDataList = (state: RootState) => {
 	return state.schemas.list

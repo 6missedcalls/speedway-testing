@@ -29,14 +29,6 @@ app.get("/reset", async (_, res) => {
 	res.json({ length })
 })
 
-app.use((_, res, next) => {
-	if (!sessionDid) {
-		res.status(500).json({ message: "Not logged in" })
-		return
-	}
-	next()
-})
-
 /// AUTHENTICATION
 
 let sessionDid = null
@@ -73,6 +65,14 @@ app.post("/api/v1/account/login", async ({ body }, res) => {
 
 	sessionDid = account.did
 	res.json({ Address: account.did })
+})
+
+app.use((_, res, next) => {
+	if (!sessionDid) {
+		res.status(500).json({ message: "Not logged in" })
+		return
+	}
+	next()
 })
 
 /// SCHEMAS

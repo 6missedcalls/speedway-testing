@@ -31,20 +31,19 @@ export interface IschemaField {
 	field: number
 }
 export interface Ischema {
-	definition: {
-		creator: string
-		label: string
-		fields: Array<IschemaField>
-	}
-	whatIs: {
+	did: string
+	schema: {
 		did: string
-		schema: {
-			did: string
-			label: string
-			cid: string
-		}
-		creator: string
-		timestamp?: number
-		is_active: boolean
+		label: string
+		cid?: string
 	}
+	creator: string
+	timestamp?: number
+	is_active: boolean
+}
+
+export interface InewSchema {
+	address: string
+	label: string
+	fields: Record<string, number>
 }

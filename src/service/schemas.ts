@@ -1,6 +1,6 @@
 import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
-import { Ischema } from "../utils/types"
+import { InewSchema } from "../utils/types"
 
 export const getAllSchemas = async () => {
 	const url = `${BASE_API}/schema/getAll`
@@ -21,10 +21,10 @@ export const getAllSchemas = async () => {
 	}
 }
 
-export const createSchema = async (schema: Ischema) => {
-	const url = `${BASE_API}/account/login`
+export const createSchema = async (schema: InewSchema) => {
+	const url = `${BASE_API}/schema/create`
 
-	const payload = JSON.stringify({ schema })
+	const payload = JSON.stringify(schema)
 
 	const options = {
 		method: "POST",
