@@ -3,9 +3,9 @@ package schema
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/manifoldco/promptui"
+	"github.com/sonr-io/speedway/internal/account"
 	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/resolver"
@@ -46,11 +46,10 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
-			fmt.Println(loginRequest)
 
 			m := initmotor.InitMotor()
 
-			loginResult, err := m.Login(loginRequest)
+			loginResult, err := account.Login(m, loginRequest)
 			if err != nil {
 				fmt.Println(chalk.Red.Color("Login Failed"), err)
 				return
@@ -78,7 +77,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			}
 
 			var repeat string
-			for strings.ToLower(repeat) != "n" || strings.ToLower(repeat) != "no" || strings.ToLower(repeat) != "exit" || strings.ToLower(repeat) != "stop" || strings.ToLower(repeat) != "quit" {
+			for repeat != "N" && repeat != "n" && repeat != "stop" && repeat != "STOP" && repeat != "exit" && repeat != "EXIT" {
 				// make schemaFields []string
 				schemaField, err := prompt.Run()
 				if err != nil {
@@ -131,12 +130,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			fmt.Println(chalk.Green.Color("Create Schema Successful"))
 			// desearialize the scehma result to get the schema did
 			whatIs := resolver.DeserializeWhatIs(createSchemaResult.WhatIs)
-			definition, err := resolver.ResolveIPFS(whatIs.Schema.Cid)
-			if err != nil {
-				fmt.Println(chalk.Red.Color("Resolve IPFS Failed"))
-				return
-			}
-			fmt.Println(chalk.Green, "Definition:", definition)
+			fmt.Println(chalk.Green, "Schema WhatIs: ", whatIs.Schema)
 		},
 	}
 	return

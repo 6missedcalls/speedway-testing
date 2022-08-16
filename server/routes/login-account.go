@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/gin-gonic/gin"
-	mtr "github.com/sonr-io/sonr/pkg/motor" // TODO: Wait for PR to be merged
-	"github.com/sonr-io/speedway/internal/hwid"
+	"github.com/gin-gonic/gin" // TODO: Wait for PR to be merged
+	"github.com/sonr-io/speedway/internal/account"
+	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/storage"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -37,7 +37,7 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 		})
 		return
 	}
-	aesPskKey, err := storage.LoadKey("PSK.key")
+	aesPskKey, err := storage.LoadKey("psk.key")
 	if err != nil {
 		fmt.Println("err", err)
 	}
@@ -49,10 +49,9 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 	if err != nil {
 		fmt.Println("err", err)
 	}
-	fmt.Println("request", req)
-	hwid := hwid.GetHwid()
-	m := mtr.EmptyMotor(hwid)
-	res, err := m.Login(req)
+
+	m := initmotor.InitMotor()
+	res, err := account.Login(m, req)
 	if err != nil {
 		fmt.Println("err", err)
 	}
@@ -64,8 +63,8 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 	} else {
 		c.JSON(200, gin.H{
 			"success":     true,
-			"Address":     m.Address,
-			"DIDDocument": m.DIDDocument,
+			"Address":     m.GetAddress(),
+			"DIDDocument": m.GetDIDDocument(),
 		})
 	}
 

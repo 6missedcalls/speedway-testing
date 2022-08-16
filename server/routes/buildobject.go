@@ -4,8 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sonr-io/speedway/internal/account"
 	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/storage"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -36,7 +38,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	var body BuildObjectBody
 	err := json.NewDecoder(rBody).Decode(&body)
 	if err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid request body",
 		})
 		return
@@ -46,16 +48,11 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	// init motor
 	m := initmotor.InitMotor()
 
-	// Load keys
-	aesKey, err := storage.LoadKey("AES.key")
-	// return err from loadkey
+	aesKey, aesPskKey, err := storage.AutoLoadKey()
 	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	aesPskKey, err := storage.LoadKey("PSK.key")
-	if err != nil {
-		fmt.Println("err", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error loading keys",
+		})
 		return
 	}
 
@@ -68,16 +65,16 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	if err != nil {
 		fmt.Println("err", err)
 	}
-	fmt.Println("request", req)
 
 	// Login to Sonr
-	res, err := m.Login(req)
+	res, err := account.Login(m, req)
 	if err != nil {
 		fmt.Println("err", err)
+		return
 	}
 	fmt.Println("Result", res)
 	if !res.Success {
-		c.JSON(500, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": res,
 		})
 	}
@@ -89,7 +86,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	})
 	if err != nil {
 		fmt.Printf("Command failed %v\n", err)
-		panic(err)
+		return
 	}
 	fmt.Printf("%v\n", querySchema.WhatIs)
 
@@ -111,11 +108,11 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	if err != nil {
 		fmt.Println("err", err)
 		// create 500 error response
-		c.JSON(500, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err,
 		})
 	}
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"reference": upload.Reference,
 	})
 }

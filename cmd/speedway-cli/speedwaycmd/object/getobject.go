@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
+	"github.com/sonr-io/speedway/internal/account"
 	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/retrieve"
@@ -22,7 +23,7 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 
 			m := initmotor.InitMotor()
 
-			loginResult, err := m.Login(loginRequest)
+			loginResult, err := account.Login(m, loginRequest)
 			if loginResult.Success {
 				fmt.Println(chalk.Green.Color("Login Successful"))
 			} else {
@@ -30,8 +31,9 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 				return
 			}
 
+			// Prompt for Schema Did
 			schemaPrompt := promptui.Prompt{
-				Label: "Please enter the associated schema DID",
+				Label: "Please enter the associated Schema DID",
 			}
 			schemaDid, err := schemaPrompt.Run()
 			if err != nil {
@@ -49,7 +51,8 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 				return
 			}
 
-			object, err := retrieve.GetObject(m, schemaDid, cid)
+			// Retrieve the object
+			object, err := retrieve.GetObject(ctx, m, schemaDid, cid)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
