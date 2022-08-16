@@ -74,7 +74,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Println("Result", res)
+	fmt.Println("Login Response: ", res)
 	if !res.Success {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Login Failed",
@@ -90,8 +90,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 		fmt.Printf("Command failed %v\n", err)
 		return
 	}
-	fmt.Printf("%v\n", querySchema.WhatIs)
-
+	fmt.Printf("Schema WhatIs Response %v\n", querySchema)
 	// Initialize NewObjectBuilder
 	objBuilder, err := m.NewObjectBuilder(body.SchemaDid)
 	if err != nil {

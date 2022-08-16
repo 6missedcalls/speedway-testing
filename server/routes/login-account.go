@@ -41,19 +41,16 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 	if err != nil {
 		fmt.Println("err", err)
 	}
-	req := (rtmv1.LoginRequest{
+	req := rtmv1.LoginRequest{
 		Did:       body.Address,
 		Password:  body.Password,
 		AesPskKey: aesPskKey,
-	})
-	if err != nil {
-		fmt.Println("err", err)
 	}
 
 	m := account.InitMotor()
 	res, err := account.Login(m, req)
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println("Login Error: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Login Error",
 		})

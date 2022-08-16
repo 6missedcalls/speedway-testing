@@ -85,13 +85,13 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	ctx := context.Background()
 	schema, err := retrieve.GetSchema(ctx, m, r.Creator, r.Schema)
 	if schema.WhatIs == nil {
-		fmt.Printf("Command failed %v\n", err)
+		fmt.Printf("GetSchema failed %v\n", err)
 		return
 	}
 	whatIs := utils.DeserializeWhatIs(schema.WhatIs)
 	definition, err := utils.ResolveIPFS(whatIs.Schema.Cid)
 	if err != nil {
-		fmt.Printf("Command failed %v\n", err)
+		fmt.Printf("ResolveIPFS failed %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Error resolving IPFS",
 		})

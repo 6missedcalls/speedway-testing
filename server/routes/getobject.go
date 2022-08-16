@@ -59,9 +59,6 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 		AesDscKey: aesKey,
 		AesPskKey: pskKey,
 	}
-	if err != nil {
-		fmt.Println("Request Error: ", err)
-	}
 
 	// Login
 	resp, err := account.Login(m, loginRequest)
@@ -71,7 +68,7 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 			"error": "Login Error",
 		})
 	}
-	fmt.Println("response", resp)
+	fmt.Println("Login Response: ", resp)
 
 	ctx := context.Background()
 	object, err := retrieve.GetObject(ctx, m, body.SchemaDid, body.ObjectCid)

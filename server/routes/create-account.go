@@ -55,7 +55,6 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 		Password:  body.Password,
 		AesDscKey: aesKey,
 	}
-	fmt.Println("request", req)
 
 	res, err := account.CreateAccount(req)
 	if err != nil {
