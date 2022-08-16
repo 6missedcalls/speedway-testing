@@ -7,9 +7,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/speedway/internal/account"
+	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/sonr-io/speedway/internal/utils"
-	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
@@ -47,7 +47,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 
 	aesKey, aesPskKey, err := storage.AutoLoadKey()
 	if err != nil {
-		fmt.Println(chalk.Red.Color("LoadKey Error: "), err)
+		fmt.Println(status.Error, "LoadKey Error: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Error Loading Keys",
 		})

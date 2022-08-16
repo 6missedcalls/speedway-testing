@@ -15,10 +15,8 @@ import (
 
 func convertSchemaKind(kind string) rtmv1.CreateSchemaRequest_SchemaKind {
 
-	schemaKind := rtmv1.CreateSchemaRequest_SCHEMA_KIND_ANY
+	schemaKind := rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRING
 	switch kind {
-	case "ANY":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_ANY
 	case "LIST":
 		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LIST
 	case "BOOL":

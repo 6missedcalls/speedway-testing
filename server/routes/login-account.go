@@ -32,7 +32,7 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 	var body LoginRequestBody
 	err := json.NewDecoder(rBody).Decode(&body)
 	if err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid request body",
 		})
 		return
@@ -51,14 +51,14 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 	res, err := account.Login(m, req)
 	if err != nil {
 		fmt.Println("Login Error: ", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusUnauthorized, gin.H{
 			"error": "Login Error",
 		})
 		return
 	}
 	fmt.Println("Result", res)
 	if !res.Success {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusUnauthorized, gin.H{
 			"success": false,
 			"error":   "Login failed",
 		})
