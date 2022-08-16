@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gin-gonic/gin" // TODO: Wait for PR to be merged
+	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/speedway/internal/account"
-	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/storage"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -51,7 +50,7 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 		fmt.Println("err", err)
 	}
 
-	m := initmotor.InitMotor()
+	m := account.InitMotor()
 	res, err := account.Login(m, req)
 	if err != nil {
 		fmt.Println("err", err)
@@ -63,7 +62,8 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 	fmt.Println("Result", res)
 	if !res.Success {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Login failed",
+			"success": false,
+			"error":   "Login failed",
 		})
 	} else {
 		c.JSON(http.StatusOK, gin.H{

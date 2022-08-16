@@ -6,9 +6,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/speedway/internal/initmotor"
-	"github.com/sonr-io/speedway/internal/resolver"
+	"github.com/sonr-io/speedway/internal/account"
 	"github.com/sonr-io/speedway/internal/storage"
+	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -43,7 +43,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 		return
 	}
 
-	m := initmotor.InitMotor()
+	m := account.InitMotor()
 
 	aesKey, aesPskKey, err := storage.AutoLoadKey()
 	if err != nil {
@@ -94,8 +94,8 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 		return
 	}
 
-	whatIs := resolver.DeserializeWhatIs(res.WhatIs)
-	definition, err := resolver.ResolveIPFS(whatIs.Schema.Cid)
+	whatIs := utils.DeserializeWhatIs(res.WhatIs)
+	definition, err := utils.ResolveIPFS(whatIs.Schema.Cid)
 	if err != nil {
 		fmt.Println("err", err)
 		return

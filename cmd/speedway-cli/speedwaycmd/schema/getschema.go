@@ -6,11 +6,10 @@ import (
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/account"
-	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/prompts"
-	"github.com/sonr-io/speedway/internal/resolver"
 	"github.com/sonr-io/speedway/internal/retrieve"
 	"github.com/sonr-io/speedway/internal/status"
+	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -21,7 +20,7 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
-			m := initmotor.InitMotor()
+			m := account.InitMotor()
 
 			loginResult, err := account.Login(m, loginRequest)
 			if err != nil {
@@ -57,8 +56,8 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			whatIs := resolver.DeserializeWhatIs(schema.WhatIs)
-			definition, err := resolver.ResolveIPFS(whatIs.Schema.Cid)
+			whatIs := utils.DeserializeWhatIs(schema.WhatIs)
+			definition, err := utils.ResolveIPFS(whatIs.Schema.Cid)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return

@@ -6,10 +6,9 @@ import (
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/account"
-	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/prompts"
-	"github.com/sonr-io/speedway/internal/resolver"
 	"github.com/sonr-io/speedway/internal/status"
+	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -47,7 +46,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
-			m := initmotor.InitMotor()
+			m := account.InitMotor()
 
 			loginResult, err := account.Login(m, loginRequest)
 			if err != nil {
@@ -129,7 +128,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			}
 			fmt.Println(status.Success, "Create Schema Successful")
 			// desearialize the scehma result to get the schema did
-			whatIs := resolver.DeserializeWhatIs(createSchemaResult.WhatIs)
+			whatIs := utils.DeserializeWhatIs(createSchemaResult.WhatIs)
 			fmt.Println(status.Debug, "Schema WhatIs: ", whatIs.Schema)
 		},
 	}

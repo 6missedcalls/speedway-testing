@@ -8,7 +8,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/speedway/internal/account"
-	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/retrieve"
 	"github.com/sonr-io/speedway/internal/storage"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -43,7 +42,7 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 		return
 	}
 	// init motor
-	m := initmotor.InitMotor()
+	m := account.InitMotor()
 
 	// Get Keys
 	aesKey, pskKey, err := storage.AutoLoadKey()

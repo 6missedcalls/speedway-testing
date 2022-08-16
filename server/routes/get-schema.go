@@ -7,10 +7,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/speedway/internal/initmotor"
-	"github.com/sonr-io/speedway/internal/resolver"
+	"github.com/sonr-io/speedway/internal/account"
 	"github.com/sonr-io/speedway/internal/retrieve"
 	"github.com/sonr-io/speedway/internal/storage"
+	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -44,16 +44,15 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 		return
 	}
 
-	m := initmotor.InitMotor()
+	m := account.InitMotor()
 
-	// TODO: Call login from registry service
-	aesKey, err := storage.LoadKey("aes.key")
+	aesKey, aesPskKey, err := storage.AutoLoadKey()
 	if err != nil {
-		fmt.Println("err", err)
-	}
-	aesPskKey, err := storage.LoadKey("psk.key")
-	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println(chalk.Red.Color("Key Error: "), err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Key Error",
+		})
+		return
 	}
 
 	// * Create a new login & create schema request
@@ -82,7 +81,6 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Println("loginResponse", loginResponse)
 
 	ctx := context.Background()
 	schema, err := retrieve.GetSchema(ctx, m, r.Creator, r.Schema)
@@ -90,9 +88,8 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 		fmt.Printf("Command failed %v\n", err)
 		return
 	}
-	fmt.Println("schema", schema)
-	whatIs := resolver.DeserializeWhatIs(schema.WhatIs)
-	definition, err := resolver.ResolveIPFS(whatIs.Schema.Cid)
+	whatIs := utils.DeserializeWhatIs(schema.WhatIs)
+	definition, err := utils.ResolveIPFS(whatIs.Schema.Cid)
 	if err != nil {
 		fmt.Printf("Command failed %v\n", err)
 		return

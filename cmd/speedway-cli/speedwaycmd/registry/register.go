@@ -59,7 +59,7 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 			}
 
 			fmt.Println(status.Debug, "Create Account Response: %s", res)
-			fmt.Println(status.Debug, "Account Address: %s", res.Address)
+			fmt.Println(status.Info, "Account Address: %s", res.Address)
 		},
 	}
 	return
