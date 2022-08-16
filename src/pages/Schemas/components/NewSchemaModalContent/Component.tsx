@@ -54,7 +54,7 @@ function NewSchemaModalContentComponent({
 						<span className="block">Type</span>
 					</div>
 				</div>
-				<div className="max-h-[50vh] overflow-y-scroll mb-6">
+				<div className="max-h-[50vh] overflow-y-auto mb-6">
 					{properties?.length > 0 &&
 						properties.map((property, index) => {
 							return (

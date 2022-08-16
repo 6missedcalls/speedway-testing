@@ -1,5 +1,7 @@
+import LayoutMenu from "../../components/LayoutMenu"
+
 function DashboardComponent() {
-	return <div>Dashboard</div>
+	return <LayoutMenu>Dashboard</LayoutMenu>
 }
 
 export default DashboardComponent
