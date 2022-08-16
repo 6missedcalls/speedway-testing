@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit"
 import authenticationReducer from "./slices/authenticationSlice"
 import {
-	getAppStateFromLocalCache,
+	// getAppStateFromLocalCache,
 	syncAppStateToLocalCache,
 } from "../utils/localStorage"
 
@@ -10,6 +10,7 @@ const emptyState = {
 		isLogged: false,
 		loading: false,
 		error: false,
+		Address: "",
 	},
 }
 
