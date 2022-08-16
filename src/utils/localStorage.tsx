@@ -10,6 +10,7 @@ export function localStoreGetJson(key: string) {
 		return JSON.parse(json)
 	} catch (err) {
 		console.log("Error parsing JSON at localStoreGetJson function.", err)
+		return {}
 	}
 }
 

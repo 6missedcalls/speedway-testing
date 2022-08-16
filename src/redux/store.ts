@@ -22,7 +22,8 @@ export const store = configureStore({
 	reducer: {
 		authentication: authenticationReducer,
 	},
-	middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+	middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware({ serializableCheck: false }),
 	preloadedState: initialState,
 })
 

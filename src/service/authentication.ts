@@ -1,4 +1,5 @@
 import { BASE_API } from "../utils/constants"
+import { formatApiError } from "../utils/errors"
 
 export const createAccount = async (password: string) => {
 	const url = `${BASE_API}/account/create`
@@ -11,16 +12,14 @@ export const createAccount = async (password: string) => {
 		body: payload,
 	}
 
-	const response = await fetch(url, options)
-
 	try {
+		const response: Response = await fetch(url, options)
+		if (!response.ok) throw new Error(response.statusText)
 		const data = await response.json()
 		return data
-	} catch (err) {
-		console.error(err)
-		throw new Error(
-			`Error calling ${url} with options: ${JSON.stringify(options, null, 2)}`
-		)
+	} catch (error) {
+		const errorMessage = formatApiError({ error, url, options })
+		throw new Error(errorMessage)
 	}
 }
 
@@ -35,15 +34,13 @@ export const login = async (walletAddress: string, password: string) => {
 		body: payload,
 	}
 
-	const response = await fetch(url, options)
-
 	try {
+		const response: Response = await fetch(url, options)
+		if (!response.ok) throw new Error(response.statusText)
 		const data = await response.json()
 		return data
-	} catch (err) {
-		console.error(err)
-		throw new Error(
-			`Error calling ${url} with options: ${JSON.stringify(options, null, 2)}`
-		)
+	} catch (error) {
+		const errorMessage = formatApiError({ error, url, options })
+		throw new Error(errorMessage)
 	}
 }
