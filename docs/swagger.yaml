@@ -83,7 +83,7 @@ paths:
         - application/json
       responses:
         "200":
-          description: Did
+          description: Address
           schema:
             type: string
         "500":
@@ -172,7 +172,46 @@ paths:
             type: string
       summary: BuildObject
       tags:
-        - object
+      - object
+  /object/get:
+    post:
+      description: Get an object on Sonr using the object module of Sonr's Blockchain.
+      parameters:
+      - description: Address
+        example: '"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+        in: body
+        name: Address
+        required: true
+        schema:
+          type: string
+      - description: SchemaDid
+        example: '"did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+        in: body
+        name: SchemaDid
+        required: true
+        schema:
+          type: string
+      - description: ObjectCid
+        example: '"bafyreigfzxrtvfzuaoyhn5vgndneeeirq62efgf2s3igmoenxgx7jxy2cm"'
+        in: body
+        name: ObjectCid
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/object.ObjectReference'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: GetObject
+      tags:
+      - object
   /schema/create:
     post:
       description:

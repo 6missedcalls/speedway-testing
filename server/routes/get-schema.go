@@ -4,11 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
-	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/initmotor"
 	"github.com/sonr-io/speedway/internal/resolver"
+	"github.com/sonr-io/speedway/internal/retrieve"
 	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -29,7 +30,7 @@ type QuerySchema struct {
 // @Param did query string true "Did"
 // @Param creator query string true "Creator"
 // @Param schema query string true "Schema"
-// @Success      200  {object} st.SchemaDefinition
+// @Success      200  {object} types.SchemaDefinition
 // @Failure      500  {string} message error
 // @Router /schema/get [post]
 func (ns *NebulaServer) QuerySchema(c *gin.Context) {
@@ -37,7 +38,7 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	var r QuerySchema
 	err := json.NewDecoder(rBody).Decode(&r)
 	if err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid request body",
 		})
 		return
@@ -46,11 +47,11 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	m := initmotor.InitMotor()
 
 	// TODO: Call login from registry service
-	aesKey, err := storage.LoadKey("AES.key")
+	aesKey, err := storage.LoadKey("aes.key")
 	if err != nil {
 		fmt.Println("err", err)
 	}
-	aesPskKey, err := storage.LoadKey("PSK.key")
+	aesPskKey, err := storage.LoadKey("psk.key")
 	if err != nil {
 		fmt.Println("err", err)
 	}
@@ -73,34 +74,26 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 		fmt.Println(chalk.Green, "Login successful")
 	} else {
 		fmt.Println(chalk.Red, "Login failed")
-		c.JSON(500, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Login failed",
 		})
 		return
 	}
 	fmt.Println("loginResponse", loginResponse)
 
-	// Create a new create schema request
-	querySchema := rtmv1.QueryWhatIsRequest{
-		Creator: r.Creator,
-		Did:     r.Schema,
-	}
-
-	querySchemaResponse, err := m.QueryWhatIs(context.Background(), querySchema)
-	// deserialize result
-	whatIs := &st.WhatIs{}
-	err = whatIs.Unmarshal(querySchemaResponse.WhatIs)
-	if err != nil {
-		fmt.Printf("Unmarshal failed %v\n", err)
+	ctx := context.Background()
+	schema, err := retrieve.GetSchema(ctx, m, r.Creator, r.Schema)
+	if schema.WhatIs == nil {
+		fmt.Printf("Command failed %v\n", err)
 		return
 	}
-	// print result
-	fmt.Println(chalk.Blue, "Schema:", whatIs.Schema)
-
+	fmt.Println("schema", schema)
+	whatIs := resolver.DeserializeWhatIs(schema.WhatIs)
 	definition, err := resolver.ResolveIPFS(whatIs.Schema.Cid)
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Printf("Command failed %v\n", err)
 		return
 	}
-	c.JSON(200, definition)
+
+	c.JSON(http.StatusOK, definition)
 }

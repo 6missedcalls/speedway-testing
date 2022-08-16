@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	st "github.com/sonr-io/sonr/x/schema/types"
-	"github.com/ttacon/chalk"
 )
 
 // Unmarshal WhatIs and return a QueryWhatIsResponse
@@ -17,7 +16,6 @@ func DeserializeWhatIs(whatis []byte) *st.WhatIs {
 		fmt.Printf("Command failed %v\n", err)
 		panic(err)
 	}
-	fmt.Println(chalk.Blue, "Schema:", whatIs.Schema)
 	return whatIs
 }
 

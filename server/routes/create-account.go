@@ -3,6 +3,7 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
@@ -23,7 +24,7 @@ type CARequestBody struct {
 // @Tags account
 // @Produce json
 // @Param 		 password body string true "Password"
-// @Success 	 200  {string}  message "Did"
+// @Success 	 200  {string}  message "Address"
 // @Failure      500  {string}  message "Error"
 // @Router /account/create [post]
 func (ns *NebulaServer) CreateAccount(c *gin.Context) {
@@ -31,7 +32,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	var body CARequestBody
 	err := json.NewDecoder(rBody).Decode(&body)
 	if err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid request body",
 		})
 		return
@@ -41,7 +42,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	if err != nil {
 		fmt.Println("err", err)
 	}
-	if storage.StoreKey("AES.key", aesKey) != nil {
+	if storage.StoreKey("aes.key", aesKey) != nil {
 		fmt.Println("err", err)
 	}
 
@@ -55,11 +56,8 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	if err != nil {
 		fmt.Println("err", err)
 	}
-	// send res back to client as json response
-	c.JSON(200, gin.H{
+
+	c.JSON(http.StatusOK, gin.H{
 		"Address": res.Address,
 	})
-	if storage.StoreKey("PSK.key", res.AesPsk) != nil {
-		fmt.Println("err", err)
-	}
 }

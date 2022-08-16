@@ -1,8 +1,10 @@
 package routes
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/speedway/internal/account"
@@ -35,7 +37,7 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 	var body GetObject
 	err := json.NewDecoder(rBody).Decode(&body)
 	if err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid request body",
 		})
 		return
@@ -43,16 +45,12 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 	// init motor
 	m := initmotor.InitMotor()
 
-	// Load keys
-	aesKey, err := storage.LoadKey("AES.key")
-	// return err from loadkey
+	// Get Keys
+	aesKey, pskKey, err := storage.AutoLoadKey()
 	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	aesPskKey, err := storage.LoadKey("PSK.key")
-	if err != nil {
-		fmt.Println("err", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error loading keys",
+		})
 		return
 	}
 
@@ -60,7 +58,7 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 	loginRequest := rtmv1.LoginRequest{
 		Did:       body.Address,
 		AesDscKey: aesKey,
-		AesPskKey: aesPskKey,
+		AesPskKey: pskKey,
 	}
 	if err != nil {
 		fmt.Println("err", err)
@@ -73,10 +71,11 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 	}
 	fmt.Println("response", resp)
 
-	object, err := retrieve.GetObject(m, body.SchemaDid, body.ObjectCid)
+	ctx := context.Background()
+	object, err := retrieve.GetObject(ctx, m, body.SchemaDid, body.ObjectCid)
 	if err != nil {
 		fmt.Printf("Command failed %v\n", err)
 		return
 	}
-	c.JSON(200, object)
+	c.JSON(http.StatusOK, object)
 }

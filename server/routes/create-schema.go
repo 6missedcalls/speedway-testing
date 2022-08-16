@@ -3,6 +3,7 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/speedway/internal/initmotor"
@@ -36,7 +37,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	err := json.NewDecoder(rBody).Decode(&r)
 	if err != nil {
 		fmt.Println(err)
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid request body",
 		})
 		return
@@ -44,11 +45,11 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 
 	m := initmotor.InitMotor()
 
-	aesKey, err := storage.LoadKey("AES.key")
+	aesKey, err := storage.LoadKey("aes.key")
 	if err != nil {
 		fmt.Println("err", err)
 	}
-	aesPskKey, err := storage.LoadKey("PSK.key")
+	aesPskKey, err := storage.LoadKey("psk.key")
 	if err != nil {
 		fmt.Println("err", err)
 	}
@@ -70,7 +71,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 		fmt.Println(chalk.Green, "Login successful")
 	} else {
 		fmt.Println(chalk.Red, "Login failed")
-		c.JSON(500, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Login failed",
 		})
 		return
@@ -87,7 +88,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	res, err := m.CreateSchema(createSchemaRequest)
 	if err != nil {
 		fmt.Println("Create Schema Error: ", err)
-		c.JSON(500, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
@@ -99,7 +100,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 		fmt.Println("err", err)
 		return
 	}
-	c.JSON(200,
+	c.JSON(http.StatusOK,
 		gin.H{
 			"whatIs":     whatIs,
 			"definition": definition,

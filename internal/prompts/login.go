@@ -2,7 +2,6 @@ package prompts
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/storage"
@@ -10,41 +9,48 @@ import (
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
-// create a struct to return all the information needed to login
 type LoginReturn struct {
 	Did       string
 	AesDscKey []byte
 	AesPskKey []byte
 }
 
-func LoginPrompt() rtmv1.LoginRequest {
+func fallbackLoginPrompt() (string, error) {
+	fmt.Println(chalk.Yellow, "Attempting manual login", chalk.Reset)
 	prompt := promptui.Prompt{
 		Label: "Enter your Address",
 	}
 	did, err := prompt.Run()
 	if err != nil {
-		fmt.Printf("Prompt failed %v\n", err)
-		os.Exit(1)
+		fmt.Printf("Command failed %v\n", err)
+		return "", err
 	}
-	fmt.Println(chalk.Yellow, "Attempting auto login with DID: "+did, chalk.Reset)
-	aesKey, err := storage.LoadKey("AES.key")
-	if aesKey == nil || len(aesKey) != 32 {
-		fmt.Println(chalk.Yellow.Color("Please add this device to your current account or make another account"))
+	return did, nil
+}
+
+func LoginPrompt() rtmv1.LoginRequest {
+	fmt.Println(chalk.Yellow, "Attempting auto login", chalk.Reset)
+
+	// Load the address from address.snr if it exists
+	address, err := storage.LoadInfo("address.snr")
+	// if error or address is empty, prompt for address with fallback prompt
+	if err != nil || address == "" {
+		fallbackAddr, err := fallbackLoginPrompt()
+		if err != nil {
+			fmt.Println(chalk.Red, "Error: %s", err)
+			return rtmv1.LoginRequest{}
+		}
+		address = fallbackAddr
 	}
+
+	// Load the keys if they exist
+	aesKey, pskKey, err := storage.AutoLoadKey()
 	if err != nil {
-		fmt.Println(chalk.Red, "AES Key Error: %s", err)
-		os.Exit(1)
+		fmt.Println(chalk.Red, "Error: %s", err)
 	}
-	pskKey, err := storage.LoadKey("PSK.key")
-	if pskKey == nil || len(pskKey) != 32 {
-		fmt.Println(chalk.Yellow.Color("Please add this device to your current account or make another account"))
-	}
-	if err != nil {
-		fmt.Println(chalk.Red, "PSK Key Error: %s", err)
-		os.Exit(1)
-	}
+
 	loginRequest := rtmv1.LoginRequest{
-		Did:       did,
+		Did:       address,
 		AesDscKey: aesKey,
 		AesPskKey: pskKey,
 	}

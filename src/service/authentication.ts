@@ -1,7 +1,12 @@
 import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
 
-export const createAccount = async (password: string) => {
+type CreateAccountResponse = {
+	Address: string
+}
+export const createAccount = async (
+	password: string
+): Promise<CreateAccountResponse> => {
 	const url = `${BASE_API}/account/create`
 
 	const payload = JSON.stringify({ password })
@@ -23,7 +28,13 @@ export const createAccount = async (password: string) => {
 	}
 }
 
-export const login = async (walletAddress: string, password: string) => {
+type LoginResponse = {
+	Address: string
+}
+export const login = async (
+	walletAddress: string,
+	password: string
+): Promise<LoginResponse> => {
 	const url = `${BASE_API}/account/login`
 
 	const payload = JSON.stringify({ Address: walletAddress, Password: password })
