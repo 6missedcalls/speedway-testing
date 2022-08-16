@@ -10,6 +10,7 @@ const emptyState = {
 		isLogged: false,
 		loading: false,
 		error: false,
+		Address: "",
 	},
 }
 

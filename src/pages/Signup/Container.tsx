@@ -2,6 +2,7 @@ import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router"
 import {
+	selectAddress,
 	selectIsLogged,
 	userCreateAccount,
 } from "../../redux/slices/authenticationSlice"
@@ -11,12 +12,13 @@ const Container = () => {
 	const navigate = useNavigate()
 	const dispatch = useDispatch<any>()
 	const isLogged = useSelector(selectIsLogged)
+	const Address = useSelector(selectAddress)
 
 	useEffect(() => {
 		if (isLogged) {
-			navigate("/objects")
+			navigate("/post-signup", { state: { Address } })
 		}
-	}, [isLogged, navigate])
+	}, [isLogged, navigate, Address])
 
 	function createAccount(password: string) {
 		dispatch(userCreateAccount({ password }))
