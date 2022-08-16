@@ -13,7 +13,10 @@ app.use(bodyParser.json())
 
 const generateDid = () => `snr${md5(Math.random())}`
 const generateDid2 = () => `did:snr:${md5(Math.random())}`
-const didToDid2 = (did) => `did:snr:${did.slice(3)}`
+const generateCid = () => md5(Math.random())
+
+const mountAccountStoreKey = (did) => `account${did}`
+const mountSchemasStoreKey = (did) => `schemas${did}`
 
 app.get("/dump", async (_, res) => {
 	const data = await storage.values()
@@ -26,6 +29,14 @@ app.get("/reset", async (_, res) => {
 	res.json({ length })
 })
 
+app.use((_, res, next) => {
+	if (!sessionDid) {
+		res.status(500).json({ message: "Not logged in" })
+		return
+	}
+	next()
+})
+
 /// AUTHENTICATION
 
 let sessionDid = null
@@ -34,17 +45,26 @@ app.post("/api/v1/account/create", async ({ body }, res) => {
 	const did = generateDid()
 	const password = body.password || ""
 
-	await storage.setItem(did, {
+	const accountStoreKey = mountAccountStoreKey(did)
+	await storage.setItem(accountStoreKey, {
 		did,
 		password,
-		schemas: {},
+	})
+
+	const schemasStoreKey = mountSchemasStoreKey(did)
+	await storage.setItem(schemasStoreKey, {
+		schemas: [],
+		schemasMetaData: {
+			whatIs: [],
+		},
 	})
 
 	res.json({ Address: did })
 })
 
 app.post("/api/v1/account/login", async ({ body }, res) => {
-	const account = await storage.getItem(body.Address)
+	const accountStoreKey = mountAccountStoreKey(body.Address)
+	const account = await storage.getItem(accountStoreKey)
 
 	if (!account || account.password !== body.Password) {
 		res.status(500).send()
@@ -55,14 +75,6 @@ app.post("/api/v1/account/login", async ({ body }, res) => {
 	res.json({ Address: account.did })
 })
 
-app.use((_, res, next) => {
-	if (!sessionDid) {
-		res.status(500).send()
-		return
-	}
-	next()
-})
-
 /// SCHEMAS
 
 app.post("/api/v1/schema/create", async ({ body }, res) => {
@@ -70,18 +82,35 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 		res.status(200).send()
 		return
 	}
-
-	const session = await storage.getItem(sessionDid)
+	const schemasStoreKey = mountSchemasStoreKey(sessionDid)
+	const session = await storage.getItem(schemasStoreKey)
 
 	const did = generateDid2()
+	const creator = generateDid2()
 	const fieldNames = _.keys(body.fields)
+
+	const schemaMetaData = {
+		did,
+		schema: {
+			did,
+			label: body.label,
+			cid: generateCid(),
+		},
+		creator: creator,
+		timestamp: +new Date(),
+		is_active: true,
+	}
+
 	const schema = {
-		creator: body.address,
+		creator: creator,
 		label: body.label,
 		fields: _.map(fieldNames, (name) => ({ name, field: body.fields[name] })),
 	}
-	session.schemas[did] = schema
-	await storage.setItem(sessionDid, session)
+
+	session.schemasMetaData.whatIs.push(schemaMetaData)
+	session.schemas.push(schema)
+
+	await storage.setItem(schemasStoreKey, session)
 
 	res.json({
 		definition: schema,
@@ -95,15 +124,24 @@ app.post("/api/v1/schema/get", async ({ body }, res) => {
 		return
 	}
 
-	const session = await storage.getItem(sessionDid)
+	const schemasStoreKey = mountSchemasStoreKey(sessionDid)
+	const session = await storage.getItem(schemasStoreKey)
+	console.log("session", JSON.stringify(session, null, 2))
+	const schema = session.schemas.find((item) => item.creator === body.creator)
 
-	const schema = session.schemas[body.schema]
-	if (body.creator !== didToDid2(schema.creator)) {
+	if (!schema || body.creator !== schema.creator) {
 		res.status(500).send()
 		return
 	}
 
 	res.json(schema)
+})
+
+app.get("/api/v1/schema/getAll", async (_, res) => {
+	const schemasStoreKey = mountSchemasStoreKey(sessionDid)
+	const session = await storage.getItem(schemasStoreKey)
+
+	res.json(session.schemasMetaData)
 })
 
 /// SERVER

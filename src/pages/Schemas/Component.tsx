@@ -11,6 +11,7 @@ function SchemasPageComponent({
 	list,
 	openNewSchemaModal,
 }: SchemasPageComponentProps) {
+	console.log("list", list)
 	return (
 		<LayoutMenu>
 			<div className="h-screen font-extrabold w-full bg-gray-100 px-10 pb-10 overflow-auto">

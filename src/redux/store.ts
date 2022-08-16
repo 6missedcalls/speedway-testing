@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit"
 import authenticationReducer from "./slices/authenticationSlice"
+import schemasReducer from "./slices/schemasSlice"
 import {
 	getAppStateFromLocalCache,
 	syncAppStateToLocalCache,
@@ -8,6 +9,11 @@ import {
 const emptyState = {
 	authentication: {
 		isLogged: false,
+		loading: false,
+		error: false,
+	},
+	schemas: {
+		list: [],
 		loading: false,
 		error: false,
 	},
@@ -21,6 +27,7 @@ const initialState = emptyState
 export const store = configureStore({
 	reducer: {
 		authentication: authenticationReducer,
+		schemas: schemasReducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({ serializableCheck: false }),

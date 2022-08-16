@@ -25,3 +25,26 @@ export interface handlePropertyChangeProps {
 	index: number
 	data: IchangedProperty
 }
+
+export interface IschemaField {
+	name: string
+	field: number
+}
+export interface Ischema {
+	definition: {
+		creator: string
+		label: string
+		fields: Array<IschemaField>
+	}
+	whatIs: {
+		did: string
+		schema: {
+			did: string
+			label: string
+			cid: string
+		}
+		creator: string
+		timestamp?: number
+		is_active: boolean
+	}
+}
