@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
+import { selectAddress } from "../../redux/slices/authenticationSlice"
 import {
 	selectSchemasMetaDataList,
 	userGetAllSchemas,
@@ -9,9 +10,11 @@ import { MODAL_CONTENT_NEW_SCHEMA } from "../../utils/constants"
 import { obfuscateDid } from "../../utils/string"
 import { Ischema } from "../../utils/types"
 import SchemasPageComponent from "./Component"
+import ViewProperties from "./components/ViewProperties"
 
 function SchemasPageContainer() {
 	const { setModalContent, openModal } = useContext(AppModalContext)
+	const address = useSelector(selectAddress)
 	const schemasMetaDataList = useSelector(selectSchemasMetaDataList)
 	const dispatch = useDispatch<any>()
 
@@ -26,11 +29,32 @@ function SchemasPageContainer() {
 
 	function mapToListFormat(list: any) {
 		return list.map((item: Ischema) => {
+			const getSchemaPayload = {
+				address,
+				creator: item.creator,
+				schema: item.did,
+			}
+
 			return {
-				"Schema name": item.schema.label,
-				DID: obfuscateDid(item.did),
-				Objects: "",
-				Fields: "",
+				"Schema name": {
+					text: item.schema.label,
+				},
+				DID: {
+					text: obfuscateDid(item.did),
+				},
+				Objects: {
+					text: "10",
+					Component: ViewProperties,
+					props: {
+						getSchemaPayload,
+					},
+				},
+				Fields: {
+					Component: ViewProperties,
+					props: {
+						getSchemaPayload,
+					},
+				},
 			}
 		})
 	}
@@ -45,3 +69,15 @@ function SchemasPageContainer() {
 }
 
 export default SchemasPageContainer
+
+// {
+// 	did: string
+// 	schema: {
+// 		did: string
+// 		label: string
+// 		cid?: string
+// 	}
+// 	creator: string
+// 	timestamp?: number
+// 	is_active: boolean
+// }

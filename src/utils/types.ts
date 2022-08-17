@@ -21,6 +21,11 @@ export interface Iproperty {
 	type: string
 }
 
+export interface IpropertyResponse {
+	name: string
+	field: number
+}
+
 export interface handlePropertyChangeProps {
 	index: number
 	data: IchangedProperty
@@ -42,6 +47,11 @@ export interface Ischema {
 	is_active: boolean
 }
 
+export interface IgetSchemaFields {
+	address: string
+	creator: string
+	schema: string
+}
 export interface InewSchema {
 	address: string
 	label: string

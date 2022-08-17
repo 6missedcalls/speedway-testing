@@ -80,7 +80,7 @@ function SearchableListContainer({
 		if (!searchTerm) return previousList
 		return [...previousList].filter(
 			(item) =>
-				item[searchableAndSortableFieldKey]
+				item[searchableAndSortableFieldKey].text
 					.toLowerCase()
 					.indexOf(searchTerm.toLowerCase()) !== -1
 		)
