@@ -6,7 +6,7 @@ import Headers from "./components/Headers"
 interface SearchableListComponentProps {
 	type: listTypes
 	fullListLength: number
-	list: any
+	list: any[]
 	paginationSize?: number
 	paginationCurrentPage: number
 	toggleOrder: () => void
@@ -46,7 +46,6 @@ function SearchableListComponent({
 						iconName="SearchNormal1"
 						iconType="outline"
 						placeholder="Search"
-						iconClassName="w-4 h-4"
 						theme="light"
 						onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
 							setSearchTerm(event.target.value)
@@ -64,7 +63,7 @@ function SearchableListComponent({
 			</div>
 			<table className="w-full text-left">
 				<thead>
-					<tr className="h-10 bg-button-subtle items-center px-4 py-5 text-button-subtle text-custom-xs px-4 py-5">
+					<tr className="h-10 bg-button-subtle items-center px-4 py-5 text-button-subtle text-custom-xs">
 						{Headers({ type, list, toggleOrder, orderAsc })}
 					</tr>
 				</thead>

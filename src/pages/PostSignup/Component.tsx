@@ -1,21 +1,19 @@
-import { NavigateFunction } from "react-router-dom"
-
 interface PostSignupComponentProps {
-	navigate: NavigateFunction
-	Address: string
-	copy: any
+	address: string
+	onCopy: () => void
+	onContinue: () => void
 }
 
 const PostSignupComponent = ({
-	navigate,
-	Address,
-	copy,
+	address,
+	onCopy,
+	onContinue,
 }: PostSignupComponentProps) => {
 	return (
 		<div className="flex items-center dark text-default bg-surface-default h-screen">
 			<div className="ml-32 w-[480px]">
 				<h1 className="uppercase text-4xl font-extrabold mb-10 break-words leading-tight">
-					{Address}
+					{address}
 				</h1>
 
 				<p className="text-xl mb-10">
@@ -29,14 +27,14 @@ const PostSignupComponent = ({
 				</p>
 
 				<button
-					onClick={() => copy(Address)}
+					onClick={onCopy}
 					className="block py-3 rounded border border-primary w-full text-xl text-button-outlined font-semibold mb-4 active:opacity-60"
 				>
 					Copy SonrID to Clipboard
 				</button>
 
 				<button
-					onClick={() => navigate("/objects")}
+					onClick={onContinue}
 					className="block py-3 rounded bg-primary w-full text-xl font-semibold"
 				>
 					Complete Registration

@@ -7,7 +7,6 @@ import { IschemaTypeMap, schemaTypeMap } from "../../../../utils/mappings"
 import {
 	Iproperty,
 	handlePropertyChangeProps,
-	Ischema,
 	InewSchema,
 } from "../../../../utils/types"
 import NewSchemaModalContentComponent from "./Component"

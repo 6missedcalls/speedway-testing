@@ -6,17 +6,18 @@ import {
 	selectLoginError,
 	userLogin,
 } from "../../redux/slices/authenticationSlice"
+import { AppDispatch } from "../../redux/store"
 import LoginComponent from "./Component"
 
 const Container = () => {
-	const dispatch = useDispatch<any>()
+	const dispatch = useDispatch<AppDispatch>()
 	const navigate = useNavigate()
 	const isLogged = useSelector(selectIsLogged)
 	const error = useSelector(selectLoginError)
 
 	useEffect(() => {
 		if (isLogged) {
-			navigate("/objects")
+			navigate("/schema")
 		}
 	}, [isLogged, navigate])
 
