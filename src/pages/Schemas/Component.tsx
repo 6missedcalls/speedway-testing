@@ -4,11 +4,13 @@ import { listTypes } from "../../utils/types"
 
 interface SchemasPageComponentProps {
 	list: any
+	searchableAndSortableFieldKey: string
 	openNewSchemaModal: () => void
 }
 
 function SchemasPageComponent({
 	list,
+	searchableAndSortableFieldKey,
 	openNewSchemaModal,
 }: SchemasPageComponentProps) {
 	return (
@@ -18,6 +20,7 @@ function SchemasPageComponent({
 					Schemas
 				</h1>
 				<SearchableList
+					searchableAndSortableFieldKey={searchableAndSortableFieldKey}
 					handleOpenModal={openNewSchemaModal}
 					initialList={list}
 					type={listTypes.schema}

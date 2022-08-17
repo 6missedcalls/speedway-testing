@@ -6,11 +6,13 @@ import SearchableListComponent from "./Component"
 interface SearchableListContainerProps {
 	initialList: Array<any>
 	type: listTypes
+	searchableAndSortableFieldKey: string
 	paginationSize?: number
 	handleOpenModal?: () => void
 }
 
 function SearchableListContainer({
+	searchableAndSortableFieldKey,
 	initialList,
 	type,
 	paginationSize = 8,
@@ -25,7 +27,7 @@ function SearchableListContainer({
 	useEffect(() => {
 		const processedList = getList()
 		setList(processedList)
-	}, [searchTerm, orderAsc, paginationCurrentPage])
+	}, [searchTerm, orderAsc, paginationCurrentPage, initialList])
 
 	useEffect(() => {
 		if (searchTerm) {
@@ -35,7 +37,7 @@ function SearchableListContainer({
 		} else {
 			setTotalPages(Math.ceil(initialList.length / paginationSize))
 		}
-	}, [searchTerm])
+	}, [searchTerm, initialList])
 
 	function toggleOrder() {
 		setOrderAsc(!orderAsc)
@@ -49,12 +51,18 @@ function SearchableListContainer({
 		let orderedList
 		if (orderAsc) {
 			orderedList = [...previousList].sort((a: any, b: any) =>
-				a.name > b.name ? 1 : -1
+				a[searchableAndSortableFieldKey].text >
+				b[searchableAndSortableFieldKey].text
+					? 1
+					: -1
 			)
 			return orderedList
 		} else {
 			orderedList = [...previousList].sort((a: any, b: any) =>
-				a.name < b.name ? 1 : -1
+				a[searchableAndSortableFieldKey].text <
+				b[searchableAndSortableFieldKey].text
+					? 1
+					: -1
 			)
 			return orderedList
 		}
@@ -73,7 +81,10 @@ function SearchableListContainer({
 	function getFilteredList(previousList: Array<any>) {
 		if (!searchTerm) return previousList
 		return [...previousList].filter(
-			(item) => item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+			(item) =>
+				item[searchableAndSortableFieldKey].text
+					.toLowerCase()
+					.indexOf(searchTerm.toLowerCase()) !== -1
 		)
 	}
 

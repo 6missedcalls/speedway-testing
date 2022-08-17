@@ -75,12 +75,14 @@ function SearchableListComponent({
 							<tr key={`listrow-${rowIndex}`}>
 								{rowKeys.map((key: string, itemIndex: number) => {
 									if (key === "id") return null
+									const { text = "", Component, props } = row[key]
 									return (
 										<td
 											className="px-4 py-5 border-b border-gray-200"
 											key={`${key}-${itemIndex}`}
 										>
-											{row[key]}
+											{text}
+											{Component && <Component {...props} />}
 										</td>
 									)
 								})}
