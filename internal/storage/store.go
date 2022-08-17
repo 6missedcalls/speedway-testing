@@ -7,7 +7,7 @@ import (
 )
 
 // StoreKey stores the key in the ~/.speedway/key directory
-func StoreKey(name string, key []byte) error {
+func Store(name string, data []byte) error {
 	homedir, err := os.UserHomeDir()
 	if err != nil {
 		return err
@@ -22,7 +22,7 @@ func StoreKey(name string, key []byte) error {
 	if err != nil {
 		return err
 	}
-	_, err = store.Write(key)
+	_, err = store.Write(data)
 	defer store.Close()
 	return err
 }

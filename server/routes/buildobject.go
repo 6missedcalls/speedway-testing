@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/speedway/internal/account"
+	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/storage"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -45,7 +46,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 
 	label := body.Label
 	// init motor
-	m := account.InitMotor()
+	m := binding.InitMotor()
 
 	aesKey, aesPskKey, err := storage.AutoLoadKey()
 	if err != nil {

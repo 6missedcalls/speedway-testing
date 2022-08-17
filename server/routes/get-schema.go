@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/speedway/internal/account"
+	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/retrieve"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
@@ -45,7 +45,7 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 		return
 	}
 
-	m := account.InitMotor()
+	m := binding.InitMotor()
 
 	aesKey, aesPskKey, err := storage.AutoLoadKey()
 	if err != nil {

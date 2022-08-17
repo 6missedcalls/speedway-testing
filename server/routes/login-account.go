@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/speedway/internal/account"
+	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/storage"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -47,7 +48,7 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 		AesPskKey: aesPskKey,
 	}
 
-	m := account.InitMotor()
+	m := binding.InitMotor()
 	res, err := account.Login(m, req)
 	if err != nil {
 		fmt.Println("Login Error: ", err)

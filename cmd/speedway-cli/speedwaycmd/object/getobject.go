@@ -6,6 +6,7 @@ import (
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/account"
+	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/retrieve"
 	"github.com/sonr-io/speedway/internal/status"
@@ -20,7 +21,7 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
-			m := account.InitMotor()
+			m := binding.InitMotor()
 
 			loginResult, err := account.Login(m, loginRequest)
 			if err != nil {

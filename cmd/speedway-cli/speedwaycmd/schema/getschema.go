@@ -6,6 +6,7 @@ import (
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/account"
+	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/retrieve"
 	"github.com/sonr-io/speedway/internal/status"
@@ -20,7 +21,7 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
-			m := account.InitMotor()
+			m := binding.InitMotor()
 
 			loginResult, err := account.Login(m, loginRequest)
 			if err != nil {
@@ -52,7 +53,7 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 			}
 
 			schema, err := retrieve.GetSchema(ctx, m, creator, schemaDid)
-			if schema.WhatIs == nil {
+			if schema.WhatIs != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}

@@ -6,6 +6,7 @@ import (
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/account"
+	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/utils"
@@ -44,7 +45,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
-			m := account.InitMotor()
+			m := binding.InitMotor()
 
 			loginResult, err := account.Login(m, loginRequest)
 			if err != nil {
@@ -85,7 +86,6 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				selectSchemaKind := promptui.Select{
 					Label: "Select a Schema Field",
 					Items: []string{
-						"ANY",
 						"LIST",
 						"BOOL",
 						"INT",

@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/speedway/internal/account"
+	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/sonr-io/speedway/internal/utils"
@@ -43,7 +43,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 		return
 	}
 
-	m := account.InitMotor()
+	m := binding.InitMotor()
 
 	aesKey, aesPskKey, err := storage.AutoLoadKey()
 	if err != nil {

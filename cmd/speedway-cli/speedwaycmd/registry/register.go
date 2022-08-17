@@ -39,7 +39,7 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 			if err != nil {
 				fmt.Println(status.Error, "Error: %s", err)
 			}
-			if storage.StoreKey("aes.key", aesKey) != nil {
+			if storage.Store("aes.key", aesKey) != nil {
 				fmt.Println(status.Error, "Storage Error: %s", err)
 			}
 

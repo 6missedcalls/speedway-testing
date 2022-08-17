@@ -46,7 +46,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 		})
 		return
 	}
-	if storage.StoreKey("aes.key", aesKey) != nil {
+	if storage.Store("aes.key", aesKey) != nil {
 		fmt.Println("Storage Error: ", err)
 		return
 	}

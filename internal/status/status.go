@@ -24,7 +24,7 @@ func InfoStyle() chalk.Color {
 }
 
 func DebugStyle() chalk.Color {
-	return chalk.Magenta
+	return chalk.White
 }
 
 var Success = SuccessStyle()
