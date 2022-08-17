@@ -70,7 +70,6 @@ function SearchableListComponent({
 				</thead>
 				<tbody className="text-custom-sm font-normal">
 					{list.map((row: any, rowIndex: number) => {
-						console.log("row", row)
 						const rowKeys = Object.keys(row)
 						return (
 							<tr key={`listrow-${rowIndex}`}>

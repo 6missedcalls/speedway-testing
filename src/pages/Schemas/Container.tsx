@@ -1,4 +1,5 @@
-import { useContext, useEffect } from "react"
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
@@ -44,15 +45,12 @@ function SchemasPageContainer() {
 				},
 				Objects: {
 					text: "10",
-					Component: ViewProperties,
-					props: {
-						getSchemaPayload,
-					},
 				},
 				Fields: {
 					Component: ViewProperties,
 					props: {
 						getSchemaPayload,
+						key: item.did,
 					},
 				},
 			}
@@ -69,15 +67,3 @@ function SchemasPageContainer() {
 }
 
 export default SchemasPageContainer
-
-// {
-// 	did: string
-// 	schema: {
-// 		did: string
-// 		label: string
-// 		cid?: string
-// 	}
-// 	creator: string
-// 	timestamp?: number
-// 	is_active: boolean
-// }
