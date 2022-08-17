@@ -18,10 +18,6 @@ import NotFound from "./pages/NotFound"
 import Schemas from "./pages/Schemas"
 import Objects from "./pages/Objects"
 import Buckets from "./pages/Buckets"
-import AccessApi from "./pages/AccessApi"
-import DidUtility from "./pages/DidUtility"
-import DocsAndSupport from "./pages/DocsAndSupport"
-import BlockExplorer from "./pages/BlockExplorer"
 import PostSignup from "./pages/PostSignup"
 
 function App() {
