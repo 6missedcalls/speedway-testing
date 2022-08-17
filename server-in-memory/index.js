@@ -126,7 +126,7 @@ app.post("/api/v1/schema/get", async ({ body }, res) => {
 
 	const schemasStoreKey = mountSchemasStoreKey(sessionDid)
 	const session = await storage.getItem(schemasStoreKey)
-	console.log("session", JSON.stringify(session, null, 2))
+
 	const schema = session.schemas.find((item) => item.creator === body.creator)
 
 	if (!schema || body.creator !== schema.creator) {
