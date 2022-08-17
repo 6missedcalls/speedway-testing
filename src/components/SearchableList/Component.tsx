@@ -65,15 +65,15 @@ function SearchableListComponent({
 					{list.map((row: any, rowIndex: number) => {
 						const rowKeys = Object.keys(row)
 						return (
-							<tr key={`listrow-${rowIndex}`}>
+							<tr
+								key={`listrow-${rowIndex}`}
+								className="border-b border-gray-200 last:border-0"
+							>
 								{rowKeys.map((key: string, itemIndex: number) => {
 									if (key === "id") return null
 									const { text = "", Component, props } = row[key]
 									return (
-										<td
-											className="px-4 py-5 border-b border-gray-200"
-											key={`${key}-${itemIndex}`}
-										>
+										<td className="px-4 py-5" key={`${key}-${itemIndex}`}>
 											{text}
 											{Component && <Component {...props} />}
 										</td>
