@@ -6,10 +6,17 @@ import PostSignupComponent from "./Component"
 
 const PostSignupContainer = () => {
 	const navigate = useNavigate()
-	const Address = useSelector(selectAddress)
+
+	const address = useSelector(selectAddress)
+	const onCopy = () => copy(address)
+	const onContinue = () => navigate("/schema")
 
 	return (
-		<PostSignupComponent navigate={navigate} Address={Address} copy={copy} />
+		<PostSignupComponent
+			address={address}
+			onCopy={onCopy}
+			onContinue={onContinue}
+		/>
 	)
 }
 
