@@ -46,7 +46,6 @@ function SearchableListComponent({
 						iconName="SearchNormal1"
 						iconType="outline"
 						placeholder="Search"
-						iconClassName="w-4 h-4"
 						theme="light"
 						onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
 							setSearchTerm(event.target.value)
