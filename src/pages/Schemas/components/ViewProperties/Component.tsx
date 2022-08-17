@@ -32,14 +32,14 @@ function ViewPropertiesComponent({
 			{properties && properties.length > 0 && isOpen && (
 				<div
 					ref={divRef}
-					className="absolute w-52 shadow-3xl rounded bg-white right-0 top-11 border border-surface-button-subtle px-4 py-3 z-10"
+					className="absolute w-52 shadow-3xl rounded bg-white right-0 top-11 border border-surface-button-subtle px-4 z-10 max-h-80 overflow-scroll"
 				>
 					{properties.map((property) => (
-						<div className="flex justify-between" key={`${property.name}`}>
+						<div className="flex justify-between py-3" key={`${property.name}`}>
 							<div className="text-default text-custom-xs font-extrabold">
 								{property.name}
 							</div>
-							<div className="text-custom-xxs text-subdued tracking-custom-tighter">
+							<div className="text-subdued tracking-custom-tighter font-extrabold text-xs">
 								{typeSchemaMap[property.field as keyof ItypeSchemaMap]}
 							</div>
 						</div>
