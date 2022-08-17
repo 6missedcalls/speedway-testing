@@ -17,15 +17,20 @@ function ViewPropertiesContainer({
 	const dispatch = useDispatch<any>()
 
 	async function getSchema() {
-		const getSchemaResponse = await dispatch(
-			userGetSchema({ schema: getSchemaPayload })
-		)
-		setProperties(getSchemaResponse.payload.fields)
-		setIsOpen(true)
+		if (properties.length === 0) {
+			const getSchemaResponse = await dispatch(
+				userGetSchema({ schema: getSchemaPayload })
+			)
+			setProperties(getSchemaResponse.payload.fields)
+		}
+
+		setIsOpen(!isOpen)
 	}
 
 	function close() {
-		setIsOpen(false)
+		setTimeout(() => {
+			setIsOpen(false)
+		}, 100)
 	}
 
 	return (
