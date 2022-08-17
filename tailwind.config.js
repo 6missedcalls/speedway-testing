@@ -66,11 +66,14 @@ module.exports = {
 				"outlined-disabled":
 					"var(--nds-semantic-color-border-outlined-disabled)",
 				"brand-tertiary": "var(--nds-semantic-color-brand-tertiary)",
+				"surface-button-subtle":
+					"var(--nds-semantic-color-surface-button-subtle)",
 				"surface-button-subtle-hovered":
 					"var(--nds-semantic-color-surface-button-subtle-hovered)",
 				"button-subtle": "var(--nds-semantic-color-on-button-subtle)",
 				"button-transparent": "var(--nds-semantic-color-on-button-transparent)",
 				"button-outlined": "var(--nds-semantic-color-on-button-outlined)",
+				subdued: "var(--nds-semantic-color-text-subdued)",
 				light: {
 					default: "var(--nds-semantic-color-text)",
 				},

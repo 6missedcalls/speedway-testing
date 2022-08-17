@@ -12,6 +12,7 @@ interface ViewPropertiesContainerProps {
 function ViewPropertiesContainer({
 	getSchemaPayload,
 }: ViewPropertiesContainerProps) {
+	const [isOpen, setIsOpen] = useState(false)
 	const [properties, setProperties] = useState<Array<IpropertyResponse>>([])
 	const dispatch = useDispatch<any>()
 
@@ -20,6 +21,11 @@ function ViewPropertiesContainer({
 			userGetSchema({ schema: getSchemaPayload })
 		)
 		setProperties(getSchemaResponse.payload.fields)
+		setIsOpen(true)
+	}
+
+	function close() {
+		setIsOpen(false)
 	}
 
 	return (
@@ -27,6 +33,8 @@ function ViewPropertiesContainer({
 			key={getSchemaPayload.schema}
 			properties={properties}
 			onClick={getSchema}
+			isOpen={isOpen}
+			close={close}
 		/>
 	)
 }
