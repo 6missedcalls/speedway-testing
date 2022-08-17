@@ -5,13 +5,11 @@ import {
 	ROUTE_SCHEMAS,
 	// ROUTE_OBJECTS,
 	// ROUTE_BUCKETS,
-	// ROUTE_ACCESS_API,
-	// ROUTE_DID_UTILITY,
-	// ROUTE_DOCS_AND_SUPPORT,
-	// ROUTE_BLOCK_EXPLORER,
 } from "../../utils/constants"
 import { useSelector } from "react-redux"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
+import IconLinkAccessApi from "../../assets/svgs/LinkAccessApi"
+import IconLinkDocsSupport from "../../assets/svgs/LinkDocsSupport"
 
 interface SideMenuComponentProps {
 	navigate: NavigateFunction
@@ -36,29 +34,6 @@ const modulesButtons = [
 	// },
 ]
 
-// const toolsButtons = [
-// 	{
-// 		label: "Access API",
-// 		iconName: "Document",
-// 		route: ROUTE_ACCESS_API,
-// 	},
-// 	{
-// 		label: "DID Utility",
-// 		iconName: "Document",
-// 		route: ROUTE_DID_UTILITY,
-// 	},
-// 	{
-// 		label: "Docs & Support",
-// 		iconName: "Document",
-// 		route: ROUTE_DOCS_AND_SUPPORT,
-// 	},
-// 	{
-// 		label: "Block Explorer",
-// 		iconName: "Document",
-// 		route: ROUTE_BLOCK_EXPLORER,
-// 	},
-// ]
-
 function SideMenuComponent({ navigate, currentPath }: SideMenuComponentProps) {
 	const Address = useSelector(selectAddress)
 	return (
@@ -82,12 +57,32 @@ function SideMenuComponent({ navigate, currentPath }: SideMenuComponentProps) {
 					buttons={modulesButtons}
 					className="mb-10"
 				/>
-				{/* <ButtonGroup
-					title="Tools"
-					navigate={navigate}
-					currentPath={currentPath}
-					buttons={toolsButtons}
-				/> */}
+
+				<div className="text-custom-2xs uppercase font-semibold text-subdued mb-6">
+					Tools
+				</div>
+
+				<a
+					className="flex px-2 h-10 font-extrabold"
+					href="https://github.com/sonr-io/speedway/blob/dev/docs/swagger.yaml"
+					target="_blank"
+				>
+					<span className="mr-2">
+						<IconLinkAccessApi />
+					</span>
+					<span>Access API</span>
+				</a>
+
+				<a
+					className="flex px-2 h-10 font-extrabold"
+					href="https://docs.sonr.io/"
+					target="_blank"
+				>
+					<span className="mr-2">
+						<IconLinkDocsSupport />
+					</span>
+					<span>Docs & Support</span>
+				</a>
 			</div>
 
 			<div className="border-b border-outlined-disabled mb-10 w-full h-px" />
