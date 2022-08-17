@@ -4,7 +4,6 @@ import {
 	ROUTE_ACCESS_API,
 	ROUTE_BLOCK_EXPLORER,
 	ROUTE_BUCKETS,
-	ROUTE_DASHBOARD,
 	ROUTE_DID_UTILITY,
 	ROUTE_DOCS_AND_SUPPORT,
 	ROUTE_SIGNUP,
@@ -16,7 +15,6 @@ import {
 import "./App.css"
 import "./index.css"
 import PrivateRoute from "./components/PrivateRoute"
-import Dashboard from "./pages/Dashboard"
 import Signup from "./pages/Signup"
 import Login from "./pages/Login"
 import LayoutBase from "./components/LayoutBase"
@@ -41,10 +39,6 @@ function App() {
 					<Route
 						path={ROUTE_POST_SIGNUP}
 						element={<PrivateRoute Component={PostSignup} />}
-					/>
-					<Route
-						path={ROUTE_DASHBOARD}
-						element={<PrivateRoute Component={Dashboard} />}
 					/>
 					<Route
 						path={ROUTE_SCHEMAS}

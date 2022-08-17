@@ -1,8 +1,5 @@
 import SonrLogoSvg from "../../assets/svgs/SonrLogo"
-import { NebulaIcon } from "@sonr-io/nebula-react"
-import DashboardSvg from "../../assets/svgs/DashBoard"
 import ButtonGroup from "./components/ButtonsGroup"
-import { Button } from "@sonr-io/nebula-react"
 import { NavigateFunction } from "react-router-dom"
 import {
 	ROUTE_SCHEMAS,
@@ -73,22 +70,6 @@ function SideMenuComponent({ navigate, currentPath }: SideMenuComponentProps) {
 							Speedway
 						</span>
 					</div>
-					<NebulaIcon
-						className="w-6 h-6 fill-white ml-auto cursor-pointer"
-						iconName="SidebarLeft"
-						iconType="outline"
-					/>
-				</div>
-				<div className="flex items-center mt-11">
-					<div className="w-[21.5px] h-[21.5px] mr-3.5 shrink-0">
-						<DashboardSvg />
-					</div>
-					<Button
-						skin={currentPath === "/dashboard" ? "primary" : ""}
-						label="App Dashboard"
-						styling="block text-custom-sm font-extrabold w-full"
-						onClick={() => navigate("/dashboard")}
-					/>
 				</div>
 				<div className="border-b border-outlined-disabled mt-10 w-full h-px" />
 				<div className="flex flex-col">
