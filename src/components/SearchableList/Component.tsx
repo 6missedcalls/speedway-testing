@@ -1,4 +1,4 @@
-import { Button, NebulaIcon, Input } from "@sonr-io/nebula-react"
+import { NebulaIcon } from "@sonr-io/nebula-react"
 import React from "react"
 import { listTypes } from "../../utils/types"
 import Headers from "./components/Headers"
@@ -35,30 +35,24 @@ function SearchableListComponent({
 	const isLastPage = paginationCurrentPage === totalPages
 	const previousPageButtonClass = isFirstPage ? "opacity-40" : "cursor-pointer"
 	const nextPageButtonClass = isLastPage ? "opacity-40" : "cursor-pointer"
+	const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+		setSearchTerm(event.target.value)
 
 	return (
 		<div className="shadow-3xl rounded-2xl bg-white">
 			<div className="flex justify-between p-6 w-full">
-				<div className="w-80">
-					<Input
-						clear
-						className="w-4 fill-black"
-						iconName="SearchNormal1"
-						iconType="outline"
-						placeholder="Search"
-						theme="light"
-						onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-							setSearchTerm(event.target.value)
-						}
-					/>
-				</div>
+				<input
+					onChange={onChange}
+					className="border border-default rounded-full px-4 py-2 font-normal w-80"
+					placeholder="Search"
+				/>
 				{onClickNewItem && (
-					<Button
+					<button
+						className="text-skin-primary bg-skin-primary rounded px-4"
 						onClick={onClickNewItem}
-						iconName="Add"
-						iconType="outline"
-						label="New"
-					/>
+					>
+						New
+					</button>
 				)}
 			</div>
 			<table className="w-full text-left">
