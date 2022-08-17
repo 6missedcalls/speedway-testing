@@ -66,6 +66,7 @@ function SideMenuComponent({ navigate, currentPath }: SideMenuComponentProps) {
 					className="flex px-2 h-10 font-extrabold"
 					href="https://github.com/sonr-io/speedway/blob/dev/docs/swagger.yaml"
 					target="_blank"
+					rel="noreferrer"
 				>
 					<span className="mr-2">
 						<IconLinkAccessApi />
@@ -77,6 +78,7 @@ function SideMenuComponent({ navigate, currentPath }: SideMenuComponentProps) {
 					className="flex px-2 h-10 font-extrabold"
 					href="https://docs.sonr.io/"
 					target="_blank"
+					rel="noreferrer"
 				>
 					<span className="mr-2">
 						<IconLinkDocsSupport />
