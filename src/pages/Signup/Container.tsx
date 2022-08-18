@@ -16,6 +16,37 @@ import {
 import validate from "../../utils/validation/validator"
 import Signup from "./Component"
 
+const passwordRules = [
+	{
+		name: "noSpaces",
+		validate: noSpaces,
+	},
+	{
+		name: "hasSpecialCharacter",
+		validate: hasAtLeastOneSpecialCharacter,
+	},
+	{
+		name: "hasUppercaseCharacter",
+		validate: hasAtLeastOneUppercaseCharacter,
+	},
+	{
+		name: "hasLowercaseCharacter",
+		validate: hasAtLeastOneLowercaseCharacter,
+	},
+	{
+		name: "hasNumericCharacter",
+		validate: hasAtLeastOneNumber,
+	},
+	{
+		name: "hasMinimumCharacters",
+		validate: function (value: string) {
+			if (value.length < 12)
+				return new Error("Password should have at least 12 characters.")
+			return true
+		},
+	},
+]
+
 const Container = () => {
 	const [password, setPassword] = useState("")
 	const [passwordConfirm, setPasswordConfirm] = useState("")
@@ -31,37 +62,6 @@ const Container = () => {
 			invalidPassword: false,
 		},
 	})
-
-	const passwordRules = [
-		{
-			name: "noSpaces",
-			validate: noSpaces,
-		},
-		{
-			name: "hasSpecialCharacter",
-			validate: hasAtLeastOneSpecialCharacter,
-		},
-		{
-			name: "hasUppercaseCharacter",
-			validate: hasAtLeastOneUppercaseCharacter,
-		},
-		{
-			name: "hasLowercaseCharacter",
-			validate: hasAtLeastOneLowercaseCharacter,
-		},
-		{
-			name: "hasNumericCharacter",
-			validate: hasAtLeastOneNumber,
-		},
-		{
-			name: "hasMinimumCharacters",
-			validate: function (value: string) {
-				if (value.length < 12)
-					return new Error("Password should have at least 12 characters.")
-				return true
-			},
-		},
-	]
 
 	const navigate = useNavigate()
 	const dispatch = useDispatch<any>()
