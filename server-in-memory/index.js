@@ -114,7 +114,7 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 
 	res.json({
 		definition: schema,
-		whatIs: { did },
+		whatIs: { did, creator },
 	})
 })
 

@@ -99,7 +99,6 @@ export const schemasSlice = createSlice({
 		builder.addCase(userCreateSchema.fulfilled, (state, action) => {
 			const { payload } = action
 			state.loading = false
-
 			state.list.push({
 				did: payload.whatIs.did,
 				schema: {
