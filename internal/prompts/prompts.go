@@ -1,6 +1,7 @@
 package prompts
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/manifoldco/promptui"
@@ -45,7 +46,7 @@ func LoginPrompt() rtmv1.LoginRequest {
 	}
 
 	// Load the keys if they exist
-	aesKey, pskKey, err := storage.AutoLoadKey()
+	aesKey, pskKey, err := storage.AutoLoad()
 	if err != nil {
 		fmt.Println(status.Error, "Key Error: %s", err)
 	}
@@ -58,7 +59,7 @@ func LoginPrompt() rtmv1.LoginRequest {
 	return loginRequest
 }
 
-func QuitSelector() bool {
+func QuitSelector(ctx context.Context) bool {
 	prompt := promptui.Select{
 		Label: "Finished with Schema?",
 		Items: []string{"Yes", "No"},

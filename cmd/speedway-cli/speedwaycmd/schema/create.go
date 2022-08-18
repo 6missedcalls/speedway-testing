@@ -102,7 +102,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				}
 				sk := convertSchemaKind(result)
 				fields[schemaField] = sk
-				repeat = prompts.QuitSelector()
+				repeat = prompts.QuitSelector(ctx)
 			}
 
 			createSchemaRequest := rtmv1.CreateSchemaRequest{

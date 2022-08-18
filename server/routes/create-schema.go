@@ -45,7 +45,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 
 	m := binding.InitMotor()
 
-	aesKey, aesPskKey, err := storage.AutoLoadKey()
+	aesKey, aesPskKey, err := storage.AutoLoad()
 	if err != nil {
 		fmt.Println(status.Error, "LoadKey Error: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{

@@ -48,7 +48,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	// init motor
 	m := binding.InitMotor()
 
-	aesKey, aesPskKey, err := storage.AutoLoadKey()
+	aesKey, aesPskKey, err := storage.AutoLoad()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Error Loading Keys",
