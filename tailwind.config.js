@@ -58,6 +58,7 @@ module.exports = {
 				"custom-white": "var(--nds-core-border-white)",
 			},
 			colors: {
+				"border-menu": "var(--nds-semantic-color-border-menu)",
 				"surface-button-primary":
 					"var(--nds-semantic-color-surface-button-primary)",
 				placeholder: "var(--nds-semantic-color-text-placeholder)",
@@ -192,6 +193,9 @@ module.exports = {
 					inverted: withOpacityValue("--color-fill-inverted"),
 					"inverted-muted": withOpacityValue("--color-fill-inverted-muted"),
 				},
+			},
+			backgroundImage: {
+				"black-gray-logo": 'url("/src/assets/LogoTransparent.svg")',
 			},
 		},
 	},

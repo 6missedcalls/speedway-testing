@@ -1,27 +1,142 @@
-import { useDispatch, useSelector } from "react-redux"
+import React, { useState } from "react"
+import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router"
 import {
-	selectAddress,
 	userCreateAccount,
 	userLogin,
 } from "../../redux/slices/authenticationSlice"
+import { ROUTE_POST_SIGNUP } from "../../utils/constants"
+import {
+	hasAtLeastOneLowercaseCharacter,
+	hasAtLeastOneNumber,
+	hasAtLeastOneSpecialCharacter,
+	hasAtLeastOneUppercaseCharacter,
+	noSpaces,
+} from "../../utils/validation/rules"
+import validate from "../../utils/validation/validator"
 import Signup from "./Component"
 
+const passwordRules = [
+	{
+		name: "noSpaces",
+		validate: noSpaces,
+	},
+	{
+		name: "hasSpecialCharacter",
+		validate: hasAtLeastOneSpecialCharacter,
+	},
+	{
+		name: "hasUppercaseCharacter",
+		validate: hasAtLeastOneUppercaseCharacter,
+	},
+	{
+		name: "hasLowercaseCharacter",
+		validate: hasAtLeastOneLowercaseCharacter,
+	},
+	{
+		name: "hasNumericCharacter",
+		validate: hasAtLeastOneNumber,
+	},
+	{
+		name: "hasMinimumCharacters",
+		validate: function (value: string) {
+			if (value.length < 12)
+				return new Error("Password should have at least 12 characters.")
+			return true
+		},
+	},
+]
+
 const Container = () => {
+	const [password, setPassword] = useState("")
+	const [passwordConfirm, setPasswordConfirm] = useState("")
+	const [passwordVisible, setPasswordVisible] = useState(false)
+	const [errors, setErrors] = useState<any>({
+		vaultPassword: {
+			noSpaces: false,
+			hasSpecialCharacter: true,
+			hasUppercaseCharacter: true,
+			hasLowercaseCharacter: true,
+			hasNumericCharacter: true,
+			hasMinimumCharacters: true,
+		},
+	})
+
 	const navigate = useNavigate()
 	const dispatch = useDispatch<any>()
 
-	async function createAccountAndLogin(password: string) {
+	async function createAccountAndLogin() {
+		if (!validateStatePassword()) return
+
 		const createAccountResponse = await dispatch(
 			userCreateAccount({ password })
 		)
 		const { payload } = createAccountResponse
 
 		await dispatch(userLogin({ walletAddress: payload.Address, password }))
-		navigate("/post-signup")
+		navigate(ROUTE_POST_SIGNUP)
 	}
 
-	return <Signup onSubmit={createAccountAndLogin} />
+	function validateStatePassword() {
+		const passwordsMatch = passwordConfirm === password
+
+		if (!passwordsMatch) {
+			setErrors({
+				...errors,
+				vaultPassword: {
+					invalidPassword: "Passwords don't match.",
+				},
+			})
+		}
+
+		const fields = {
+			vaultPassword: {
+				rules: passwordRules,
+				value: password,
+			},
+		}
+
+		const { isValid, validationErrors } = validate({ fields })
+
+		setErrors({
+			...validationErrors,
+		})
+
+		return isValid || passwordsMatch
+	}
+
+	function validatePasswordOnChange(value: string) {
+		const fields = {
+			vaultPassword: {
+				rules: passwordRules,
+				value: value,
+			},
+		}
+
+		const { validationErrors } = validate({ fields })
+		setErrors({ ...validationErrors })
+
+		setPassword(value)
+	}
+
+	function togglePasswordVisible() {
+		setPasswordVisible(!passwordVisible)
+	}
+
+	console.log("errors", errors)
+
+	return (
+		<Signup
+			onSubmit={createAccountAndLogin}
+			validatePasswordOnChange={validatePasswordOnChange}
+			password={password}
+			passwordConfirm={passwordConfirm}
+			setPasswordConfirm={setPasswordConfirm}
+			passwordVisible={passwordVisible}
+			togglePasswordVisible={togglePasswordVisible}
+			errors={errors}
+		/>
+	)
 }
 
 export default Container
