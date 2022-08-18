@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import {
@@ -6,14 +6,35 @@ import {
 	selectLoginError,
 	userLogin,
 } from "../../redux/slices/authenticationSlice"
+import { isRequired } from "../../utils/validation/rules"
+import validate from "../../utils/validation/validator"
 import { AppDispatch } from "../../redux/store"
 import LoginComponent from "./Component"
 
+const walletAddressRules = [
+	{
+		name: "isRequired",
+		validate: isRequired,
+	},
+]
+
+const paswordRules = [
+	{
+		name: "isRequired",
+		validate: isRequired,
+	},
+]
+
 const Container = () => {
+	const [walletAddress, setWalletAddress] = useState("")
+	const [password, setPassword] = useState("")
+	const [passwordVisible, setPasswordVisible] = useState(false)
 	const dispatch = useDispatch<AppDispatch>()
+
 	const navigate = useNavigate()
 	const isLogged = useSelector(selectIsLogged)
-	const error = useSelector(selectLoginError)
+	const loginError = useSelector(selectLoginError)
+	const [errors, setErrors] = useState<any>({})
 
 	useEffect(() => {
 		if (isLogged) {
@@ -21,15 +42,43 @@ const Container = () => {
 		}
 	}, [isLogged, navigate])
 
-	function login(walletAddress: string, password: string) {
-		if (!walletAddress || !password) {
-			console.error("Wallet address and password are required.")
-			return
+	function login() {
+		const fields = {
+			walletAddress: {
+				rules: walletAddressRules,
+				value: walletAddress,
+			},
+			vaultPassword: {
+				rules: paswordRules,
+				value: password,
+			},
 		}
+
+		const { isValid, validationErrors } = validate({ fields })
+		setErrors({ ...validationErrors })
+
+		if (!isValid) return
+
 		dispatch(userLogin({ walletAddress, password }))
 	}
 
-	return <LoginComponent onSubmit={login} error={error} />
+	function togglePasswordVisible() {
+		setPasswordVisible(!passwordVisible)
+	}
+
+	return (
+		<LoginComponent
+			onSubmit={login}
+			errors={errors}
+			togglePasswordVisible={togglePasswordVisible}
+			setPassword={setPassword}
+			passwordVisible={passwordVisible}
+			walletAddress={walletAddress}
+			setWalletAddress={setWalletAddress}
+			password={password}
+			loginError={loginError ? "Invalid domain or password." : ""}
+		/>
+	)
 }
 
 export default Container

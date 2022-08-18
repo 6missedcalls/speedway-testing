@@ -11,6 +11,7 @@ import { MODAL_CONTENT_NEW_SCHEMA } from "../../utils/constants"
 import { obfuscateDid } from "../../utils/string"
 import { Ischema } from "../../utils/types"
 import SchemasPageComponent from "./Component"
+import EmptyList from "./components/EmptyList"
 import ViewProperties from "./components/ViewProperties"
 
 function SchemasPageContainer() {
@@ -55,11 +56,17 @@ function SchemasPageContainer() {
 	}
 
 	return (
-		<SchemasPageComponent
-			openNewSchemaModal={openNewSchemaModal}
-			list={mapToListFormat(schemasMetaDataList)}
-			searchableAndSortableFieldKey="Schema name"
-		/>
+		<>
+			{schemasMetaDataList && schemasMetaDataList.length > 0 ? (
+				<SchemasPageComponent
+					openNewSchemaModal={openNewSchemaModal}
+					list={mapToListFormat(schemasMetaDataList)}
+					searchableAndSortableFieldKey="Schema name"
+				/>
+			) : (
+				<EmptyList openNewSchemaModal={openNewSchemaModal} />
+			)}
+		</>
 	)
 }
 

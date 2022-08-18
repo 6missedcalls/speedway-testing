@@ -4,6 +4,7 @@ import { AppModalContext } from "../../../../contexts/appModalContext/appModalCo
 import { selectAddress } from "../../../../redux/slices/authenticationSlice"
 import { userCreateSchema } from "../../../../redux/slices/schemasSlice"
 import { IschemaTypeMap, schemaTypeMap } from "../../../../utils/mappings"
+import { isEmptyObject } from "../../../../utils/object"
 import {
 	Iproperty,
 	handlePropertyChangeProps,
@@ -39,19 +40,23 @@ function NewSchemaModalContentContainer() {
 	}
 
 	function saveSchema() {
-		if (!schemaName) return
+		if (!schemaName || properties.length === 0) return
+
+		const filledFields = properties
+			.filter((property) => property.name && property.type)
+			.reduce((acc, item) => {
+				return {
+					...acc,
+					[item.name]: schemaTypeMap[item.type as keyof IschemaTypeMap],
+				}
+			}, {})
+
+		if (isEmptyObject(filledFields)) return
 
 		const schema: InewSchema = {
 			address,
 			fields: {
-				...properties
-					.filter((property) => property.name && property.type)
-					.reduce((acc, item) => {
-						return {
-							...acc,
-							[item.name]: schemaTypeMap[item.type as keyof IschemaTypeMap],
-						}
-					}, {}),
+				...filledFields,
 			},
 			label: schemaName,
 		}
