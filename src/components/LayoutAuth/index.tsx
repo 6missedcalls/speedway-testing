@@ -1,6 +1,5 @@
 import { ReactNode } from "react"
 import SonrLogoSvg from "../../assets/svgs/SonrLogo"
-import { Button } from "@sonr-io/nebula-react"
 import { ROUTE_LOGIN, ROUTE_SIGNUP } from "../../utils/constants"
 import { useNavigate } from "react-router-dom"
 
@@ -32,7 +31,7 @@ const Component = ({ content, sidebarContent, route }: Props) => {
 								<div className="text-center text-custom-xs w-full flex items-center justify-center rounded-3xl">
 									<button
 										className={`
-											block h-6 w-full text-white font-extrabold rounded-3xl 
+											block h-6 w-full text-white font-extrabold rounded-3xl
 											${route === ROUTE_SIGNUP ? "bg-primary-light" : "bg-transparent"}`}
 										onClick={() => navigate(ROUTE_SIGNUP)}
 									>
@@ -41,7 +40,7 @@ const Component = ({ content, sidebarContent, route }: Props) => {
 								</div>
 								<div className="text-center text-custom-xs w-full flex items-center justify-center rounded-3xl">
 									<button
-										className={`block h-6 w-full text-white font-extrabold rounded-3xl 
+										className={`block h-6 w-full text-white font-extrabold rounded-3xl
 											${route === ROUTE_LOGIN ? "bg-primary-light" : "bg-transparent"}`}
 										onClick={() => navigate(ROUTE_LOGIN)}
 									>

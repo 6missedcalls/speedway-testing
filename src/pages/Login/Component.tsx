@@ -1,5 +1,4 @@
 import { FormEvent } from "react"
-import AlertSvg from "../../assets/svgs/Alert"
 import ClosedEyeSvg from "../../assets/svgs/ClosedEye"
 import OpenEyeSvg from "../../assets/svgs/OpenEye"
 import LayoutAuth from "../../components/LayoutAuth"
