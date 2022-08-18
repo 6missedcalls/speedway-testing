@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 import {
+	selectSchemasLoading,
 	selectSchemasMetaDataList,
 	userGetAllSchemas,
 } from "../../redux/slices/schemasSlice"
@@ -19,6 +20,7 @@ function SchemasPageContainer() {
 	const address = useSelector(selectAddress)
 	const schemasMetaDataList = useSelector(selectSchemasMetaDataList)
 	const dispatch = useDispatch<any>()
+	const loading = useSelector(selectSchemasLoading)
 
 	useEffect(() => {
 		dispatch(userGetAllSchemas())
@@ -65,6 +67,7 @@ function SchemasPageContainer() {
 					openNewSchemaModal={openNewSchemaModal}
 					list={mapToListFormat(schemasMetaDataList)}
 					searchableAndSortableFieldKey="Schema name"
+					loading={loading}
 				/>
 			) : (
 				<EmptyList openNewSchemaModal={openNewSchemaModal} />

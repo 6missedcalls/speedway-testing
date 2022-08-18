@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import AuthenticationLoading from "../../components/AuthenticationLoading"
 import {
+	selectAuthenticationIsLoading,
 	selectIsLogged,
 	selectLoginError,
 	userLogin,
 } from "../../redux/slices/authenticationSlice"
+import { ROUTE_LOGIN } from "../../utils/constants"
 import { isRequired } from "../../utils/validation/rules"
 import validate from "../../utils/validation/validator"
 import LoginComponent from "./Component"
@@ -32,6 +35,7 @@ const Container = () => {
 	const navigate = useNavigate()
 	const isLogged = useSelector(selectIsLogged)
 	const loginError = useSelector(selectLoginError)
+	const loading = useSelector(selectAuthenticationIsLoading)
 	const [errors, setErrors] = useState<any>({})
 
 	useEffect(() => {
@@ -62,6 +66,10 @@ const Container = () => {
 
 	function togglePasswordVisible() {
 		setPasswordVisible(!passwordVisible)
+	}
+
+	if (loading) {
+		return <AuthenticationLoading route={ROUTE_LOGIN} />
 	}
 
 	return (

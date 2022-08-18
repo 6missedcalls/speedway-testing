@@ -1,11 +1,13 @@
 import React, { useState } from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router"
+import AuthenticationLoading from "../../components/AuthenticationLoading"
 import {
+	selectAuthenticationIsLoading,
 	userCreateAccount,
 	userLogin,
 } from "../../redux/slices/authenticationSlice"
-import { ROUTE_POST_SIGNUP } from "../../utils/constants"
+import { ROUTE_POST_SIGNUP, ROUTE_SIGNUP } from "../../utils/constants"
 import {
 	hasAtLeastOneLowercaseCharacter,
 	hasAtLeastOneNumber,
@@ -63,6 +65,7 @@ const Container = () => {
 		},
 	})
 
+	const loading = useSelector(selectAuthenticationIsLoading)
 	const navigate = useNavigate()
 	const dispatch = useDispatch<any>()
 
@@ -121,6 +124,10 @@ const Container = () => {
 
 	function togglePasswordVisible() {
 		setPasswordVisible(!passwordVisible)
+	}
+
+	if (loading) {
+		return <AuthenticationLoading route={ROUTE_SIGNUP} />
 	}
 
 	return (

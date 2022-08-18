@@ -9,6 +9,7 @@ interface SearchableListContainerProps {
 	searchableAndSortableFieldKey: string
 	paginationSize?: number
 	handleOpenModal?: () => void
+	loading: boolean
 }
 
 function SearchableListContainer({
@@ -17,6 +18,7 @@ function SearchableListContainer({
 	type,
 	paginationSize = 8,
 	handleOpenModal,
+	loading,
 }: SearchableListContainerProps) {
 	const [orderAsc, setOrderAsc] = useState(true)
 	const [searchTerm, setSearchTerm] = useState("")

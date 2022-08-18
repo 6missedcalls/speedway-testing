@@ -78,6 +78,13 @@ export const schemasSlice = createSlice({
 			state.error = true
 			state.loading = false
 		})
+		builder.addCase(userGetSchema.pending, (_) => {})
+
+		builder.addCase(userGetSchema.fulfilled, (_) => {})
+
+		builder.addCase(userGetSchema.rejected, (state) => {
+			state.error = true
+		})
 		builder.addCase(userCreateSchema.pending, (state) => {
 			state.loading = true
 		})
@@ -96,7 +103,6 @@ export const schemasSlice = createSlice({
 				is_active: true,
 			})
 		})
-
 		builder.addCase(userCreateSchema.rejected, (state) => {
 			state.error = true
 			state.loading = false
