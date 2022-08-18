@@ -1,5 +1,11 @@
+import LayoutMenu from "../../components/LayoutMenu"
+
 function BucketsPageComponent() {
-	return <div>Buckets page</div>
+	return (
+		<LayoutMenu>
+			<div>Buckets page</div>
+		</LayoutMenu>
+	)
 }
 
 export default BucketsPageComponent

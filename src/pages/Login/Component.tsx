@@ -1,63 +1,90 @@
-import {
-	ChangeEvent,
-	Dispatch,
-	FormEvent,
-	SetStateAction,
-	useState,
-} from "react"
-import { useNavigate } from "react-router"
-import AuthLayout from "../../components/AuthLayout"
+import { FormEvent } from "react"
+import ClosedEyeSvg from "../../assets/svgs/ClosedEye"
+import OpenEyeSvg from "../../assets/svgs/OpenEye"
+import LayoutAuth from "../../components/LayoutAuth"
+import TextInput from "../../components/TextInput"
+import { ROUTE_LOGIN } from "../../utils/constants"
+import { Button } from "@sonr-io/nebula-react"
 
 type Props = {
-	onSubmit: (walletAddress: string, password: string) => void
+	onSubmit: () => void
+	errors: any
+	togglePasswordVisible: () => void
+	passwordVisible: boolean
+	setPassword: React.Dispatch<React.SetStateAction<string>>
+	walletAddress: string
+	setWalletAddress: React.Dispatch<React.SetStateAction<string>>
+	password: string
+	loginError: string
 }
-const Component = ({ onSubmit }: Props) => {
-	const [walletAddress, setWalletAddress] = useState("")
-	const [password, setPassword] = useState("")
-	const navigate = useNavigate()
-	const _onChange =
-		(setStateAction: Dispatch<SetStateAction<string>>) =>
-		(event: ChangeEvent<HTMLInputElement>) => {
-			setStateAction(event.target.value)
-		}
+
+const Component = ({
+	onSubmit,
+	errors,
+	togglePasswordVisible,
+	setPassword,
+	passwordVisible,
+	walletAddress,
+	setWalletAddress,
+	password,
+	loginError,
+}: Props) => {
 	const _onSubmit = (event: FormEvent) => {
 		event.preventDefault()
-		onSubmit(walletAddress, password)
+		onSubmit()
 	}
 
 	return (
-		<AuthLayout
+		<LayoutAuth
+			route={ROUTE_LOGIN}
 			sidebarContent={
-				<div className="text-right text-white">
-					<button
-						onClick={() => navigate("/signup")}
-						className="border rounded"
-					>
-						Go to Registration
-					</button>
+				<div className=" max-w-[479px] flex flex-col mt-40 ml-14">
+					<div className="text-custom-3xl font-extrabold tracking-custom-x2tighter mb-6">
+						Welcome to Sonr
+					</div>
+					<div className="text-custom-md font-normal tracking-custom-tight mb-10">
+						We're glad you're here.
+						<br />
+						Enter your Wallet Address and Vault Password to continue.
+					</div>
 				</div>
 			}
 			content={
-				<div className="min-w-[315px]">
-					<h1 className="text-3xl mb-8">Login to Your Vault</h1>
+				<div className="flex flex-col justify-center items-center w-96">
+					<h1 className="text-custom-xl font-extrabold mb-8 text-emphasis">
+						Login to Your Vault
+					</h1>
 
-					<form onSubmit={_onSubmit}>
-						<label className="block">Wallet Address</label>
-						<input
+					<form onSubmit={_onSubmit} className="w-full">
+						<TextInput
+							error={errors?.walletAddress?.isRequired}
+							className="text-white mb-4"
+							label="Wallet Address"
+							ariaLabel="Wallet Address"
+							handleOnChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+								setWalletAddress(event.target.value)
+							}}
 							value={walletAddress}
-							onChange={_onChange(setWalletAddress)}
-							className="border rounded mb-4 block w-full"
+							type="text"
 						/>
-
-						<label className="block">Your Vault Password</label>
-						<input
-							type="password"
+						<TextInput
+							error={errors?.vaultPassword?.isRequired || loginError}
+							RightIcon={passwordVisible ? OpenEyeSvg : ClosedEyeSvg}
+							rightIconOnClick={togglePasswordVisible}
+							className="text-white"
+							label="Your Vault Password"
+							ariaLabel="Your Vault Password"
+							handleOnChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+								setPassword(event.target.value)
+							}}
 							value={password}
-							onChange={_onChange(setPassword)}
-							className="border rounded mb-4 block w-full"
+							type={passwordVisible ? "text" : "password"}
 						/>
-
-						<button className="border rounded block w-full">Submit</button>
+						<Button
+							type="submit"
+							styling="border rounded block w-full mt-12 justify-center text-custom-md font-extrabold"
+							label="Submit"
+						/>
 					</form>
 				</div>
 			}

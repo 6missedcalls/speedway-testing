@@ -3,3 +3,8 @@ dist/
 node_modules/
 public/
 server/
+cmd/
+docs/
+build/
+*.MD
+*.md

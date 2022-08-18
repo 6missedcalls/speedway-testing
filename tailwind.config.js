@@ -20,6 +20,16 @@ module.exports = {
 			plugins: [require("tailwindcss"), require("autoprefixer")],
 		},
 		extend: {
+			animation: {
+				"reverse-spin": "reverse-spin 1s linear infinite",
+			},
+			keyframes: {
+				"reverse-spin": {
+					from: {
+						transform: "rotate(360deg)",
+					},
+				},
+			},
 			fontSize: {
 				"custom-xs": "var(--nds-core-font-xs)",
 				"custom-2xs": "var(--nds-core-font-2xs)",
@@ -30,6 +40,7 @@ module.exports = {
 				"custom-3xl": "var(--nds-core-font-3xl)",
 			},
 			letterSpacing: {
+				"custom-x2wider": "0.04em",
 				"custom-tight": "-0.01em",
 				"custom-tighter": "-0.02em",
 				"custom-x2tighter": "-0.04em",
@@ -53,15 +64,27 @@ module.exports = {
 				"4xl": "2rem",
 			},
 			border: {
+				default: "var(--nds-semantic-color-border-input)",
 				"custom-white": "var(--nds-core-border-white)",
 			},
 			colors: {
+				"border-menu": "var(--nds-semantic-color-border-menu)",
+				"surface-button-primary":
+					"var(--nds-semantic-color-surface-button-primary)",
+				placeholder: "var(--nds-semantic-color-text-placeholder)",
+				"default-border": "var(--nds-semantic-color-border-input)",
+				default: "var(--nds-semantic-color-text)",
 				"outlined-disabled":
 					"var(--nds-semantic-color-border-outlined-disabled)",
 				"brand-tertiary": "var(--nds-semantic-color-brand-tertiary)",
+				"surface-button-subtle":
+					"var(--nds-semantic-color-surface-button-subtle)",
 				"surface-button-subtle-hovered":
 					"var(--nds-semantic-color-surface-button-subtle-hovered)",
 				"button-subtle": "var(--nds-semantic-color-on-button-subtle)",
+				"button-transparent": "var(--nds-semantic-color-on-button-transparent)",
+				"button-outlined": "var(--nds-semantic-color-on-button-outlined)",
+				subdued: "var(--nds-semantic-color-text-subdued)",
 				light: {
 					default: "var(--nds-semantic-color-text)",
 				},
@@ -136,6 +159,7 @@ module.exports = {
 			},
 			textColor: {
 				emphasis: "var(--nds-semantic-color-text-emphasis)",
+				default: "var(--nds-semantic-color-text)",
 				"button-transparent": "var(--nds-semantic-color-on-button-transparent)",
 				subdued: "var(--nds-semantic-color-text-subdued)",
 				"button-highlight": "var(--nds-semantic-color-on-button-highlight)",
@@ -160,9 +184,8 @@ module.exports = {
 					"300-transparent": withOpacityValue("--color-gray-300-transparent")(
 						0.5
 					),
-					"900-transparent": withOpacityValue("--color-gray-900-transparent")(
-						0.4
-					),
+					"900-transparent":
+						"var(--nds-semantic-color-bg-gray-900-transparent)",
 				},
 
 				"semi-transparent": withOpacityValue("--color-white-transparent")(0.5),
@@ -180,6 +203,9 @@ module.exports = {
 					inverted: withOpacityValue("--color-fill-inverted"),
 					"inverted-muted": withOpacityValue("--color-fill-inverted-muted"),
 				},
+			},
+			backgroundImage: {
+				"black-gray-logo": 'url("/src/assets/LogoTransparent.svg")',
 			},
 		},
 	},

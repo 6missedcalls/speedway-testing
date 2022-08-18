@@ -11,12 +11,19 @@ app.use(bodyParser.json())
 
 /// DEVELOPMENT
 
-app.get("/dump", async (req, res) => {
+const generateDid = () => `snr${md5(Math.random())}`
+const generateDid2 = () => `did:snr:${md5(Math.random())}`
+const generateCid = () => md5(Math.random())
+
+const mountAccountStoreKey = (did) => `account${did}`
+const mountSchemasStoreKey = (did) => `schemas${did}`
+
+app.get("/dump", async (_, res) => {
 	const data = await storage.values()
 	res.json({ data })
 })
 
-app.get("/reset", async (req, res) => {
+app.get("/reset", async (_, res) => {
 	await storage.clear()
 	const length = await storage.length()
 	res.json({ length })
@@ -26,25 +33,32 @@ app.get("/reset", async (req, res) => {
 
 let sessionDid = null
 
-app.post("/api/v1/account/create", async (req, res) => {
-	const did = md5(Math.random())
-	const password = req.body.password || ""
+app.post("/api/v1/account/create", async ({ body }, res) => {
+	const did = generateDid()
+	const password = body.password || ""
 
-	await storage.setItem(did, {
+	const accountStoreKey = mountAccountStoreKey(did)
+	await storage.setItem(accountStoreKey, {
 		did,
 		password,
-		schemas: [],
-		buckets: [],
-		objects: [],
 	})
 
-	res.json({ Did: did })
+	const schemasStoreKey = mountSchemasStoreKey(did)
+	await storage.setItem(schemasStoreKey, {
+		schemas: [],
+		schemasMetaData: {
+			whatIs: [],
+		},
+	})
+
+	res.json({ Address: did })
 })
 
-app.post("/api/v1/account/login", async (req, res) => {
-	const account = await storage.getItem(req.body.did)
+app.post("/api/v1/account/login", async ({ body }, res) => {
+	const accountStoreKey = mountAccountStoreKey(body.Address)
+	const account = await storage.getItem(accountStoreKey)
 
-	if (!account || account.password !== req.body.password) {
+	if (!account || account.password !== body.Password) {
 		res.status(500).send()
 		return
 	}
@@ -55,106 +69,79 @@ app.post("/api/v1/account/login", async (req, res) => {
 
 app.use((_, res, next) => {
 	if (!sessionDid) {
-		res.status(500).send()
+		res.status(500).json({ message: "Not logged in" })
 		return
 	}
 	next()
 })
 
-/// BUCKETS
-
-app.get("/api/v1/bucket", async (req, res) => {
-	const session = await storage.getItem(sessionDid)
-	res.json(session.buckets)
-})
-
-app.get("/api/v1/bucket/get/:cid", async (req, res) => {
-	const session = await storage.getItem(sessionDid)
-	const bucket = _.find(session.buckets, { cid: req.params.cid })
-
-	if (!bucket) {
-		res.status(400).send()
-		return
-	}
-
-	res.json(bucket)
-})
-
-app.post("/api/v1/bucket/create", async (req, res) => {
-	const session = await storage.getItem(sessionDid)
-
-	const cid = md5(Math.random())
-	session.buckets.push({ cid })
-	await storage.setItem(sessionDid, session)
-
-	res.json({ Cid: cid })
-})
-
-app.put("/api/v1/bucket", async (req, res) => {
-	res.status(500).send()
-})
-
 /// SCHEMAS
 
-app.get("/api/v1/schema", async (req, res) => {
-	const session = await storage.getItem(sessionDid)
-	res.json(session.schemas)
+app.post("/api/v1/schema/create", async ({ body }, res) => {
+	if (body.address !== sessionDid) {
+		res.status(200).send()
+		return
+	}
+	const schemasStoreKey = mountSchemasStoreKey(sessionDid)
+	const session = await storage.getItem(schemasStoreKey)
+
+	const did = generateDid2()
+	const creator = generateDid2()
+	const fieldNames = _.keys(body.fields)
+
+	const schemaMetaData = {
+		did,
+		schema: {
+			did,
+			label: body.label,
+			cid: generateCid(),
+		},
+		creator: creator,
+		timestamp: +new Date(),
+		is_active: true,
+	}
+
+	const schema = {
+		creator: creator,
+		label: body.label,
+		fields: _.map(fieldNames, (name) => ({ name, field: body.fields[name] })),
+	}
+
+	session.schemasMetaData.whatIs.push(schemaMetaData)
+	session.schemas.push(schema)
+
+	await storage.setItem(schemasStoreKey, session)
+
+	res.json({
+		definition: schema,
+		whatIs: { did, creator },
+	})
 })
 
-app.get("/api/v1/schema/:accountdid/:did", async (req, res) => {
-	if (req.params.accountdid !== sessionDid) {
-		res.status(400).send()
+app.post("/api/v1/schema/get", async ({ body }, res) => {
+	if (body.address !== sessionDid) {
+		res.status(200).send()
 		return
 	}
 
-	const session = await storage.getItem(sessionDid)
-	const schema = _.find(session.schemas, { did: req.params.did })
+	const schemasStoreKey = mountSchemasStoreKey(sessionDid)
+	const session = await storage.getItem(schemasStoreKey)
 
-	if (!schema) {
-		res.status(400).send()
+	const schema = session.schemas.find((item) => item.creator === body.creator)
+
+	if (!schema || body.creator !== schema.creator) {
+		res.status(500).send()
 		return
 	}
 
 	res.json(schema)
 })
 
-app.post("/api/v1/schema/create", async (req, res) => {
-	const session = await storage.getItem(sessionDid)
+app.get("/api/v1/schema/getAll", async (_, res) => {
+	const schemasStoreKey = mountSchemasStoreKey(sessionDid)
+	const session = await storage.getItem(schemasStoreKey)
 
-	const did = md5(Math.random())
-	session.schemas.push({ did })
-	await storage.setItem(sessionDid, session)
-
-	res.json({ Did: did })
-})
-
-/// OBJECTS
-
-app.get("/api/v1/object", async (req, res) => {
-	const session = await storage.getItem(sessionDid)
-	res.json(session.objects)
-})
-
-app.get("/api/v1/object/get/:cid", async (req, res) => {
-	const session = await storage.getItem(sessionDid)
-	const object = _.find(session.objects, { cid: req.params.cid })
-
-	if (!object) {
-		res.status(400).send()
-		return
-	}
-
-	res.json(object)
-})
-
-app.post("/api/v1/object/create", async (req, res) => {
-	const session = await storage.getItem(sessionDid)
-
-	const cid = md5(Math.random())
-	session.objects.push({ cid })
-	await storage.setItem(sessionDid, session)
-
-	res.json({ Cid: cid })
+	res.json(session.schemasMetaData)
 })
 
 /// SERVER

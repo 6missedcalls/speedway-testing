@@ -6,13 +6,18 @@ import SearchableListComponent from "./Component"
 interface SearchableListContainerProps {
 	initialList: Array<any>
 	type: listTypes
+	searchableAndSortableFieldKey: string
 	paginationSize?: number
+	handleOpenModal?: () => void
+	loading: boolean
 }
 
 function SearchableListContainer({
+	searchableAndSortableFieldKey,
 	initialList,
 	type,
 	paginationSize = 8,
+	handleOpenModal,
 }: SearchableListContainerProps) {
 	const [orderAsc, setOrderAsc] = useState(true)
 	const [searchTerm, setSearchTerm] = useState("")
@@ -23,12 +28,17 @@ function SearchableListContainer({
 	useEffect(() => {
 		const processedList = getList()
 		setList(processedList)
+	}, [searchTerm, orderAsc, paginationCurrentPage, initialList])
+
+	useEffect(() => {
 		if (searchTerm) {
-			setTotalPages(Math.ceil(processedList.length / paginationSize))
+			const filteredListLenght = getFilteredList(initialList).length
+			setPaginationCurrentPage(1)
+			setTotalPages(Math.ceil(filteredListLenght / paginationSize))
 		} else {
 			setTotalPages(Math.ceil(initialList.length / paginationSize))
 		}
-	}, [searchTerm, orderAsc, paginationCurrentPage])
+	}, [searchTerm, initialList])
 
 	function toggleOrder() {
 		setOrderAsc(!orderAsc)
@@ -42,12 +52,18 @@ function SearchableListContainer({
 		let orderedList
 		if (orderAsc) {
 			orderedList = [...previousList].sort((a: any, b: any) =>
-				a.name > b.name ? 1 : -1
+				a[searchableAndSortableFieldKey].text >
+				b[searchableAndSortableFieldKey].text
+					? 1
+					: -1
 			)
 			return orderedList
 		} else {
 			orderedList = [...previousList].sort((a: any, b: any) =>
-				a.name < b.name ? 1 : -1
+				a[searchableAndSortableFieldKey].text <
+				b[searchableAndSortableFieldKey].text
+					? 1
+					: -1
 			)
 			return orderedList
 		}
@@ -66,7 +82,10 @@ function SearchableListContainer({
 	function getFilteredList(previousList: Array<any>) {
 		if (!searchTerm) return previousList
 		return [...previousList].filter(
-			(item) => item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+			(item) =>
+				item[searchableAndSortableFieldKey].text
+					.toLowerCase()
+					.indexOf(searchTerm.toLowerCase()) !== -1
 		)
 	}
 
@@ -96,6 +115,7 @@ function SearchableListContainer({
 			previousPage={previousPage}
 			totalPages={totalPages}
 			setSearchTerm={setSearchTerm}
+			onClickNewItem={handleOpenModal}
 		/>
 	)
 }

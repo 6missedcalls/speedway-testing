@@ -1,4 +1,4 @@
-import { Button, NebulaIcon, Input } from "@sonr-io/nebula-react"
+import { NebulaIcon } from "@sonr-io/nebula-react"
 import React from "react"
 import { listTypes } from "../../utils/types"
 import Headers from "./components/Headers"
@@ -6,7 +6,7 @@ import Headers from "./components/Headers"
 interface SearchableListComponentProps {
 	type: listTypes
 	fullListLength: number
-	list: any
+	list: any[]
 	paginationSize?: number
 	paginationCurrentPage: number
 	toggleOrder: () => void
@@ -16,6 +16,7 @@ interface SearchableListComponentProps {
 	setPaginationCurrentPage: React.Dispatch<React.SetStateAction<number>>
 	setSearchTerm: React.Dispatch<React.SetStateAction<string>>
 	totalPages: number
+	onClickNewItem?: () => void
 }
 
 function SearchableListComponent({
@@ -28,31 +29,35 @@ function SearchableListComponent({
 	previousPage,
 	totalPages,
 	setSearchTerm,
+	onClickNewItem,
 }: SearchableListComponentProps) {
 	const isFirstPage = paginationCurrentPage === 1
 	const isLastPage = paginationCurrentPage === totalPages
+	const previousPageButtonClass = isFirstPage ? "opacity-40" : "cursor-pointer"
+	const nextPageButtonClass = isLastPage ? "opacity-40" : "cursor-pointer"
+	const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+		setSearchTerm(event.target.value)
 
 	return (
 		<div className="shadow-3xl rounded-2xl bg-white">
 			<div className="flex justify-between p-6 w-full">
-				<div className="w-80">
-					<Input
-						clear
-						iconName="SearchNormal1"
-						iconType="outline"
-						iconClassName="w-4"
-						placeholder="Search"
-						theme="light"
-						onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-							setSearchTerm(event.target.value)
-						}
-					/>
-				</div>
-				<Button iconName="Add" iconType="outline" label="New" />
+				<input
+					onChange={onChange}
+					className="border border-default rounded-full px-4 py-2 font-normal w-80"
+					placeholder="Search"
+				/>
+				{onClickNewItem && (
+					<button
+						className="text-skin-primary bg-skin-primary rounded px-4"
+						onClick={onClickNewItem}
+					>
+						New
+					</button>
+				)}
 			</div>
 			<table className="w-full text-left">
 				<thead>
-					<tr className="h-10 bg-button-subtle items-center px-4 py-5 text-button-subtle text-custom-xs px-4 py-5">
+					<tr className="h-10 bg-button-subtle items-center px-4 py-5 text-button-subtle text-custom-xs">
 						{Headers({ type, list, toggleOrder, orderAsc })}
 					</tr>
 				</thead>
@@ -60,15 +65,17 @@ function SearchableListComponent({
 					{list.map((row: any, rowIndex: number) => {
 						const rowKeys = Object.keys(row)
 						return (
-							<tr key={`listrow-${rowIndex}`}>
+							<tr
+								key={`listrow-${rowIndex}`}
+								className="border-b border-gray-200 last:border-0"
+							>
 								{rowKeys.map((key: string, itemIndex: number) => {
 									if (key === "id") return null
+									const { text = "", Component, props } = row[key]
 									return (
-										<td
-											className="px-4 py-5 border-b border-gray-200"
-											key={`${key}-${itemIndex}`}
-										>
-											{row[key]}
+										<td className="px-4 py-5" key={`${key}-${itemIndex}`}>
+											{text}
+											{Component && <Component {...props} />}
 										</td>
 									)
 								})}
@@ -81,11 +88,7 @@ function SearchableListComponent({
 								<div className="flex justify-center items-center ">
 									<div
 										className={`
-                                            ${
-																							isFirstPage
-																								? "opacity-40"
-																								: "cursor-pointer"
-																						}
+                                            ${previousPageButtonClass}
                                             flex justify-center items-center bg-button-subtle rounded-md w-8 h-8
                                         `}
 										onClick={() => (isFirstPage ? null : previousPage())}
@@ -99,11 +102,7 @@ function SearchableListComponent({
 									<span className="block mx-4">{`${paginationCurrentPage} of ${totalPages}`}</span>
 									<div
 										className={`
-                                            ${
-																							isLastPage
-																								? "opacity-40"
-																								: "cursor-pointer"
-																						}
+                                            ${nextPageButtonClass}
                                             flex justify-center items-center bg-button-subtle rounded-md w-8 h-8
                                         `}
 										onClick={() => (isLastPage ? null : nextPage())}
