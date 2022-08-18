@@ -30,7 +30,6 @@ const Component = ({
 	password,
 	loginError,
 }: Props) => {
-	console.log("password", password)
 	const _onSubmit = (event: FormEvent) => {
 		event.preventDefault()
 		onSubmit()
