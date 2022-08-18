@@ -43,9 +43,6 @@ function SchemasPageContainer() {
 				DID: {
 					text: obfuscateDid(item.did),
 				},
-				Objects: {
-					text: "10",
-				},
 				Fields: {
 					Component: ViewProperties,
 					props: {

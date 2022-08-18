@@ -23,8 +23,7 @@ function SchemaHeaders({ toggleOrder, orderAsc }: SchemaHeadersProps) {
 				</div>
 			</th>
 			<th className="px-4">DID</th>
-			<th className="px-4">Objects</th>
-			<th className="px-4">Field Count</th>
+			<th className="px-4">Fields</th>
 		</>
 	)
 }

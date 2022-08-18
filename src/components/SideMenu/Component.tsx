@@ -19,7 +19,7 @@ interface SideMenuComponentProps {
 const modulesButtons = [
 	{
 		label: "Schemas",
-		iconName: "Document",
+		iconName: "Note1",
 		route: ROUTE_SCHEMAS,
 	},
 	// {
