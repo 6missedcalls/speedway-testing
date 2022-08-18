@@ -1,18 +1,15 @@
 import SonrLogoSvg from "../../assets/svgs/SonrLogo"
-import { NebulaIcon } from "@sonr-io/nebula-react"
-import DashboardSvg from "../../assets/svgs/DashBoard"
 import ButtonGroup from "./components/ButtonsGroup"
-import { Button } from "@sonr-io/nebula-react"
 import { NavigateFunction } from "react-router-dom"
 import {
 	ROUTE_SCHEMAS,
-	ROUTE_OBJECTS,
-	ROUTE_BUCKETS,
-	ROUTE_ACCESS_API,
-	ROUTE_DID_UTILITY,
-	ROUTE_DOCS_AND_SUPPORT,
-	ROUTE_BLOCK_EXPLORER,
+	// ROUTE_OBJECTS,
+	// ROUTE_BUCKETS,
 } from "../../utils/constants"
+import { useSelector } from "react-redux"
+import { selectAddress } from "../../redux/slices/authenticationSlice"
+import IconLinkAccessApi from "../../assets/svgs/LinkAccessApi"
+import IconLinkDocsSupport from "../../assets/svgs/LinkDocsSupport"
 
 interface SideMenuComponentProps {
 	navigate: NavigateFunction
@@ -22,91 +19,79 @@ interface SideMenuComponentProps {
 const modulesButtons = [
 	{
 		label: "Schemas",
-		iconName: "Document",
+		iconName: "Note1",
 		route: ROUTE_SCHEMAS,
 	},
-	{
-		label: "Objects",
-		iconName: "Document",
-		route: ROUTE_OBJECTS,
-	},
-	{
-		label: "Buckets",
-		iconName: "Document",
-		route: ROUTE_BUCKETS,
-	},
-]
-
-const toolsButtons = [
-	{
-		label: "Access API",
-		iconName: "Document",
-		route: ROUTE_ACCESS_API,
-	},
-	{
-		label: "DID Utility",
-		iconName: "Document",
-		route: ROUTE_DID_UTILITY,
-	},
-	{
-		label: "Docs & Support",
-		iconName: "Document",
-		route: ROUTE_DOCS_AND_SUPPORT,
-	},
-	{
-		label: "Block Explorer",
-		iconName: "Document",
-		route: ROUTE_BLOCK_EXPLORER,
-	},
+	// {
+	// 	label: "Objects",
+	// 	iconName: "Document",
+	// 	route: ROUTE_OBJECTS,
+	// },
+	// {
+	// 	label: "Buckets",
+	// 	iconName: "Document",
+	// 	route: ROUTE_BUCKETS,
+	// },
 ]
 
 function SideMenuComponent({ navigate, currentPath }: SideMenuComponentProps) {
+	const Address = useSelector(selectAddress)
 	return (
-		<div className="dark flex flex-col justify-between w-80 bg-brand-tertiary h-screen px-6 py-[42px] shrink-0">
-			<div className="flex flex-col text-white w-full">
-				<div className="flex items-center w-full">
-					<div className="w-11 h-11 mr-2.5">
-						<SonrLogoSvg />
-					</div>
-					<div>
-						<span className="font-extrabold tracking-custom-tighter text-custom-xl">
-							Speedway
-						</span>
-					</div>
-					<NebulaIcon
-						className="w-6 h-6 fill-white ml-auto cursor-pointer"
-						iconName="SidebarLeft"
-						iconType="outline"
-					/>
+		<div className="dark text-default flex flex-col w-80 bg-brand-tertiary h-screen px-6 py-[42px] shrink-0">
+			<div className="flex w-full mb-10">
+				<div className="w-11 h-11 mr-2.5">
+					<SonrLogoSvg />
 				</div>
-				<div className="flex items-center mt-11">
-					<div className="w-[21.5px] h-[21.5px] mr-3.5 shrink-0">
-						<DashboardSvg />
-					</div>
-					<Button
-						skin={currentPath === "/dashboard" ? "primary" : ""}
-						label="App Dashboard"
-						styling="block text-custom-sm font-extrabold w-full"
-						onClick={() => navigate("/dashboard")}
-					/>
-				</div>
-				<div className="border-b border-outlined-disabled mt-10 w-full h-px" />
-				<div className="flex flex-col">
-					<ButtonGroup
-						title="MODULES"
-						navigate={navigate}
-						currentPath={currentPath}
-						buttons={modulesButtons}
-					/>
-					<ButtonGroup
-						title="TOOLS"
-						navigate={navigate}
-						currentPath={currentPath}
-						buttons={toolsButtons}
-					/>
-				</div>
+				<span className="font-extrabold tracking-custom-tighter text-custom-xl">
+					Speedway
+				</span>
 			</div>
-			<div className="text-white">marvinphillips.snr</div>
+
+			<div className="border-b border-outlined-disabled mb-10 w-full h-px" />
+
+			<div className="flex-1">
+				<ButtonGroup
+					title="Modules"
+					navigate={navigate}
+					currentPath={currentPath}
+					buttons={modulesButtons}
+					className="mb-10"
+				/>
+
+				<div className="text-custom-2xs uppercase font-semibold text-subdued mb-6">
+					Tools
+				</div>
+
+				<a
+					className="flex px-2 h-10 font-extrabold"
+					href="https://github.com/sonr-io/speedway/blob/dev/docs/swagger.yaml"
+					target="_blank"
+					rel="noreferrer"
+				>
+					<span className="mr-2">
+						<IconLinkAccessApi />
+					</span>
+					<span>Access API</span>
+				</a>
+
+				<a
+					className="flex px-2 h-10 font-extrabold"
+					href="https://docs.sonr.io/"
+					target="_blank"
+					rel="noreferrer"
+				>
+					<span className="mr-2">
+						<IconLinkDocsSupport />
+					</span>
+					<span>Docs & Support</span>
+				</a>
+			</div>
+
+			<div className="border-b border-outlined-disabled mb-10 w-full h-px" />
+
+			<div className="break-words text-ellipsis overflow-hidden whitespace-nowrap uppercase">
+				{Address}
+			</div>
 		</div>
 	)
 }

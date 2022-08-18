@@ -8,7 +8,6 @@ import { isEmptyObject } from "../../../../utils/object"
 import {
 	Iproperty,
 	handlePropertyChangeProps,
-	Ischema,
 	InewSchema,
 } from "../../../../utils/types"
 import NewSchemaModalContentComponent from "./Component"

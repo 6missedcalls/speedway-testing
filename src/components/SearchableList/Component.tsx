@@ -1,4 +1,4 @@
-import { Button, NebulaIcon, Input } from "@sonr-io/nebula-react"
+import { NebulaIcon } from "@sonr-io/nebula-react"
 import React from "react"
 import { listTypes } from "../../utils/types"
 import Headers from "./components/Headers"
@@ -6,7 +6,7 @@ import Headers from "./components/Headers"
 interface SearchableListComponentProps {
 	type: listTypes
 	fullListLength: number
-	list: any
+	list: any[]
 	paginationSize?: number
 	paginationCurrentPage: number
 	toggleOrder: () => void
@@ -35,36 +35,29 @@ function SearchableListComponent({
 	const isLastPage = paginationCurrentPage === totalPages
 	const previousPageButtonClass = isFirstPage ? "opacity-40" : "cursor-pointer"
 	const nextPageButtonClass = isLastPage ? "opacity-40" : "cursor-pointer"
+	const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+		setSearchTerm(event.target.value)
 
 	return (
 		<div className="shadow-3xl rounded-2xl bg-white">
 			<div className="flex justify-between p-6 w-full">
-				<div className="w-80">
-					<Input
-						clear
-						className="w-4 fill-black"
-						iconName="SearchNormal1"
-						iconType="outline"
-						placeholder="Search"
-						iconClassName="w-4 h-4"
-						theme="light"
-						onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-							setSearchTerm(event.target.value)
-						}
-					/>
-				</div>
+				<input
+					onChange={onChange}
+					className="border border-default rounded-full px-4 py-2 font-normal w-80"
+					placeholder="Search"
+				/>
 				{onClickNewItem && (
-					<Button
+					<button
+						className="text-skin-primary bg-skin-primary rounded px-4"
 						onClick={onClickNewItem}
-						iconName="Add"
-						iconType="outline"
-						label="New"
-					/>
+					>
+						New
+					</button>
 				)}
 			</div>
 			<table className="w-full text-left">
 				<thead>
-					<tr className="h-10 bg-button-subtle items-center px-4 py-5 text-button-subtle text-custom-xs px-4 py-5">
+					<tr className="h-10 bg-button-subtle items-center px-4 py-5 text-button-subtle text-custom-xs">
 						{Headers({ type, list, toggleOrder, orderAsc })}
 					</tr>
 				</thead>
@@ -72,15 +65,15 @@ function SearchableListComponent({
 					{list.map((row: any, rowIndex: number) => {
 						const rowKeys = Object.keys(row)
 						return (
-							<tr key={`listrow-${rowIndex}`}>
+							<tr
+								key={`listrow-${rowIndex}`}
+								className="border-b border-gray-200 last:border-0"
+							>
 								{rowKeys.map((key: string, itemIndex: number) => {
 									if (key === "id") return null
 									const { text = "", Component, props } = row[key]
 									return (
-										<td
-											className="px-4 py-5 border-b border-gray-200"
-											key={`${key}-${itemIndex}`}
-										>
+										<td className="px-4 py-5" key={`${key}-${itemIndex}`}>
 											{text}
 											{Component && <Component {...props} />}
 										</td>

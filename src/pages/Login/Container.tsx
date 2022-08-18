@@ -11,6 +11,7 @@ import {
 import { ROUTE_LOGIN } from "../../utils/constants"
 import { isRequired } from "../../utils/validation/rules"
 import validate from "../../utils/validation/validator"
+import { AppDispatch } from "../../redux/store"
 import LoginComponent from "./Component"
 
 const walletAddressRules = [
@@ -31,7 +32,8 @@ const Container = () => {
 	const [walletAddress, setWalletAddress] = useState("")
 	const [password, setPassword] = useState("")
 	const [passwordVisible, setPasswordVisible] = useState(false)
-	const dispatch = useDispatch<any>()
+	const dispatch = useDispatch<AppDispatch>()
+
 	const navigate = useNavigate()
 	const isLogged = useSelector(selectIsLogged)
 	const loginError = useSelector(selectLoginError)
@@ -40,7 +42,7 @@ const Container = () => {
 
 	useEffect(() => {
 		if (isLogged) {
-			navigate("/objects")
+			navigate("/schema")
 		}
 	}, [isLogged, navigate])
 
