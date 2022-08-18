@@ -17,6 +17,7 @@ const emptyState = {
 		list: [],
 		loading: false,
 		error: false,
+		getSchemaLoading: false,
 	},
 }
 
