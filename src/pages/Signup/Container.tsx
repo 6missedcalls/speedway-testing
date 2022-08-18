@@ -16,37 +16,6 @@ import {
 import validate from "../../utils/validation/validator"
 import Signup from "./Component"
 
-const passwordRules = [
-	{
-		name: "noSpaces",
-		validate: noSpaces,
-	},
-	{
-		name: "hasSpecialCharacter",
-		validate: hasAtLeastOneSpecialCharacter,
-	},
-	{
-		name: "hasUppercaseCharacter",
-		validate: hasAtLeastOneUppercaseCharacter,
-	},
-	{
-		name: "hasLowercaseCharacter",
-		validate: hasAtLeastOneLowercaseCharacter,
-	},
-	{
-		name: "hasNumericCharacter",
-		validate: hasAtLeastOneNumber,
-	},
-	{
-		name: "hasMinimumCharacters",
-		validate: function (value: string) {
-			if (value.length < 12)
-				return new Error("Password should have at least 12 characters.")
-			return true
-		},
-	},
-]
-
 const Container = () => {
 	const [password, setPassword] = useState("")
 	const [passwordConfirm, setPasswordConfirm] = useState("")
@@ -59,8 +28,40 @@ const Container = () => {
 			hasLowercaseCharacter: true,
 			hasNumericCharacter: true,
 			hasMinimumCharacters: true,
+			invalidPassword: false,
 		},
 	})
+
+	const passwordRules = [
+		{
+			name: "noSpaces",
+			validate: noSpaces,
+		},
+		{
+			name: "hasSpecialCharacter",
+			validate: hasAtLeastOneSpecialCharacter,
+		},
+		{
+			name: "hasUppercaseCharacter",
+			validate: hasAtLeastOneUppercaseCharacter,
+		},
+		{
+			name: "hasLowercaseCharacter",
+			validate: hasAtLeastOneLowercaseCharacter,
+		},
+		{
+			name: "hasNumericCharacter",
+			validate: hasAtLeastOneNumber,
+		},
+		{
+			name: "hasMinimumCharacters",
+			validate: function (value: string) {
+				if (value.length < 12)
+					return new Error("Password should have at least 12 characters.")
+				return true
+			},
+		},
+	]
 
 	const navigate = useNavigate()
 	const dispatch = useDispatch<any>()
@@ -78,20 +79,18 @@ const Container = () => {
 	}
 
 	function validateStatePassword() {
-		const passwordsMatch = passwordConfirm === password
-
-		if (!passwordsMatch) {
-			setErrors({
-				...errors,
-				vaultPassword: {
-					invalidPassword: "Passwords don't match.",
-				},
-			})
+		const passwordsMatchRule = {
+			name: "passwordsMatch",
+			validate: function (value: string) {
+				if (value !== passwordConfirm)
+					return new Error("Passwords don't match.")
+				return true
+			},
 		}
 
 		const fields = {
 			vaultPassword: {
-				rules: passwordRules,
+				rules: [...passwordRules, passwordsMatchRule],
 				value: password,
 			},
 		}
@@ -99,10 +98,11 @@ const Container = () => {
 		const { isValid, validationErrors } = validate({ fields })
 
 		setErrors({
+			...errors,
 			...validationErrors,
 		})
 
-		return isValid || passwordsMatch
+		return isValid
 	}
 
 	function validatePasswordOnChange(value: string) {
@@ -122,8 +122,6 @@ const Container = () => {
 	function togglePasswordVisible() {
 		setPasswordVisible(!passwordVisible)
 	}
-
-	console.log("errors", errors)
 
 	return (
 		<Signup

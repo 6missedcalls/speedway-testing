@@ -81,7 +81,7 @@ const Component = ({
 							type={passwordVisible ? "text" : "password"}
 						/>
 						<TextInput
-							error={errors?.vaultPassword?.invalidPassword}
+							error={errors?.vaultPassword?.passwordsMatch}
 							RightIcon={passwordVisible ? OpenEyeSvg : ClosedEyeSvg}
 							rightIconOnClick={togglePasswordVisible}
 							className="text-white"
