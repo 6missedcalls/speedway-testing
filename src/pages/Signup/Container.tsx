@@ -9,35 +9,35 @@ import {
 } from "../../redux/slices/authenticationSlice"
 import { ROUTE_POST_SIGNUP, ROUTE_SIGNUP } from "../../utils/constants"
 import {
-	hasAtLeastOneLowercaseCharacter,
-	hasAtLeastOneNumber,
-	hasAtLeastOneSpecialCharacter,
-	hasAtLeastOneUppercaseCharacter,
-	noSpaces,
-} from "../../utils/validation/rules"
-import validate from "../../utils/validation/validator"
+	HasAtLeastOneLowercaseCharacter,
+	HasAtLeastOneNumber,
+	HasAtLeastOneSpecialCharacter,
+	HasAtLeastOneUppercaseCharacter,
+	NoSpaces,
+} from "@sonr-io/validation/dist/validation"
+import validate from "@sonr-io/validation/dist/validator"
 import Signup from "./Component"
 
 const passwordRules = [
 	{
 		name: "noSpaces",
-		validate: noSpaces,
+		validate: NoSpaces,
 	},
 	{
 		name: "hasSpecialCharacter",
-		validate: hasAtLeastOneSpecialCharacter,
+		validate: HasAtLeastOneSpecialCharacter,
 	},
 	{
 		name: "hasUppercaseCharacter",
-		validate: hasAtLeastOneUppercaseCharacter,
+		validate: HasAtLeastOneUppercaseCharacter,
 	},
 	{
 		name: "hasLowercaseCharacter",
-		validate: hasAtLeastOneLowercaseCharacter,
+		validate: HasAtLeastOneLowercaseCharacter,
 	},
 	{
 		name: "hasNumericCharacter",
-		validate: hasAtLeastOneNumber,
+		validate: HasAtLeastOneNumber,
 	},
 	{
 		name: "hasMinimumCharacters",

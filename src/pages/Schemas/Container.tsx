@@ -33,7 +33,6 @@ function SchemasPageContainer() {
 
 	function mapToListFormat(list: any) {
 		return list.map((item: Ischema) => {
-			console.log("list", list)
 			const getSchemaPayload = {
 				address,
 				creator: item.creator,

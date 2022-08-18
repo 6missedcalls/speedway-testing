@@ -9,22 +9,22 @@ import {
 	userLogin,
 } from "../../redux/slices/authenticationSlice"
 import { ROUTE_LOGIN } from "../../utils/constants"
-import { isRequired } from "../../utils/validation/rules"
-import validate from "../../utils/validation/validator"
+import { IsRequired } from "@sonr-io/validation/dist/validation"
+import validate from "@sonr-io/validation/dist/validator"
 import { AppDispatch } from "../../redux/store"
 import LoginComponent from "./Component"
 
 const walletAddressRules = [
 	{
 		name: "isRequired",
-		validate: isRequired,
+		validate: IsRequired,
 	},
 ]
 
 const paswordRules = [
 	{
 		name: "isRequired",
-		validate: isRequired,
+		validate: IsRequired,
 	},
 ]
 
