@@ -2,12 +2,15 @@
 	"main": "index.js",
 	"type": "module",
 	"scripts": {
-		"start": "nodemon node ."
+		"start": "nodemon node .",
+		"test": "jest",
+		"test:watch": "jest --watch"
 	},
 	"devDependencies": {
 		"body-parser": "^1.20.0",
 		"cors": "^2.8.5",
 		"express": "^4.18.1",
+		"jest": "^28.1.3",
 		"lodash": "^4.17.21",
 		"md5": "^2.3.0",
 		"node-persist": "^3.1.0",
