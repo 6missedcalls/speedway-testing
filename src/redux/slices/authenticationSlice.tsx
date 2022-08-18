@@ -101,6 +101,10 @@ export const selectLoginError = (state: RootState) => {
 	return state.authentication.error
 }
 
+export const selectAuthenticationIsLoading = (state: RootState) => {
+	return state.authentication.loading
+}
+
 export const selectAddress = (state: RootState) => {
 	return state.authentication.Address
 }

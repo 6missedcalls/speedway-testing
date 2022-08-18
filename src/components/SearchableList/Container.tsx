@@ -9,6 +9,7 @@ interface SearchableListContainerProps {
 	searchableAndSortableFieldKey: string
 	paginationSize?: number
 	handleOpenModal?: () => void
+	loading: boolean
 }
 
 function SearchableListContainer({

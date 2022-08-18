@@ -6,6 +6,7 @@ import { createSchema, getAllSchemas, getSchema } from "../../service/schemas"
 export interface SchemasState {
 	list: Array<Ischema>
 	loading: boolean
+	getSchemaLoading: boolean
 	error: boolean
 }
 
@@ -13,6 +14,7 @@ const initialState: SchemasState = {
 	list: [],
 	loading: false,
 	error: false,
+	getSchemaLoading: false,
 }
 
 interface userCreateSchemaProp {
@@ -78,6 +80,18 @@ export const schemasSlice = createSlice({
 			state.error = true
 			state.loading = false
 		})
+		builder.addCase(userGetSchema.pending, (state) => {
+			state.getSchemaLoading = true
+		})
+
+		builder.addCase(userGetSchema.fulfilled, (state) => {
+			state.getSchemaLoading = false
+		})
+
+		builder.addCase(userGetSchema.rejected, (state) => {
+			state.error = true
+			state.getSchemaLoading = false
+		})
 		builder.addCase(userCreateSchema.pending, (state) => {
 			state.loading = true
 		})
@@ -92,11 +106,10 @@ export const schemasSlice = createSlice({
 					did: payload.whatIs.did,
 					label: payload.definition.label,
 				},
-				creator: payload.definition.creator,
+				creator: payload.whatIs.creator,
 				is_active: true,
 			})
 		})
-
 		builder.addCase(userCreateSchema.rejected, (state) => {
 			state.error = true
 			state.loading = false
@@ -106,6 +119,10 @@ export const schemasSlice = createSlice({
 
 export const selectSchemasLoading = (state: RootState) => {
 	return state.schemas.loading
+}
+
+export const selectGetSchemaLoading = (state: RootState) => {
+	return state.schemas.getSchemaLoading
 }
 
 export const selectSchemasMetaDataList = (state: RootState) => {

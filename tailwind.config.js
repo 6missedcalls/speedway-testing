@@ -20,6 +20,16 @@ module.exports = {
 			plugins: [require("tailwindcss"), require("autoprefixer")],
 		},
 		extend: {
+			animation: {
+				"reverse-spin": "reverse-spin 1s linear infinite",
+			},
+			keyframes: {
+				"reverse-spin": {
+					from: {
+						transform: "rotate(360deg)",
+					},
+				},
+			},
 			fontSize: {
 				"custom-xs": "var(--nds-core-font-xs)",
 				"custom-2xs": "var(--nds-core-font-2xs)",

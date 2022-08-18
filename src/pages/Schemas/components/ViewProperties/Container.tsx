@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useDispatch } from "react-redux"
+import LoadingCircleSvg from "../../../../assets/svgs/LoadingCircle"
 import { userGetSchema } from "../../../../redux/slices/schemasSlice"
 import { IgetSchemaFields, IpropertyResponse } from "../../../../utils/types"
 import ViewPropertiesComponent from "./Component"
@@ -13,15 +14,18 @@ function ViewPropertiesContainer({
 	getSchemaPayload,
 }: ViewPropertiesContainerProps) {
 	const [isOpen, setIsOpen] = useState(false)
+	const [loading, setLoading] = useState(false)
 	const [properties, setProperties] = useState<Array<IpropertyResponse>>([])
 	const dispatch = useDispatch<any>()
 
 	async function getSchema() {
 		if (properties.length === 0) {
+			setLoading(true)
 			const getSchemaResponse = await dispatch(
 				userGetSchema({ schema: getSchemaPayload })
 			)
 			setProperties(getSchemaResponse.payload.fields)
+			setLoading(false)
 		}
 
 		setIsOpen(!isOpen)
@@ -32,6 +36,13 @@ function ViewPropertiesContainer({
 			setIsOpen(false)
 		}, 100)
 	}
+
+	if (loading)
+		return (
+			<div className="w-8 h-8 animate-spin flex justify-center items-center">
+				<LoadingCircleSvg />
+			</div>
+		)
 
 	return (
 		<ViewPropertiesComponent
