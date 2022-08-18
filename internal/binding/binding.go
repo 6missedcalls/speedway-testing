@@ -37,12 +37,10 @@ Here each function matches a function on the MotorNode for functionality being e
 */
 func CreateInstance() *SpeedwayBinding {
 	once.Do(func() {
-		// create a motor node
-		m := InitMotor()
 		// create a binding instance
 		binding = &SpeedwayBinding{
 			loggedIn: false,
-			instance: m,
+			instance: InitMotor(),
 		}
 	})
 	return binding
@@ -52,10 +50,11 @@ func CreateInstance() *SpeedwayBinding {
 Get the Instance of the motor node and return it
 */
 func GetInstance() (*SpeedwayBinding, error) {
-	if mtr := binding.instance; mtr != nil {
-		return binding, nil
+	if binding.instance == nil {
+		return nil, fmt.Errorf("motor node not initialized")
 	}
-	return nil, fmt.Errorf("cannot find instance of motor")
+
+	return binding, nil
 }
 
 /*
@@ -83,6 +82,10 @@ Login and return the response
 Set the logged in flag to true if successful
 */
 func (b *SpeedwayBinding) Login(req rtmv1.LoginRequest) (rtmv1.LoginResponse, error) {
+	if b.instance == nil {
+		return rtmv1.LoginResponse{}, fmt.Errorf("motor node not initialized")
+	}
+
 	res, err := b.instance.Login(req)
 	if err != nil {
 		fmt.Println("err", err)
