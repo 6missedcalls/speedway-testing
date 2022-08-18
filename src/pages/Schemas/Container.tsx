@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
@@ -43,9 +43,6 @@ function SchemasPageContainer() {
 				},
 				DID: {
 					text: obfuscateDid(item.did),
-				},
-				Objects: {
-					text: "10",
 				},
 				Fields: {
 					Component: ViewProperties,

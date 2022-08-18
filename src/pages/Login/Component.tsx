@@ -41,12 +41,12 @@ const Component = ({
 			sidebarContent={
 				<div className=" max-w-[479px] flex flex-col mt-40 ml-14">
 					<div className="text-custom-3xl font-extrabold tracking-custom-x2tighter mb-6">
-						Wlecome to Sonr
+						Welcome to Sonr
 					</div>
 					<div className="text-custom-md font-normal tracking-custom-tight mb-10">
 						We're glad you're here.
 						<br />
-						Enter your .snr domain and Vault Password to continue.
+						Enter your Wallet Address and Vault Password to continue.
 					</div>
 				</div>
 			}
@@ -60,9 +60,8 @@ const Component = ({
 						<TextInput
 							error={errors?.walletAddress?.isRequired}
 							className="text-white mb-4"
-							label="SonrID"
-							placeholder="SNR..."
-							ariaLabel="SonrID"
+							label="Wallet Address"
+							ariaLabel="Wallet Address"
 							handleOnChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 								setWalletAddress(event.target.value)
 							}}
