@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 import {
-	selectGetSchemaLoading,
 	selectSchemasLoading,
 	selectSchemasMetaDataList,
 	userGetAllSchemas,
@@ -22,7 +21,6 @@ function SchemasPageContainer() {
 	const schemasMetaDataList = useSelector(selectSchemasMetaDataList)
 	const dispatch = useDispatch<any>()
 	const loading = useSelector(selectSchemasLoading)
-	const getSchemaLoading = useSelector(selectGetSchemaLoading)
 
 	useEffect(() => {
 		dispatch(userGetAllSchemas())
@@ -69,10 +67,7 @@ function SchemasPageContainer() {
 					loading={loading}
 				/>
 			) : (
-				<EmptyList
-					openNewSchemaModal={openNewSchemaModal}
-					getSchemaLoading={getSchemaLoading}
-				/>
+				<EmptyList openNewSchemaModal={openNewSchemaModal} loading={loading} />
 			)}
 		</>
 	)
