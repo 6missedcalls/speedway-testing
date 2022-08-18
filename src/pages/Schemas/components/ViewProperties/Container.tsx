@@ -14,18 +14,18 @@ function ViewPropertiesContainer({
 	getSchemaPayload,
 }: ViewPropertiesContainerProps) {
 	const [isOpen, setIsOpen] = useState(false)
+	const [loading, setLoading] = useState(false)
 	const [properties, setProperties] = useState<Array<IpropertyResponse>>([])
 	const dispatch = useDispatch<any>()
-	let loading = false
 
 	async function getSchema() {
 		if (properties.length === 0) {
-			loading = true
+			setLoading(true)
 			const getSchemaResponse = await dispatch(
 				userGetSchema({ schema: getSchemaPayload })
 			)
 			setProperties(getSchemaResponse.payload.fields)
-			loading = false
+			setLoading(false)
 		}
 
 		setIsOpen(!isOpen)

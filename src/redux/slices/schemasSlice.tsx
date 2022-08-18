@@ -106,7 +106,7 @@ export const schemasSlice = createSlice({
 					did: payload.whatIs.did,
 					label: payload.definition.label,
 				},
-				creator: payload.definition.creator,
+				creator: payload.whatIs.creator,
 				is_active: true,
 			})
 		})
