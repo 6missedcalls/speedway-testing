@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/speedway/internal/account"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/storage"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -48,8 +47,10 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 		AesPskKey: aesPskKey,
 	}
 
-	m := binding.InitMotor()
-	res, err := account.Login(m, req)
+	m := binding.CreateInstance()
+
+	// Login to account with Speedway binding
+	res, err := m.Login(req)
 	if err != nil {
 		fmt.Println("Login Error: ", err)
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -65,9 +66,9 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 		})
 	} else {
 		c.JSON(http.StatusOK, gin.H{
-			"success":     true,
-			"Address":     m.GetAddress(),
-			"DIDDocument": m.GetDIDDocument(),
+			"success": true,
+			// "Address":     m.GetAddress(),
+			// "DIDDocument": m.GetDIDDocument(),
 		})
 	}
 

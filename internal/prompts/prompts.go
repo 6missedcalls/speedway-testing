@@ -1,7 +1,6 @@
 package prompts
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/manifoldco/promptui"
@@ -59,9 +58,9 @@ func LoginPrompt() rtmv1.LoginRequest {
 	return loginRequest
 }
 
-func QuitSelector(ctx context.Context) bool {
+func QuitSelector(label string) bool {
 	prompt := promptui.Select{
-		Label: "Finished with Schema?",
+		Label: label,
 		Items: []string{"Yes", "No"},
 	}
 	_, result, err := prompt.Run()

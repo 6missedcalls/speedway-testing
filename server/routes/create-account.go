@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
-	"github.com/sonr-io/speedway/internal/account"
+	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/storage"
 
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -56,7 +56,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 		AesDscKey: aesKey,
 	}
 
-	res, err := account.CreateAccount(req)
+	res, err := binding.CreateInstance().CreateAccount(req)
 	if err != nil {
 		fmt.Println("err", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
