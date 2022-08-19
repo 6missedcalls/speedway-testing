@@ -47,7 +47,7 @@ func InitMotor() mtr.MotorNode {
 }
 
 /*
-Here each function matches a function on the MotorNode for functionality being exposed to the cli and rest server there should be a wrapper function definedon the SpeedwayMotorBindingSruct. the below functions are here to illustrate.
+Here each function matches a function on the MotorNode for functionality being exposed to the cli and rest server there should be a wrapper function definedon the SpeedwayMotorBindingSruct.
 */
 func CreateInstance() *SpeedwayBinding {
 	once.Do(func() {
@@ -75,7 +75,7 @@ Create Account on Blockchain and return the response
 func (b *SpeedwayBinding) CreateAccount(req rtmv1.CreateAccountRequest) (rtmv1.CreateAccountResponse, error) {
 	res, err := b.instance.CreateAccount(req)
 	if err != nil {
-		fmt.Println(status.Error, ("Create Account Error"), err)
+		fmt.Println(status.Error, "Create Account Error", err)
 	}
 
 	if storage.Store("psk.key", res.AesPsk) != nil {
@@ -109,8 +109,8 @@ func (b *SpeedwayBinding) Login(req rtmv1.LoginRequest) (rtmv1.LoginResponse, er
 }
 
 /*
-* Get the object and return a map of the object
- */
+Get the object and return a map of the object
+*/
 func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid string) (map[string]interface{}, error) {
 	if b.instance == nil {
 		return map[string]interface{}{}, ErrMotorNotInitialized
@@ -226,7 +226,7 @@ func (b *SpeedwayBinding) QueryWhatIs(ctx context.Context, req rtmv1.QueryWhatIs
 
 	querySchema, err := b.instance.QueryWhatIs(ctx, req)
 	if err != nil {
-		fmt.Println(status.Error, ("Error"), err)
+		fmt.Println(status.Error, "Binding failed %v\n", err)
 		return rtmv1.QueryWhatIsResponse{}, err
 	}
 
@@ -234,7 +234,7 @@ func (b *SpeedwayBinding) QueryWhatIs(ctx context.Context, req rtmv1.QueryWhatIs
 }
 
 /*
-GetDID() and return the DID
+GetDID and return the DID
 */
 func (b *SpeedwayBinding) GetDID() (*did.DID, error) {
 	if b.instance == nil {
@@ -246,7 +246,7 @@ func (b *SpeedwayBinding) GetDID() (*did.DID, error) {
 }
 
 /*
-Get Did Document and return the DidDocument
+GetDidDocument and return the DidDocument
 */
 func (b *SpeedwayBinding) GetDidDocument() (*did.Document, error) {
 	if b.instance == nil {
@@ -265,7 +265,7 @@ func (b *SpeedwayBinding) GetDidDocument() (*did.Document, error) {
 }
 
 /*
-Get Address and return the address
+GetAddress and return the address
 */
 func (b *SpeedwayBinding) GetAddress() (string, error) {
 	if b.instance == nil {

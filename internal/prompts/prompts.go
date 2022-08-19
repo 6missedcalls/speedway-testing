@@ -73,10 +73,3 @@ func QuitSelector(label string) bool {
 	}
 	return false
 }
-
-func SplashScreen() {
-	fmt.Println(status.Info, "Welcome to the Speedway CLI")
-	fmt.Println(status.Info, "")
-	fmt.Println(status.Info, "Press any key to continue")
-	fmt.Scanln()
-}
