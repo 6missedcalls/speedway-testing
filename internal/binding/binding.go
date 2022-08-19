@@ -109,11 +109,14 @@ func (b *SpeedwayBinding) Login(req rtmv1.LoginRequest) (rtmv1.LoginResponse, er
 }
 
 /*
-Get the object and return a map of the object
-*/
+* Get the object and return a map of the object
+ */
 func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid string) (map[string]interface{}, error) {
 	if b.instance == nil {
 		return map[string]interface{}{}, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return map[string]interface{}{}, ErrNotAuthenticated
 	}
 
 	// Create new QueryWhatIs request for the object
@@ -151,6 +154,9 @@ func (b *SpeedwayBinding) GetSchema(ctx context.Context, creator string, schemaD
 	if b.instance == nil {
 		return rtmv1.QueryWhatIsResponse{}, ErrMotorNotInitialized
 	}
+	if !b.loggedIn {
+		return rtmv1.QueryWhatIsResponse{}, ErrNotAuthenticated
+	}
 
 	querySchemaReq := rtmv1.QueryWhatIsRequest{
 		Creator: creator,
@@ -174,6 +180,9 @@ func (b *SpeedwayBinding) CreateSchema(req rtmv1.CreateSchemaRequest) (rtmv1.Cre
 	if b.instance == nil {
 		return rtmv1.CreateSchemaResponse{}, ErrMotorNotInitialized
 	}
+	if !b.loggedIn {
+		return rtmv1.CreateSchemaResponse{}, ErrNotAuthenticated
+	}
 
 	res, err := b.instance.CreateSchema(req)
 	if err != nil {
@@ -191,6 +200,9 @@ func (b *SpeedwayBinding) NewObjectBuilder(schemaDid string) (*object.ObjectBuil
 	if b.instance == nil {
 		return nil, ErrMotorNotInitialized
 	}
+	if !b.loggedIn {
+		return nil, ErrNotAuthenticated
+	}
 
 	objBuilder, err := b.instance.NewObjectBuilder(schemaDid)
 	if err != nil {
@@ -207,6 +219,9 @@ QueryWhatIs and return the WhatIsResponse
 func (b *SpeedwayBinding) QueryWhatIs(ctx context.Context, req rtmv1.QueryWhatIsRequest) (rtmv1.QueryWhatIsResponse, error) {
 	if b.instance == nil {
 		return rtmv1.QueryWhatIsResponse{}, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return rtmv1.QueryWhatIsResponse{}, ErrNotAuthenticated
 	}
 
 	querySchema, err := b.instance.QueryWhatIs(ctx, req)
@@ -237,6 +252,9 @@ func (b *SpeedwayBinding) GetDidDocument() (*did.Document, error) {
 	if b.instance == nil {
 		return nil, ErrMotorNotInitialized
 	}
+	if !b.loggedIn {
+		return nil, ErrNotAuthenticated
+	}
 
 	didDoc := b.instance.GetDIDDocument()
 	if didDoc == nil {
@@ -252,6 +270,9 @@ Get Address and return the address
 func (b *SpeedwayBinding) GetAddress() (string, error) {
 	if b.instance == nil {
 		return "", ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return "", ErrNotAuthenticated
 	}
 
 	address := b.instance.GetAddress()
