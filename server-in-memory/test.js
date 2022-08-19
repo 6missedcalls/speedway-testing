@@ -36,6 +36,23 @@ it("logs an account in", async () => {
 	expect(result.Address).toBeAddress()
 })
 
+it("checks for logged in account", async () => {
+	const result1 = await app.get("/api/v1/account/info")
+	expect(result1.status).toBe(500)
+
+	const response = await app.post("/api/v1/account/create").send({
+		password: "123",
+	})
+	await app.post("/api/v1/account/login").send({
+		Address: response.body.Address,
+		Password: "123",
+	})
+
+	const { body: result2 } = await app.get("/api/v1/account/info")
+	expect(result2).toHaveProperty("Address")
+	expect(result2.Address).toBe(response.body.Address)
+})
+
 it("creates a schema", async () => {
 	const response = await app.post("/api/v1/account/create").send({
 		password: "123",
