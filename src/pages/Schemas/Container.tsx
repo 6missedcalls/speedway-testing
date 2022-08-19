@@ -9,6 +9,7 @@ import {
 	userGetAllSchemas,
 } from "../../redux/slices/schemasSlice"
 import { MODAL_CONTENT_NEW_SCHEMA } from "../../utils/constants"
+import { addressToDid } from "../../utils/did"
 import { obfuscateDid } from "../../utils/string"
 import { Ischema } from "../../utils/types"
 import SchemasPageComponent from "./Component"
@@ -18,7 +19,10 @@ import ViewProperties from "./components/ViewProperties"
 function SchemasPageContainer() {
 	const { setModalContent, openModal } = useContext(AppModalContext)
 	const address = useSelector(selectAddress)
-	const schemasMetaDataList = useSelector(selectSchemasMetaDataList)
+	const allMetaData = useSelector(selectSchemasMetaDataList)
+	const accountMetaData = allMetaData.filter(
+		(schema) => schema.creator === addressToDid(address)
+	)
 	const dispatch = useDispatch<any>()
 	const loading = useSelector(selectSchemasLoading)
 
@@ -59,10 +63,10 @@ function SchemasPageContainer() {
 
 	return (
 		<>
-			{schemasMetaDataList && schemasMetaDataList.length > 0 ? (
+			{accountMetaData && accountMetaData.length > 0 ? (
 				<SchemasPageComponent
 					openNewSchemaModal={openNewSchemaModal}
-					list={mapToListFormat(schemasMetaDataList)}
+					list={mapToListFormat(accountMetaData)}
 					searchableAndSortableFieldKey="Schema name"
 					loading={loading}
 				/>
