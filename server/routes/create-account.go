@@ -55,8 +55,9 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 		Password:  body.Password,
 		AesDscKey: aesKey,
 	}
+	instance := binding.CreateInstance()
 
-	res, err := binding.CreateInstance().CreateAccount(req)
+	res, err := instance.CreateAccount(req)
 	if err != nil {
 		fmt.Println("err", err)
 		c.JSON(http.StatusInternalServerError, gin.H{

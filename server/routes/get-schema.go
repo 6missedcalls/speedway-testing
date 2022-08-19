@@ -8,16 +8,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/speedway/internal/binding"
-	"github.com/sonr-io/speedway/internal/retrieve"
-	"github.com/sonr-io/speedway/internal/status"
-	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/sonr-io/speedway/internal/utils"
-	"github.com/ttacon/chalk"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 type QuerySchema struct {
-	Address string `json:"address"`
 	Creator string `json:"creator"`
 	Schema  string `json:"schema"`
 }
@@ -28,7 +22,6 @@ type QuerySchema struct {
 // @Description Get a schema utilizing motor client. Returns the WhatIs of the schema that is retrieved.
 // @Tags schema
 // @Produce json
-// @Param did query string true "Did"
 // @Param creator query string true "Creator"
 // @Param schema query string true "Schema"
 // @Success      200  {object} types.SchemaDefinition
@@ -45,51 +38,18 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 		return
 	}
 
-	m := binding.InitMotor()
-
-	aesKey, aesPskKey, err := storage.AutoLoad()
-	if err != nil {
-		fmt.Println(status.Error, "Key Error: ", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Error Loading Keys",
-		})
-		return
-	}
-
-	// * Create a new login & create schema request
-	// Create a new login request
-	loginRequest := rtmv1.LoginRequest{
-		Did:       r.Address,
-		AesDscKey: aesKey,
-		AesPskKey: aesPskKey,
-	}
-
-	loginResponse, err := m.Login(loginRequest)
-	if err != nil {
-		fmt.Println("Login Error: ", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Login Error",
-		})
-		return
-	}
-	// if login fails, return error
-	if loginResponse.Success {
-		fmt.Println(chalk.Green, "Login successful")
-	} else {
-		fmt.Println(chalk.Red, "Login failed")
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Login failed",
-		})
-		return
-	}
+	m := binding.CreateInstance()
 
 	ctx := context.Background()
-	schema, err := retrieve.GetSchema(ctx, m, r.Creator, r.Schema)
+
+	schema, err := m.GetSchema(ctx, r.Creator, r.Schema)
 	if schema.WhatIs == nil {
 		fmt.Printf("GetSchema failed %v\n", err)
 		return
 	}
+
 	whatIs := utils.DeserializeWhatIs(schema.WhatIs)
+
 	definition, err := utils.ResolveIPFS(whatIs.Schema.Cid)
 	if err != nil {
 		fmt.Printf("ResolveIPFS failed %v\n", err)

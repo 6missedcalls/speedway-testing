@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/sonr-io/sonr/pkg/did"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
+	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/sonr-io/speedway/internal/utils"
@@ -29,19 +31,19 @@ func InitMotor() mtr.MotorNode {
 	hwid := utils.GetHwid()
 	m := mtr.EmptyMotor(hwid)
 
+	fmt.Println(status.Debug, "Motor initialized", m)
+
 	return m
 }
 
 /*
-Here each function matches a function on the MotorNode for functionality being exposed to the cli and rest server there should be a          wrapper function definedon the SpeedwayMotorBindingSruct. the below functions are here to illustrate.
+Here each function matches a function on the MotorNode for functionality being exposed to the cli and rest server there should be a wrapper function definedon the SpeedwayMotorBindingSruct. the below functions are here to illustrate.
 */
 func CreateInstance() *SpeedwayBinding {
 	once.Do(func() {
-		// create a binding instance
-		binding = &SpeedwayBinding{
-			loggedIn: false,
-			instance: InitMotor(),
-		}
+		binding = &SpeedwayBinding{}
+		m := InitMotor()
+		binding.instance = m
 	})
 	return binding
 }
@@ -63,15 +65,15 @@ Create Account on Blockchain and return the response
 func (b *SpeedwayBinding) CreateAccount(req rtmv1.CreateAccountRequest) (rtmv1.CreateAccountResponse, error) {
 	res, err := b.instance.CreateAccount(req)
 	if err != nil {
-		return rtmv1.CreateAccountResponse{}, err
+		fmt.Println(status.Error, ("Create Account Error"), err)
 	}
 
 	if storage.Store("psk.key", res.AesPsk) != nil {
-		fmt.Println("Storage Error: ", err)
+		fmt.Println(status.Error, "Storage Error: ", err)
 	}
 
 	if storage.StoreInfo("address.snr", b.instance) != nil {
-		fmt.Println("Storage Error: ", err)
+		fmt.Println(status.Error, "Storage Error: ", err)
 	}
 
 	return res, err
@@ -88,12 +90,10 @@ func (b *SpeedwayBinding) Login(req rtmv1.LoginRequest) (rtmv1.LoginResponse, er
 
 	res, err := b.instance.Login(req)
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println(status.Error, "Login Error", err)
 	}
 
-	if res.Success {
-		b.loggedIn = true
-	}
+	b.loggedIn = true
 
 	return res, err
 }
@@ -102,6 +102,10 @@ func (b *SpeedwayBinding) Login(req rtmv1.LoginRequest) (rtmv1.LoginResponse, er
 Get the object and return a map of the object
 */
 func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid string) (map[string]interface{}, error) {
+	if b.instance == nil {
+		return map[string]interface{}{}, fmt.Errorf("motor node not initialized")
+	}
+
 	// Create new QueryWhatIs request for the object
 	querySchema, err := b.instance.QueryWhatIs(ctx, rtmv1.QueryWhatIsRequest{
 		Creator: b.instance.GetDID().String(),
@@ -133,7 +137,11 @@ func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid s
 /*
 Get the schema and return the WhatIsResponse
 */
-func (b *SpeedwayBinding) GetSchema(ctx context.Context, creator string, schemaDid string) (rtmv1.QueryWhatIsResponse, error) { // create new query schema request
+func (b *SpeedwayBinding) GetSchema(ctx context.Context, creator string, schemaDid string) (rtmv1.QueryWhatIsResponse, error) {
+	if b.instance == nil {
+		return rtmv1.QueryWhatIsResponse{}, fmt.Errorf("motor node not initialized")
+	}
+
 	querySchemaReq := rtmv1.QueryWhatIsRequest{
 		Creator: creator,
 		Did:     schemaDid,
@@ -147,4 +155,99 @@ func (b *SpeedwayBinding) GetSchema(ctx context.Context, creator string, schemaD
 	}
 
 	return querySchemaRes, nil
+}
+
+/*
+Create the schema and return the WhatIsResponse
+*/
+func (b *SpeedwayBinding) CreateSchema(req rtmv1.CreateSchemaRequest) (rtmv1.CreateSchemaResponse, error) {
+	if b.instance == nil {
+		return rtmv1.CreateSchemaResponse{}, fmt.Errorf("motor node not initialized")
+	}
+
+	res, err := b.instance.CreateSchema(req)
+	if err != nil {
+		fmt.Printf("Command failed %v\n", err)
+		return rtmv1.CreateSchemaResponse{}, err
+	}
+
+	return res, nil
+}
+
+/*
+NewObjectBuilder and return the ObjectBuilder
+*/
+func (b *SpeedwayBinding) NewObjectBuilder(schemaDid string) (*object.ObjectBuilder, error) {
+	if b.instance == nil {
+		return nil, fmt.Errorf("motor node not initialized")
+	}
+
+	objBuilder, err := b.instance.NewObjectBuilder(schemaDid)
+	if err != nil {
+		fmt.Printf("Command failed %v\n", err)
+		return nil, err
+	}
+
+	return objBuilder, nil
+}
+
+/*
+QueryWhatIs and return the WhatIsResponse
+*/
+func (b *SpeedwayBinding) QueryWhatIs(ctx context.Context, req rtmv1.QueryWhatIsRequest) (rtmv1.QueryWhatIsResponse, error) {
+	if b.instance == nil {
+		return rtmv1.QueryWhatIsResponse{}, fmt.Errorf("motor node not initialized")
+	}
+
+	querySchema, err := b.instance.QueryWhatIs(ctx, req)
+	if err != nil {
+		fmt.Println(status.Error, ("Error"), err)
+		return rtmv1.QueryWhatIsResponse{}, err
+	}
+
+	return querySchema, nil
+}
+
+/*
+GetDID() and return the DID
+*/
+func (b *SpeedwayBinding) GetDID() *did.DID {
+	if b.instance == nil {
+		return nil
+	}
+
+	did := b.instance.GetDID()
+	return &did
+}
+
+/*
+Get Did Document and return the DidDocument
+*/
+func (b *SpeedwayBinding) GetDidDocument() (*did.Document, error) {
+	if b.instance == nil {
+		return nil, fmt.Errorf("motor node not initialized")
+	}
+
+	didDoc := b.instance.GetDIDDocument()
+	if didDoc == nil {
+		return nil, fmt.Errorf("DID not initialized")
+	}
+
+	return &didDoc, nil
+}
+
+/*
+Get Address and return the address
+*/
+func (b *SpeedwayBinding) GetAddress() (string, error) {
+	if b.instance == nil {
+		return "", fmt.Errorf("motor node not initialized")
+	}
+
+	address := b.instance.GetAddress()
+	if address == "" {
+		return "", fmt.Errorf("address not initialized")
+	}
+
+	return address, nil
 }
