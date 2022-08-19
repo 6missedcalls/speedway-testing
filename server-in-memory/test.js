@@ -9,7 +9,14 @@ beforeAll(async () => {
 	})
 })
 
-it("test endpoint", async () => {
+beforeEach(async () => {
+	await Promise.all([
+    request.get("/logout"),
+    storage.clear()],
+  )
+})
+
+it("creates an account", async () => {
 	const { body } = await request.post("/api/v1/account/create")
 	expect(Object.keys(body)).toEqual(["Address"])
 	expect(typeof body.Address).toBe("string")

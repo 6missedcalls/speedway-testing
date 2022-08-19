@@ -16,6 +16,8 @@ const app = express()
 app.use(cors())
 app.use(bodyParser.json())
 
+let sessionDid = null
+
 /// DEVELOPMENT
 
 app.get("/dump", async (_, res) => {
@@ -29,9 +31,12 @@ app.get("/reset", async (_, res) => {
 	res.json({ length })
 })
 
-/// AUTHENTICATION
+app.get("/logout", (_, res) => {
+	sessionDid = null
+	res.status(200).send()
+})
 
-let sessionDid = null
+/// AUTHENTICATION
 
 app.post("/api/v1/account/create", async ({ body }, res) => {
 	const did = generateDid()
