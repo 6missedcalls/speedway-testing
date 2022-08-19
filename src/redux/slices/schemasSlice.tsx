@@ -73,7 +73,7 @@ export const schemasSlice = createSlice({
 		builder.addCase(userGetAllSchemas.fulfilled, (state, action) => {
 			const { payload } = action
 			state.loading = false
-			state.list = payload.whatIs
+			state.list = payload.what_is
 		})
 
 		builder.addCase(userGetAllSchemas.rejected, (state) => {
