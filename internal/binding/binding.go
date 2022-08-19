@@ -166,7 +166,7 @@ func (b *SpeedwayBinding) GetSchema(ctx context.Context, creator string, schemaD
 	// query schema
 	querySchemaRes, err := b.instance.QueryWhatIs(ctx, querySchemaReq)
 	if err != nil {
-		fmt.Printf("Command failed %v\n", err)
+		fmt.Printf("Binding failed %v\n", err)
 		return rtmv1.QueryWhatIsResponse{}, err
 	}
 
@@ -186,7 +186,7 @@ func (b *SpeedwayBinding) CreateSchema(req rtmv1.CreateSchemaRequest) (rtmv1.Cre
 
 	res, err := b.instance.CreateSchema(req)
 	if err != nil {
-		fmt.Printf("Command failed %v\n", err)
+		fmt.Printf("Binding failed %v\n", err)
 		return rtmv1.CreateSchemaResponse{}, err
 	}
 
@@ -206,7 +206,7 @@ func (b *SpeedwayBinding) NewObjectBuilder(schemaDid string) (*object.ObjectBuil
 
 	objBuilder, err := b.instance.NewObjectBuilder(schemaDid)
 	if err != nil {
-		fmt.Printf("Command failed %v\n", err)
+		fmt.Printf("Binding failed %v\n", err)
 		return nil, err
 	}
 
@@ -258,7 +258,7 @@ func (b *SpeedwayBinding) GetDidDocument() (*did.Document, error) {
 
 	didDoc := b.instance.GetDIDDocument()
 	if didDoc == nil {
-		return nil, fmt.Errorf("DIDDocument not found")
+		return nil, ErrNotAuthenticated
 	}
 
 	return &didDoc, nil
@@ -277,7 +277,7 @@ func (b *SpeedwayBinding) GetAddress() (string, error) {
 
 	address := b.instance.GetAddress()
 	if address == "" {
-		return "", fmt.Errorf("address not found")
+		return "", ErrNotAuthenticated
 	}
 
 	return address, nil
