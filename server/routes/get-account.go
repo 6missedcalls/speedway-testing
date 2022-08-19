@@ -4,20 +4,24 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/speedway/internal/binding"
 )
 
+type uResponse struct {
+	Address     string
+	DidDocument did.Document
+}
+
 // @BasePath /api/v1
-// @Summary GetObject
+// @Summary GetAccount
 // @Schemes
-// @Description Get an object on Sonr using the object module of Sonr's Blockchain.
+// @Description Get Account information from the Sonr Blockchain. This is a read-only endpoint.
 // @Tags object
 // @Produce json
-// @Param 		 SchemaDid body string true "SchemaDid" example("did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
-// @Param 		 ObjectCid body string true "ObjectCid" example("bafyreigfzxrtvfzuaoyhn5vgndneeeirq62efgf2s3igmoenxgx7jxy2cm")
-// @Success 200 {object} object.ObjectReference
+// @Success 200 {object} uResponse
 // @Failure      500  {string}  message
-// @Router /object/get [post]
+// @Router /account/info [get]
 func (ns *NebulaServer) GetAccount(c *gin.Context) {
 	m := binding.CreateInstance()
 	if m == nil {
@@ -35,16 +39,16 @@ func (ns *NebulaServer) GetAccount(c *gin.Context) {
 		return
 	}
 
-	DidDoc, err := m.GetDidDocument()
+	didDocument, err := m.GetDidDocument()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Get DidDocument from Motor failed",
 		})
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"address": addr,
-		"did":     DidDoc,
-	})
+	res := uResponse{
+		Address:     addr,
+		DidDocument: *didDocument,
+	}
+	c.JSON(http.StatusOK, res)
 }
