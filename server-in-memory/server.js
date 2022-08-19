@@ -5,9 +5,10 @@ import _ from "lodash"
 import md5 from "md5"
 import storage from "node-persist"
 
-const generateDid = () => `snr${md5(Math.random())}`
-const generateDid2 = () => `did:snr:${md5(Math.random())}`
+const generateAddress = () => `snr${md5(Math.random())}`
+const generateDid = () => `did:snr:${md5(Math.random())}`
 const generateCid = () => md5(Math.random())
+const addressToDid = (address) => `did:snr:${address.slice(3)}`
 
 const mountAccountStoreKey = (did) => `account${did}`
 const mountSchemasStoreKey = (did) => `schemas${did}`
@@ -39,7 +40,7 @@ app.get("/logout", (_, res) => {
 /// AUTHENTICATION
 
 app.post("/api/v1/account/create", async ({ body }, res) => {
-	const did = generateDid()
+	const did = generateAddress()
 	const password = body.password || ""
 
 	const accountStoreKey = mountAccountStoreKey(did)
@@ -90,8 +91,8 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 	const schemasStoreKey = mountSchemasStoreKey(sessionDid)
 	const session = await storage.getItem(schemasStoreKey)
 
-	const did = generateDid2()
-	const creator = generateDid2()
+	const did = generateDid()
+	const creator = addressToDid(body.address)
 	const fieldNames = _.keys(body.fields)
 
 	const schemaMetaData = {
@@ -133,7 +134,6 @@ app.post("/api/v1/schema/get", async ({ body }, res) => {
 	const session = await storage.getItem(schemasStoreKey)
 
 	const schema = session.schemas.find((item) => item.creator === body.creator)
-
 	if (!schema || body.creator !== schema.creator) {
 		res.status(500).send()
 		return
