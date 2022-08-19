@@ -14,6 +14,12 @@ import (
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
+var (
+	ErrMotorNotInitialized = fmt.Errorf("cannot find instance of motor")
+	ErrNotAuthenticated    = fmt.Errorf("must be logged in to preform that action")
+	ErrMotorFailedInit     = fmt.Errorf("motor failed to initialize")
+)
+
 type SpeedwayBinding struct {
 	loggedIn bool
 	instance mtr.MotorNode
@@ -30,6 +36,10 @@ func InitMotor() mtr.MotorNode {
 
 	hwid := utils.GetHwid()
 	m := mtr.EmptyMotor(hwid)
+	if m == nil {
+		fmt.Println(status.Error, ErrMotorFailedInit)
+		return nil
+	}
 
 	fmt.Println(status.Debug, "Motor initialized", m)
 
@@ -53,10 +63,10 @@ Get the Instance of the motor node and return it
 */
 func GetInstance() (*SpeedwayBinding, error) {
 	if binding.instance == nil {
-		return nil, fmt.Errorf("motor node not initialized")
+		return nil, ErrMotorNotInitialized
 	}
 
-	return binding, nil
+	return binding, ErrMotorNotInitialized
 }
 
 /*
@@ -85,7 +95,7 @@ Set the logged in flag to true if successful
 */
 func (b *SpeedwayBinding) Login(req rtmv1.LoginRequest) (rtmv1.LoginResponse, error) {
 	if b.instance == nil {
-		return rtmv1.LoginResponse{}, fmt.Errorf("motor node not initialized")
+		return rtmv1.LoginResponse{}, ErrMotorNotInitialized
 	}
 
 	res, err := b.instance.Login(req)
@@ -103,7 +113,7 @@ Get the object and return a map of the object
 */
 func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid string) (map[string]interface{}, error) {
 	if b.instance == nil {
-		return map[string]interface{}{}, fmt.Errorf("motor node not initialized")
+		return map[string]interface{}{}, ErrMotorNotInitialized
 	}
 
 	// Create new QueryWhatIs request for the object
@@ -139,7 +149,7 @@ Get the schema and return the WhatIsResponse
 */
 func (b *SpeedwayBinding) GetSchema(ctx context.Context, creator string, schemaDid string) (rtmv1.QueryWhatIsResponse, error) {
 	if b.instance == nil {
-		return rtmv1.QueryWhatIsResponse{}, fmt.Errorf("motor node not initialized")
+		return rtmv1.QueryWhatIsResponse{}, ErrMotorNotInitialized
 	}
 
 	querySchemaReq := rtmv1.QueryWhatIsRequest{
@@ -162,7 +172,7 @@ Create the schema and return the WhatIsResponse
 */
 func (b *SpeedwayBinding) CreateSchema(req rtmv1.CreateSchemaRequest) (rtmv1.CreateSchemaResponse, error) {
 	if b.instance == nil {
-		return rtmv1.CreateSchemaResponse{}, fmt.Errorf("motor node not initialized")
+		return rtmv1.CreateSchemaResponse{}, ErrMotorNotInitialized
 	}
 
 	res, err := b.instance.CreateSchema(req)
@@ -179,7 +189,7 @@ NewObjectBuilder and return the ObjectBuilder
 */
 func (b *SpeedwayBinding) NewObjectBuilder(schemaDid string) (*object.ObjectBuilder, error) {
 	if b.instance == nil {
-		return nil, fmt.Errorf("motor node not initialized")
+		return nil, ErrMotorNotInitialized
 	}
 
 	objBuilder, err := b.instance.NewObjectBuilder(schemaDid)
@@ -196,7 +206,7 @@ QueryWhatIs and return the WhatIsResponse
 */
 func (b *SpeedwayBinding) QueryWhatIs(ctx context.Context, req rtmv1.QueryWhatIsRequest) (rtmv1.QueryWhatIsResponse, error) {
 	if b.instance == nil {
-		return rtmv1.QueryWhatIsResponse{}, fmt.Errorf("motor node not initialized")
+		return rtmv1.QueryWhatIsResponse{}, ErrMotorNotInitialized
 	}
 
 	querySchema, err := b.instance.QueryWhatIs(ctx, req)
@@ -211,13 +221,13 @@ func (b *SpeedwayBinding) QueryWhatIs(ctx context.Context, req rtmv1.QueryWhatIs
 /*
 GetDID() and return the DID
 */
-func (b *SpeedwayBinding) GetDID() *did.DID {
+func (b *SpeedwayBinding) GetDID() (*did.DID, error) {
 	if b.instance == nil {
-		return nil
+		return nil, ErrMotorNotInitialized
 	}
 
 	did := b.instance.GetDID()
-	return &did
+	return &did, nil
 }
 
 /*
@@ -225,12 +235,12 @@ Get Did Document and return the DidDocument
 */
 func (b *SpeedwayBinding) GetDidDocument() (*did.Document, error) {
 	if b.instance == nil {
-		return nil, fmt.Errorf("motor node not initialized")
+		return nil, ErrMotorNotInitialized
 	}
 
 	didDoc := b.instance.GetDIDDocument()
 	if didDoc == nil {
-		return nil, fmt.Errorf("DID not initialized")
+		return nil, fmt.Errorf("DIDDocument not found")
 	}
 
 	return &didDoc, nil
@@ -241,12 +251,12 @@ Get Address and return the address
 */
 func (b *SpeedwayBinding) GetAddress() (string, error) {
 	if b.instance == nil {
-		return "", fmt.Errorf("motor node not initialized")
+		return "", ErrMotorNotInitialized
 	}
 
 	address := b.instance.GetAddress()
 	if address == "" {
-		return "", fmt.Errorf("address not initialized")
+		return "", fmt.Errorf("address not found")
 	}
 
 	return address, nil

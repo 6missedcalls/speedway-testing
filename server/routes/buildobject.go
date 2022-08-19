@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/speedway/internal/binding"
+	"github.com/sonr-io/speedway/internal/status"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
@@ -45,8 +46,16 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	m := binding.CreateInstance()
 
 	// query whatis
+	did, err := m.GetDID()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to get DID",
+		})
+		return
+	}
+	fmt.Println(status.Debug, "DID", did)
 	querySchema, err := m.QueryWhatIs(context.Background(), rtmv1.QueryWhatIsRequest{
-		Creator: m.GetDID().String(),
+		Creator: did.String(),
 		Did:     body.SchemaDid,
 	})
 	if err != nil {
