@@ -6,12 +6,12 @@ import (
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/account"
-	"github.com/sonr-io/speedway/internal/initmotor"
+	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
-	"github.com/sonr-io/speedway/internal/resolver"
 	"github.com/sonr-io/speedway/internal/retrieve"
+	"github.com/sonr-io/speedway/internal/status"
+	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
-	"github.com/ttacon/chalk"
 )
 
 func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Command) {
@@ -21,13 +21,17 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
-			m := initmotor.InitMotor()
+			m := binding.InitMotor()
 
 			loginResult, err := account.Login(m, loginRequest)
+			if err != nil {
+				fmt.Println(status.Error, "Error: %s", err)
+				return
+			}
 			if loginResult.Success {
-				fmt.Println(chalk.Green.Color("Login Successful"))
+				fmt.Println(status.Success, "Login successful")
 			} else {
-				fmt.Println(chalk.Red.Color("Login Failed"), err)
+				fmt.Println(status.Error, "Login failed")
 			}
 
 			// get schema
@@ -49,17 +53,17 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 			}
 
 			schema, err := retrieve.GetSchema(ctx, m, creator, schemaDid)
-			if schema.WhatIs == nil {
+			if schema.WhatIs != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			whatIs := resolver.DeserializeWhatIs(schema.WhatIs)
-			definition, err := resolver.ResolveIPFS(whatIs.Schema.Cid)
+			whatIs := utils.DeserializeWhatIs(schema.WhatIs)
+			definition, err := utils.ResolveIPFS(whatIs.Schema.Cid)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fmt.Println(chalk.Green, "Definition:", definition)
+			fmt.Println(status.Debug, "Schema: %v\n", definition)
 
 		},
 	}

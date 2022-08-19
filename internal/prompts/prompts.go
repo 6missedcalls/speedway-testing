@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
+	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -16,7 +17,7 @@ type LoginReturn struct {
 }
 
 func fallbackLoginPrompt() (string, error) {
-	fmt.Println(chalk.Yellow, "Attempting manual login", chalk.Reset)
+	fmt.Println(status.Warning, "Attempting Manual Login", chalk.Reset)
 	prompt := promptui.Prompt{
 		Label: "Enter your Address",
 	}
@@ -29,7 +30,7 @@ func fallbackLoginPrompt() (string, error) {
 }
 
 func LoginPrompt() rtmv1.LoginRequest {
-	fmt.Println(chalk.Yellow, "Attempting auto login", chalk.Reset)
+	fmt.Println(status.Info, "Attempting Auto Login", chalk.Reset)
 
 	// Load the address from address.snr if it exists
 	address, err := storage.LoadInfo("address.snr")
@@ -37,16 +38,16 @@ func LoginPrompt() rtmv1.LoginRequest {
 	if err != nil || address == "" {
 		fallbackAddr, err := fallbackLoginPrompt()
 		if err != nil {
-			fmt.Println(chalk.Red, "Error: %s", err)
+			fmt.Println(status.Error, "Fallback Error: %s", err)
 			return rtmv1.LoginRequest{}
 		}
 		address = fallbackAddr
 	}
 
 	// Load the keys if they exist
-	aesKey, pskKey, err := storage.AutoLoadKey()
+	aesKey, pskKey, err := storage.AutoLoad()
 	if err != nil {
-		fmt.Println(chalk.Red, "Error: %s", err)
+		fmt.Println(status.Error, "Key Error: %s", err)
 	}
 
 	loginRequest := rtmv1.LoginRequest{
@@ -55,4 +56,27 @@ func LoginPrompt() rtmv1.LoginRequest {
 		AesPskKey: pskKey,
 	}
 	return loginRequest
+}
+
+func QuitSelector(label string) bool {
+	prompt := promptui.Select{
+		Label: label,
+		Items: []string{"Yes", "No"},
+	}
+	_, result, err := prompt.Run()
+	if err != nil {
+		fmt.Printf("Command failed %v\n", err)
+		return false
+	}
+	if result == "Yes" {
+		return true
+	}
+	return false
+}
+
+func SplashScreen() {
+	fmt.Println(status.Info, "Welcome to the Speedway CLI")
+	fmt.Println(status.Info, "")
+	fmt.Println(status.Info, "Press any key to continue")
+	fmt.Scanln()
 }

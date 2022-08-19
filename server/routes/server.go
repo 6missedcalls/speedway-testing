@@ -78,22 +78,22 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	// ns.Router.GET("/api/webauthn/login-begin", ns.BeginLogin)
 	// ns.Router.POST("/api/webauthn/login-finish", ns.FinishLogin)
 
-	// Account Routes
+	// * Account Routes
 	ns.Router.POST("/api/v1/account/create", ns.CreateAccount)
 	ns.Router.POST("/api/v1/account/login", ns.LoginAccount)
 
-	// Schema Routes
+	// * Schema Routes
 	ns.Router.POST("/api/v1/schema/create", ns.CreateSchema)
 	ns.Router.POST("/api/v1/schema/get", ns.QuerySchema)
 
-	// Object Routes
+	// * Object Routes
 	ns.Router.POST("/api/v1/object/build", ns.BuildObject)
 	ns.Router.POST("/api/v1/object/get", ns.GetObject)
 
-	// Proxy Routes
+	// * Proxy Routes
 	ns.Router.GET("/proxy/schemas", ns.ProxyQuerySchemas)
 
-	// Serve Static Route
+	// * Serve Static Route
 	ns.Router.Use(static.Serve("/", static.LocalFile(ns.Config.StaticDir, true)))
 
 	return nil

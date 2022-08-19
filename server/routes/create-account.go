@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
-	"github.com/sonr-io/speedway/internal/account"
+	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/storage"
 
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -33,7 +33,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	err := json.NewDecoder(rBody).Decode(&body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid request body",
+			"error": "Invalid Request Body",
 		})
 		return
 	}
@@ -41,20 +41,28 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	aesKey, err := mpc.NewAesKey()
 	if err != nil {
 		fmt.Println("err", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Could not generate AES key",
+		})
+		return
 	}
-	if storage.StoreKey("aes.key", aesKey) != nil {
-		fmt.Println("err", err)
+	if storage.Store("aes.key", aesKey) != nil {
+		fmt.Println("Storage Error: ", err)
+		return
 	}
 
 	req := rtmv1.CreateAccountRequest{
 		Password:  body.Password,
 		AesDscKey: aesKey,
 	}
-	fmt.Println("request", req)
 
-	res, err := account.CreateAccount(req)
+	res, err := binding.CreateInstance().CreateAccount(req)
 	if err != nil {
 		fmt.Println("err", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Could Not Create Account",
+		})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{

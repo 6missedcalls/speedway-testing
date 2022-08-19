@@ -7,10 +7,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/speedway/internal/initmotor"
-	"github.com/sonr-io/speedway/internal/resolver"
+	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/retrieve"
+	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
+	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -39,21 +40,20 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	err := json.NewDecoder(rBody).Decode(&r)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid request body",
+			"error": "Invalid Request Body",
 		})
 		return
 	}
 
-	m := initmotor.InitMotor()
+	m := binding.InitMotor()
 
-	// TODO: Call login from registry service
-	aesKey, err := storage.LoadKey("aes.key")
+	aesKey, aesPskKey, err := storage.AutoLoad()
 	if err != nil {
-		fmt.Println("err", err)
-	}
-	aesPskKey, err := storage.LoadKey("psk.key")
-	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println(status.Error, "Key Error: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error Loading Keys",
+		})
+		return
 	}
 
 	// * Create a new login & create schema request
@@ -66,7 +66,10 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 
 	loginResponse, err := m.Login(loginRequest)
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println("Login Error: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Login Error",
+		})
 		return
 	}
 	// if login fails, return error
@@ -79,19 +82,20 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Println("loginResponse", loginResponse)
 
 	ctx := context.Background()
 	schema, err := retrieve.GetSchema(ctx, m, r.Creator, r.Schema)
 	if schema.WhatIs == nil {
-		fmt.Printf("Command failed %v\n", err)
+		fmt.Printf("GetSchema failed %v\n", err)
 		return
 	}
-	fmt.Println("schema", schema)
-	whatIs := resolver.DeserializeWhatIs(schema.WhatIs)
-	definition, err := resolver.ResolveIPFS(whatIs.Schema.Cid)
+	whatIs := utils.DeserializeWhatIs(schema.WhatIs)
+	definition, err := utils.ResolveIPFS(whatIs.Schema.Cid)
 	if err != nil {
-		fmt.Printf("Command failed %v\n", err)
+		fmt.Printf("ResolveIPFS failed %v\n", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error resolving IPFS",
+		})
 		return
 	}
 

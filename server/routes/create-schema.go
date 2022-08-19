@@ -6,10 +6,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/speedway/internal/initmotor"
-	"github.com/sonr-io/speedway/internal/resolver"
+	"github.com/sonr-io/speedway/internal/binding"
+	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
-	"github.com/ttacon/chalk"
+	"github.com/sonr-io/speedway/internal/utils"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
@@ -38,64 +38,64 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid request body",
+			"error": "Invalid Request Body",
 		})
 		return
 	}
 
-	m := initmotor.InitMotor()
+	m := binding.InitMotor()
 
-	aesKey, err := storage.LoadKey("aes.key")
+	aesKey, aesPskKey, err := storage.AutoLoad()
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println(status.Error, "LoadKey Error: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error Loading Keys",
+		})
+		return
 	}
-	aesPskKey, err := storage.LoadKey("psk.key")
-	if err != nil {
-		fmt.Println("err", err)
-	}
-	// * Create a new login & create schema request
+
 	// Create a new login request
-	loginRequest := (rtmv1.LoginRequest{
+	loginRequest := rtmv1.LoginRequest{
 		Did:       r.Address,
 		AesDscKey: aesKey,
 		AesPskKey: aesPskKey,
-	})
+	}
+
 	// Login Response
 	loginResponse, err := m.Login(loginRequest)
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println("Login Error: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Login Error",
+		})
 		return
 	}
 	// if login fails, return error
-	if loginResponse.Success {
-		fmt.Println(chalk.Green, "Login successful")
-	} else {
-		fmt.Println(chalk.Red, "Login failed")
+	if !loginResponse.Success {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Login failed",
 		})
 		return
 	}
-	fmt.Println("loginResponse", loginResponse)
+
 	// Create a new create schema request
 	createSchemaRequest := rtmv1.CreateSchemaRequest{
 		Label:  r.SchemaLabel,
 		Fields: r.SchemaField,
 	}
-	fmt.Println("createSchemaRequest", createSchemaRequest)
 
 	// create the schema
 	res, err := m.CreateSchema(createSchemaRequest)
 	if err != nil {
 		fmt.Println("Create Schema Error: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
+			"error": "Could Not Create Schema",
 		})
 		return
 	}
 
-	whatIs := resolver.DeserializeWhatIs(res.WhatIs)
-	definition, err := resolver.ResolveIPFS(whatIs.Schema.Cid)
+	whatIs := utils.DeserializeWhatIs(res.WhatIs)
+	definition, err := utils.ResolveIPFS(whatIs.Schema.Cid)
 	if err != nil {
 		fmt.Println("err", err)
 		return

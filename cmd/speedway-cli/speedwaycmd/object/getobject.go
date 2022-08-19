@@ -6,11 +6,11 @@ import (
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/account"
-	"github.com/sonr-io/speedway/internal/initmotor"
+	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/retrieve"
+	"github.com/sonr-io/speedway/internal/status"
 	"github.com/spf13/cobra"
-	"github.com/ttacon/chalk"
 )
 
 func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command) {
@@ -21,13 +21,17 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
-			m := initmotor.InitMotor()
+			m := binding.InitMotor()
 
 			loginResult, err := account.Login(m, loginRequest)
+			if err != nil {
+				fmt.Println(status.Error, "Error: %s", err)
+				return
+			}
 			if loginResult.Success {
-				fmt.Println(chalk.Green.Color("Login Successful"))
+				fmt.Println(status.Success, "Login successful")
 			} else {
-				fmt.Println(chalk.Red.Color("Login Failed"), err)
+				fmt.Println(status.Error, "Login failed")
 				return
 			}
 
@@ -37,7 +41,7 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 			}
 			schemaDid, err := schemaPrompt.Run()
 			if err != nil {
-				fmt.Println(chalk.Red.Color("Error"), err)
+				fmt.Println(status.Error, "Error: %s", err)
 				return
 			}
 

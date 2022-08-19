@@ -8,7 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/speedway/internal/account"
-	"github.com/sonr-io/speedway/internal/initmotor"
+	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/retrieve"
 	"github.com/sonr-io/speedway/internal/storage"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
@@ -38,18 +38,18 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 	err := json.NewDecoder(rBody).Decode(&body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid request body",
+			"error": "Invalid Request Body",
 		})
 		return
 	}
 	// init motor
-	m := initmotor.InitMotor()
+	m := binding.InitMotor()
 
 	// Get Keys
-	aesKey, pskKey, err := storage.AutoLoadKey()
+	aesKey, pskKey, err := storage.AutoLoad()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Error loading keys",
+			"error": "Error Loading Keys",
 		})
 		return
 	}
@@ -60,21 +60,24 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 		AesDscKey: aesKey,
 		AesPskKey: pskKey,
 	}
-	if err != nil {
-		fmt.Println("err", err)
-	}
 
 	// Login
 	resp, err := account.Login(m, loginRequest)
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println("Login Error: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Login Error",
+		})
 	}
-	fmt.Println("response", resp)
+	fmt.Println("Login Response: ", resp)
 
 	ctx := context.Background()
 	object, err := retrieve.GetObject(ctx, m, body.SchemaDid, body.ObjectCid)
 	if err != nil {
-		fmt.Printf("Command failed %v\n", err)
+		fmt.Printf("GetObject failed %v\n", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "GetObject failed",
+		})
 		return
 	}
 	c.JSON(http.StatusOK, object)

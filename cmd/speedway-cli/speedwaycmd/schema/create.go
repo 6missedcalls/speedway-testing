@@ -6,20 +6,18 @@ import (
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/account"
-	"github.com/sonr-io/speedway/internal/initmotor"
+	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
-	"github.com/sonr-io/speedway/internal/resolver"
+	"github.com/sonr-io/speedway/internal/status"
+	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
-	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 func convertSchemaKind(kind string) rtmv1.CreateSchemaRequest_SchemaKind {
 
-	schemaKind := rtmv1.CreateSchemaRequest_SCHEMA_KIND_ANY
+	schemaKind := rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRING
 	switch kind {
-	case "ANY":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_ANY
 	case "LIST":
 		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LIST
 	case "BOOL":
@@ -47,21 +45,21 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
-			m := initmotor.InitMotor()
+			m := binding.InitMotor()
 
 			loginResult, err := account.Login(m, loginRequest)
 			if err != nil {
-				fmt.Println(chalk.Red.Color("Login Failed"), err)
+				fmt.Println(status.Error, ("Login Error: "), err)
 				return
 			}
 			if loginResult.Success {
-				fmt.Println(chalk.Green.Color("Login Successful"))
+				fmt.Println(status.Success, ("Login Successful"))
 			} else {
-				fmt.Println(chalk.Red.Color("Login Failed"))
+				fmt.Println(status.Error, ("Login Failed"))
 				return
 			}
 
-			fmt.Println(chalk.Green, "Creating schema...", chalk.Reset)
+			fmt.Println(status.Info, "Creating schema...")
 			schemaPrompt := promptui.Prompt{
 				Label: "Enter the Schema Label",
 			}
@@ -76,8 +74,8 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				Label: "Enter your Schema Fields",
 			}
 
-			var repeat string
-			for repeat != "N" && repeat != "n" && repeat != "stop" && repeat != "STOP" && repeat != "exit" && repeat != "EXIT" {
+			var repeat bool
+			for !repeat {
 				// make schemaFields []string
 				schemaField, err := prompt.Run()
 				if err != nil {
@@ -88,7 +86,6 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				selectSchemaKind := promptui.Select{
 					Label: "Select a Schema Field",
 					Items: []string{
-						"ANY",
 						"LIST",
 						"BOOL",
 						"INT",
@@ -105,14 +102,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				}
 				sk := convertSchemaKind(result)
 				fields[schemaField] = sk
-				repeatPrompt := promptui.Prompt{
-					Label: "Repeat? (Y/N)",
-				}
-				repeat, err = repeatPrompt.Run()
-				if err != nil {
-					fmt.Printf("Command failed %v\n", err)
-					return
-				}
+				repeat = prompts.QuitSelector("Create another Schema Field?")
 			}
 
 			createSchemaRequest := rtmv1.CreateSchemaRequest{
@@ -121,16 +111,16 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			}
 
 			// create schema
-			fmt.Println(chalk.Yellow, "Schema request: ", createSchemaRequest)
+			fmt.Println(status.Debug, "Schema request: ", createSchemaRequest)
 			createSchemaResult, err := m.CreateSchema(createSchemaRequest)
 			if err != nil {
-				fmt.Println(chalk.Red.Color("Create Schema Failed"))
+				fmt.Println(status.Error, "CreateSchema Error: ", err)
 				return
 			}
-			fmt.Println(chalk.Green.Color("Create Schema Successful"))
+			fmt.Println(status.Success, "Create Schema Successful")
 			// desearialize the scehma result to get the schema did
-			whatIs := resolver.DeserializeWhatIs(createSchemaResult.WhatIs)
-			fmt.Println(chalk.Green, "Schema WhatIs: ", whatIs.Schema)
+			whatIs := utils.DeserializeWhatIs(createSchemaResult.WhatIs)
+			fmt.Println(status.Debug, "Schema WhatIs: ", whatIs.Schema)
 		},
 	}
 	return

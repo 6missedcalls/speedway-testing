@@ -6,11 +6,11 @@ import (
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/account"
-	"github.com/sonr-io/speedway/internal/initmotor"
+	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
-	"github.com/sonr-io/speedway/internal/resolver"
+	"github.com/sonr-io/speedway/internal/status"
+	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
-	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
@@ -24,13 +24,17 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
-			m := initmotor.InitMotor()
+			m := binding.InitMotor()
 
 			loginResult, err := account.Login(m, loginRequest)
+			if err != nil {
+				fmt.Println(status.Error, "Error: %s", err)
+				return
+			}
 			if loginResult.Success {
-				fmt.Println(chalk.Green.Color("Login Successful"))
+				fmt.Println(status.Success, "Login successful")
 			} else {
-				fmt.Println(chalk.Red.Color("Login Failed"), err)
+				fmt.Println(status.Error, "Login failed")
 				return
 			}
 
@@ -57,7 +61,7 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 			fmt.Printf("%v\n", querySchema.WhatIs)
 
 			// deserialize the whatis
-			whatIs := resolver.DeserializeWhatIs(querySchema.WhatIs)
+			whatIs := utils.DeserializeWhatIs(querySchema.WhatIs)
 
 			// create new object builder
 			objBuilder, err := m.NewObjectBuilder(schemaDid)
@@ -66,12 +70,12 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				return
 			}
 
-			definition, err := resolver.ResolveIPFS(whatIs.Schema.Cid)
+			definition, err := utils.ResolveIPFS(whatIs.Schema.Cid)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fmt.Println(chalk.Green, "Resolved Schema:", definition)
+			fmt.Println(status.Debug, "Resolved Schema:", definition)
 
 			objectLabel := promptui.Prompt{
 				Label: "Enter Object Label",
@@ -85,7 +89,7 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 
 			for _, field := range definition.Fields {
 				valuePrompt := promptui.Prompt{
-					Label: "Enter Field Value for " + field.Name,
+					Label: "Enter Value for " + field.Name,
 				}
 				value, err := valuePrompt.Run()
 				if err != nil {

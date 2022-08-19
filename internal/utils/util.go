@@ -1,12 +1,22 @@
-package resolver
+package utils
 
 import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
 
+	"github.com/denisbrodbeck/machineid"
 	st "github.com/sonr-io/sonr/x/schema/types"
 )
+
+// GetHWID returns the hardware ID of the machine.
+func GetHwid() string {
+	hwid, err := machineid.ID()
+	if err != nil {
+		return "Error getting hwid"
+	}
+	return hwid
+}
 
 // Unmarshal WhatIs and return a QueryWhatIsResponse
 func DeserializeWhatIs(whatis []byte) *st.WhatIs {
@@ -19,6 +29,7 @@ func DeserializeWhatIs(whatis []byte) *st.WhatIs {
 	return whatIs
 }
 
+// ResolveIPFS returns the schema definition of the given CID.
 func ResolveIPFS(cid string) (st.SchemaDefinition, error) {
 	getReq, err := http.NewRequest("GET", "https://ipfs.sonr.ws/ipfs/"+cid, nil)
 	if err != nil {

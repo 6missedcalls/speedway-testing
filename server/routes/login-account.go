@@ -3,10 +3,10 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 
-	"github.com/gin-gonic/gin" // TODO: Wait for PR to be merged
-	"github.com/sonr-io/speedway/internal/account"
-	"github.com/sonr-io/speedway/internal/initmotor"
+	"github.com/gin-gonic/gin"
+	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/storage"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -32,39 +32,43 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 	var body LoginRequestBody
 	err := json.NewDecoder(rBody).Decode(&body)
 	if err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid request body",
 		})
 		return
 	}
-	aesPskKey, err := storage.LoadKey("psk.key")
+	aesPskKey, err := storage.Load("psk.key")
 	if err != nil {
 		fmt.Println("err", err)
 	}
-	req := (rtmv1.LoginRequest{
+	req := rtmv1.LoginRequest{
 		Did:       body.Address,
 		Password:  body.Password,
 		AesPskKey: aesPskKey,
-	})
-	if err != nil {
-		fmt.Println("err", err)
 	}
 
-	m := initmotor.InitMotor()
-	res, err := account.Login(m, req)
+	m := binding.CreateInstance()
+
+	// Login to account with Speedway binding
+	res, err := m.Login(req)
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println("Login Error: ", err)
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Login Error",
+		})
+		return
 	}
 	fmt.Println("Result", res)
 	if !res.Success {
-		c.JSON(500, gin.H{
-			"error": "Login failed",
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"success": false,
+			"error":   "Login failed",
 		})
 	} else {
-		c.JSON(200, gin.H{
-			"success":     true,
-			"Address":     m.GetAddress(),
-			"DIDDocument": m.GetDIDDocument(),
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			// "Address":     m.GetAddress(),
+			// "DIDDocument": m.GetDIDDocument(),
 		})
 	}
 

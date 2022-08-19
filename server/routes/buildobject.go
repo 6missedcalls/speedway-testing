@@ -8,7 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/speedway/internal/account"
-	"github.com/sonr-io/speedway/internal/initmotor"
+	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/storage"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -39,19 +39,19 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	err := json.NewDecoder(rBody).Decode(&body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid request body",
+			"error": "Invalid Request Body",
 		})
 		return
 	}
 
 	label := body.Label
 	// init motor
-	m := initmotor.InitMotor()
+	m := binding.InitMotor()
 
-	aesKey, aesPskKey, err := storage.AutoLoadKey()
+	aesKey, aesPskKey, err := storage.AutoLoad()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Error loading keys",
+			"error": "Error Loading Keys",
 		})
 		return
 	}
@@ -63,19 +63,22 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 		AesPskKey: aesPskKey,
 	}
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println("Request Error: ", err)
 	}
 
 	// Login to Sonr
 	res, err := account.Login(m, req)
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println("Login Error: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Login Error",
+		})
 		return
 	}
-	fmt.Println("Result", res)
+	fmt.Println("Login Response: ", res)
 	if !res.Success {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": res,
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Login Failed",
 		})
 	}
 
@@ -88,12 +91,14 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 		fmt.Printf("Command failed %v\n", err)
 		return
 	}
-	fmt.Printf("%v\n", querySchema.WhatIs)
-
+	fmt.Printf("Schema WhatIs Response %v\n", querySchema)
 	// Initialize NewObjectBuilder
 	objBuilder, err := m.NewObjectBuilder(body.SchemaDid)
 	if err != nil {
-		fmt.Println("err", err)
+		fmt.Println("ObjectBuilder Error: ", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"error": "ObjectBuilder Error",
+		})
 	}
 
 	objBuilder.SetLabel(label)
@@ -107,9 +112,8 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	upload, err := objBuilder.Upload()
 	if err != nil {
 		fmt.Println("err", err)
-		// create 500 error response
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err,
+			"error": "Object Upload Failed",
 		})
 	}
 	c.JSON(http.StatusOK, gin.H{

@@ -8,8 +8,7 @@ import (
 	"github.com/ttacon/chalk"
 )
 
-// Loadkey loads a key from the ~/.speedway/keys directory
-func LoadKey(name string) ([]byte, error) {
+func Load(name string) ([]byte, error) {
 	var file *os.File
 	if _, err := os.Stat(fmt.Sprintf("%s/%s", os.Getenv("HOME"), ".speedway/keys/"+name)); err != nil {
 		if os.IsNotExist(err) {
@@ -44,15 +43,15 @@ func LoadInfo(name string) (string, error) {
 	return string(data), err
 }
 
-// AutoLoadKey loads the key from the ~/.speedway/keys directory if it exists
+// AutoLoad loads the key from the ~/.speedway/keys directory if it exists
 // otherwise it returns an error
-func AutoLoadKey() ([]byte, []byte, error) {
-	aesKey, err := LoadKey("aes.key")
+func AutoLoad() ([]byte, []byte, error) {
+	aesKey, err := Load("aes.key")
 	if aesKey == nil || len(aesKey) != 32 {
 		fmt.Println(chalk.Yellow, "Please add this device to your current account or make another account", chalk.Reset)
 		return nil, nil, err
 	}
-	pskKey, err := LoadKey("psk.key")
+	pskKey, err := Load("psk.key")
 	if pskKey == nil || len(pskKey) != 32 {
 		fmt.Println(chalk.Yellow, "Please add this device to your current account or make another account", chalk.Reset)
 		return nil, nil, err

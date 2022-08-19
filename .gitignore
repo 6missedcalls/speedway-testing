@@ -8,10 +8,6 @@
 # testing
 /coverage
 
-# Development
-cmd/speedway-cli/AES.key
-cmd/speedway-cli/PSK.key
-server/PSK.key
 # production
 /build
 /.next
