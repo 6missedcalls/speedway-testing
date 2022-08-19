@@ -37,7 +37,7 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 			}
 			pskKey, err := storage.Load("psk.key")
 			if pskKey == nil || len(pskKey) != 32 {
-				fmt.Println(status.Warning, "Please add this device to your current account or make another account")
+				fmt.Println(status.Warning("Please add this device to your current account or make another account"))
 				return
 			}
 			req := rtmv1.LoginRequest{
@@ -46,19 +46,19 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 				AesPskKey: pskKey,
 			}
 			if err != nil {
-				fmt.Println(status.Error, "LoginRequest Error: %s", err)
+				fmt.Println(status.Error("LoginRequest Error: %s"), err)
 			}
 			m := binding.InitMotor()
 			res, err := account.Login(m, req)
 			if err != nil {
-				fmt.Println(status.Error, "Login Error: %s", err)
+				fmt.Println(status.Error("Login Error: %s"), err)
 				return
 			}
 			fmt.Println(status.Debug, "Login Response: %s", res)
 			if res.Success {
-				fmt.Println(status.Success, "Login Successful")
+				fmt.Println(status.Success("Login Successful"))
 			} else {
-				fmt.Println(status.Error, "Login failed")
+				fmt.Println(status.Error("Login failed"))
 				return
 			}
 		},

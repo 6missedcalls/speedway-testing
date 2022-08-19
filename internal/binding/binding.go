@@ -17,6 +17,7 @@ import (
 var (
 	ErrMotorNotInitialized = fmt.Errorf("cannot find instance of motor")
 	ErrNotAuthenticated    = fmt.Errorf("must be logged in to preform that action")
+	ErrIsAuthenticated     = fmt.Errorf("you are already authenticated")
 	ErrMotorFailedInit     = fmt.Errorf("motor failed to initialize")
 )
 
@@ -37,7 +38,7 @@ func InitMotor() mtr.MotorNode {
 	hwid := utils.GetHwid()
 	m := mtr.EmptyMotor(hwid)
 	if m == nil {
-		fmt.Println(status.Error, ErrMotorFailedInit)
+		fmt.Println(status.Error("Motor failed to initialize"))
 		return nil
 	}
 
@@ -75,15 +76,15 @@ Create Account on Blockchain and return the response
 func (b *SpeedwayBinding) CreateAccount(req rtmv1.CreateAccountRequest) (rtmv1.CreateAccountResponse, error) {
 	res, err := b.instance.CreateAccount(req)
 	if err != nil {
-		fmt.Println(status.Error, "Create Account Error", err)
+		fmt.Println(status.Error("Create Account Error"), err)
 	}
 
 	if storage.Store("psk.key", res.AesPsk) != nil {
-		fmt.Println(status.Error, "Storage Error: ", err)
+		fmt.Println(status.Error("Storage Error: "), err)
 	}
 
 	if storage.StoreInfo("address.snr", b.instance) != nil {
-		fmt.Println(status.Error, "Storage Error: ", err)
+		fmt.Println(status.Error("Storage Error: "), err)
 	}
 
 	return res, err
@@ -97,10 +98,13 @@ func (b *SpeedwayBinding) Login(req rtmv1.LoginRequest) (rtmv1.LoginResponse, er
 	if b.instance == nil {
 		return rtmv1.LoginResponse{}, ErrMotorNotInitialized
 	}
+	if b.loggedIn {
+		fmt.Println(status.Info, "You are already logged in")
+	}
 
 	res, err := b.instance.Login(req)
 	if err != nil {
-		fmt.Println(status.Error, "Login Error", err)
+		fmt.Println(status.Error("Login Error"), err)
 	}
 
 	b.loggedIn = true
@@ -125,7 +129,7 @@ func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid s
 		Did:     schemaDid,
 	})
 	if err != nil {
-		fmt.Println(status.Error, ("Error"), err)
+		fmt.Println(status.Error("Error"), err)
 		return nil, err
 	}
 	fmt.Printf("%v\n", querySchema.WhatIs)
@@ -133,14 +137,14 @@ func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid s
 	// Start a NewObjectBuilder (so we can call the GetByCID method)
 	objBuilder, err := b.instance.NewObjectBuilder(schemaDid)
 	if err != nil {
-		fmt.Println(status.Error, ("Error"), err)
+		fmt.Println(status.Error("Error"), err)
 		return nil, err
 	}
 
 	// Get the object by CID
 	getObject, err := objBuilder.GetByCID(cid)
 	if err != nil {
-		fmt.Println(status.Error, ("Error"), err)
+		fmt.Println(status.Error("Error"), err)
 		return nil, err
 	}
 
@@ -206,7 +210,7 @@ func (b *SpeedwayBinding) NewObjectBuilder(schemaDid string) (*object.ObjectBuil
 
 	objBuilder, err := b.instance.NewObjectBuilder(schemaDid)
 	if err != nil {
-		fmt.Printf("Binding failed %v\n", err)
+		fmt.Println(status.Error("Binding failed %v\n"), err)
 		return nil, err
 	}
 
@@ -226,7 +230,7 @@ func (b *SpeedwayBinding) QueryWhatIs(ctx context.Context, req rtmv1.QueryWhatIs
 
 	querySchema, err := b.instance.QueryWhatIs(ctx, req)
 	if err != nil {
-		fmt.Println(status.Error, "Binding failed %v\n", err)
+		fmt.Println(status.Error("Binding failed %v\n"), err)
 		return rtmv1.QueryWhatIsResponse{}, err
 	}
 

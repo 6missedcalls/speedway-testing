@@ -49,13 +49,13 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 
 			loginResult, err := account.Login(m, loginRequest)
 			if err != nil {
-				fmt.Println(status.Error, ("Login Error: "), err)
+				fmt.Println(status.Error("Login Error: "), err)
 				return
 			}
 			if loginResult.Success {
-				fmt.Println(status.Success, ("Login Successful"))
+				fmt.Println(status.Success("Login Successful"))
 			} else {
-				fmt.Println(status.Error, ("Login Failed"))
+				fmt.Println(status.Error("Login Failed"))
 				return
 			}
 
@@ -114,10 +114,10 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			fmt.Println(status.Debug, "Schema request: ", createSchemaRequest)
 			createSchemaResult, err := m.CreateSchema(createSchemaRequest)
 			if err != nil {
-				fmt.Println(status.Error, "CreateSchema Error: ", err)
+				fmt.Println(status.Error("CreateSchema Error: "), err)
 				return
 			}
-			fmt.Println(status.Success, "Create Schema Successful")
+			fmt.Println(status.Success("Create Schema Successful"))
 			// desearialize the scehma result to get the schema did
 			whatIs := utils.DeserializeWhatIs(createSchemaResult.WhatIs)
 			fmt.Println(status.Debug, "Schema WhatIs: ", whatIs.Schema)

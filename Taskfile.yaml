@@ -5,3 +5,29 @@ tasks:
   swag:build:
     cmds:
       - swag init --parseDependency --parseInternal -g server/routes/server.go -o docs/ -ot yaml
+
+  server:start:debug:
+    dir: server
+    cmds:
+      - go run main.go
+    env:
+      GIN_MODE: "debug"
+      RPDisplayName: "Sonr - Speedway"
+      RPID: "localhost"
+      RPOrigin: "http://0.0.0.0:8080"
+      Address: "0.0.0.0:8080"
+      StaticDir: "./build"
+      SONR_RPC_ADDR_PUBLIC: 137.184.190.146:9090
+
+  server:start:release:
+    dir: server
+    cmds:
+      - go run main.go
+    env:
+      GIN_MODE: "release"
+      RPDisplayName: "Sonr - Speedway"
+      RPID: "localhost"
+      RPOrigin: "http://0.0.0.0:8080"
+      Address: "0.0.0.0:8080"
+      StaticDir: "./build"
+      SONR_RPC_ADDR_PUBLIC: 137.184.190.146:9090

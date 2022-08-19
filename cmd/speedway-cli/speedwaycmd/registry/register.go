@@ -38,10 +38,10 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 			}
 			aesKey, err := mpc.NewAesKey()
 			if err != nil {
-				fmt.Println(status.Error, "Error: %s", err)
+				fmt.Println(status.Error("Error: %s"), err)
 			}
 			if storage.Store("aes.key", aesKey) != nil {
-				fmt.Println(status.Error, "Storage Error: %s", err)
+				fmt.Println(status.Error("Storage Error: %s"), err)
 			}
 
 			req := rtmv1.CreateAccountRequest{
@@ -50,12 +50,12 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 			}
 			fmt.Println(status.Debug, "Create Account Request: %s", req)
 			if err != nil {
-				fmt.Println(status.Error, "Error: %s", err)
+				fmt.Println(status.Error("Error: %s"), err)
 			}
 			m := binding.InitMotor()
 			res, err := account.CreateAccount(m, req)
 			if err != nil {
-				fmt.Println(status.Error, "CreateAccount Error: %s", err)
+				fmt.Println(status.Error("CreateAccount Error: %s"), err)
 				return
 			}
 
