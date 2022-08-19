@@ -40,10 +40,11 @@ app.get("/logout", (_, res) => {
 /// CHAIN PROXY
 
 app.get("/proxy/schemas", async (_, res) => {
-	const schemasStoreKey = mountSchemaStoreKey(sessionAddress)
-	const session = await storage.getItem(schemasStoreKey)
-
-	res.json(session.schemasMetaData)
+	const metadata = (await storage.getItem("schemaMetaData")) || []
+	res.json({
+		what_is: metadata,
+		pagination: {},
+	})
 })
 
 /// AUTHENTICATION
@@ -120,7 +121,7 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 		fields,
 	}
 
-	const allMetaData = await storage.getItem("schemaMetaData") || []
+	const allMetaData = (await storage.getItem("schemaMetaData")) || []
 	allMetaData.push(schemaMetaData)
 
 	await Promise.all([

@@ -124,3 +124,32 @@ it("gets an individual schema", async () => {
 		field: 4,
 	})
 })
+
+it("fetches a list of schemas", async () => {
+	const { body: result1 } = await app.get("/proxy/schemas")
+	expect(result1).toHaveProperty("pagination")
+	expect(result1).toHaveProperty("what_is")
+	expect(result1.what_is.length).toBe(0)
+
+	const response1 = await app.post("/api/v1/account/create").send({
+		password: "123",
+	})
+	const address = response1.body.Address
+	await app.post("/api/v1/account/login").send({
+		Address: address,
+		Password: "123",
+	})
+
+	const { body: createBody } = await app.post("/api/v1/schema/create").send({
+		address,
+		label: "Dinosaurs",
+		fields: { name: 4 },
+	})
+	const { body: result2 } = await app.get("/proxy/schemas")
+	expect(result2.what_is.length).toBe(1)
+	expect(result2.what_is[0].creator).toBe(addressToDid(address))
+	expect(result2.what_is[0].did).toBe(createBody.whatIs.did)
+	expect(result2.what_is[0].schema.did).toBe(createBody.whatIs.did)
+	expect(result2.what_is[0].schema.label).toBe("Dinosaurs")
+	expect(result2.what_is[0].schema.cid).toBe(createBody.whatIs.schema.cid)
+})
