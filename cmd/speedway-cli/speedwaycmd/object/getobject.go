@@ -25,13 +25,13 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 
 			loginResult, err := account.Login(m, loginRequest)
 			if err != nil {
-				fmt.Println(status.Error, "Error: %s", err)
+				fmt.Println(status.Error("Error: %s"), err)
 				return
 			}
 			if loginResult.Success {
-				fmt.Println(status.Success, "Login successful")
+				fmt.Println(status.Success("Login successful"))
 			} else {
-				fmt.Println(status.Error, "Login failed")
+				fmt.Println(status.Error("Login failed"))
 				return
 			}
 
@@ -41,7 +41,7 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 			}
 			schemaDid, err := schemaPrompt.Run()
 			if err != nil {
-				fmt.Println(status.Error, "Error: %s", err)
+				fmt.Println(status.Error("Error: %s"), err)
 				return
 			}
 

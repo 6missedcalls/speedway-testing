@@ -7,16 +7,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/speedway/internal/binding"
-	"github.com/sonr-io/speedway/internal/status"
-	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/sonr-io/speedway/internal/utils"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 type CreateSchemaRequest struct {
-	Address     string                                          `json:"address"` // DID of the user
-	SchemaLabel string                                          `json:"label"`   // Label of the schema
-	SchemaField map[string]rtmv1.CreateSchemaRequest_SchemaKind `json:"fields"`  // Fields of the schema
+	SchemaLabel string                                          `json:"label"`  // Label of the schema
+	SchemaField map[string]rtmv1.CreateSchemaRequest_SchemaKind `json:"fields"` // Fields of the schema
 }
 
 // @BasePath /api/v1
@@ -25,7 +22,6 @@ type CreateSchemaRequest struct {
 // @Description Create a schema utilizing motor client. Returns the WhatIs of the schema created.
 // @Tags schema
 // @Produce json
-// @Param address query string true "Address of the user"
 // @Param label query string true "Label of the schema"
 // @Param fields query string true "Fields of the schema"
 // @Success 	 200  {object}  rtmv1.CreateSchemaResponse
@@ -43,41 +39,6 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 		return
 	}
 
-	m := binding.InitMotor()
-
-	aesKey, aesPskKey, err := storage.AutoLoad()
-	if err != nil {
-		fmt.Println(status.Error, "LoadKey Error: ", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Error Loading Keys",
-		})
-		return
-	}
-
-	// Create a new login request
-	loginRequest := rtmv1.LoginRequest{
-		Did:       r.Address,
-		AesDscKey: aesKey,
-		AesPskKey: aesPskKey,
-	}
-
-	// Login Response
-	loginResponse, err := m.Login(loginRequest)
-	if err != nil {
-		fmt.Println("Login Error: ", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Login Error",
-		})
-		return
-	}
-	// if login fails, return error
-	if !loginResponse.Success {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Login failed",
-		})
-		return
-	}
-
 	// Create a new create schema request
 	createSchemaRequest := rtmv1.CreateSchemaRequest{
 		Label:  r.SchemaLabel,
@@ -85,7 +46,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	}
 
 	// create the schema
-	res, err := m.CreateSchema(createSchemaRequest)
+	res, err := binding.CreateInstance().CreateSchema(createSchemaRequest)
 	if err != nil {
 		fmt.Println("Create Schema Error: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{

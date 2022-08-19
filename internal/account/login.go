@@ -11,6 +11,7 @@ func Login(m motor.MotorNode, req rtmv1.LoginRequest) (rtmv1.LoginResponse, erro
 	res, err := m.Login(req)
 	if err != nil {
 		fmt.Println("err", err)
+		return res, err
 	}
 
 	return res, err

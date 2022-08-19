@@ -65,10 +65,18 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 			"error":   "Login failed",
 		})
 	} else {
+		addr, err := m.GetAddress()
+		if err != nil {
+			fmt.Println("GetAddress Error: ", err)
+		}
+		didDocument, err := m.GetDidDocument()
+		if err != nil {
+			fmt.Println("GetDidDocument Error: ", err)
+		}
 		c.JSON(http.StatusOK, gin.H{
-			"success": true,
-			// "Address":     m.GetAddress(),
-			// "DIDDocument": m.GetDIDDocument(),
+			"success":     true,
+			"Address":     addr,
+			"DIDDocument": didDocument,
 		})
 	}
 

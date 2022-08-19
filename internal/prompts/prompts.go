@@ -6,7 +6,6 @@ import (
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
-	"github.com/ttacon/chalk"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
@@ -17,7 +16,7 @@ type LoginReturn struct {
 }
 
 func fallbackLoginPrompt() (string, error) {
-	fmt.Println(status.Warning, "Attempting Manual Login", chalk.Reset)
+	fmt.Println(status.Warning("Attempting Manual Login"), status.Reset)
 	prompt := promptui.Prompt{
 		Label: "Enter your Address",
 	}
@@ -30,7 +29,7 @@ func fallbackLoginPrompt() (string, error) {
 }
 
 func LoginPrompt() rtmv1.LoginRequest {
-	fmt.Println(status.Info, "Attempting Auto Login", chalk.Reset)
+	fmt.Println(status.Info, "Attempting Auto Login", status.Reset)
 
 	// Load the address from address.snr if it exists
 	address, err := storage.LoadInfo("address.snr")
@@ -38,7 +37,7 @@ func LoginPrompt() rtmv1.LoginRequest {
 	if err != nil || address == "" {
 		fallbackAddr, err := fallbackLoginPrompt()
 		if err != nil {
-			fmt.Println(status.Error, "Fallback Error: %s", err)
+			fmt.Println(status.Error("Fallback Error: %s"), err)
 			return rtmv1.LoginRequest{}
 		}
 		address = fallbackAddr
@@ -47,7 +46,7 @@ func LoginPrompt() rtmv1.LoginRequest {
 	// Load the keys if they exist
 	aesKey, pskKey, err := storage.AutoLoad()
 	if err != nil {
-		fmt.Println(status.Error, "Key Error: %s", err)
+		fmt.Println(status.Error("Key Error: %s"), err)
 	}
 
 	loginRequest := rtmv1.LoginRequest{
@@ -72,11 +71,4 @@ func QuitSelector(label string) bool {
 		return true
 	}
 	return false
-}
-
-func SplashScreen() {
-	fmt.Println(status.Info, "Welcome to the Speedway CLI")
-	fmt.Println(status.Info, "")
-	fmt.Println(status.Info, "Press any key to continue")
-	fmt.Scanln()
 }

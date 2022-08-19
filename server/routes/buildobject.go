@@ -7,14 +7,12 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/speedway/internal/account"
 	"github.com/sonr-io/speedway/internal/binding"
-	"github.com/sonr-io/speedway/internal/storage"
+	"github.com/sonr-io/speedway/internal/status"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 type BuildObjectBody struct {
-	Address   string                 `json:"address"`
 	SchemaDid string                 `json:"schemaDid"`
 	Label     string                 `json:"label"`
 	Object    map[string]interface{} `json:"object"`
@@ -26,7 +24,6 @@ type BuildObjectBody struct {
 // @Description Build an object on Sonr using the object module of Sonr's Blockchain.
 // @Tags object
 // @Produce json
-// @Param 		 Address body string true "Address" example("snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
 // @Param 		 SchemaDid body string true "SchemaDid" example("did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
 // @Param 		 Label body string true "Label" example("MyObject")
 // @Param 		 Object body map[string]interface{} true "Object" example({"name": "John Doe"})
@@ -46,45 +43,19 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 
 	label := body.Label
 	// init motor
-	m := binding.InitMotor()
-
-	aesKey, aesPskKey, err := storage.AutoLoad()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Error Loading Keys",
-		})
-		return
-	}
-
-	// Build request
-	req := rtmv1.LoginRequest{
-		Did:       body.Address,
-		AesDscKey: aesKey,
-		AesPskKey: aesPskKey,
-	}
-	if err != nil {
-		fmt.Println("Request Error: ", err)
-	}
-
-	// Login to Sonr
-	res, err := account.Login(m, req)
-	if err != nil {
-		fmt.Println("Login Error: ", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Login Error",
-		})
-		return
-	}
-	fmt.Println("Login Response: ", res)
-	if !res.Success {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": "Login Failed",
-		})
-	}
+	m := binding.CreateInstance()
 
 	// query whatis
+	did, err := m.GetDID()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to get DID",
+		})
+		return
+	}
+	fmt.Println(status.Debug, "DID", did)
 	querySchema, err := m.QueryWhatIs(context.Background(), rtmv1.QueryWhatIsRequest{
-		Creator: m.GetDID().String(),
+		Creator: did.String(),
 		Did:     body.SchemaDid,
 	})
 	if err != nil {

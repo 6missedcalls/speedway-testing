@@ -81,6 +81,7 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	// * Account Routes
 	ns.Router.POST("/api/v1/account/create", ns.CreateAccount)
 	ns.Router.POST("/api/v1/account/login", ns.LoginAccount)
+	ns.Router.GET("api/v1/account/info", ns.GetAccount)
 
 	// * Schema Routes
 	ns.Router.POST("/api/v1/schema/create", ns.CreateSchema)
