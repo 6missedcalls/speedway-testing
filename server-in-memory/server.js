@@ -19,6 +19,21 @@ app.use(bodyParser.json())
 
 let sessionAddress = null
 
+/*
+Storage key structure:
+{
+	account-snr1111111: {}
+	account-snr2222222: {}
+	...
+
+	schema-snr1111111: {}
+	schema-snr2222222: {}
+	...
+
+	schemaMetaData: [...]
+}
+*/
+
 /// DEVELOPMENT
 
 app.get("/dump", async (_, res) => {
