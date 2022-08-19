@@ -73,6 +73,15 @@ app.post("/api/v1/account/login", async ({ body }, res) => {
 	res.json({ Address: account.did })
 })
 
+app.get("/api/v1/account/info", async (_, res) => {
+	if (!sessionDid) {
+		res.status(500).send()
+		return
+	}
+
+	res.json({ Address: sessionDid })
+})
+
 app.use((_, res, next) => {
 	if (!sessionDid) {
 		res.status(500).json({ message: "Not logged in" })
