@@ -9,7 +9,7 @@ import (
 func BootstrapObjectCommand(ctx context.Context) (objectCmd *cobra.Command) {
 	objectCmd = &cobra.Command{
 		Use:   "object",
-		Short: "Provides commands for managing objects on the Sonr network",
+		Short: "Provides commands for managing objects on the Sonr Network",
 		Run:   func(cmd *cobra.Command, args []string) {},
 	}
 	objectCmd.AddCommand(BootstrapBuildObjectCommand(ctx))

@@ -22,7 +22,7 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 			prompt := promptui.Prompt{
 				Label: "Enter your Address",
 			}
-			did, err := prompt.Run()
+			addr, err := prompt.Run()
 			if err != nil {
 				fmt.Printf("Prompt failed %v\n", err)
 				return
@@ -41,7 +41,7 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 				return
 			}
 			req := rtmv1.LoginRequest{
-				Did:       did,
+				Did:       addr,
 				Password:  password,
 				AesPskKey: pskKey,
 			}

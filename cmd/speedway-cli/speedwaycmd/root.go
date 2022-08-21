@@ -17,7 +17,9 @@ func bootstrapRootCommand(ctx context.Context) (rootCmd *cobra.Command) {
 	rootCmd = &cobra.Command{
 		Use:   "speedway",
 		Short: "The Sonr Speedway CLI tool",
-		Long:  `Manage your speedway services and blockchain registered types with the Sonr CLI tool.`,
+		Long: `Manage your account, create and manage your schemas, objects and buckets.
+		
+		For more information, visit https://docs.sonr.io/.`,
 
 		// Run: func(cmd *cobra.Command, args []string) {},
 	}

@@ -29,6 +29,7 @@ func fallbackLoginPrompt() (string, error) {
 }
 
 func LoginPrompt() rtmv1.LoginRequest {
+	splashScreen()
 	fmt.Println(status.Info, "Attempting Auto Login", status.Reset)
 
 	// Load the address from address.snr if it exists
@@ -49,6 +50,7 @@ func LoginPrompt() rtmv1.LoginRequest {
 		fmt.Println(status.Error("Key Error: %s"), err)
 	}
 
+	// Login Request
 	loginRequest := rtmv1.LoginRequest{
 		Did:       address,
 		AesDscKey: aesKey,
@@ -71,4 +73,17 @@ func QuitSelector(label string) bool {
 		return true
 	}
 	return false
+}
+
+func splashScreen() {
+	fmt.Print(`
+	███████╗ ██████╗ ███╗   ██╗██████╗     ███████╗██████╗ ███████╗███████╗██████╗ ██╗    ██╗ █████╗ ██╗   ██╗
+	██╔════╝██╔═══██╗████╗  ██║██╔══██╗    ██╔════╝██╔══██╗██╔════╝██╔════╝██╔══██╗██║    ██║██╔══██╗╚██╗ ██╔╝
+	███████╗██║   ██║██╔██╗ ██║██████╔╝    ███████╗██████╔╝█████╗  █████╗  ██║  ██║██║ █╗ ██║███████║ ╚████╔╝ 
+	╚════██║██║   ██║██║╚██╗██║██╔══██╗    ╚════██║██╔═══╝ ██╔══╝  ██╔══╝  ██║  ██║██║███╗██║██╔══██║  ╚██╔╝  
+	███████║╚██████╔╝██║ ╚████║██║  ██║    ███████║██║     ███████╗███████╗██████╔╝╚███╔███╔╝██║  ██║   ██║   
+	╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝    ╚══════╝╚═╝     ╚══════╝╚══════╝╚═════╝  ╚══╝╚══╝ ╚═╝  ╚═╝   ╚═╝   
+																																																						
+	`)
+	fmt.Println("Welcome to the Sonr Speedway")
 }
