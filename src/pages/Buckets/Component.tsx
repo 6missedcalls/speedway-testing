@@ -16,7 +16,7 @@ function BucketsPageComponent() {
 						</button>
 					</div>
 
-					<EmptyList />
+					<EmptyList message={"No Buckets to Display"} />
 				</div>
 			</div>
 		</LayoutMenu>
