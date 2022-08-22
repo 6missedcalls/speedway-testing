@@ -24,12 +24,12 @@ it("creates an account", async () => {
 })
 
 it("logs an account in", async () => {
-	const response = await app.post("/api/v1/account/create").send({
+	const responseAuth = await app.post("/api/v1/account/create").send({
 		password: "123",
 	})
 
 	const { body: result } = await app.post("/api/v1/account/login").send({
-		Address: response.body.Address,
+		Address: responseAuth.body.Address,
 		Password: "123",
 	})
 	expect(result).toHaveProperty("Address")
@@ -37,27 +37,27 @@ it("logs an account in", async () => {
 })
 
 it("checks for logged in account", async () => {
-	const result1 = await app.get("/api/v1/account/info")
-	expect(result1.status).toBe(500)
+	const responseAuthFalse = await app.get("/api/v1/account/info")
+	expect(responseAuthFalse.status).toBe(500)
 
-	const response = await app.post("/api/v1/account/create").send({
+	const responseAuth = await app.post("/api/v1/account/create").send({
 		password: "123",
 	})
 	await app.post("/api/v1/account/login").send({
-		Address: response.body.Address,
+		Address: responseAuth.body.Address,
 		Password: "123",
 	})
 
-	const { body: result2 } = await app.get("/api/v1/account/info")
-	expect(result2).toHaveProperty("Address")
-	expect(result2.Address).toBe(response.body.Address)
+	const { body: result } = await app.get("/api/v1/account/info")
+	expect(result).toHaveProperty("Address")
+	expect(result.Address).toBe(responseAuth.body.Address)
 })
 
 it("creates a schema", async () => {
-	const response = await app.post("/api/v1/account/create").send({
+	const responseAuth = await app.post("/api/v1/account/create").send({
 		password: "123",
 	})
-	const address = response.body.Address
+	const address = responseAuth.body.Address
 
 	await app.post("/api/v1/account/login").send({
 		Address: address,
@@ -91,17 +91,17 @@ it("creates a schema", async () => {
 })
 
 it("gets an individual schema", async () => {
-	const response1 = await app.post("/api/v1/account/create").send({
+	const responseAuth = await app.post("/api/v1/account/create").send({
 		password: "123",
 	})
-	const address = response1.body.Address
+	const address = responseAuth.body.Address
 
 	await app.post("/api/v1/account/login").send({
 		Address: address,
 		Password: "123",
 	})
 
-	const response2 = await app.post("/api/v1/schema/create").send({
+	const responseSchema = await app.post("/api/v1/schema/create").send({
 		address,
 		label: "Dinosaurs",
 		fields: { name: 4 },
@@ -110,7 +110,7 @@ it("gets an individual schema", async () => {
 	const { body: result } = await app.post("/api/v1/schema/get").send({
 		address,
 		creator: addressToDid(address),
-		schema: response2.body.whatIs.did,
+		schema: responseSchema.body.whatIs.did,
 	})
 
 	expect(result).toHaveProperty("creator")
@@ -126,30 +126,32 @@ it("gets an individual schema", async () => {
 })
 
 it("fetches a list of schemas", async () => {
-	const { body: result1 } = await app.get("/proxy/schemas")
-	expect(result1).toHaveProperty("pagination")
-	expect(result1).toHaveProperty("what_is")
-	expect(result1.what_is.length).toBe(0)
+	const { body: resultEmpty } = await app.get("/proxy/schemas")
+	expect(resultEmpty).toHaveProperty("pagination")
+	expect(resultEmpty).toHaveProperty("what_is")
+	expect(resultEmpty.what_is.length).toBe(0)
 
-	const response1 = await app.post("/api/v1/account/create").send({
+	const responseAuth = await app.post("/api/v1/account/create").send({
 		password: "123",
 	})
-	const address = response1.body.Address
+	const address = responseAuth.body.Address
 	await app.post("/api/v1/account/login").send({
 		Address: address,
 		Password: "123",
 	})
 
-	const { body: createBody } = await app.post("/api/v1/schema/create").send({
+	const responseSchema = await app.post("/api/v1/schema/create").send({
 		address,
 		label: "Dinosaurs",
 		fields: { name: 4 },
 	})
-	const { body: result2 } = await app.get("/proxy/schemas")
-	expect(result2.what_is.length).toBe(1)
-	expect(result2.what_is[0].creator).toBe(addressToDid(address))
-	expect(result2.what_is[0].did).toBe(createBody.whatIs.did)
-	expect(result2.what_is[0].schema.did).toBe(createBody.whatIs.did)
-	expect(result2.what_is[0].schema.label).toBe("Dinosaurs")
-	expect(result2.what_is[0].schema.cid).toBe(createBody.whatIs.schema.cid)
+	const { body: result } = await app.get("/proxy/schemas")
+	expect(result.what_is.length).toBe(1)
+	expect(result.what_is[0].creator).toBe(addressToDid(address))
+	expect(result.what_is[0].did).toBe(responseSchema.body.whatIs.did)
+	expect(result.what_is[0].schema.did).toBe(responseSchema.body.whatIs.did)
+	expect(result.what_is[0].schema.label).toBe("Dinosaurs")
+	expect(result.what_is[0].schema.cid).toBe(
+		responseSchema.body.whatIs.schema.cid
+	)
 })
