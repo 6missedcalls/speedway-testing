@@ -1,3 +1,4 @@
+import EmptyList from "../../components/EmptyList"
 import LayoutMenu from "../../components/LayoutMenu"
 
 function BucketsPageComponent() {
@@ -14,6 +15,8 @@ function BucketsPageComponent() {
 							Create Bucket
 						</button>
 					</div>
+
+					<EmptyList />
 				</div>
 			</div>
 		</LayoutMenu>
