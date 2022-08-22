@@ -50,7 +50,7 @@ app.get("/proxy/schemas", async (_, res) => {
 
 app.post("/api/v1/account/create", async ({ body }, res) => {
 	const address = generateAddress()
-	const password = body.password || ""
+	const password = body.password || body.Password || ""
 
 	await storage.setItem(accountStoreKey(address), {
 		address,
@@ -171,6 +171,7 @@ app.post("/api/v1/bucket/content", async ({ body }, res) => {
 
 app.post("/api/v1/object/build", async ({ body }, res) => {
 	const schema = await storage.getItem(schemaStoreKey(body.SchemaDid))
+
 	const fieldsExpected = _.map(schema.fields, "name")
 	const fieldsReceived = _.keys(body.Object)
 	if (_.difference(fieldsExpected, fieldsReceived).length > 0) {

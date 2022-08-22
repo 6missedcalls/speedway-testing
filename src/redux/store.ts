@@ -6,6 +6,7 @@ import {
 	syncAppStateToLocalCache,
 } from "../utils/localStorage"
 import { ROOT_INITIALIZE_FROM_CACHE, ROOT_RESET } from "../utils/constants"
+import objectsSlice from "./slices/objectsSlice"
 
 const emptyState = {
 	authentication: {
@@ -20,6 +21,11 @@ const emptyState = {
 		error: false,
 		getSchemaLoading: false,
 	},
+	objects: {
+		list: [],
+		loading: false,
+		error: false,
+	},
 }
 
 const initialState = emptyState
@@ -27,6 +33,7 @@ const initialState = emptyState
 const combinedReducer = combineReducers({
 	authentication: authenticationReducer,
 	schemas: schemasReducer,
+	objects: objectsSlice
 })
 
 const rootReducer = (state: any, action: any) => {

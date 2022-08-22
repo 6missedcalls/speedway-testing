@@ -31,7 +31,7 @@ function SchemasPageContainer() {
 	}, [])
 
 	function openNewSchemaModal() {
-		setModalContent(MODAL_CONTENT_NEW_SCHEMA)
+		setModalContent({ content: MODAL_CONTENT_NEW_SCHEMA })
 		openModal()
 	}
 

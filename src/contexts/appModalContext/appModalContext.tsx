@@ -23,7 +23,7 @@ export const AppModalProvider = ({ children }: AppModalProviderProps) => {
 		initialState
 	)
 
-	function setModalContent(data: string) {
+	function setModalContent(data: any) {
 		dispatch({
 			type: SET_MODAL_CONTENT,
 			payload: data,

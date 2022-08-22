@@ -2,6 +2,7 @@ import SonrLogoSvg from "../../assets/svgs/SonrLogo"
 import ButtonGroup from "./components/ButtonsGroup"
 import { NavigateFunction } from "react-router-dom"
 import {
+	ROUTE_OBJECTS,
 	ROUTE_SCHEMAS,
 	// ROUTE_OBJECTS,
 	// ROUTE_BUCKETS,
@@ -22,11 +23,11 @@ const modulesButtons = [
 		iconName: "Note1",
 		route: ROUTE_SCHEMAS,
 	},
-	// {
-	// 	label: "Objects",
-	// 	iconName: "Document",
-	// 	route: ROUTE_OBJECTS,
-	// },
+	{
+		label: "Objects",
+		iconName: "Box1",
+		route: ROUTE_OBJECTS,
+	},
 	// {
 	// 	label: "Buckets",
 	// 	iconName: "Document",

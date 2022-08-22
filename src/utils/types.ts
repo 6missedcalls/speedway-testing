@@ -58,3 +58,14 @@ export interface InewSchema {
 	label: string
 	fields: Record<string, number>
 }
+
+export interface InewObject {
+    schemaDid: string
+	label: string
+    object: any
+}
+
+export interface IobjectPropertyChange {
+	index: number
+	value: string
+}

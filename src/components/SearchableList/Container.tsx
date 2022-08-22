@@ -52,16 +52,16 @@ function SearchableListContainer({
 		let orderedList
 		if (orderAsc) {
 			orderedList = [...previousList].sort((a: any, b: any) =>
-				a[searchableAndSortableFieldKey].text >
-				b[searchableAndSortableFieldKey].text
+				a[searchableAndSortableFieldKey].text.toLowerCase() >
+				b[searchableAndSortableFieldKey].text.toLowerCase()
 					? 1
 					: -1
 			)
 			return orderedList
 		} else {
 			orderedList = [...previousList].sort((a: any, b: any) =>
-				a[searchableAndSortableFieldKey].text <
-				b[searchableAndSortableFieldKey].text
+				a[searchableAndSortableFieldKey].text.toLowerCase() <
+				b[searchableAndSortableFieldKey].text.toLowerCase()
 					? 1
 					: -1
 			)
