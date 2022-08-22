@@ -1,5 +1,5 @@
 import LayoutMenu from "../../../../components/LayoutMenu"
-import { Button, NebulaIcon } from "@sonr-io/nebula-react"
+import { Button } from "@sonr-io/nebula-react"
 import LoadingCircleSvg from "../../../../assets/svgs/LoadingCircle"
 import EmptyList from "../../../../components/EmptyList"
 
