@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react"
 import { listTypes } from "../../utils/types"
 import SearchableListComponent from "./Component"
@@ -28,6 +27,7 @@ function SearchableListContainer({
 	useEffect(() => {
 		const processedList = getList()
 		setList(processedList)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [searchTerm, orderAsc, paginationCurrentPage, initialList])
 
 	useEffect(() => {
@@ -38,6 +38,7 @@ function SearchableListContainer({
 		} else {
 			setTotalPages(Math.ceil(initialList.length / paginationSize))
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [searchTerm, initialList])
 
 	function toggleOrder() {
