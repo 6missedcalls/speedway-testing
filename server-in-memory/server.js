@@ -113,13 +113,8 @@ app.use((_, res, next) => {
 /// SCHEMAS
 
 app.post("/api/v1/schema/create", async ({ body }, res) => {
-	if (body.address !== sessionAddress) {
-		res.status(200).send()
-		return
-	}
-
 	const did = generateDid()
-	const creator = addressToDid(body.address)
+	const creator = addressToDid(sessionAddress)
 
 	const schemaMetaData = {
 		did,
@@ -156,11 +151,6 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 })
 
 app.post("/api/v1/schema/get", async ({ body }, res) => {
-	if (body.address !== sessionAddress) {
-		res.status(200).send()
-		return
-	}
-
 	const schema = await storage.getItem(schemaStoreKey(body.schema))
 
 	if (!schema || body.creator !== schema.creator) {

@@ -65,7 +65,6 @@ it("creates a schema", async () => {
 	})
 
 	const { body: result } = await app.post("/api/v1/schema/create").send({
-		address,
 		label: "Dinosaurs",
 		fields: { name: 4 },
 	})
@@ -102,13 +101,11 @@ it("gets an individual schema", async () => {
 	})
 
 	const responseSchema = await app.post("/api/v1/schema/create").send({
-		address,
 		label: "Dinosaurs",
 		fields: { name: 4 },
 	})
 
 	const { body: result } = await app.post("/api/v1/schema/get").send({
-		address,
 		creator: addressToDid(address),
 		schema: responseSchema.body.whatIs.did,
 	})
@@ -141,7 +138,6 @@ it("fetches a list of schemas", async () => {
 	})
 
 	const responseSchema = await app.post("/api/v1/schema/create").send({
-		address,
 		label: "Dinosaurs",
 		fields: { name: 4 },
 	})
@@ -168,7 +164,6 @@ it("builds an object", async () => {
 	})
 
 	const responseSchema = await app.post("/api/v1/schema/create").send({
-		address,
 		label: "Dinosaurs",
 		fields: { firstName: 4 },
 	})
@@ -198,7 +193,6 @@ it("when building object, checks schema properties", async () => {
 	})
 
 	const responseSchema = await app.post("/api/v1/schema/create").send({
-		address,
 		label: "Dinosaurs",
 		fields: { firstName: 4 },
 	})
@@ -227,7 +221,6 @@ it("gets an object", async () => {
 	})
 
 	const responseSchema = await app.post("/api/v1/schema/create").send({
-		address,
 		label: "Dinosaurs",
 		fields: { firstName: 4 },
 	})
