@@ -7,6 +7,8 @@ import {
 	ROUTE_OBJECTS,
 	ROUTE_SCHEMAS,
 	ROUTE_POST_SIGNUP,
+	ROOT_INITIALIZE_FROM_CACHE,
+	ROOT_RESET,
 } from "./utils/constants"
 import "./App.css"
 import "./index.css"
@@ -19,8 +21,36 @@ import Schemas from "./pages/Schemas"
 import Objects from "./pages/Objects"
 import Buckets from "./pages/Buckets"
 import PostSignup from "./pages/PostSignup"
+import { useEffect, useState } from "react"
+import { getAccountInfo } from "./service/authentication"
+import { getAppStateFromLocalCache } from "./utils/localStorage"
+import { useDispatch } from "react-redux"
 
 function App() {
+	const dispatch = useDispatch()
+	const [loading, setLoading] = useState(true)
+
+	async function fetchAccountInfo() {
+		try {
+			const cachedAddress = getAppStateFromLocalCache().authentication.Address
+			const data = await getAccountInfo()
+			if (data.Address === cachedAddress) {
+				dispatch({ type: ROOT_INITIALIZE_FROM_CACHE })
+				setLoading(false)
+			}
+			setLoading(false)
+		} catch (err) {
+			dispatch({ type: ROOT_RESET })
+			setLoading(false)
+		}
+	}
+
+	useEffect(() => {
+		fetchAccountInfo()
+	}, [])
+
+	if (loading) return null
+
 	return (
 		<BrowserRouter>
 			<LayoutBase>
