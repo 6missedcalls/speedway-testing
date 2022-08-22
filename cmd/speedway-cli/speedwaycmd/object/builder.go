@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
-	"github.com/sonr-io/speedway/internal/account"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/status"
@@ -13,8 +12,6 @@ import (
 	"github.com/spf13/cobra"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
-
-// ! Speak to Nick about JSON versus what I'm doing now
 
 func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Command) {
 	buildObjCmd = &cobra.Command{
@@ -26,9 +23,9 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 
 			m := binding.InitMotor()
 
-			loginResult, err := account.Login(m, loginRequest)
+			loginResult, err := utils.Login(m, loginRequest)
 			if err != nil {
-				fmt.Println(status.Error("Error: %s"), err)
+				fmt.Println(status.Error("Login Error: "), err)
 				return
 			}
 			if loginResult.Success {
@@ -46,7 +43,6 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
-				// todo: run prompt again
 			}
 
 			// query whatis
@@ -58,7 +54,6 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fmt.Printf("%v\n", querySchema.WhatIs)
 
 			// deserialize the whatis
 			whatIs := utils.DeserializeWhatIs(querySchema.WhatIs)
@@ -75,49 +70,39 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fmt.Println(status.Debug, "Resolved Schema:", definition)
+			fmt.Println(status.Debug, "Resolved Schema: ", definition)
 
-			objectLabel := promptui.Prompt{
-				Label: "Enter Object Label",
+			fpPrompt := promptui.Prompt{
+				Label: "Please enter the filepath to the object",
 			}
-			label, err := objectLabel.Run()
+			fp, err := fpPrompt.Run()
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			objBuilder.SetLabel(label)
 
-			for _, field := range definition.Fields {
-				valuePrompt := promptui.Prompt{
-					Label: "Enter Value for " + field.Name,
-				}
-				value, err := valuePrompt.Run()
-				if err != nil {
-					fmt.Printf("Command failed %v\n", err)
-					return
-				}
-				err = objBuilder.Set(field.Name, value)
-				if err != nil {
-					fmt.Printf("Command failed %v\n", err)
-					return
-				}
-			}
-
-			// build the object
-			build, err := objBuilder.Build()
+			// Open the file and read it
+			data, err := utils.GetFile(fp)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fmt.Printf("Built: %v\n", build)
 
-			// upload the object
+			// Add the Label to the object
+			objBuilder.SetLabel(data.Label)
+
+			// Iterate through object and add to builder
+			for k, v := range data.Object {
+				objBuilder.Set(k, v)
+			}
+
+			// Upload the object
 			upload, err := objBuilder.Upload()
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fmt.Printf("Upload: %v\n", upload.Reference)
+			fmt.Printf("Upload Reference: %v\n", upload.Reference)
 
 		},
 	}

@@ -5,11 +5,11 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
-	"github.com/sonr-io/speedway/internal/account"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/retrieve"
 	"github.com/sonr-io/speedway/internal/status"
+	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -23,9 +23,9 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 
 			m := binding.InitMotor()
 
-			loginResult, err := account.Login(m, loginRequest)
+			loginResult, err := utils.Login(m, loginRequest)
 			if err != nil {
-				fmt.Println(status.Error("Error: %s"), err)
+				fmt.Println(status.Error("Login Error: "), err)
 				return
 			}
 			if loginResult.Success {
@@ -41,7 +41,7 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 			}
 			schemaDid, err := schemaPrompt.Run()
 			if err != nil {
-				fmt.Println(status.Error("Error: %s"), err)
+				fmt.Println(status.Error("Schema DID not provided, command cannot continue..."))
 				return
 			}
 

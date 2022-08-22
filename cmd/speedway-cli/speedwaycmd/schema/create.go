@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
-	"github.com/sonr-io/speedway/internal/account"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/status"
@@ -47,7 +46,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 
 			m := binding.InitMotor()
 
-			loginResult, err := account.Login(m, loginRequest)
+			loginResult, err := utils.Login(m, loginRequest)
 			if err != nil {
 				fmt.Println(status.Error("Login Error: "), err)
 				return

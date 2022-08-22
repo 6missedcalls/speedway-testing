@@ -34,7 +34,7 @@ func (ns *NebulaServer) GetAccount(c *gin.Context) {
 	addr, err := m.GetAddress()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Get Address from Motor failed",
+			"Address Error: ": "Failed to get address from motor binding instance",
 		})
 		return
 	}
@@ -42,7 +42,7 @@ func (ns *NebulaServer) GetAccount(c *gin.Context) {
 	didDocument, err := m.GetDidDocument()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Get DidDocument from Motor failed",
+			"DIDDocument Error: ": "Failed to get DIDDocument from motor binding instance",
 		})
 		return
 	}

@@ -1,13 +1,23 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 
 	"github.com/denisbrodbeck/machineid"
+	"github.com/sonr-io/sonr/pkg/motor"
 	st "github.com/sonr-io/sonr/x/schema/types"
+	"github.com/sonr-io/speedway/internal/status"
+	"github.com/sonr-io/speedway/internal/storage"
+	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
+
+type ObjectBuilder struct {
+	Label  string                 `json:"label"`
+	Object map[string]interface{} `json:"object"`
+}
 
 // GetHWID returns the hardware ID of the machine.
 func GetHwid() string {
@@ -51,4 +61,49 @@ func ResolveIPFS(cid string) (st.SchemaDefinition, error) {
 	}
 	// print response
 	return *definition, err
+}
+
+func GetFile(path string) (*ObjectBuilder, error) {
+	file, err := ioutil.ReadFile(path)
+	if err != nil {
+		fmt.Println(status.Error("Error reading file: "), err)
+	}
+
+	var objectBuilder ObjectBuilder
+	err = json.Unmarshal(file, &objectBuilder)
+	if err != nil {
+		fmt.Println(status.Error("Error unmarshalling file: "), err)
+	}
+
+	return &objectBuilder, err
+}
+
+func CreateAccount(m motor.MotorNode, req rtmv1.CreateAccountRequest) (rtmv1.CreateAccountResponse, error) {
+	res, err := m.CreateAccount(req)
+	if err != nil {
+		fmt.Println("Create Account Error: ", err)
+		return res, err
+	}
+
+	if storage.Store("psk.key", res.AesPsk) != nil {
+		fmt.Println("Storage Error: ", err)
+		return res, err
+	}
+
+	if storage.StoreInfo("address.snr", m) != nil {
+		fmt.Println("Storage Error: ", err)
+		return res, err
+	}
+
+	return res, err
+}
+
+func Login(m motor.MotorNode, req rtmv1.LoginRequest) (rtmv1.LoginResponse, error) {
+	res, err := m.Login(req)
+	if err != nil {
+		fmt.Println("err", err)
+		return res, err
+	}
+
+	return res, err
 }

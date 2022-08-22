@@ -7,10 +7,10 @@ import (
 
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
-	"github.com/sonr-io/speedway/internal/account"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
+	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
 	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
@@ -53,7 +53,7 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 				fmt.Println(status.Error("Error: %s"), err)
 			}
 			m := binding.InitMotor()
-			res, err := account.CreateAccount(m, req)
+			res, err := utils.CreateAccount(m, req)
 			if err != nil {
 				fmt.Println(status.Error("CreateAccount Error: %s"), err)
 				return
