@@ -61,10 +61,7 @@ app.get("/logout", (_, res) => {
 
 app.get("/proxy/schemas", async (_, res) => {
 	const metadata = (await storage.getItem("schemaMetaData")) || []
-	res.json({
-		what_is: metadata,
-		pagination: {},
-	})
+	res.json({ what_is: metadata })
 })
 
 /// AUTHENTICATION
@@ -168,7 +165,7 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 	const fieldsExpected = _.map(schema.fields, "name")
 	const fieldsReceived = _.keys(body.Object)
 	if (_.difference(fieldsExpected, fieldsReceived).length > 0) {
-		res.status(500).json({error: "Object Upload Failed"})
+		res.status(500).json({ error: "Object Upload Failed" })
 		return
 	}
 
@@ -183,7 +180,7 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 	})
 })
 
-app.post("/api/v1/object/get", async ({body}, res) => {
+app.post("/api/v1/object/get", async ({ body }, res) => {
 	const object = await storage.getItem(objectStoreKey(body.ObjectCid))
 	res.json(object)
 })

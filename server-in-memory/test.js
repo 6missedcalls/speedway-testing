@@ -21,7 +21,6 @@ beforeEach(async () => {
 it("creates an account", async () => {
 	const { body } = await app.post("/api/v1/account/create")
 	expect(body.Address).toBeAddress()
-	expect(body).toHaveProperty("Address")
 })
 
 it("logs an account in", async () => {
@@ -33,7 +32,6 @@ it("logs an account in", async () => {
 		Address: responseAuth.body.Address,
 		Password: "123",
 	})
-	expect(result).toHaveProperty("Address")
 	expect(result.Address).toBeAddress()
 })
 
@@ -50,7 +48,6 @@ it("checks for logged in account", async () => {
 	})
 
 	const { body: result } = await app.get("/api/v1/account/info")
-	expect(result).toHaveProperty("Address")
 	expect(result.Address).toBe(responseAuth.body.Address)
 })
 
@@ -63,18 +60,13 @@ it("creates a schema", async () => {
 	})
 
 	expect(result).toHaveProperty("whatIs")
-	expect(result.whatIs).toHaveProperty("did")
 	expect(result.whatIs.did).toBeDid()
-	expect(result.whatIs).toHaveProperty("creator")
 	expect(result.whatIs.creator).toBeDid()
 	expect(result.whatIs.creator).toBe(addressToDid(address))
 
 	expect(result).toHaveProperty("definition")
-	expect(result.definition).toHaveProperty("creator")
 	expect(result.definition.creator).toBe(addressToDid(address))
-	expect(result.definition).toHaveProperty("label")
 	expect(result.definition.label).toBe("Dinosaurs")
-	expect(result.definition).toHaveProperty("fields")
 	expect(result.definition.fields.length).toBe(1)
 	expect(result.definition.fields[0]).toEqual({
 		name: "name",
@@ -95,11 +87,8 @@ it("gets an individual schema", async () => {
 		schema: responseSchema.body.whatIs.did,
 	})
 
-	expect(result).toHaveProperty("creator")
 	expect(result.creator).toBe(addressToDid(address))
-	expect(result).toHaveProperty("label")
 	expect(result.label).toBe("Dinosaurs")
-	expect(result).toHaveProperty("fields")
 	expect(result.fields.length).toBe(1)
 	expect(result.fields[0]).toEqual({
 		name: "name",
@@ -109,7 +98,6 @@ it("gets an individual schema", async () => {
 
 it("fetches a list of schemas", async () => {
 	const { body: resultEmpty } = await app.get("/proxy/schemas")
-	expect(resultEmpty).toHaveProperty("pagination")
 	expect(resultEmpty).toHaveProperty("what_is")
 	expect(resultEmpty.what_is.length).toBe(0)
 
@@ -199,6 +187,5 @@ it("gets an object", async () => {
 		ObjectCid: responseObject.body.reference.Cid,
 	})
 
-	expect(result).toHaveProperty("firstName")
 	expect(result.firstName).toBe("Rex")
 })
