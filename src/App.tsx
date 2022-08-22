@@ -36,7 +36,8 @@ function App() {
 			const data = await getAccountInfo()
 			if (data.Address === cachedAddress) {
 				dispatch({ type: ROOT_INITIALIZE_FROM_CACHE })
-				setLoading(false)
+			} else {
+				dispatch({ type: ROOT_RESET })
 			}
 			setLoading(false)
 		} catch (err) {
