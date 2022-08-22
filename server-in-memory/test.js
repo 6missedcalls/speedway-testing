@@ -189,3 +189,99 @@ it("gets an object", async () => {
 
 	expect(result.firstName).toBe("Rex")
 })
+
+it("creates a bucket", async () => {
+	await accountLoggedIn(app)
+
+	const { body: result } = await app.post("/api/v1/bucket/create").send({
+		label: "Lunar base",
+	})
+
+	expect(result.did).toBeDid()
+})
+
+it("gets an individual bucket", async () => {
+	await accountLoggedIn(app)
+
+	const responseBucket = await app.post("/api/v1/bucket/create").send({
+		label: "Mars colony",
+	})
+
+	const { body: result } = await app.post("/api/v1/bucket/get").send({
+		bucket: responseBucket.body.did,
+	})
+	expect(result.did).toBe(responseBucket.body.did)
+	expect(result.label).toBe("Mars colony")
+	expect(result.objects.length).toBe(0)
+})
+
+it("can add objects to buckets", async () => {
+	await accountLoggedIn(app)
+
+	const responseSchema = await app.post("/api/v1/schema/create").send({
+		label: "Dinosaurs",
+		fields: { firstName: 4 },
+	})
+
+	const responseBucket = await app.post("/api/v1/bucket/create").send({
+		label: "Mars colony",
+	})
+	const bucketDid = responseBucket.body.did
+
+	const responseObject = await app.post("/api/v1/object/build").send({
+		SchemaDid: responseSchema.body.whatIs.did,
+		Label: "Sonrsaur",
+		Object: { firstName: "Rex" },
+	})
+	const objectCid = responseObject.body.reference.Cid
+
+	await app.post("/api/v1/bucket/update").send({
+		bucket: bucketDid,
+		objects: [objectCid],
+	})
+
+	const { body: result } = await app.post("/api/v1/bucket/get").send({
+		bucket: bucketDid,
+	})
+	expect(result.objects.length).toBe(1)
+	expect(result.objects[0]).toBe(objectCid)
+})
+
+it("gets a bucket content", async () => {
+	await accountLoggedIn(app)
+
+	const responseSchema = await app.post("/api/v1/schema/create").send({
+		label: "Dinosaurs",
+		fields: { firstName: 4 },
+	})
+
+	const responseBucket = await app.post("/api/v1/bucket/create").send({
+		label: "Mars colony",
+	})
+	const bucketDid = responseBucket.body.did
+
+	const responseObject = await app.post("/api/v1/object/build").send({
+		SchemaDid: responseSchema.body.whatIs.did,
+		Label: "Sonrsaur",
+		Object: { firstName: "Marcel" },
+	})
+	const objectCid = responseObject.body.reference.Cid
+
+	await app.post("/api/v1/object/build").send({
+		SchemaDid: responseSchema.body.whatIs.did,
+		Label: "Not on bucket",
+		Object: { firstName: "Jane" },
+	})
+
+	await app.post("/api/v1/bucket/update").send({
+		bucket: bucketDid,
+		objects: [objectCid],
+	})
+
+	const { body: result } = await app.post("/api/v1/bucket/content").send({
+		bucket: bucketDid,
+	})
+	expect(result.length).toBe(1)
+	expect(result[0].firstName).toBe("Marcel")
+
+})
