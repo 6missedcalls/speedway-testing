@@ -215,3 +215,37 @@ it("when building object, checks schema properties", async () => {
 	expect(result.status).toBe(500)
 	expect(result.body.error).toBe("Object Upload Failed")
 })
+
+it("gets an object", async () => {
+	const responseAuth = await app.post("/api/v1/account/create").send({
+		password: "123",
+	})
+	const address = responseAuth.body.Address
+
+	await app.post("/api/v1/account/login").send({
+		Address: address,
+		Password: "123",
+	})
+
+	const responseSchema = await app.post("/api/v1/schema/create").send({
+		address,
+		label: "Dinosaurs",
+		fields: { firstName: 4 },
+	})
+
+	const responseObject = await app.post("/api/v1/object/build").send({
+		SchemaDid: responseSchema.body.whatIs.did,
+		Label: "Sonrsaur",
+		Object: {
+			firstName: "Rex",
+		},
+	})
+
+	const { body: result } = await app.post("/api/v1/object/get").send({
+		SchemaDid: responseSchema.body.whatIs.did,
+		ObjectCid: responseObject.body.reference.Cid,
+	})
+
+	expect(result).toHaveProperty("firstName")
+	expect(result.firstName).toBe("Rex")
+})

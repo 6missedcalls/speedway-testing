@@ -12,6 +12,7 @@ const addressToDid = (address) => `did:snr:${address.slice(3)}`
 
 const accountStoreKey = (address) => `account-${address}`
 const schemaStoreKey = (did) => `schema-${did}`
+const objectStoreKey = (cid) => `object-${cid}`
 
 const app = express()
 app.use(cors())
@@ -28,6 +29,10 @@ Storage key structure:
 
 	schema-snr1111111: {}
 	schema-snr2222222: {}
+	...
+
+	object-11111111
+	object-22222222
 	...
 
 	schemaMetaData: [...]
@@ -177,13 +182,21 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 		return
 	}
 
+	const cid = generateCid()
+	await storage.setItem(objectStoreKey(cid), body.Object)
+
 	res.json({
 		reference: {
 			Label: body.Label,
 			Did: generateDid(),
-			Cid: generateCid(),
+			Cid: cid,
 		},
 	})
+})
+
+app.post("/api/v1/object/get", async ({body}, res) => {
+	const object = await storage.getItem(objectStoreKey(body.ObjectCid))
+	res.json(object)
 })
 
 export default app
