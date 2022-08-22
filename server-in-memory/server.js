@@ -169,6 +169,14 @@ app.post("/api/v1/schema/get", async ({ body }, res) => {
 /// OBJECTS
 
 app.post("/api/v1/object/build", async ({ body }, res) => {
+	const schema = await storage.getItem(schemaStoreKey(body.SchemaDid))
+	const fieldsExpected = _.map(schema.fields, "name")
+	const fieldsReceived = _.keys(body.Object)
+	if (_.difference(fieldsExpected, fieldsReceived).length > 0) {
+		res.status(500).json({error: "Object Upload Failed"})
+		return
+	}
+
 	res.json({
 		reference: {
 			Label: body.Label,

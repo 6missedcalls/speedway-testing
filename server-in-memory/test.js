@@ -186,3 +186,32 @@ it("builds an object", async () => {
 	expect(result.reference.Label).toBe("Sonrsaur")
 	expect(typeof result.reference.Cid).toBe("string")
 })
+
+it("when building object, checks schema properties", async () => {
+	const responseAuth = await app.post("/api/v1/account/create").send({
+		password: "123",
+	})
+	const address = responseAuth.body.Address
+
+	await app.post("/api/v1/account/login").send({
+		Address: address,
+		Password: "123",
+	})
+
+	const responseSchema = await app.post("/api/v1/schema/create").send({
+		address,
+		label: "Dinosaurs",
+		fields: { firstName: 4 },
+	})
+
+	const result = await app.post("/api/v1/object/build").send({
+		SchemaDid: responseSchema.body.whatIs.did,
+		Label: "Sonrsaur",
+		Object: {
+			lastName: "Smith",
+		},
+	})
+
+	expect(result.status).toBe(500)
+	expect(result.body.error).toBe("Object Upload Failed")
+})
