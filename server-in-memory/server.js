@@ -166,4 +166,16 @@ app.post("/api/v1/schema/get", async ({ body }, res) => {
 	res.json(schema)
 })
 
+/// OBJECTS
+
+app.post("/api/v1/object/build", async ({ body }, res) => {
+	res.json({
+		reference: {
+			Label: body.Label,
+			Did: generateDid(),
+			Cid: generateCid(),
+		},
+	})
+})
+
 export default app

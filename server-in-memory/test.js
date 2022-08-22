@@ -19,8 +19,8 @@ beforeEach(async () => {
 
 it("creates an account", async () => {
 	const { body } = await app.post("/api/v1/account/create")
-	expect(body).toHaveProperty("Address")
 	expect(body.Address).toBeAddress()
+	expect(body).toHaveProperty("Address")
 })
 
 it("logs an account in", async () => {
@@ -154,4 +154,35 @@ it("fetches a list of schemas", async () => {
 	expect(result.what_is[0].schema.cid).toBe(
 		responseSchema.body.whatIs.schema.cid
 	)
+})
+
+it("builds an object", async () => {
+	const responseAuth = await app.post("/api/v1/account/create").send({
+		password: "123",
+	})
+	const address = responseAuth.body.Address
+
+	await app.post("/api/v1/account/login").send({
+		Address: address,
+		Password: "123",
+	})
+
+	const responseSchema = await app.post("/api/v1/schema/create").send({
+		address,
+		label: "Dinosaurs",
+		fields: { firstName: 4 },
+	})
+
+	const { body: result } = await app.post("/api/v1/object/build").send({
+		SchemaDid: responseSchema.body.whatIs.did,
+		Label: "Sonrsaur",
+		Object: {
+			firstName: "Rex",
+		},
+	})
+
+	expect(result).toHaveProperty("reference")
+	expect(result.reference.Did).toBeDid()
+	expect(result.reference.Label).toBe("Sonrsaur")
+	expect(typeof result.reference.Cid).toBe("string")
 })
