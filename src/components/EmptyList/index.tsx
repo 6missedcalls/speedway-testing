@@ -1,9 +1,11 @@
 import { NebulaIcon } from "@sonr-io/nebula-react"
+import { ReactNode } from "react"
 
 type Props = {
 	message: string
+	cta?: ReactNode
 }
-const EmptyList = ({ message }: Props) => {
+const EmptyList = ({ message, cta }: Props) => {
 	return (
 		<div className="flex flex-col items-center mt-24">
 			<div className="flex flex-col items-center border rounded-2xl py-10 px-16">
@@ -18,6 +20,8 @@ const EmptyList = ({ message }: Props) => {
 				<h2 className="text-custom-lg font-extrabold text-subdued">
 					{message}
 				</h2>
+
+				{cta && <div className="mt-10">{cta}</div>}
 			</div>
 		</div>
 	)
