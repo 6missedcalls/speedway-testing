@@ -136,9 +136,7 @@ it("builds an object", async () => {
 	const { body: result } = await app.post("/api/v1/object/build").send({
 		SchemaDid: responseSchema.body.whatIs.did,
 		Label: "Sonrsaur",
-		Object: {
-			firstName: "Rex",
-		},
+		Object: { firstName: "Rex" },
 	})
 
 	expect(result).toHaveProperty("reference")
@@ -157,9 +155,7 @@ it("when building object, checks schema properties", async () => {
 	const result = await app.post("/api/v1/object/build").send({
 		SchemaDid: responseSchema.body.whatIs.did,
 		Label: "Sonrsaur",
-		Object: {
-			lastName: "Smith",
-		},
+		Object: { lastName: "Smith" },
 	})
 
 	expect(result.status).toBe(500)
@@ -177,9 +173,7 @@ it("gets an object", async () => {
 	const responseObject = await app.post("/api/v1/object/build").send({
 		SchemaDid: responseSchema.body.whatIs.did,
 		Label: "Sonrsaur",
-		Object: {
-			firstName: "Rex",
-		},
+		Object: { firstName: "Rex" },
 	})
 
 	const { body: result } = await app.post("/api/v1/object/get").send({
