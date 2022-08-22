@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 import { selectObjectsLoading } from "../../redux/slices/objectsSlice"
-import { selectSchemasLoading, selectSchemasMetaDataList, userGetAllSchemas, userGetSchema } from "../../redux/slices/schemasSlice"
+import {
+	selectSchemasLoading,
+	selectSchemasMetaDataList,
+	userGetAllSchemas,
+	userGetSchema,
+} from "../../redux/slices/schemasSlice"
 import { getSchema } from "../../service/schemas"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
 import { addressToDid } from "../../utils/did"
@@ -19,7 +24,7 @@ function ObjectsPageContainer() {
 	const [schemaFields, setSchemaFields] = useState("")
 	const schemasLoading = useSelector(selectSchemasLoading)
 	const objectsLoading = useSelector(selectObjectsLoading)
-	
+
 	const address = useSelector(selectAddress)
 	const allMetaData = useSelector(selectSchemasMetaDataList)
 	const accountMetaData = allMetaData.filter(
@@ -32,13 +37,15 @@ function ObjectsPageContainer() {
 	}, [])
 
 	useEffect(() => {
-		if(selectedSchema){
+		if (selectedSchema) {
 			getSchema()
 		}
 	}, [selectedSchema])
 
-	async function getSchema(){
-		const selectedSchemaData = accountMetaData.find((item) => item.schema.did === selectedSchema)!
+	async function getSchema() {
+		const selectedSchemaData = accountMetaData.find(
+			(item) => item.schema.did === selectedSchema
+		)!
 		const getSchemaPayload = {
 			address,
 			creator: selectedSchemaData.creator,
@@ -52,20 +59,20 @@ function ObjectsPageContainer() {
 		setSchemaFields(getSchemaResponse.payload.fields)
 	}
 
-	async function getSchemasAndSelectDefault(){
+	async function getSchemasAndSelectDefault() {
 		await dispatch(userGetAllSchemas())
-		if(accountMetaData.length > 0)
-		setSelectedSchema(accountMetaData[0].schema.did)
+		if (accountMetaData.length > 0)
+			setSelectedSchema(accountMetaData[0].schema.did)
 	}
 
 	function openNewObjectModal() {
-		setModalContent({ 
-			content: MODAL_CONTENT_NEW_OBJECT, 
+		setModalContent({
+			content: MODAL_CONTENT_NEW_OBJECT,
 			props: {
 				initialSelectedSchema: selectedSchema,
 				initialSchemaFields: schemaFields,
-				schemas: accountMetaData
-			} 
+				schemas: accountMetaData,
+			},
 		})
 		openModal()
 	}
@@ -86,15 +93,15 @@ function ObjectsPageContainer() {
 	return (
 		<>
 			{objectsList.length > 0 ? (
-				<ObjectsPageComponent 
+				<ObjectsPageComponent
 					schemas={accountMetaData}
 					selectedSchema={selectedSchema}
 					setSelectedSchema={setSelectedSchema}
 				/>
 			) : (
-				<EmptyList 
-					openNewObjectModal={openNewObjectModal} 
-					loading={loading} 
+				<EmptyList
+					openNewObjectModal={openNewObjectModal}
+					loading={loading}
 					schemasCount={accountMetaData.length}
 				/>
 			)}

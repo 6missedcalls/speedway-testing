@@ -62,9 +62,9 @@ export const objectsSlice = createSlice({
 		})
 
 		builder.addCase(userCreateObject.fulfilled, (state, action) => {
-            const { payload } = action
+			const { payload } = action
 			state.loading = false
-            //state.list.push(payload)
+			//state.list.push(payload)
 		})
 
 		builder.addCase(userCreateObject.rejected, (state) => {

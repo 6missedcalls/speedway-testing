@@ -7,7 +7,7 @@ interface NewSchemaModalContentComponentProps {
 	modalSelectedSchema: string
 	setModalSelectedSchema: React.Dispatch<React.SetStateAction<string>>
 	properties: Array<any>
-	handlePropertiesChange: ({value, index}: IobjectPropertyChange) => void
+	handlePropertiesChange: ({ value, index }: IobjectPropertyChange) => void
 	schemas: any
 }
 
@@ -17,7 +17,7 @@ function NewObjectModalContentComponent({
 	properties,
 	handlePropertiesChange,
 	modalSelectedSchema,
-	setModalSelectedSchema
+	setModalSelectedSchema,
 }: NewSchemaModalContentComponentProps) {
 	return (
 		<div>
@@ -45,7 +45,9 @@ function NewObjectModalContentComponent({
 								value={modalSelectedSchema}
 							>
 								{schemas.map((item: any) => (
-									<option key={item.schema.did} value={item.schema.did}>{item.schema.label}</option>
+									<option key={item.schema.did} value={item.schema.did}>
+										{item.schema.label}
+									</option>
 								))}
 							</select>
 							<NebulaIcon
@@ -55,7 +57,7 @@ function NewObjectModalContentComponent({
 							/>
 						</div>
 					</div>
-					<div className="w-6"/>
+					<div className="w-6" />
 					<div className="w-full flex flex-col justify-start">
 						<div>Buckets</div>
 						<div>Buckets Dropwdown Here</div>
@@ -65,10 +67,12 @@ function NewObjectModalContentComponent({
 					<div>Properties</div>
 					{properties.map((item, index) => (
 						<div>
-							<TextInput 
+							<TextInput
 								label={item.name}
 								ariaLabel={item.name}
-								handleOnChange={(event: React.ChangeEvent<HTMLInputElement>) => handlePropertiesChange({ value: event.target.value, index })}
+								handleOnChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+									handlePropertiesChange({ value: event.target.value, index })
+								}
 								value={item?.value || ""}
 							/>
 						</div>

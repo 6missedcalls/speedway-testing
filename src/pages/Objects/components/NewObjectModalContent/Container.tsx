@@ -13,24 +13,28 @@ interface NewObjectModalContentContainerProps {
 }
 
 function NewObjectModalContentContainer({
- 	initialSelectedSchema,
+	initialSelectedSchema,
 	initialSchemaFields = [],
-	schemas
+	schemas,
 }: NewObjectModalContentContainerProps) {
 	const { closeModal } = useContext(AppModalContext)
 	const dispatch = useDispatch<any>()
-	const [modalSelectedSchema, setModalSelectedSchema] = useState(initialSelectedSchema)
-   	const [properties, setProperties] = useState(initialSchemaFields)
+	const [modalSelectedSchema, setModalSelectedSchema] = useState(
+		initialSelectedSchema
+	)
+	const [properties, setProperties] = useState(initialSchemaFields)
 	const address = useSelector(selectAddress)
 	console.log("properties", properties)
 	useEffect(() => {
-		if(modalSelectedSchema){
+		if (modalSelectedSchema) {
 			getSchema()
 		}
 	}, [modalSelectedSchema])
 
-	async function getSchema(){
-		const selectedSchemaData = schemas.find((item) => item.schema.did === modalSelectedSchema)!
+	async function getSchema() {
+		const selectedSchemaData = schemas.find(
+			(item) => item.schema.did === modalSelectedSchema
+		)!
 		const getSchemaPayload = {
 			address,
 			creator: selectedSchemaData.creator,
@@ -49,14 +53,14 @@ function NewObjectModalContentContainer({
 
 		newProperties.splice(index, 1, {
 			...properties[index],
-			value
+			value,
 		})
 
 		setProperties(newProperties)
 	}
 
 	return (
-		<NewObjectModalContentComponent 
+		<NewObjectModalContentComponent
 			schemas={schemas}
 			modalSelectedSchema={modalSelectedSchema}
 			setModalSelectedSchema={setModalSelectedSchema}

@@ -33,7 +33,7 @@ const initialState = emptyState
 const combinedReducer = combineReducers({
 	authentication: authenticationReducer,
 	schemas: schemasReducer,
-	objects: objectsSlice
+	objects: objectsSlice,
 })
 
 const rootReducer = (state: any, action: any) => {

@@ -5,15 +5,15 @@ import LoadingCircleSvg from "../../../../assets/svgs/LoadingCircle"
 interface ObjectsEmptyListComponentProps {
 	openNewObjectModal: () => void
 	loading: boolean
-    schemasCount: number
-    goToSchemas: () => void
+	schemasCount: number
+	goToSchemas: () => void
 }
 
 function ObjectsEmptyListComponent({
 	openNewObjectModal,
 	loading,
-    schemasCount,
-    goToSchemas
+	schemasCount,
+	goToSchemas,
 }: ObjectsEmptyListComponentProps) {
 	return (
 		<LayoutMenu>
@@ -41,23 +41,26 @@ function ObjectsEmptyListComponent({
 							</div>
 							<div className="mb-10">
 								<span className="block text-custom-lg font-extrabold text-subdued">
-                                    {schemasCount === 0 ? 'You need to create a Schema before creating Objects' : 'No Objects using this Schema...Yet...'}
+									{schemasCount === 0
+										? "You need to create a Schema before creating Objects"
+										: "No Objects using this Schema...Yet..."}
 								</span>
 							</div>
-                            {schemasCount === 0 ?
-                                <Button
-                                    styling="text-custom-md font-extrabold tracking-custom-tight h-12"
-                                    onClick={goToSchemas}
-                                    label="Go to Schemas Page"
-                                /> :
-                                <Button
-                                    styling="text-custom-md font-extrabold tracking-custom-tight h-12"
-                                    onClick={openNewObjectModal}
-                                    iconName="Add"
-                                    iconType="outline"
-                                    label="Create New Object"
-                                />
-                            }
+							{schemasCount === 0 ? (
+								<Button
+									styling="text-custom-md font-extrabold tracking-custom-tight h-12"
+									onClick={goToSchemas}
+									label="Go to Schemas Page"
+								/>
+							) : (
+								<Button
+									styling="text-custom-md font-extrabold tracking-custom-tight h-12"
+									onClick={openNewObjectModal}
+									iconName="Add"
+									iconType="outline"
+									label="Create New Object"
+								/>
+							)}
 						</div>
 					</div>
 				)}

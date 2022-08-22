@@ -60,9 +60,9 @@ export interface InewSchema {
 }
 
 export interface InewObject {
-    schemaDid: string
+	schemaDid: string
 	label: string
-    object: any
+	object: any
 }
 
 export interface IobjectPropertyChange {

@@ -8,7 +8,8 @@ interface AppModalContainerProps {
 }
 
 function AppModalContainer({ getModalParent }: AppModalContainerProps) {
-	const { modalIsOpen, closeModal, content, props } = useContext(AppModalContext)
+	const { modalIsOpen, closeModal, content, props } =
+		useContext(AppModalContext)
 
 	function renderModalContent() {
 		if (!content) return null

@@ -5,15 +5,15 @@ import { InewObject } from "../utils/types"
 export const createObject = async ({
 	schemaDid,
 	label,
-    object
+	object,
 }: InewObject) => {
 	const url = `${BASE_API}/object/build`
 
 	const payload = JSON.stringify({
-        SchemaDid: schemaDid,
-        Label: label,
-        Object: object
-    })
+		SchemaDid: schemaDid,
+		Label: label,
+		Object: object,
+	})
 
 	const options = {
 		method: "POST",

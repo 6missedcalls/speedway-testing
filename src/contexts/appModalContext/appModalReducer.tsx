@@ -10,7 +10,7 @@ function AppModalReducer(state: any, { type, payload }: any) {
 			return {
 				...state,
 				content: payload.content,
-				props: payload?.props
+				props: payload?.props,
 			}
 		}
 		case OPEN_MODAL: {

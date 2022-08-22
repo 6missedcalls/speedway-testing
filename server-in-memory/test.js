@@ -277,5 +277,4 @@ it("gets a bucket content", async () => {
 	})
 	expect(result.length).toBe(1)
 	expect(result[0].firstName).toBe("Marcel")
-
 })
