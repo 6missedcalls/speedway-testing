@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../../../redux/slices/authenticationSlice"
+import { userCreateObject } from "../../../../redux/slices/objectsSlice"
 import { userGetSchema } from "../../../../redux/slices/schemasSlice"
 import { IobjectPropertyChange } from "../../../../utils/types"
 import NewObjectModalContentComponent from "./Component"
@@ -24,7 +25,7 @@ function NewObjectModalContentContainer({
 	)
 	const [properties, setProperties] = useState(initialSchemaFields)
 	const address = useSelector(selectAddress)
-	console.log("properties", properties)
+
 	useEffect(() => {
 		if (modalSelectedSchema) {
 			getSchema()
@@ -59,9 +60,29 @@ function NewObjectModalContentContainer({
 		setProperties(newProperties)
 	}
 
+	async function save() {
+		const selectedSchemaData = schemas.find(
+			(item) => item.schema.did === modalSelectedSchema
+		)!
+		const objectPayload = {
+			schemaDid: modalSelectedSchema,
+			label: selectedSchemaData.schema.label,
+			object: properties.reduce((acc, item) => {
+				return {
+					...acc,
+					[item.name]: item.value,
+				}
+			}, {}),
+		}
+
+		await dispatch(userCreateObject({ ...objectPayload }))
+		closeModal()
+	}
+
 	return (
 		<NewObjectModalContentComponent
 			schemas={schemas}
+			save={save}
 			modalSelectedSchema={modalSelectedSchema}
 			setModalSelectedSchema={setModalSelectedSchema}
 			properties={properties}

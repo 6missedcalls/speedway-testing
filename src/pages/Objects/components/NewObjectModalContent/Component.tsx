@@ -9,10 +9,12 @@ interface NewSchemaModalContentComponentProps {
 	properties: Array<any>
 	handlePropertiesChange: ({ value, index }: IobjectPropertyChange) => void
 	schemas: any
+	save: () => void
 }
 
 function NewObjectModalContentComponent({
 	closeModal,
+	save,
 	schemas,
 	properties,
 	handlePropertiesChange,
@@ -83,7 +85,7 @@ function NewObjectModalContentComponent({
 				<div className="absolute rounded-b-2xl w-full h-6 bg-white -top-px" />
 				<Button
 					styling="w-48 h-12 mb-6 mt-12 mr-8 justify-center items-center text-custom-md font-extrabold tracking-custom-tight"
-					onClick={() => {}}
+					onClick={save}
 					label="Save"
 				/>
 			</div>
