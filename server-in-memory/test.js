@@ -1,6 +1,7 @@
 import storage from "node-persist"
 import server from "./server.js"
 import supertest from "supertest"
+import { accountLoggedIn } from "./test-archetypes.js"
 const app = supertest(server)
 
 expect.extend({
@@ -54,15 +55,7 @@ it("checks for logged in account", async () => {
 })
 
 it("creates a schema", async () => {
-	const responseAuth = await app.post("/api/v1/account/create").send({
-		password: "123",
-	})
-	const address = responseAuth.body.Address
-
-	await app.post("/api/v1/account/login").send({
-		Address: address,
-		Password: "123",
-	})
+	const address = await accountLoggedIn(app)
 
 	const { body: result } = await app.post("/api/v1/schema/create").send({
 		label: "Dinosaurs",
@@ -90,15 +83,7 @@ it("creates a schema", async () => {
 })
 
 it("gets an individual schema", async () => {
-	const responseAuth = await app.post("/api/v1/account/create").send({
-		password: "123",
-	})
-	const address = responseAuth.body.Address
-
-	await app.post("/api/v1/account/login").send({
-		Address: address,
-		Password: "123",
-	})
+	const address = await accountLoggedIn(app)
 
 	const responseSchema = await app.post("/api/v1/schema/create").send({
 		label: "Dinosaurs",
@@ -153,15 +138,7 @@ it("fetches a list of schemas", async () => {
 })
 
 it("builds an object", async () => {
-	const responseAuth = await app.post("/api/v1/account/create").send({
-		password: "123",
-	})
-	const address = responseAuth.body.Address
-
-	await app.post("/api/v1/account/login").send({
-		Address: address,
-		Password: "123",
-	})
+	await accountLoggedIn(app)
 
 	const responseSchema = await app.post("/api/v1/schema/create").send({
 		label: "Dinosaurs",
@@ -182,15 +159,7 @@ it("builds an object", async () => {
 })
 
 it("when building object, checks schema properties", async () => {
-	const responseAuth = await app.post("/api/v1/account/create").send({
-		password: "123",
-	})
-	const address = responseAuth.body.Address
-
-	await app.post("/api/v1/account/login").send({
-		Address: address,
-		Password: "123",
-	})
+	await accountLoggedIn(app)
 
 	const responseSchema = await app.post("/api/v1/schema/create").send({
 		label: "Dinosaurs",
@@ -210,15 +179,7 @@ it("when building object, checks schema properties", async () => {
 })
 
 it("gets an object", async () => {
-	const responseAuth = await app.post("/api/v1/account/create").send({
-		password: "123",
-	})
-	const address = responseAuth.body.Address
-
-	await app.post("/api/v1/account/login").send({
-		Address: address,
-		Password: "123",
-	})
+	await accountLoggedIn(app)
 
 	const responseSchema = await app.post("/api/v1/schema/create").send({
 		label: "Dinosaurs",
