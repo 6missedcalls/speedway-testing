@@ -12,27 +12,14 @@ const addressToDid = (address) => `did:snr:${address.slice(3)}`
 
 const accountStoreKey = (address) => `account-${address}`
 const schemaStoreKey = (did) => `schema-${did}`
+const bucketStoreKey = (did) => `bucket-${did}`
+const objectStoreKey = (cid) => `object-${cid}`
 
 const app = express()
 app.use(cors())
 app.use(bodyParser.json())
 
 let sessionAddress = null
-
-/*
-Storage key structure:
-{
-	account-snr1111111: {}
-	account-snr2222222: {}
-	...
-
-	schema-snr1111111: {}
-	schema-snr2222222: {}
-	...
-
-	schemaMetaData: [...]
-}
-*/
 
 /// DEVELOPMENT
 
@@ -56,10 +43,7 @@ app.get("/logout", (_, res) => {
 
 app.get("/proxy/schemas", async (_, res) => {
 	const metadata = (await storage.getItem("schemaMetaData")) || []
-	res.json({
-		what_is: metadata,
-		pagination: {},
-	})
+	res.json({ what_is: metadata })
 })
 
 /// AUTHENTICATION
@@ -108,13 +92,8 @@ app.use((_, res, next) => {
 /// SCHEMAS
 
 app.post("/api/v1/schema/create", async ({ body }, res) => {
-	if (body.address !== sessionAddress) {
-		res.status(200).send()
-		return
-	}
-
 	const did = generateDid()
-	const creator = addressToDid(body.address)
+	const creator = addressToDid(sessionAddress)
 
 	const schemaMetaData = {
 		did,
@@ -151,19 +130,68 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 })
 
 app.post("/api/v1/schema/get", async ({ body }, res) => {
-	if (body.address !== sessionAddress) {
-		res.status(200).send()
-		return
-	}
-
 	const schema = await storage.getItem(schemaStoreKey(body.schema))
+	res.json(schema)
+})
 
-	if (!schema || body.creator !== schema.creator) {
-		res.status(500).send()
+/// BUCKETS
+
+app.post("/api/v1/bucket/create", async ({ body }, res) => {
+	const did = generateDid()
+	const bucket = {
+		did,
+		label: body.label,
+		objects: [],
+	}
+	await storage.setItem(bucketStoreKey(did), bucket)
+	res.json(bucket)
+})
+
+app.post("/api/v1/bucket/get", async ({ body }, res) => {
+	const bucket = await storage.getItem(bucketStoreKey(body.bucket))
+	res.json(bucket)
+})
+
+app.post("/api/v1/bucket/update", async ({ body }, res) => {
+	const bucket = await storage.getItem(bucketStoreKey(body.bucket))
+	bucket.objects = body.objects
+	await storage.setItem(bucketStoreKey(body.bucket), bucket)
+	res.json(bucket)
+})
+
+app.post("/api/v1/bucket/content", async ({ body }, res) => {
+	const bucket = await storage.getItem(bucketStoreKey(body.bucket))
+	const objects = await Promise.all(
+		_.chain(bucket.objects).map(objectStoreKey).map(storage.getItem).valueOf()
+	)
+	res.json(objects)
+})
+
+/// OBJECTS
+
+app.post("/api/v1/object/build", async ({ body }, res) => {
+	const schema = await storage.getItem(schemaStoreKey(body.SchemaDid))
+	const fieldsExpected = _.map(schema.fields, "name")
+	const fieldsReceived = _.keys(body.Object)
+	if (_.difference(fieldsExpected, fieldsReceived).length > 0) {
+		res.status(500).json({ error: "Object Upload Failed" })
 		return
 	}
 
-	res.json(schema)
+	const cid = generateCid()
+	await storage.setItem(objectStoreKey(cid), body.Object)
+
+	res.json({
+		reference: {
+			Label: body.Label,
+			Cid: cid,
+		},
+	})
+})
+
+app.post("/api/v1/object/get", async ({ body }, res) => {
+	const object = await storage.getItem(objectStoreKey(body.ObjectCid))
+	res.json(object)
 })
 
 export default app
