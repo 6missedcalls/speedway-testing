@@ -41,6 +41,7 @@ export interface Ischema {
 		did: string
 		label: string
 		cid?: string
+		fields?: any
 	}
 	creator: string
 	timestamp?: number
