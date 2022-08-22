@@ -131,12 +131,6 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 
 app.post("/api/v1/schema/get", async ({ body }, res) => {
 	const schema = await storage.getItem(schemaStoreKey(body.schema))
-
-	if (!schema || body.creator !== schema.creator) {
-		res.status(500).send()
-		return
-	}
-
 	res.json(schema)
 })
 
