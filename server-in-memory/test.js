@@ -182,7 +182,6 @@ it("builds an object", async () => {
 	})
 
 	expect(result).toHaveProperty("reference")
-	expect(result.reference.Did).toBeDid()
 	expect(result.reference.Label).toBe("Sonrsaur")
 	expect(typeof result.reference.Cid).toBe("string")
 })

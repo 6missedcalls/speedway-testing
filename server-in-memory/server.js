@@ -188,7 +188,6 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 	res.json({
 		reference: {
 			Label: body.Label,
-			Did: generateDid(),
 			Cid: cid,
 		},
 	})
