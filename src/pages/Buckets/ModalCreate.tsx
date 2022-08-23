@@ -27,7 +27,10 @@ const ModalCreateBucket = () => {
 							<span className="flex-1 uppercase font-semibold text-custom-sm text-default">
 								New Bucket
 							</span>
-							<button className="font-extrabold text-button-transparent text-custom-sm">
+							<button
+								className="font-extrabold text-button-transparent text-custom-sm"
+								onClick={closeModal}
+							>
 								Cancel
 							</button>
 						</div>
