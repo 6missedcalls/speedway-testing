@@ -3,8 +3,12 @@ import EmptyList from "../../components/EmptyList"
 import LayoutMenu from "../../components/LayoutMenu"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { MODAL_CONTENT_NEW_BUCKET } from "../../utils/constants"
+import { Bucket } from "../../utils/types"
 
-function BucketsPageComponent() {
+type Props = {
+	data: Bucket[]
+}
+const BucketsPageComponent = ({ data }: Props) => {
 	const { setModalContent, openModal } = useContext(AppModalContext)
 	const openNewBucketModal = () => {
 		setModalContent(MODAL_CONTENT_NEW_BUCKET)
@@ -28,11 +32,24 @@ function BucketsPageComponent() {
 						</button>
 					</div>
 
-					<EmptyList message="No Buckets to Display" />
+					{!data.length && <EmptyList message="No Buckets to Display" />}
+
+					{data.length && (
+						<div className="flex flex-wrap gap-6 mt-8">
+							{data.map(BucketCard)}
+						</div>
+					)}
 				</div>
 			</div>
 		</LayoutMenu>
 	)
 }
-
 export default BucketsPageComponent
+
+const BucketCard = (bucket: Bucket) => (
+	<div className="bg-white rounded-2xl w-[330px] h-[160px] shadow-xxl">
+		<h2 className="p-6 text-default font-extrabold text-custom-lg whitespace-nowrap overflow-hidden text-ellipsis">
+			{bucket.label}
+		</h2>
+	</div>
+)
