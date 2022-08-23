@@ -61,4 +61,5 @@ export interface InewSchema {
 
 export type Bucket = {
 	label: string
+	objects: string[]
 }

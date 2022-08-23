@@ -47,9 +47,21 @@ const BucketsPageComponent = ({ data }: Props) => {
 export default BucketsPageComponent
 
 const BucketCard = (bucket: Bucket) => (
-	<div className="bg-white rounded-2xl w-[330px] h-[160px] shadow-xxl">
-		<h2 className="p-6 text-default font-extrabold text-custom-lg whitespace-nowrap overflow-hidden text-ellipsis">
+	<div className="bg-white rounded-2xl w-[330px] h-[160px] shadow-xxl p-6 text-default">
+		<h2 className="font-extrabold text-custom-lg whitespace-nowrap overflow-hidden text-ellipsis mb-6">
 			{bucket.label}
 		</h2>
+
+		<div className="flex">
+			<div className="border rounded-md text-custom-xs">
+				<span className="px-[6px] py-[2px] border-r rounded-tr-md text-subdued">
+					Objects
+				</span>
+
+				<span className="px-[6px] py-[2px] font-extrabold">
+					{bucket.objects.length}
+				</span>
+			</div>
+		</div>
 	</div>
 )
