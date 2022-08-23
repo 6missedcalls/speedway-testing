@@ -143,6 +143,7 @@ app.post("/api/v1/bucket/create", async ({ body }, res) => {
 		did,
 		label: body.label,
 		objects: [],
+		creator: sessionAddress,
 	}
 	await storage.setItem(bucketStoreKey(did), bucket)
 	res.json(bucket)
@@ -166,6 +167,18 @@ app.post("/api/v1/bucket/content", async ({ body }, res) => {
 		_.chain(bucket.objects).map(objectStoreKey).map(storage.getItem).valueOf()
 	)
 	res.json(objects)
+})
+
+app.post("/api/v1/bucket/all", async ({ body }, res) => {
+	const keys = await storage.keys()
+	const allBuckets = await Promise.all(
+		_.chain(keys)
+			.filter((key) => key.slice(0, 6) === "bucket")
+			.map(storage.getItem)
+			.valueOf()
+	)
+	const buckets = _.filter(allBuckets, { creator: sessionAddress })
+	res.json({ data: buckets })
 })
 
 /// OBJECTS
