@@ -58,3 +58,8 @@ export interface InewSchema {
 	label: string
 	fields: Record<string, number>
 }
+
+export type Bucket = {
+	label: string
+	objects: string[]
+}
