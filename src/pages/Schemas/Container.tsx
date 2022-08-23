@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
@@ -28,6 +27,7 @@ function SchemasPageContainer() {
 
 	useEffect(() => {
 		dispatch(userGetAllSchemas())
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	function openNewSchemaModal() {

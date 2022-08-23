@@ -29,6 +29,7 @@ app.get("/dump", async (_, res) => {
 })
 
 app.get("/reset", async (_, res) => {
+	sessionAddress = null
 	await storage.clear()
 	const length = await storage.length()
 	res.json({ length })
