@@ -7,7 +7,6 @@ replace (
 	github.com/google/certificate-transparency-go => github.com/google/certificate-transparency-go v1.1.0
 	github.com/ipfs/go-ipfs-blockstore => github.com/ipfs/go-ipfs-blockstore v1.1.2
 	github.com/keybase/go-keychain => github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4
-	github.com/sonr-io/sonr => ../sonr
 	google.golang.org/grpc => google.golang.org/grpc v1.29.1
 )
 
