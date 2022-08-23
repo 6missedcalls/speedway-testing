@@ -277,5 +277,46 @@ it("gets a bucket content", async () => {
 	})
 	expect(result.length).toBe(1)
 	expect(result[0].firstName).toBe("Marcel")
+})
 
+it("fetches a list of buckets", async () => {
+	await accountLoggedIn(app)
+
+	await app.post("/api/v1/bucket/create").send({
+		label: "Dragons",
+	})
+	await app.post("/api/v1/bucket/create").send({
+		label: "Furniture",
+	})
+
+	const { body: result } = await app.post("/api/v1/bucket/all")
+	expect(result.data.length).toBe(2)
+	expect(result.data[0].did).toBeDid()
+	expect(result.data[0].label).toBe("Dragons")
+	expect(result.data[0].objects.length).toBe(0)
+	expect(result.data[1].did).toBeDid()
+	expect(result.data[1].label).toBe("Furniture")
+	expect(result.data[1].objects.length).toBe(0)
+})
+
+it("respects account when fetching buckets", async () => {
+	await accountLoggedIn(app)
+
+	await app.post("/api/v1/bucket/create").send({
+		label: "Fruits",
+	})
+
+	await app.get("/logout")
+
+	await accountLoggedIn(app) // a new account gets created
+
+	await app.post("/api/v1/bucket/create").send({
+		label: "Candies",
+	})
+
+	const { body: result } = await app.post("/api/v1/bucket/all")
+	expect(result.data.length).toBe(1)
+	expect(result.data[0].did).toBeDid()
+	expect(result.data[0].label).toBe("Candies")
+	expect(result.data[0].objects.length).toBe(0)
 })
