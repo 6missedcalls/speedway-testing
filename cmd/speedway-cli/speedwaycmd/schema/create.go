@@ -5,32 +5,33 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
+	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
+	"github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
-func convertSchemaKind(kind string) rtmv1.CreateSchemaRequest_SchemaKind {
+func convertSchemaKind(kind string) types.SchemaKind {
 
-	schemaKind := rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRING
+	schemaKind := types.SchemaKind_STRING
 	switch kind {
 	case "LIST":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LIST
+		schemaKind = types.SchemaKind_LIST
 	case "BOOL":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_BOOL
+		schemaKind = types.SchemaKind_BOOL
 	case "INT":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_INT
+		schemaKind = types.SchemaKind_INT
 	case "FLOAT":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_FLOAT
+		schemaKind = types.SchemaKind_FLOAT
 	case "STRING":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRING
+		schemaKind = types.SchemaKind_STRING
 	case "BYTES":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_BYTES
+		schemaKind = types.SchemaKind_BYTES
 	case "LINK":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LINK
+		schemaKind = types.SchemaKind_LINK
 	}
 
 	return schemaKind
@@ -67,7 +68,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fields := make(map[string]rtmv1.CreateSchemaRequest_SchemaKind)
+			fields := make(map[string]types.SchemaKind)
 
 			prompt := promptui.Prompt{
 				Label: "Enter your Schema Fields",
@@ -118,8 +119,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			}
 			fmt.Println(status.Success("Create Schema Successful"))
 			// desearialize the scehma result to get the schema did
-			whatIs := utils.DeserializeWhatIs(createSchemaResult.WhatIs)
-			fmt.Println(status.Debug, "Schema WhatIs: ", whatIs.Schema)
+			fmt.Println(status.Debug, "Schema WhatIs: ", createSchemaResult.WhatIs.Schema)
 		},
 	}
 	return

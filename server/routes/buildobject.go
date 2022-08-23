@@ -7,9 +7,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/status"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 type BuildObjectBody struct {
@@ -54,10 +54,14 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 		return
 	}
 	fmt.Println(status.Debug, "DID", did)
-	querySchema, err := m.QueryWhatIs(context.Background(), rtmv1.QueryWhatIsRequest{
+
+	// query whatis req
+	querySchemaReq := rtmv1.QueryWhatIsRequest{
 		Creator: did.String(),
 		Did:     body.SchemaDid,
-	})
+	}
+
+	querySchema, err := m.QueryWhatIs(context.Background(), querySchemaReq)
 	if err != nil {
 		fmt.Printf("Command failed %v\n", err)
 		return

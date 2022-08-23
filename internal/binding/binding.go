@@ -7,11 +7,11 @@ import (
 
 	"github.com/sonr-io/sonr/pkg/did"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
+	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/sonr-io/speedway/internal/utils"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 var (
@@ -123,11 +123,13 @@ func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid s
 		return map[string]interface{}{}, ErrNotAuthenticated
 	}
 
-	// Create new QueryWhatIs request for the object
-	querySchema, err := b.instance.QueryWhatIs(ctx, rtmv1.QueryWhatIsRequest{
+	queryObjectReq := rtmv1.QueryWhatIsRequest{
 		Creator: b.instance.GetDID().String(),
 		Did:     schemaDid,
-	})
+	}
+
+	// Create new QueryWhatIs request for the object
+	querySchema, err := b.instance.QueryWhatIs(ctx, queryObjectReq)
 	if err != nil {
 		fmt.Println(status.Error("Error"), err)
 		return nil, err
@@ -178,6 +180,26 @@ func (b *SpeedwayBinding) GetSchema(ctx context.Context, creator string, schemaD
 }
 
 /*
+Get the bucket and return the Response
+*/
+func (b *SpeedwayBinding) GetBucket(ctx context.Context, bucketDid string) (rtmv1.QueryWhereIsResponse, error) {
+	if b.instance == nil {
+		return rtmv1.QueryWhereIsResponse{}, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return rtmv1.QueryWhereIsResponse{}, ErrNotAuthenticated
+	}
+
+	res, err := b.instance.QueryWhereIs(ctx, bucketDid)
+	if err != nil {
+		fmt.Println(status.Error("Error"), err)
+		return rtmv1.QueryWhereIsResponse{}, err
+	}
+
+	return res, nil
+}
+
+/*
 Create the schema and return the WhatIsResponse
 */
 func (b *SpeedwayBinding) CreateSchema(req rtmv1.CreateSchemaRequest) (rtmv1.CreateSchemaResponse, error) {
@@ -195,6 +217,27 @@ func (b *SpeedwayBinding) CreateSchema(req rtmv1.CreateSchemaRequest) (rtmv1.Cre
 	}
 
 	return res, nil
+}
+
+/*
+Create the bucket and return the WhereIsResponse
+*/
+func (b *SpeedwayBinding) CreateBucket(ctx context.Context, req rtmv1.CreateBucketRequest) (rtmv1.CreateBucketResponse, error) {
+	if b.instance == nil {
+		return rtmv1.CreateBucketResponse{}, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return rtmv1.CreateBucketResponse{}, ErrNotAuthenticated
+	}
+
+	res, err := b.instance.CreateBucket(ctx, req)
+	if err != nil {
+		fmt.Println(status.Error("Error"), err)
+		return rtmv1.CreateBucketResponse{}, err
+	}
+
+	fmt.Println(status.Info, "Bucket Response: ", res)
+	return rtmv1.CreateBucketResponse{}, nil
 }
 
 /*

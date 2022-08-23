@@ -5,12 +5,12 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
+	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Command) {
@@ -45,18 +45,18 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				return
 			}
 
-			// query whatis
-			querySchema, err := m.QueryWhatIs(ctx, rtmv1.QueryWhatIsRequest{
+			// query whatis req
+			querySchemaReq := rtmv1.QueryWhatIsRequest{
 				Creator: m.GetDID().String(),
 				Did:     schemaDid,
-			})
+			}
+
+			// query whatis
+			querySchema, err := m.QueryWhatIs(ctx, querySchemaReq)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-
-			// deserialize the whatis
-			whatIs := utils.DeserializeWhatIs(querySchema.WhatIs)
 
 			// create new object builder
 			objBuilder, err := m.NewObjectBuilder(schemaDid)
@@ -65,7 +65,8 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				return
 			}
 
-			definition, err := utils.ResolveIPFS(whatIs.Schema.Cid)
+			// ! Might Work (not tested)
+			definition, err := utils.ResolveIPFS(querySchema.WhatIs.Schema.Cid)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return

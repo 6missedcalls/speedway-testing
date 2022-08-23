@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
+	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 type LoginReturn struct {

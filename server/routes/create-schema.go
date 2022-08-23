@@ -6,14 +6,16 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
+	"github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/utils"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 type CreateSchemaRequest struct {
-	SchemaLabel string                                          `json:"label"`  // Label of the schema
-	SchemaField map[string]rtmv1.CreateSchemaRequest_SchemaKind `json:"fields"` // Fields of the schema
+	SchemaLabel string                      `json:"label"`    // Label of the schema
+	SchemaField map[string]types.SchemaKind `json:"fields"`   // Fields of the schema
+	Metadata    map[string]string           `json:"metadata"` // Metadata of the schema
 }
 
 // @BasePath /api/v1
@@ -40,13 +42,15 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	}
 
 	// Create a new create schema request
-	createSchemaRequest := rtmv1.CreateSchemaRequest{
+	createSchemaReq := rtmv1.CreateSchemaRequest{
 		Label:  r.SchemaLabel,
 		Fields: r.SchemaField,
 	}
 
+	b := binding.CreateInstance()
+
 	// create the schema
-	res, err := binding.CreateInstance().CreateSchema(createSchemaRequest)
+	res, err := b.CreateSchema(createSchemaReq)
 	if err != nil {
 		fmt.Println("Create Schema Error: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -55,15 +59,15 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 		return
 	}
 
-	whatIs := utils.DeserializeWhatIs(res.WhatIs)
-	definition, err := utils.ResolveIPFS(whatIs.Schema.Cid)
+	definition, err := utils.ResolveIPFS(res.WhatIs.Schema.Cid)
 	if err != nil {
 		fmt.Println("err", err)
 		return
 	}
+
 	c.JSON(http.StatusOK,
 		gin.H{
-			"whatIs":     whatIs,
+			"whatIs":     res.WhatIs,
 			"definition": definition,
 		})
 }

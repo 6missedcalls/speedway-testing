@@ -56,8 +56,7 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			whatIs := utils.DeserializeWhatIs(schema.WhatIs)
-			definition, err := utils.ResolveIPFS(whatIs.Schema.Cid)
+			definition, err := utils.ResolveIPFS(schema.WhatIs.Schema.Cid)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return

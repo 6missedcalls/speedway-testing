@@ -8,10 +8,10 @@ import (
 
 	"github.com/denisbrodbeck/machineid"
 	"github.com/sonr-io/sonr/pkg/motor"
+	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 type ObjectBuilder struct {

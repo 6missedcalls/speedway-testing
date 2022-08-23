@@ -18,10 +18,9 @@ require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/manifoldco/promptui v0.9.0
 	github.com/shengdoushi/base58 v1.0.0
-	github.com/sonr-io/sonr v0.3.1-0.20220810233442-08adde388f50 // TODO: revert this when beta/mpc gets merged into master
+	github.com/sonr-io/sonr v0.3.2
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31
-	go.buf.build/grpc/go/sonr-io/motor v1.4.30
 	google.golang.org/grpc v1.48.0
 )
