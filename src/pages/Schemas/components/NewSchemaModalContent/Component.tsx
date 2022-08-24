@@ -41,7 +41,7 @@ function NewSchemaModalContentComponent({
 					<input
 						className="text-custom-xl font-extrabold outline-0 mt-2 mb-8"
 						type="text"
-						placeholder="SchemaName"
+						placeholder="Schema Name"
 						value={schemaName}
 						onChange={(event) => setSchemaName(event.target.value)}
 					/>
@@ -74,7 +74,7 @@ function NewSchemaModalContentComponent({
 					skin="transparent"
 				/>
 			</div>
-			<div className="bg-black w-full rounded-b-2xl justify-end flex relative">
+			<div className="dark bg-surface-default w-full rounded-b-2xl justify-end flex relative">
 				<div className="absolute rounded-b-2xl w-full h-6 bg-white -top-px" />
 				<Button
 					styling="w-48 h-12 mb-6 mt-12 mr-8 justify-center items-center text-custom-md font-extrabold tracking-custom-tight"

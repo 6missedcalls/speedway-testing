@@ -59,6 +59,7 @@ export interface InewSchema {
 	fields: Record<string, number>
 }
 
+
 export interface InewObject {
 	schemaDid: string
 	label: string
@@ -68,4 +69,9 @@ export interface InewObject {
 export interface IobjectPropertyChange {
 	index: number
 	value: string
+}
+
+export type Bucket = {
+	label: string
+	objects: string[]
 }

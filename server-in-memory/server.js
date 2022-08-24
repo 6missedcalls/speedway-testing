@@ -29,6 +29,7 @@ app.get("/dump", async (_, res) => {
 })
 
 app.get("/reset", async (_, res) => {
+	sessionAddress = null
 	await storage.clear()
 	const length = await storage.length()
 	res.json({ length })
@@ -142,6 +143,7 @@ app.post("/api/v1/bucket/create", async ({ body }, res) => {
 		did,
 		label: body.label,
 		objects: [],
+		creator: sessionAddress,
 	}
 	await storage.setItem(bucketStoreKey(did), bucket)
 	res.json(bucket)
@@ -165,6 +167,18 @@ app.post("/api/v1/bucket/content", async ({ body }, res) => {
 		_.chain(bucket.objects).map(objectStoreKey).map(storage.getItem).valueOf()
 	)
 	res.json(objects)
+})
+
+app.post("/api/v1/bucket/all", async ({ body }, res) => {
+	const keys = await storage.keys()
+	const allBuckets = await Promise.all(
+		_.chain(keys)
+			.filter((key) => key.slice(0, 6) === "bucket")
+			.map(storage.getItem)
+			.valueOf()
+	)
+	const buckets = _.filter(allBuckets, { creator: sessionAddress })
+	res.json({ data: buckets })
 })
 
 /// OBJECTS
@@ -193,6 +207,18 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 app.post("/api/v1/object/get", async ({ body }, res) => {
 	const object = await storage.getItem(objectStoreKey(body.ObjectCid))
 	res.json(object)
+})
+
+app.get("/api/v1/object/all", async ({ body }, res) => {
+	const keys = await storage.keys()
+	const objects = await Promise.all(
+		keys
+		.filter((key) => key.startsWith("object-"))
+		.map(storage.getItem)
+	)
+
+	console.log("obj", objects)
+	res.json({})
 })
 
 export default app

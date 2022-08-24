@@ -9,19 +9,18 @@ import {
 	userGetAllSchemas,
 	userGetSchema,
 } from "../../redux/slices/schemasSlice"
-import { getSchema } from "../../service/schemas"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
 import { addressToDid } from "../../utils/did"
 import { obfuscateDid } from "../../utils/string"
 import ObjectsPageComponent from "./Component"
-import EmptyList from "./components/EmptyList"
 
 function ObjectsPageContainer() {
 	const { setModalContent, openModal } = useContext(AppModalContext)
 	const dispatch = useDispatch<any>()
-	const [selectedSchema, setSelectedSchema] = useState("")
+	const [selectedSchemaDid, setSelectedSchema] = useState("")
 	const [objectsList, setObjectsList] = useState([])
 	const [schemaFields, setSchemaFields] = useState("")
+	//const [selectedSchemaData, setSelectedSchemaData] = useState<any>()
 	const schemasLoading = useSelector(selectSchemasLoading)
 	const objectsLoading = useSelector(selectObjectsLoading)
 
@@ -37,14 +36,14 @@ function ObjectsPageContainer() {
 	}, [])
 
 	useEffect(() => {
-		if (selectedSchema) {
+		if (selectedSchemaDid) {
 			getSchema()
 		}
-	}, [selectedSchema])
+	}, [selectedSchemaDid])
 
 	async function getSchema() {
 		const selectedSchemaData = accountMetaData.find(
-			(item) => item.schema.did === selectedSchema
+			(item) => item.schema.did === selectedSchemaDid
 		)!
 		const getSchemaPayload = {
 			address,
@@ -69,7 +68,7 @@ function ObjectsPageContainer() {
 		setModalContent({
 			content: MODAL_CONTENT_NEW_OBJECT,
 			props: {
-				initialSelectedSchema: selectedSchema,
+				initialSelectedSchema: selectedSchemaDid,
 				initialSchemaFields: schemaFields,
 				schemas: accountMetaData,
 			},
@@ -78,34 +77,34 @@ function ObjectsPageContainer() {
 	}
 
 	function mapToListFormat(list: any) {
-		return list.map((item: any) => {
-			return {
-				"Schema name": {
-					text: item.schema.label,
-				},
-				DID: {
-					text: obfuscateDid(item.did),
-				},
-			}
-		})
+		const selectedSchemaData = accountMetaData.find(
+			(item) => item.schema.did === selectedSchemaDid
+		)
+		console.log(selectedSchemaData)
+		// return list.map((item: any) => {
+		// 	return {
+		// 		"Schema name": {
+		// 			text: item.schema.label,
+		// 		},
+		// 		DID: {
+		// 			text: obfuscateDid(item.did),
+		// 		},
+		// 	}
+		// })
 	}
-
+	console.log( accountMetaData.find(
+		(item) => item.schema.did === selectedSchemaDid
+	))
 	return (
-		<>
-			{objectsList.length > 0 ? (
-				<ObjectsPageComponent
-					schemas={accountMetaData}
-					selectedSchema={selectedSchema}
-					setSelectedSchema={setSelectedSchema}
-				/>
-			) : (
-				<EmptyList
-					openNewObjectModal={openNewObjectModal}
-					loading={loading}
-					schemasCount={accountMetaData.length}
-				/>
-			)}
-		</>
+		<ObjectsPageComponent
+			schemaHasObjects={objectsList.length > 0}
+			schemas={accountMetaData}
+			selectedSchemaDid={selectedSchemaDid}
+			setSelectedSchema={setSelectedSchema}
+			openNewObjectModal={openNewObjectModal}
+			loading={loading}
+			schemasCount={accountMetaData.length}
+		/>
 	)
 }
 
