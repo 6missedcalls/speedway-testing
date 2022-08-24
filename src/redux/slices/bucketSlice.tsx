@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { BASE_API } from "../../utils/constants"
-import { NewBucketPayload, BucketState } from "../../utils/types"
+import { Bucket, NewBucketPayload } from "../../utils/types"
 import { RootState } from "../store"
 
 export const selectBuckets = (state: RootState) => {
@@ -25,7 +25,10 @@ export const createBucket = createAsyncThunk(
 	}
 )
 
-const initialState: BucketState = {
+export type BucketState = {
+	list: Bucket[]
+}
+export const initialState: BucketState = {
 	list: [],
 }
 const bucketSlice = createSlice({

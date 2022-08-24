@@ -3,13 +3,6 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../store"
 import { createAccount, login } from "../../service/authentication"
 
-export interface AuthenticationState {
-	isLogged: boolean
-	loading: boolean
-	error: boolean
-	Address: string
-}
-
 interface loginProps {
 	walletAddress: string
 	password: string
@@ -17,13 +10,6 @@ interface loginProps {
 
 interface createAccountProps {
 	password: string
-}
-
-const initialState: AuthenticationState = {
-	isLogged: false,
-	loading: false,
-	error: false,
-	Address: "",
 }
 
 export const userLogin = createAsyncThunk(
@@ -49,6 +35,19 @@ export const userCreateAccount = createAsyncThunk(
 		}
 	}
 )
+
+interface AuthenticationState {
+	isLogged: boolean
+	loading: boolean
+	error: boolean
+	Address: string
+}
+export const initialState: AuthenticationState = {
+	isLogged: false,
+	loading: false,
+	error: false,
+	Address: "",
+}
 
 export const authenticationSlice = createSlice({
 	name: "authentication",

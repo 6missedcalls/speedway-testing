@@ -68,7 +68,3 @@ export type Bucket = {
 	objects: string[]
 	did: string
 }
-
-export type BucketState = {
-	list: Bucket[]
-}

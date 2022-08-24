@@ -1,7 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit"
-import authenticationReducer from "./slices/authenticationSlice"
-import schemasReducer from "./slices/schemasSlice"
-import bucketReducer from "./slices/bucketSlice"
+import authenticationReducer, { initialState as authenticationInitialState } from "./slices/authenticationSlice"
+import schemasReducer, { initialState as schemasInitialState } from "./slices/schemasSlice"
+import bucketReducer, { initialState as bucketInitialState } from "./slices/bucketSlice"
 import {
 	getAppStateFromLocalCache,
 	syncAppStateToLocalCache,
@@ -9,21 +9,9 @@ import {
 import { ROOT_INITIALIZE_FROM_CACHE, ROOT_RESET } from "../utils/constants"
 
 const emptyState = {
-	authentication: {
-		isLogged: false,
-		loading: false,
-		error: false,
-		Address: "",
-	},
-	schemas: {
-		list: [],
-		loading: false,
-		error: false,
-		getSchemaLoading: false,
-	},
-	bucket: {
-		list: [],
-	},
+	authentication: authenticationInitialState,
+	schemas: schemasInitialState,
+	bucket: bucketInitialState,
 }
 
 const initialState = emptyState
