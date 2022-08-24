@@ -2,24 +2,25 @@ import LayoutMenu from "../../components/LayoutMenu"
 import SearchableList from "../../components/SearchableList"
 import { NebulaIcon } from "@sonr-io/nebula-react"
 import EmptyList from "./components/EmptyList"
+import { listTypes } from "../../utils/types"
 
 interface ObjectsPageComponentProps {
 	schemas: Array<any>
 	selectedSchemaDid: string
 	setSelectedSchema: React.Dispatch<React.SetStateAction<string>>
-	schemaHasObjects: boolean
 	openNewObjectModal: () => void
 	loading: boolean
 	schemasCount: number
+	list: any
 }
 
 const ObjectsPageComponent = ({
 	schemas,
 	selectedSchemaDid,
 	setSelectedSchema,
-	schemaHasObjects,
 	openNewObjectModal,
 	loading,
+	list,
 	schemasCount,
 }: ObjectsPageComponentProps) => {
 	return (
@@ -34,7 +35,7 @@ const ObjectsPageComponent = ({
 							value={selectedSchemaDid}
 						>
 							{schemas.map((item) => (
-								<option value={item.schema.did}>{item.schema.label}</option>
+								<option key={item.schema.did} value={item.schema.did}>{item.schema.label}</option>
 							))}
 						</select>
 						<NebulaIcon
@@ -45,8 +46,14 @@ const ObjectsPageComponent = ({
 					</div>
 				</div>
 				<div>
-					{schemaHasObjects ? (
-						<div>List Here</div>
+					{list.length > 0 ? (
+						<SearchableList
+							searchableAndSortableFieldKey='cid'
+							handleOpenModal={openNewObjectModal}
+							initialList={list}
+							type={listTypes.object}
+							loading={loading}
+						/>
 					) : (
 						<EmptyList
 							openNewObjectModal={openNewObjectModal}

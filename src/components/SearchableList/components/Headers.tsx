@@ -14,7 +14,7 @@ function Headers({ type, list, toggleOrder, orderAsc }: HeadersProps) {
 		case listTypes.schema:
 			return SchemaHeaders({ toggleOrder, orderAsc })
 		case listTypes.object:
-			return ObjectHeaders(list)
+			return ObjectHeaders({ list })
 		default:
 			return null
 	}

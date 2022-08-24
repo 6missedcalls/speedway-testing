@@ -25,14 +25,11 @@ function NewObjectModalContentContainer({
 	const [modalSelectedSchema, setModalSelectedSchema] = useState(
 		initialSelectedSchema
 	)
-	const [selectedBucket, setSelectedBucket] = useState('')
+	const buckets = useSelector(selectBuckets)
+	const [selectedBucket, setSelectedBucket] = useState(buckets[0].did)
 	const [properties, setProperties] = useState(initialSchemaFields)
 	const address = useSelector(selectAddress)
-	const buckets = useSelector(selectBuckets)
 	
-	useEffect(() => {
-		dispatch(getAllBuckets)
-	}, [])
 
 	useEffect(() => {
 		if (modalSelectedSchema) {
@@ -100,7 +97,7 @@ function NewObjectModalContentContainer({
 
 		closeModal()
 	}
-	console.log("buckets", buckets)
+	
 	return (
 		<NewObjectModalContentComponent
 			schemas={schemas}

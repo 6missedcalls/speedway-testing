@@ -11,6 +11,8 @@ function arrayStringDistinct(arr) {
     });
 }
 
+const didToCid = (did) => did.split(':')[2]
+
 const generateAddress = () => `snr${md5(Math.random())}`
 const generateDid = () => `did:snr:${md5(Math.random())}`
 const generateCid = () => md5(Math.random())
@@ -170,7 +172,7 @@ app.post("/api/v1/bucket/update", async ({ body }, res) => {
 app.post("/api/v1/bucket/content", async ({ body }, res) => {
 	const bucket = await storage.getItem(bucketStoreKey(body.bucket))
 	const objects = await Promise.all(
-		_.chain(bucket.objects).map(objectStoreKey).map(storage.getItem).valueOf()
+		bucket.objects.map((did) => objectStoreKey(didToCid(did))).map(storage.getItem)
 	)
 	res.json(objects)
 })
@@ -201,7 +203,7 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 		res.status(500).json({ error: "Object Upload Failed" })
 		return
 	}
-
+	
 	const cid = generateCid()
 	const object = {
 		cid,

@@ -2,7 +2,8 @@ import { useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
-import { selectObjectsList, selectObjectsLoading, userGetAllObjects } from "../../redux/slices/objectsSlice"
+import { getAllBuckets, selectBuckets } from "../../redux/slices/bucketSlice"
+import { selectObjectsList, selectObjectsLoading, userGetBucketObjects } from "../../redux/slices/objectsSlice"
 import {
 	selectSchemasLoading,
 	selectSchemasMetaDataList,
@@ -22,7 +23,7 @@ function ObjectsPageContainer() {
 	const objectsList = useSelector(selectObjectsList)
 	const schemasLoading = useSelector(selectSchemasLoading)
 	const objectsLoading = useSelector(selectObjectsLoading)
-
+	const buckets = useSelector(selectBuckets)
 	const address = useSelector(selectAddress)
 	const allMetaData = useSelector(selectSchemasMetaDataList)
 	const accountMetaData = allMetaData.filter(
@@ -31,13 +32,20 @@ function ObjectsPageContainer() {
 	const loading = schemasLoading && objectsLoading
 
 	useEffect(() => {
-		getSchemasAndSelectDefault()
+		initialize()
 	}, [])
+
+	useEffect(() => {
+		if(buckets.length > 0){
+			buckets.forEach(({ did }) => {
+				dispatch(userGetBucketObjects({ bucket: did }))
+			})
+		}
+	}, [buckets])
 
 	useEffect(() => {
 		if (selectedSchemaDid) {
 			getSchema()
-			dispatch(userGetAllObjects)
 		}
 	}, [selectedSchemaDid])
 
@@ -58,10 +66,14 @@ function ObjectsPageContainer() {
 		setSchemaFields(getSchemaResponse.payload.fields)
 	}
 
-	async function getSchemasAndSelectDefault() {
-		await dispatch(userGetAllSchemas())
-		if (accountMetaData.length > 0)
+	async function initialize() {
+		await Promise.all([
+			dispatch(userGetAllSchemas),
+			dispatch(getAllBuckets)
+		])
+		if (accountMetaData.length > 0){
 			setSelectedSchema(accountMetaData[0].schema.did)
+		}
 	}
 
 	function openNewObjectModal() {
@@ -76,33 +88,29 @@ function ObjectsPageContainer() {
 		openModal()
 	}
 
-	function mapToListFormat(list: any) {
-		const selectedSchemaData = accountMetaData.find(
-			(item) => item.schema.did === selectedSchemaDid
-		)
-		console.log(selectedSchemaData)
-		// return list.map((item: any) => {
-		// 	return {
-		// 		"Schema name": {
-		// 			text: item.schema.label,
-		// 		},
-		// 		DID: {
-		// 			text: obfuscateDid(item.did),
-		// 		},
-		// 	}
-		// })
+	function mapToListFormat() {
+		const objectsBySchema = objectsList.filter((obj) => obj.schema === selectedSchemaDid)
+
+		return objectsBySchema.map((object) => {
+			return Object.keys(object).reduce((acc, key) => {
+				return {
+					...acc,
+					[key]: {
+						text: object[key]
+					}
+				}    
+			}, {})
+		})
 	}
-	console.log(
-		accountMetaData.find((item) => item.schema.did === selectedSchemaDid)
-	)
+
 	return (
 		<ObjectsPageComponent
-			schemaHasObjects={objectsList.length > 0}
 			schemas={accountMetaData}
 			selectedSchemaDid={selectedSchemaDid}
 			setSelectedSchema={setSelectedSchema}
 			openNewObjectModal={openNewObjectModal}
 			loading={loading}
+			list={mapToListFormat()}
 			schemasCount={accountMetaData.length}
 		/>
 	)

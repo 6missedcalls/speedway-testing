@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { createObject, getAllObjects } from "../../service/objects"
+import { createObject, getBucketContent } from "../../service/objects"
+import { arrayObjectDistinct, arrayStringDistinct } from "../../utils/object"
 import { InewObject } from "../../utils/types"
 import { RootState } from "../store"
 
@@ -15,18 +16,6 @@ export const initialState: ObjectsState = {
 	error: false,
 }
 
-export const userGetAllObjects = createAsyncThunk(
-	"objects/getAll",
-	async ({ schemaDid }: { schemaDid: string }, thunkAPI) => {
-		try {
-			const data = await getAllObjects({ schemaDid })
-			return data
-		} catch (err) {
-			return thunkAPI.rejectWithValue(err)
-		}
-	}
-)
-
 export const userCreateObject = createAsyncThunk(
 	"objects/create",
 	async ({ schemaDid, label, object }: InewObject, thunkAPI) => {
@@ -39,38 +28,47 @@ export const userCreateObject = createAsyncThunk(
 	}
 )
 
+export const userGetBucketObjects = createAsyncThunk(
+	"bucket/content",
+	async ({ bucket }: any, thunkAPI) => {
+		try {
+			const data = await getBucketContent({ bucket })
+			return data
+		} catch (err) {
+			return thunkAPI.rejectWithValue(err)
+		}
+	}
+)
+
 export const objectsSlice = createSlice({
 	name: "objects",
 	initialState,
 	reducers: {},
 	extraReducers: (builder) => {
-		builder.addCase(userGetAllObjects.pending, (state) => {
-			state.loading = true
-		})
-
-		builder.addCase(userGetAllObjects.fulfilled, (state, action) => {
-			const { payload } = action
-			state.loading = false
-			state.list = payload
-		})
-
-		builder.addCase(userGetAllObjects.rejected, (state) => {
-			state.error = true
-			state.loading = false
-		})
 		builder.addCase(userCreateObject.pending, (state) => {
 			state.loading = true
 		})
 
-		builder.addCase(userCreateObject.fulfilled, (state, action) => {
-			const { payload } = action
+		builder.addCase(userCreateObject.fulfilled, (state) => {
 			state.loading = false
-			console.log("create object response", payload)
-			//state.list.push(payload)
 		})
 
 		builder.addCase(userCreateObject.rejected, (state) => {
 			state.error = true
+			state.loading = false
+		})
+
+		builder.addCase(userGetBucketObjects.pending, (state) => {
+			state.loading = true
+		})
+		builder.addCase(userGetBucketObjects.fulfilled, (state, action) => {
+			const { payload } = action
+			if(payload.length > 0){
+				state.list = arrayObjectDistinct(state.list.concat(payload), 'cid')
+			}
+			state.loading = false
+		})
+		builder.addCase(userGetBucketObjects.rejected, (state, action) => {
 			state.loading = false
 		})
 	},

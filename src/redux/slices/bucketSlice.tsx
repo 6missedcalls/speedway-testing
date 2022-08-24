@@ -57,15 +57,17 @@ const bucketSlice = createSlice({
 		builder.addCase(createBucket.fulfilled, (state, action) => {
 			state.list.push(action.payload)
 		})
-
+		
 		builder.addCase(updateBucket.fulfilled, (state, action) => {
 			const { payload } = action
 			const editedBucketDid = payload.did
 			const addedObjects = payload.objects
 			const editedBucket: any = state.list.find(bucket => bucket.did === editedBucketDid) || []
-			const newObjectsDids = arrayStringDistinct(editedBucket.objects.concat(addedObjects))
-			const editedBucketIndex = state.list.findIndex(bucket => bucket.did === editedBucketDid) 
-			state.list[editedBucketIndex].objects = newObjectsDids
+			const editedBucketIndex = state.list.findIndex(bucket => bucket.did === editedBucketDid)
+
+			if(editedBucketIndex !== -1){
+				state.list[editedBucketIndex].objects = arrayStringDistinct(editedBucket.objects.concat(addedObjects))
+			}
 		})
 	},
 })

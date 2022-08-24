@@ -32,18 +32,16 @@ export const createObject = async ({
 	}
 }
 
-export const getAllObjects = async ({
-	schemaDid,
-}: { schemaDid: string }) => {
-	const url = `${BASE_API}/object/all`
+export const getBucketContent = async ({ bucket }: any) => {
+	const url = `${BASE_API}/bucket/content`
 
-	const payload = JSON.stringify({ schemaDid })
+	const payload = JSON.stringify({ bucket })
 
 	const options = {
-		method: "POST",
-		headers: { "content-type": "application/json" },
-		body: payload,
-	}
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: payload
+    }
 
 	try {
 		const response: Response = await fetch(url, options)

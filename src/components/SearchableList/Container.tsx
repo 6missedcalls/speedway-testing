@@ -21,7 +21,7 @@ function SearchableListContainer({
 	const [orderAsc, setOrderAsc] = useState(true)
 	const [searchTerm, setSearchTerm] = useState("")
 	const [paginationCurrentPage, setPaginationCurrentPage] = useState(1)
-	const [list, setList] = useState<Array<any>>([])
+	const [list, setList] = useState<Array<any>>(initialList)
 	const [totalPages, setTotalPages] = useState(1)
 
 	useEffect(() => {
