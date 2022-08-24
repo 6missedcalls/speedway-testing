@@ -11,7 +11,7 @@ type Props = {
 const BucketsPageComponent = ({ data }: Props) => {
 	const { setModalContent, openModal } = useContext(AppModalContext)
 	const openNewBucketModal = () => {
-		setModalContent(MODAL_CONTENT_NEW_BUCKET)
+		setModalContent({ content: MODAL_CONTENT_NEW_BUCKET })
 		openModal()
 	}
 
@@ -34,7 +34,7 @@ const BucketsPageComponent = ({ data }: Props) => {
 
 					{!data.length && <EmptyList message="No Buckets to Display" />}
 
-					{data.length && (
+					{!!data.length && (
 						<div className="flex flex-wrap gap-6 mt-8">
 							{data.map(BucketCard)}
 						</div>
@@ -47,7 +47,10 @@ const BucketsPageComponent = ({ data }: Props) => {
 export default BucketsPageComponent
 
 const BucketCard = (bucket: Bucket) => (
-	<div className="bg-white rounded-2xl w-[330px] h-[160px] shadow-xxl p-6 text-default">
+	<div
+		className="bg-white rounded-2xl w-[330px] h-[160px] shadow-xxl p-6 text-default"
+		key={bucket.did}
+	>
 		<h2 className="font-extrabold text-custom-lg whitespace-nowrap overflow-hidden text-ellipsis mb-6">
 			{bucket.label}
 		</h2>

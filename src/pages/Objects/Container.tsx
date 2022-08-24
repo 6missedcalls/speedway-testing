@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
-import { selectObjectsLoading } from "../../redux/slices/objectsSlice"
+import { selectObjectsList, selectObjectsLoading, userGetAllObjects } from "../../redux/slices/objectsSlice"
 import {
 	selectSchemasLoading,
 	selectSchemasMetaDataList,
@@ -18,9 +18,8 @@ function ObjectsPageContainer() {
 	const { setModalContent, openModal } = useContext(AppModalContext)
 	const dispatch = useDispatch<any>()
 	const [selectedSchemaDid, setSelectedSchema] = useState("")
-	const [objectsList, setObjectsList] = useState([])
 	const [schemaFields, setSchemaFields] = useState("")
-	//const [selectedSchemaData, setSelectedSchemaData] = useState<any>()
+	const objectsList = useSelector(selectObjectsList)
 	const schemasLoading = useSelector(selectSchemasLoading)
 	const objectsLoading = useSelector(selectObjectsLoading)
 
@@ -38,6 +37,7 @@ function ObjectsPageContainer() {
 	useEffect(() => {
 		if (selectedSchemaDid) {
 			getSchema()
+			dispatch(userGetAllObjects)
 		}
 	}, [selectedSchemaDid])
 

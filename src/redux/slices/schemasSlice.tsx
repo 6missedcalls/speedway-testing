@@ -3,20 +3,6 @@ import { RootState } from "../store"
 import { IgetSchemaFields, InewSchema, Ischema } from "../../utils/types"
 import { createSchema, getAllSchemas, getSchema } from "../../service/schemas"
 
-export interface SchemasState {
-	list: Array<Ischema>
-	loading: boolean
-	getSchemaLoading: boolean
-	error: boolean
-}
-
-const initialState: SchemasState = {
-	list: [],
-	loading: false,
-	error: false,
-	getSchemaLoading: false,
-}
-
 interface userCreateSchemaProp {
 	schema: InewSchema
 }
@@ -61,6 +47,18 @@ export const userGetSchema = createAsyncThunk(
 	}
 )
 
+export interface SchemasState {
+	list: Array<Ischema>
+	loading: boolean
+	getSchemaLoading: boolean
+	error: boolean
+}
+export const initialState: SchemasState = {
+	list: [],
+	loading: false,
+	error: false,
+	getSchemaLoading: false,
+}
 export const schemasSlice = createSlice({
 	name: "schemas",
 	initialState,

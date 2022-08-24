@@ -1,12 +1,16 @@
+import { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { getAllBuckets, selectBuckets } from "../../redux/slices/bucketSlice"
 import BucketsPageComponent from "./Component"
 
 function BucketsPageContainer() {
-	const data = [
-		{ label: "Furniture", objects: ["1"] },
-		{ label: "massive ui-breaking bucket name", objects: [] },
-		{ label: "dragons", objects: ["1", "1", "1"] },
-	]
-	return <BucketsPageComponent data={data} />
+	const dispatch = useDispatch<any>()
+	const buckets = useSelector(selectBuckets)
+	useEffect(() => {
+		dispatch(getAllBuckets())
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+	return <BucketsPageComponent data={buckets} />
 }
 
 export default BucketsPageContainer

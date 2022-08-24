@@ -5,6 +5,12 @@ import _ from "lodash"
 import md5 from "md5"
 import storage from "node-persist"
 
+function arrayStringDistinct(arr) {
+    return arr.sort().filter(function(item, pos, ary) {
+        return !pos || item != ary[pos - 1];
+    });
+}
+
 const generateAddress = () => `snr${md5(Math.random())}`
 const generateDid = () => `did:snr:${md5(Math.random())}`
 const generateCid = () => md5(Math.random())
@@ -156,7 +162,7 @@ app.post("/api/v1/bucket/get", async ({ body }, res) => {
 
 app.post("/api/v1/bucket/update", async ({ body }, res) => {
 	const bucket = await storage.getItem(bucketStoreKey(body.bucket))
-	bucket.objects = body.objects
+	bucket.objects = arrayStringDistinct(bucket.objects.concat(body.objects))
 	await storage.setItem(bucketStoreKey(body.bucket), bucket)
 	res.json(bucket)
 })
@@ -177,7 +183,10 @@ app.post("/api/v1/bucket/all", async ({ body }, res) => {
 			.map(storage.getItem)
 			.valueOf()
 	)
-	const buckets = _.filter(allBuckets, { creator: sessionAddress })
+	const buckets = _.chain(allBuckets)
+		.filter({ creator: sessionAddress })
+		.sortBy("label")
+		.valueOf()
 	res.json({ data: buckets })
 })
 
@@ -194,7 +203,12 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 	}
 
 	const cid = generateCid()
-	await storage.setItem(objectStoreKey(cid), body.Object)
+	const object = {
+		cid,
+		schema: body.SchemaDid,
+		...body.Object,
+	}
+	await storage.setItem(objectStoreKey(cid), object)
 
 	res.json({
 		reference: {
@@ -209,14 +223,13 @@ app.post("/api/v1/object/get", async ({ body }, res) => {
 	res.json(object)
 })
 
-app.get("/api/v1/object/all", async ({ body }, res) => {
+app.post("/api/v1/object/all", async ({ body }, res) => {
 	const keys = await storage.keys()
 	const objects = await Promise.all(
-		keys.filter((key) => key.startsWith("object-")).map(storage.getItem)
+		keys.filter((key) => key.startsWith("object-")).map(storage.getItem).filter((object) => object.schema && (object.schema === body.schemaDid))
 	)
 
-	console.log("obj", objects)
-	res.json({})
+	res.json(objects)
 })
 
 export default app

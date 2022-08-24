@@ -10,6 +10,9 @@ interface NewSchemaModalContentComponentProps {
 	handlePropertiesChange: ({ value, index }: IobjectPropertyChange) => void
 	schemas: any
 	save: () => void
+	handleChangeBucket: (value: string) => void
+	buckets: Array<any>
+	selectedBucket: string
 }
 
 function NewObjectModalContentComponent({
@@ -20,6 +23,9 @@ function NewObjectModalContentComponent({
 	handlePropertiesChange,
 	modalSelectedSchema,
 	setModalSelectedSchema,
+	handleChangeBucket,
+	selectedBucket,
+	buckets
 }: NewSchemaModalContentComponentProps) {
 	return (
 		<div>
@@ -62,13 +68,30 @@ function NewObjectModalContentComponent({
 					<div className="w-6" />
 					<div className="w-full flex flex-col justify-start">
 						<div>Buckets</div>
-						<div>Buckets Dropwdown Here</div>
+						<div className="w-full relative pointer-events-none select-none border border-default-border rounded-md w-3/12 cursor-pointer flex justify-between">
+							<select
+								className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
+								onChange={(event) => handleChangeBucket(event.target.value)}
+								value={selectedBucket}
+							>
+								{buckets.map((item: any) => (
+									<option key={item.did} value={item.did}>
+										{item.label}
+									</option>
+								))}
+							</select>
+							<NebulaIcon
+								iconName="ArrowSquareDown"
+								iconType="duotone"
+								className="w-8 h-8 pointer-events-none select-none absolute right-0 top-1"
+							/>
+						</div>
 					</div>
 				</div>
 				<div>
 					<div>Properties</div>
 					{properties.map((item, index) => (
-						<div>
+						<div key={`${item.name}-${index}`}>
 							<TextInput
 								label={item.name}
 								ariaLabel={item.name}

@@ -2,8 +2,10 @@ import { useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../../../redux/slices/authenticationSlice"
+import { getAllBuckets, selectBuckets, updateBucket } from "../../../../redux/slices/bucketSlice"
 import { userCreateObject } from "../../../../redux/slices/objectsSlice"
 import { userGetSchema } from "../../../../redux/slices/schemasSlice"
+import { cidToDid } from "../../../../utils/did"
 import { IobjectPropertyChange } from "../../../../utils/types"
 import NewObjectModalContentComponent from "./Component"
 
@@ -23,8 +25,14 @@ function NewObjectModalContentContainer({
 	const [modalSelectedSchema, setModalSelectedSchema] = useState(
 		initialSelectedSchema
 	)
+	const [selectedBucket, setSelectedBucket] = useState('')
 	const [properties, setProperties] = useState(initialSchemaFields)
 	const address = useSelector(selectAddress)
+	const buckets = useSelector(selectBuckets)
+	
+	useEffect(() => {
+		dispatch(getAllBuckets)
+	}, [])
 
 	useEffect(() => {
 		if (modalSelectedSchema) {
@@ -60,11 +68,17 @@ function NewObjectModalContentContainer({
 		setProperties(newProperties)
 	}
 
+	function handleChangeBucket(value: string){
+		setSelectedBucket(value)
+	}
+
 	async function save() {
 		const selectedSchemaData = schemas.find(
 			(item) => item.schema.did === modalSelectedSchema
-		)!
+		)
+
 		const objectPayload = {
+			bucketDid: selectedBucket,
 			schemaDid: modalSelectedSchema,
 			label: selectedSchemaData.schema.label,
 			object: properties.reduce((acc, item) => {
@@ -74,11 +88,19 @@ function NewObjectModalContentContainer({
 				}
 			}, {}),
 		}
+		
+		const object = await dispatch(userCreateObject({ ...objectPayload }))
+		
+		const bucketUpdatePayload = {
+			bucket: selectedBucket,
+			objects: [cidToDid(object.payload.reference.Cid)],
+		}
 
-		await dispatch(userCreateObject({ ...objectPayload }))
+		await dispatch(updateBucket({ ...bucketUpdatePayload }))
+
 		closeModal()
 	}
-
+	console.log("buckets", buckets)
 	return (
 		<NewObjectModalContentComponent
 			schemas={schemas}
@@ -88,6 +110,9 @@ function NewObjectModalContentContainer({
 			properties={properties}
 			handlePropertiesChange={handlePropertiesChange}
 			closeModal={closeModal}
+			buckets={buckets}
+			selectedBucket={selectedBucket}
+			handleChangeBucket={handleChangeBucket}
 		/>
 	)
 }

@@ -1,19 +1,17 @@
 import { useContext, useState } from "react"
+import { useDispatch } from "react-redux"
 import RefreshSvg from "../../assets/svgs/Refresh"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
-import { BASE_API } from "../../utils/constants"
+import { createBucket } from "../../redux/slices/bucketSlice"
 
 const ModalCreateBucket = () => {
 	const [label, setLabel] = useState("")
 	const [loading, setLoading] = useState(false)
 	const { closeModal } = useContext(AppModalContext)
+	const dispatch = useDispatch<any>()
 	const save = async () => {
 		setLoading(true)
-		await fetch(`${BASE_API}/bucket/create`, {
-			method: "POST",
-			headers: { "content-type": "application/json" },
-			body: JSON.stringify({ label }),
-		})
+		dispatch(createBucket({ label }))
 		setLoading(false)
 		closeModal()
 	}

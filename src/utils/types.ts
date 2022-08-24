@@ -70,7 +70,12 @@ export interface IobjectPropertyChange {
 	value: string
 }
 
+export type NewBucketPayload = {
+	label: string
+}
+
 export type Bucket = {
 	label: string
 	objects: string[]
+	did: string
 }
