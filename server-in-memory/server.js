@@ -225,13 +225,5 @@ app.post("/api/v1/object/get", async ({ body }, res) => {
 	res.json(object)
 })
 
-app.post("/api/v1/object/all", async ({ body }, res) => {
-	const keys = await storage.keys()
-	const objects = await Promise.all(
-		keys.filter((key) => key.startsWith("object-")).map(storage.getItem).filter((object) => object.schema && (object.schema === body.schemaDid))
-	)
-
-	res.json(objects)
-})
 
 export default app
