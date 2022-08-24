@@ -59,7 +59,12 @@ export interface InewSchema {
 	fields: Record<string, number>
 }
 
+export type NewBucketPayload = {
+	label: string
+}
+
 export type Bucket = {
 	label: string
 	objects: string[]
+	did: string
 }
