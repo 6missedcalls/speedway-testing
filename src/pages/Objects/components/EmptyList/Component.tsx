@@ -59,7 +59,7 @@ function ObjectsEmptyListComponent({
 						)}
 					</div>
 				</div>
-			)}		
+			)}
 		</>
 	)
 }

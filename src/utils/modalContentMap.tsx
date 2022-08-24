@@ -9,7 +9,9 @@ import {
 
 const modalComponents: Record<string, (props?: any) => JSX.Element> = {
 	[MODAL_CONTENT_NEW_SCHEMA]: () => <NewSchemaModalContent />,
-	[MODAL_CONTENT_NEW_OBJECT]: (props: any) => <NewObjectModalContent {...props} />,
+	[MODAL_CONTENT_NEW_OBJECT]: (props: any) => (
+		<NewObjectModalContent {...props} />
+	),
 	[MODAL_CONTENT_NEW_BUCKET]: () => <ModalCreateBucket />,
 }
 

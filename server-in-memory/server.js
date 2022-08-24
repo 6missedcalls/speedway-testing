@@ -212,9 +212,7 @@ app.post("/api/v1/object/get", async ({ body }, res) => {
 app.get("/api/v1/object/all", async ({ body }, res) => {
 	const keys = await storage.keys()
 	const objects = await Promise.all(
-		keys
-		.filter((key) => key.startsWith("object-"))
-		.map(storage.getItem)
+		keys.filter((key) => key.startsWith("object-")).map(storage.getItem)
 	)
 
 	console.log("obj", objects)

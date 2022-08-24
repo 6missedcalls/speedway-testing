@@ -20,7 +20,7 @@ const ObjectsPageComponent = ({
 	schemaHasObjects,
 	openNewObjectModal,
 	loading,
-	schemasCount
+	schemasCount,
 }: ObjectsPageComponentProps) => {
 	return (
 		<LayoutMenu>
@@ -45,7 +45,7 @@ const ObjectsPageComponent = ({
 					</div>
 				</div>
 				<div>
-					{schemaHasObjects ?  (
+					{schemaHasObjects ? (
 						<div>List Here</div>
 					) : (
 						<EmptyList

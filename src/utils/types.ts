@@ -59,7 +59,6 @@ export interface InewSchema {
 	fields: Record<string, number>
 }
 
-
 export interface InewObject {
 	schemaDid: string
 	label: string

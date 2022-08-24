@@ -92,9 +92,9 @@ function ObjectsPageContainer() {
 		// 	}
 		// })
 	}
-	console.log( accountMetaData.find(
-		(item) => item.schema.did === selectedSchemaDid
-	))
+	console.log(
+		accountMetaData.find((item) => item.schema.did === selectedSchemaDid)
+	)
 	return (
 		<ObjectsPageComponent
 			schemaHasObjects={objectsList.length > 0}
