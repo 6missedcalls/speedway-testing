@@ -15,7 +15,7 @@ function EmptyListComponent({
 	return (
 		<LayoutMenu>
 			<div className="h-screen w-full bg-gray-100 px-10 pb-10 overflow-auto">
-				<h1 className="text-custom-3xl font-extrabold tracking-custom-x2tighter mt-14 mb-8">
+				<h1 className="text-custom-3xl font-extrabold tracking-custom-x2tighter mt-14 mb-8 text-default">
 					Schemas
 				</h1>
 
