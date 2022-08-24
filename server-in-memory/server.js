@@ -177,7 +177,10 @@ app.post("/api/v1/bucket/all", async ({ body }, res) => {
 			.map(storage.getItem)
 			.valueOf()
 	)
-	const buckets = _.filter(allBuckets, { creator: sessionAddress })
+	const buckets = _.chain(allBuckets)
+		.filter({ creator: sessionAddress })
+		.sortBy("label")
+		.valueOf()
 	res.json({ data: buckets })
 })
 
