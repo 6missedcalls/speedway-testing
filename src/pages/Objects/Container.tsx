@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 import { getAllBuckets, selectBuckets } from "../../redux/slices/bucketSlice"
-import { selectObjectsList, selectObjectsLoading, userGetBucketObjects } from "../../redux/slices/objectsSlice"
+import {
+	selectObjectsList,
+	selectObjectsLoading,
+	userGetBucketObjects,
+} from "../../redux/slices/objectsSlice"
 import {
 	selectSchemasLoading,
 	selectSchemasMetaDataList,
@@ -36,7 +40,7 @@ function ObjectsPageContainer() {
 	}, [])
 
 	useEffect(() => {
-		if(buckets.length > 0){
+		if (buckets.length > 0) {
 			buckets.forEach(({ did }) => {
 				dispatch(userGetBucketObjects({ bucket: did }))
 			})
@@ -67,11 +71,8 @@ function ObjectsPageContainer() {
 	}
 
 	async function initialize() {
-		await Promise.all([
-			dispatch(userGetAllSchemas),
-			dispatch(getAllBuckets)
-		])
-		if (accountMetaData.length > 0){
+		await Promise.all([dispatch(userGetAllSchemas), dispatch(getAllBuckets)])
+		if (accountMetaData.length > 0) {
 			setSelectedSchema(accountMetaData[0].schema.did)
 		}
 	}
@@ -89,16 +90,18 @@ function ObjectsPageContainer() {
 	}
 
 	function mapToListFormat() {
-		const objectsBySchema = objectsList.filter((obj) => obj.schema === selectedSchemaDid)
+		const objectsBySchema = objectsList.filter(
+			(obj) => obj.schema === selectedSchemaDid
+		)
 
 		return objectsBySchema.map((object) => {
 			return Object.keys(object).reduce((acc, key) => {
 				return {
 					...acc,
 					[key]: {
-						text: object[key]
-					}
-				}    
+						text: object[key],
+					},
+				}
 			}, {})
 		})
 	}

@@ -2,7 +2,11 @@ import { useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../../../redux/slices/authenticationSlice"
-import { getAllBuckets, selectBuckets, updateBucket } from "../../../../redux/slices/bucketSlice"
+import {
+	getAllBuckets,
+	selectBuckets,
+	updateBucket,
+} from "../../../../redux/slices/bucketSlice"
 import { userCreateObject } from "../../../../redux/slices/objectsSlice"
 import { userGetSchema } from "../../../../redux/slices/schemasSlice"
 import { cidToDid } from "../../../../utils/did"
@@ -29,7 +33,6 @@ function NewObjectModalContentContainer({
 	const [selectedBucket, setSelectedBucket] = useState(buckets[0].did)
 	const [properties, setProperties] = useState(initialSchemaFields)
 	const address = useSelector(selectAddress)
-	
 
 	useEffect(() => {
 		if (modalSelectedSchema) {
@@ -65,7 +68,7 @@ function NewObjectModalContentContainer({
 		setProperties(newProperties)
 	}
 
-	function handleChangeBucket(value: string){
+	function handleChangeBucket(value: string) {
 		setSelectedBucket(value)
 	}
 
@@ -85,9 +88,9 @@ function NewObjectModalContentContainer({
 				}
 			}, {}),
 		}
-		
+
 		const object = await dispatch(userCreateObject({ ...objectPayload }))
-		
+
 		const bucketUpdatePayload = {
 			bucket: selectedBucket,
 			objects: [cidToDid(object.payload.reference.Cid)],
@@ -97,7 +100,7 @@ function NewObjectModalContentContainer({
 
 		closeModal()
 	}
-	
+
 	return (
 		<NewObjectModalContentComponent
 			schemas={schemas}

@@ -7,10 +7,10 @@ export const updateBucketService = async ({ bucket, objects }: any) => {
 	const payload = JSON.stringify({ bucket, objects })
 
 	const options = {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: payload
-    }
+		method: "POST",
+		headers: { "content-type": "application/json" },
+		body: payload,
+	}
 
 	try {
 		const response: Response = await fetch(url, options)

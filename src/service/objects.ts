@@ -38,10 +38,10 @@ export const getBucketContent = async ({ bucket }: any) => {
 	const payload = JSON.stringify({ bucket })
 
 	const options = {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: payload
-    }
+		method: "POST",
+		headers: { "content-type": "application/json" },
+		body: payload,
+	}
 
 	try {
 		const response: Response = await fetch(url, options)

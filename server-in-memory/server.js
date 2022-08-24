@@ -6,12 +6,12 @@ import md5 from "md5"
 import storage from "node-persist"
 
 function arrayStringDistinct(arr) {
-    return arr.sort().filter(function(item, pos, ary) {
-        return !pos || item != ary[pos - 1];
-    });
+	return arr.sort().filter(function (item, pos, ary) {
+		return !pos || item != ary[pos - 1]
+	})
 }
 
-const didToCid = (did) => did.split(':')[2]
+const didToCid = (did) => did.split(":")[2]
 
 const generateAddress = () => `snr${md5(Math.random())}`
 const generateDid = () => `did:snr:${md5(Math.random())}`
@@ -172,7 +172,9 @@ app.post("/api/v1/bucket/update", async ({ body }, res) => {
 app.post("/api/v1/bucket/content", async ({ body }, res) => {
 	const bucket = await storage.getItem(bucketStoreKey(body.bucket))
 	const objects = await Promise.all(
-		bucket.objects.map((did) => objectStoreKey(didToCid(did))).map(storage.getItem)
+		bucket.objects
+			.map((did) => objectStoreKey(didToCid(did)))
+			.map(storage.getItem)
 	)
 	res.json(objects)
 })
@@ -203,7 +205,7 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 		res.status(500).json({ error: "Object Upload Failed" })
 		return
 	}
-	
+
 	const cid = generateCid()
 	const object = {
 		cid,
@@ -224,6 +226,5 @@ app.post("/api/v1/object/get", async ({ body }, res) => {
 	const object = await storage.getItem(objectStoreKey(body.ObjectCid))
 	res.json(object)
 })
-
 
 export default app

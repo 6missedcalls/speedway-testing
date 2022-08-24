@@ -25,7 +25,7 @@ function NewObjectModalContentComponent({
 	setModalSelectedSchema,
 	handleChangeBucket,
 	selectedBucket,
-	buckets
+	buckets,
 }: NewSchemaModalContentComponentProps) {
 	return (
 		<div>

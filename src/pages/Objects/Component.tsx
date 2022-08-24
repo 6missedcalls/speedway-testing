@@ -35,7 +35,9 @@ const ObjectsPageComponent = ({
 							value={selectedSchemaDid}
 						>
 							{schemas.map((item) => (
-								<option key={item.schema.did} value={item.schema.did}>{item.schema.label}</option>
+								<option key={item.schema.did} value={item.schema.did}>
+									{item.schema.label}
+								</option>
 							))}
 						</select>
 						<NebulaIcon
@@ -48,7 +50,7 @@ const ObjectsPageComponent = ({
 				<div>
 					{list.length > 0 ? (
 						<SearchableList
-							searchableAndSortableFieldKey='cid'
+							searchableAndSortableFieldKey="cid"
 							handleOpenModal={openNewObjectModal}
 							initialList={list}
 							type={listTypes.object}

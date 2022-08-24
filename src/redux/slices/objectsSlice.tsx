@@ -63,8 +63,8 @@ export const objectsSlice = createSlice({
 		})
 		builder.addCase(userGetBucketObjects.fulfilled, (state, action) => {
 			const { payload } = action
-			if(payload.length > 0){
-				state.list = arrayObjectDistinct(state.list.concat(payload), 'cid')
+			if (payload.length > 0) {
+				state.list = arrayObjectDistinct(state.list.concat(payload), "cid")
 			}
 			state.loading = false
 		})
