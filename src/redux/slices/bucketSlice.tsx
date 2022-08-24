@@ -11,6 +11,10 @@ export const selectBucketCreationLoading = (state: RootState) => {
 	return state.bucket.creating
 }
 
+export const selectBucketsLoading = (state: RootState) => {
+	return state.bucket.loading
+}
+
 export const getAllBuckets = createAsyncThunk("buckets/getAll", async () => {
 	return await fetch(`${BASE_API}/bucket/all`, {
 		method: "POST",
@@ -32,17 +36,26 @@ export const createBucket = createAsyncThunk(
 export type BucketState = {
 	list: Bucket[]
 	creating: boolean
+	loading: boolean
 }
 export const initialState: BucketState = {
 	list: [],
 	creating: false,
+	loading: false,
 }
 const bucketSlice = createSlice({
 	name: "bucket",
 	initialState,
 	reducers: {},
 	extraReducers: (builder) => {
+		builder.addCase(getAllBuckets.pending, (state, action) => {
+			state.loading = true
+		})
+		builder.addCase(getAllBuckets.rejected, (state, action) => {
+			state.loading = false
+		})
 		builder.addCase(getAllBuckets.fulfilled, (state, action) => {
+			state.loading = false
 			state.list = action.payload.data
 		})
 
