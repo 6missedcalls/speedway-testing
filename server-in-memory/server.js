@@ -196,7 +196,12 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 	}
 
 	const cid = generateCid()
-	await storage.setItem(objectStoreKey(cid), body.Object)
+	const object = {
+		cid,
+		schema: body.SchemaDid,
+		...body.Object,
+	}
+	await storage.setItem(objectStoreKey(cid), object)
 
 	res.json({
 		reference: {
