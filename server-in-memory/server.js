@@ -177,7 +177,10 @@ app.post("/api/v1/bucket/all", async ({ body }, res) => {
 			.map(storage.getItem)
 			.valueOf()
 	)
-	const buckets = _.filter(allBuckets, { creator: sessionAddress })
+	const buckets = _.chain(allBuckets)
+		.filter({ creator: sessionAddress })
+		.sortBy("label")
+		.valueOf()
 	res.json({ data: buckets })
 })
 
@@ -193,7 +196,12 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 	}
 
 	const cid = generateCid()
-	await storage.setItem(objectStoreKey(cid), body.Object)
+	const object = {
+		cid,
+		schema: body.SchemaDid,
+		...body.Object,
+	}
+	await storage.setItem(objectStoreKey(cid), object)
 
 	res.json({
 		reference: {

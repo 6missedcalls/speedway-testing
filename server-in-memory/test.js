@@ -248,6 +248,7 @@ it("gets a bucket content", async () => {
 		label: "Dinosaurs",
 		fields: { firstName: 4 },
 	})
+	const schemaDid = responseSchema.body.whatIs.did
 
 	const responseBucket = await app.post("/api/v1/bucket/create").send({
 		label: "Mars colony",
@@ -255,14 +256,14 @@ it("gets a bucket content", async () => {
 	const bucketDid = responseBucket.body.did
 
 	const responseObject = await app.post("/api/v1/object/build").send({
-		SchemaDid: responseSchema.body.whatIs.did,
+		SchemaDid: schemaDid,
 		Label: "Sonrsaur",
 		Object: { firstName: "Marcel" },
 	})
 	const objectCid = responseObject.body.reference.Cid
 
 	await app.post("/api/v1/object/build").send({
-		SchemaDid: responseSchema.body.whatIs.did,
+		SchemaDid: schemaDid,
 		Label: "Not on bucket",
 		Object: { firstName: "Jane" },
 	})
@@ -277,6 +278,8 @@ it("gets a bucket content", async () => {
 	})
 	expect(result.length).toBe(1)
 	expect(result[0].firstName).toBe("Marcel")
+	expect(result[0].cid).toBe(objectCid)
+	expect(result[0].schema).toBe(schemaDid)
 })
 
 it("fetches a list of buckets", async () => {
