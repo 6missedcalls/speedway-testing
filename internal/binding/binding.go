@@ -8,6 +8,7 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
+	"github.com/sonr-io/sonr/pkg/motor/x/bucket"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
@@ -182,18 +183,18 @@ func (b *SpeedwayBinding) GetSchema(ctx context.Context, creator string, schemaD
 /*
 Get the bucket and return the Response
 */
-func (b *SpeedwayBinding) GetBucket(ctx context.Context, bucketDid string) (rtmv1.QueryWhereIsResponse, error) {
+func (b *SpeedwayBinding) GetBucket(ctx context.Context, bucketDid string) (bucket.Bucket, error) {
 	if b.instance == nil {
-		return rtmv1.QueryWhereIsResponse{}, ErrMotorNotInitialized
+		return nil, ErrMotorNotInitialized
 	}
 	if !b.loggedIn {
-		return rtmv1.QueryWhereIsResponse{}, ErrNotAuthenticated
+		return nil, ErrNotAuthenticated
 	}
 
-	res, err := b.instance.QueryWhereIs(ctx, bucketDid)
+	res, err := b.instance.GetBucket(ctx, bucketDid)
 	if err != nil {
 		fmt.Println(status.Error("Error"), err)
-		return rtmv1.QueryWhereIsResponse{}, err
+		return nil, err
 	}
 
 	return res, nil
@@ -222,22 +223,21 @@ func (b *SpeedwayBinding) CreateSchema(req rtmv1.CreateSchemaRequest) (rtmv1.Cre
 /*
 Create the bucket and return the WhereIsResponse
 */
-func (b *SpeedwayBinding) CreateBucket(ctx context.Context, req rtmv1.CreateBucketRequest) (rtmv1.CreateBucketResponse, error) {
+func (b *SpeedwayBinding) CreateBucket(ctx context.Context, req rtmv1.CreateBucketRequest) (bucket.Bucket, error) {
 	if b.instance == nil {
-		return rtmv1.CreateBucketResponse{}, ErrMotorNotInitialized
+		return nil, ErrMotorNotInitialized
 	}
 	if !b.loggedIn {
-		return rtmv1.CreateBucketResponse{}, ErrNotAuthenticated
+		return nil, ErrNotAuthenticated
 	}
 
 	res, err := b.instance.CreateBucket(ctx, req)
 	if err != nil {
 		fmt.Println(status.Error("Error"), err)
-		return rtmv1.CreateBucketResponse{}, err
+		return nil, err
 	}
 
-	fmt.Println(status.Info, "Bucket Response: ", res)
-	return rtmv1.CreateBucketResponse{}, nil
+	return res, nil
 }
 
 /*

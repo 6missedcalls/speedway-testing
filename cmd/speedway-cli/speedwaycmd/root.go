@@ -26,9 +26,9 @@ func bootstrapRootCommand(ctx context.Context, logger *golog.Logger) (rootCmd *c
 
 		// Run: func(cmd *cobra.Command, args []string) {},
 	}
-	rootCmd.AddCommand(registry.BootstrapRegistryCommand(ctx))
-	rootCmd.AddCommand(schema.BootstrapSchemaCommand(ctx))
-	rootCmd.AddCommand(object.BootstrapObjectCommand(ctx))
+	rootCmd.AddCommand(registry.BootstrapRegistryCommand(ctx, logger))
+	rootCmd.AddCommand(schema.BootstrapSchemaCommand(ctx, logger))
+	rootCmd.AddCommand(object.BootstrapObjectCommand(ctx, logger))
 	rootCmd.AddCommand(bucket.BootstrapBucketCommand(ctx, logger))
 	return
 }

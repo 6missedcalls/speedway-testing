@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
 	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/sonr/x/schema/types"
@@ -37,7 +38,7 @@ func convertSchemaKind(kind string) types.SchemaKind {
 	return schemaKind
 }
 
-func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.Command) {
+func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (createSchemaCmd *cobra.Command) {
 	createSchemaCmd = &cobra.Command{
 		Use:   "create",
 		Short: "Use: create",
@@ -49,17 +50,17 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 
 			loginResult, err := utils.Login(m, loginRequest)
 			if err != nil {
-				fmt.Println(status.Error("Login Error: "), err)
+				logger.Fatalf(status.Error("Login Error: "), err)
 				return
 			}
 			if loginResult.Success {
-				fmt.Println(status.Success("Login Successful"))
+				logger.Info(status.Success("Login Successful"))
 			} else {
-				fmt.Println(status.Error("Login Failed"))
+				logger.Fatalf(status.Error("Login Failed"))
 				return
 			}
 
-			fmt.Println(status.Info, "Creating schema...")
+			logger.Info(status.Info, "Creating schema...")
 			schemaPrompt := promptui.Prompt{
 				Label: "Enter the Schema Label",
 			}
@@ -111,15 +112,15 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			}
 
 			// create schema
-			fmt.Println(status.Debug, "Schema request: ", createSchemaRequest)
+			logger.Info(status.Debug, "Schema request: ", createSchemaRequest)
 			createSchemaResult, err := m.CreateSchema(createSchemaRequest)
 			if err != nil {
-				fmt.Println(status.Error("CreateSchema Error: "), err)
+				logger.Fatalf(status.Error("CreateSchema Error: "), err)
 				return
 			}
-			fmt.Println(status.Success("Create Schema Successful"))
+			logger.Info(status.Success("Create Schema Successful"))
 			// desearialize the scehma result to get the schema did
-			fmt.Println(status.Debug, "Schema WhatIs: ", createSchemaResult.WhatIs.Schema)
+			logger.Info(status.Debug, "Schema WhatIs: ", createSchemaResult.WhatIs.Schema)
 		},
 	}
 	return

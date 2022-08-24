@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
@@ -13,7 +14,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command) {
+func BootstrapGetObjectCommand(ctx context.Context, logger *golog.Logger) (getObjectCmd *cobra.Command) {
 	getObjectCmd = &cobra.Command{
 		Use:   "get",
 		Short: "Use: get",
@@ -25,13 +26,13 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 
 			loginResult, err := utils.Login(m, loginRequest)
 			if err != nil {
-				fmt.Println(status.Error("Login Error: "), err)
+				logger.Fatalf(status.Error("Login Error: "), err)
 				return
 			}
 			if loginResult.Success {
-				fmt.Println(status.Success("Login successful"))
+				logger.Info(status.Success("Login successful"))
 			} else {
-				fmt.Println(status.Error("Login failed"))
+				logger.Fatalf(status.Error("Login failed"))
 				return
 			}
 
@@ -41,7 +42,7 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 			}
 			schemaDid, err := schemaPrompt.Run()
 			if err != nil {
-				fmt.Println(status.Error("Schema DID not provided, command cannot continue..."))
+				logger.Fatalf(status.Error("Schema DID not provided, command cannot continue..."))
 				return
 			}
 

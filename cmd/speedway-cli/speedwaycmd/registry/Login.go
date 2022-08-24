@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
 	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/speedway/internal/binding"
@@ -13,7 +14,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
+func bootstrapLoginCommand(ctx context.Context, logger *golog.Logger) (loginCmd *cobra.Command) {
 	loginCmd = &cobra.Command{
 		Use:   "login",
 		Short: "Use: speedway registry login",
@@ -24,7 +25,7 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 			}
 			addr, err := prompt.Run()
 			if err != nil {
-				fmt.Printf("Prompt failed %v\n", err)
+				fmt.Printf("Command failed %v\n", err)
 				return
 			}
 			prompt = promptui.Prompt{
@@ -32,12 +33,12 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 			}
 			password, err := prompt.Run()
 			if err != nil {
-				fmt.Printf("Prompt failed %v\n", err)
+				fmt.Printf("Command failed %v\n", err)
 				return
 			}
 			pskKey, err := storage.Load("psk.key")
 			if pskKey == nil || len(pskKey) != 32 {
-				fmt.Println(status.Warning("Please add this device to your current account or make another account"))
+				logger.Fatalf(status.Warning("Please add this device to your current account or make another account"))
 				return
 			}
 			req := rtmv1.LoginRequest{
@@ -46,19 +47,19 @@ func bootstrapLoginCommand(ctx context.Context) (loginCmd *cobra.Command) {
 				AesPskKey: pskKey,
 			}
 			if err != nil {
-				fmt.Println(status.Error("LoginRequest Error: %s"), err)
+				logger.Fatalf(status.Error("LoginRequest Error: %s"), err)
 			}
 			m := binding.InitMotor()
 			res, err := utils.Login(m, req)
 			if err != nil {
-				fmt.Println(status.Error("Login Error: %s"), err)
+				logger.Fatalf(status.Error("Login Error: %s"), err)
 				return
 			}
-			fmt.Println(status.Debug, "Login Response: %s", res)
+			logger.Info(status.Debug, "Login Response: %s", res)
 			if res.Success {
-				fmt.Println(status.Success("Login Successful"))
+				logger.Info(status.Success("Login Successful"))
 			} else {
-				fmt.Println(status.Error("Login failed"))
+				logger.Fatalf(status.Error("Login failed"))
 				return
 			}
 		},

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
@@ -13,7 +14,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Command) {
+func bootstrapQuerySchemaCommand(ctx context.Context, logger *golog.Logger) (querySchemaCmd *cobra.Command) {
 	querySchemaCmd = &cobra.Command{
 		Use:   "query",
 		Short: "Use: speedway schema query",
@@ -24,13 +25,13 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 
 			loginResult, err := utils.Login(m, loginRequest)
 			if err != nil {
-				fmt.Println(status.Error("Error: %s"), err)
+				logger.Fatalf(status.Error("Error: %s"), err)
 				return
 			}
 			if loginResult.Success {
-				fmt.Println(status.Success("Login successful"))
+				logger.Info(status.Success("Login successful"))
 			} else {
-				fmt.Println(status.Error("Login failed"))
+				logger.Fatalf(status.Error("Login failed"))
 			}
 
 			// get schema
@@ -61,7 +62,7 @@ func bootstrapQuerySchemaCommand(ctx context.Context) (querySchemaCmd *cobra.Com
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fmt.Println(status.Debug, "Schema: %v\n", definition)
+			logger.Info(status.Debug, "Schema: %v\n", definition)
 
 		},
 	}

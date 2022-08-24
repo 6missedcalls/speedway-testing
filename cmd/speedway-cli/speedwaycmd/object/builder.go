@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
 	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
 	"github.com/sonr-io/speedway/internal/binding"
@@ -13,7 +14,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Command) {
+func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (buildObjCmd *cobra.Command) {
 	buildObjCmd = &cobra.Command{
 		Use:   "build",
 		Short: "Use: build",
@@ -25,13 +26,13 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 
 			loginResult, err := utils.Login(m, loginRequest)
 			if err != nil {
-				fmt.Println(status.Error("Login Error: "), err)
+				logger.Fatalf("Login Error: ", err)
 				return
 			}
 			if loginResult.Success {
-				fmt.Println(status.Success("Login successful"))
+				logger.Info(status.Success("Login Successful"))
 			} else {
-				fmt.Println(status.Error("Login failed"))
+				logger.Fatalf(status.Error("Login Failed"))
 				return
 			}
 
@@ -71,7 +72,7 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fmt.Println(status.Debug, "Resolved Schema: ", definition)
+			logger.Info(status.Debug, "Resolved Schema: ", definition)
 
 			fpPrompt := promptui.Prompt{
 				Label: "Please enter the filepath to the object",
@@ -103,7 +104,7 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fmt.Printf("Upload Reference: %v\n", upload.Reference)
+			logger.Info("Upload Reference: %v\n", upload.Reference)
 
 		},
 	}
