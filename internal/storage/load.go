@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/99designs/keyring"
 	"github.com/ttacon/chalk"
 )
 
@@ -46,15 +47,28 @@ func LoadInfo(name string) (string, error) {
 // AutoLoad loads the key from the ~/.speedway/keys directory if it exists
 // otherwise it returns an error
 func AutoLoad() ([]byte, []byte, error) {
-	aesKey, err := Load("aes.key")
-	if aesKey == nil || len(aesKey) != 32 {
+	aesKey, err := LoadKeyring("aes.key")
+	if aesKey.Data == nil || len(aesKey.Data) != 32 {
 		fmt.Println(chalk.Yellow, "Please add this device to your current account or make another account", chalk.Reset)
 		return nil, nil, err
 	}
-	pskKey, err := Load("psk.key")
-	if pskKey == nil || len(pskKey) != 32 {
+	pskKey, err := LoadKeyring("psk.key")
+	if pskKey.Data == nil || len(pskKey.Data) != 32 {
 		fmt.Println(chalk.Yellow, "Please add this device to your current account or make another account", chalk.Reset)
 		return nil, nil, err
 	}
-	return aesKey, pskKey, nil
+	return aesKey.Data, pskKey.Data, nil
+}
+
+func LoadKeyring(name string) (keyring.Item, error) {
+	ring, _ := keyring.Open(keyring.Config{
+		ServiceName: "speedway",
+	})
+
+	key, err := ring.Get(name)
+	if err != nil {
+		return key, err
+	}
+
+	return key, nil
 }

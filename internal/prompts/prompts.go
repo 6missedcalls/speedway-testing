@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/manifoldco/promptui"
-	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
 )
@@ -43,17 +43,22 @@ func LoginPrompt() rtmv1.LoginRequest {
 		address = fallbackAddr
 	}
 
-	// Load the keys if they exist
-	aesKey, pskKey, err := storage.AutoLoad()
+	aesKey, err := storage.LoadKeyring("aes.key")
 	if err != nil {
-		fmt.Println(status.Error("Key Error: %s"), err)
+		fmt.Println(status.Error("Error loading AES keyring: "), err)
+		return rtmv1.LoginRequest{}
+	}
+	psKey, err := storage.LoadKeyring("psk.key")
+	if err != nil {
+		fmt.Println(status.Error("Error loading PS keyring: "), err)
+		return rtmv1.LoginRequest{}
 	}
 
 	// Login Request
 	loginRequest := rtmv1.LoginRequest{
 		Did:       address,
-		AesDscKey: aesKey,
-		AesPskKey: pskKey,
+		AesDscKey: aesKey.Data,
+		AesPskKey: psKey.Data,
 	}
 	return loginRequest
 }

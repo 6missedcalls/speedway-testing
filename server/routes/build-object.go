@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/status"
 )
@@ -61,7 +61,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 		Did:     body.SchemaDid,
 	}
 
-	querySchema, err := m.QueryWhatIs(context.Background(), querySchemaReq)
+	querySchema, err := m.QuerySchema(context.Background(), querySchemaReq)
 	if err != nil {
 		fmt.Printf("Command failed %v\n", err)
 		return

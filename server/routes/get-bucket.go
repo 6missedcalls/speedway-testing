@@ -21,7 +21,7 @@ type GetBucketBody struct {
 // @Tags bucket
 // @Produce json
 // @Param 		 bucketDid body string true "BucketDid" example("did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
-// @Success 200 {object} bucket.BucketReference
+// @Success 200 {object} bucket.Bucket
 // @Failure      500  {string}  message
 // @Router /bucket/get [post]
 func (ns *NebulaServer) GetBucket(c *gin.Context) {

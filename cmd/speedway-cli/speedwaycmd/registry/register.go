@@ -8,7 +8,7 @@ import (
 	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
-	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
@@ -41,9 +41,14 @@ func bootstrapCreateAccountCommand(ctx context.Context, logger *golog.Logger) (c
 			if err != nil {
 				logger.Fatalf(status.Error("Error: %s"), err)
 			}
-			if storage.Store("aes.key", aesKey) != nil {
+			// if storage.Store("aes.key", aesKey) != nil {
+			// 	logger.Fatalf(status.Error("Storage Error: %s"), err)
+			// }
+			store, err := storage.StoreKeyring("aes", aesKey)
+			if err != nil {
 				logger.Fatalf(status.Error("Storage Error: %s"), err)
 			}
+			logger.Info("Store: %s", store)
 
 			req := rtmv1.CreateAccountRequest{
 				Password:  result,

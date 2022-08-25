@@ -6,7 +6,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
-	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/status"
@@ -53,7 +53,7 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 			}
 
 			// query whatis
-			querySchema, err := m.QueryWhatIs(ctx, querySchemaReq)
+			querySchema, err := m.QuerySchema(querySchemaReq)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return

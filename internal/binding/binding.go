@@ -6,10 +6,12 @@ import (
 	"sync"
 
 	"github.com/sonr-io/sonr/pkg/did"
+	"github.com/sonr-io/sonr/pkg/did/ssi"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
-	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
-	"github.com/sonr-io/sonr/pkg/motor/x/bucket"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
+	"github.com/sonr-io/sonr/third_party/types/common"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
+	btv1 "github.com/sonr-io/sonr/x/bucket/types"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/sonr-io/speedway/internal/utils"
@@ -34,17 +36,14 @@ var once sync.Once
 Initialize the speedway binding to the motor
 */
 func InitMotor() mtr.MotorNode {
-	fmt.Println(status.Debug, "Initializing motor...")
-
-	hwid := utils.GetHwid()
-	m := mtr.EmptyMotor(hwid)
-	if m == nil {
-		fmt.Println(status.Error("Motor failed to initialize"))
+	initreq := &rtmv1.InitializeRequest{
+		DeviceId: utils.GetHwid(),
+	}
+	m, err := mtr.EmptyMotor(initreq, common.DefaultCallback())
+	if err != nil {
+		fmt.Println(status.Error("Motor failed to initialize"), err)
 		return nil
 	}
-
-	fmt.Println(status.Debug, "Motor initialized", m)
-
 	return m
 }
 
@@ -130,7 +129,7 @@ func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid s
 	}
 
 	// Create new QueryWhatIs request for the object
-	querySchema, err := b.instance.QueryWhatIs(ctx, queryObjectReq)
+	querySchema, err := b.instance.QuerySchema(queryObjectReq)
 	if err != nil {
 		fmt.Println(status.Error("Error"), err)
 		return nil, err
@@ -171,19 +170,19 @@ func (b *SpeedwayBinding) GetSchema(ctx context.Context, creator string, schemaD
 	}
 
 	// query schema
-	querySchemaRes, err := b.instance.QueryWhatIs(ctx, querySchemaReq)
+	querySchemaRes, err := b.instance.QuerySchema(querySchemaReq)
 	if err != nil {
 		fmt.Printf("Binding failed %v\n", err)
 		return rtmv1.QueryWhatIsResponse{}, err
 	}
 
-	return querySchemaRes, nil
+	return *querySchemaRes, nil
 }
 
 /*
 Get the bucket and return the Response
 */
-func (b *SpeedwayBinding) GetBucket(ctx context.Context, bucketDid string) (bucket.Bucket, error) {
+func (b *SpeedwayBinding) GetBucket(ctx context.Context, bucketDid string) ([]*btv1.BucketItem, error) {
 	if b.instance == nil {
 		return nil, ErrMotorNotInitialized
 	}
@@ -191,13 +190,18 @@ func (b *SpeedwayBinding) GetBucket(ctx context.Context, bucketDid string) (buck
 		return nil, ErrNotAuthenticated
 	}
 
-	res, err := b.instance.GetBucket(ctx, bucketDid)
+	res, err := b.instance.GetBucket(bucketDid)
 	if err != nil {
 		fmt.Println(status.Error("Error"), err)
 		return nil, err
 	}
 
-	return res, nil
+	content := res.GetBucketItems()
+	if content == nil {
+		return nil, nil
+	}
+
+	return content, nil
 }
 
 /*
@@ -223,21 +227,23 @@ func (b *SpeedwayBinding) CreateSchema(req rtmv1.CreateSchemaRequest) (rtmv1.Cre
 /*
 Create the bucket and return the WhereIsResponse
 */
-func (b *SpeedwayBinding) CreateBucket(ctx context.Context, req rtmv1.CreateBucketRequest) (bucket.Bucket, error) {
+func (b *SpeedwayBinding) CreateBucket(ctx context.Context, req rtmv1.CreateBucketRequest) (ssi.URI, error) {
 	if b.instance == nil {
-		return nil, ErrMotorNotInitialized
+		return ssi.URI{}, ErrMotorNotInitialized
 	}
 	if !b.loggedIn {
-		return nil, ErrNotAuthenticated
+		return ssi.URI{}, ErrNotAuthenticated
 	}
 
 	res, err := b.instance.CreateBucket(ctx, req)
 	if err != nil {
 		fmt.Println(status.Error("Error"), err)
-		return nil, err
+		return ssi.URI{}, err
 	}
 
-	return res, nil
+	serv := res.CreateBucketServiceEndpoint()
+
+	return serv.ID, nil
 }
 
 /*
@@ -261,9 +267,34 @@ func (b *SpeedwayBinding) NewObjectBuilder(schemaDid string) (*object.ObjectBuil
 }
 
 /*
+UpdateBucketItems and return the bucket after the update
+*/
+func (b *SpeedwayBinding) UpdateBucketItems(ctx context.Context, bucketDid string, items []*btv1.BucketItem) ([]*btv1.BucketItem, error) {
+	if b.instance == nil {
+		return nil, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return nil, ErrNotAuthenticated
+	}
+
+	res, err := b.instance.UpdateBucketItems(ctx, bucketDid, items)
+	if err != nil {
+		fmt.Println(status.Error("Error"), err)
+		return nil, err
+	}
+
+	content := res.GetBucketItems()
+	if content == nil {
+		return nil, nil
+	}
+
+	return content, nil
+}
+
+/*
 QueryWhatIs and return the WhatIsResponse
 */
-func (b *SpeedwayBinding) QueryWhatIs(ctx context.Context, req rtmv1.QueryWhatIsRequest) (rtmv1.QueryWhatIsResponse, error) {
+func (b *SpeedwayBinding) QuerySchema(ctx context.Context, req rtmv1.QueryWhatIsRequest) (rtmv1.QueryWhatIsResponse, error) {
 	if b.instance == nil {
 		return rtmv1.QueryWhatIsResponse{}, ErrMotorNotInitialized
 	}
@@ -271,13 +302,13 @@ func (b *SpeedwayBinding) QueryWhatIs(ctx context.Context, req rtmv1.QueryWhatIs
 		return rtmv1.QueryWhatIsResponse{}, ErrNotAuthenticated
 	}
 
-	querySchema, err := b.instance.QueryWhatIs(ctx, req)
+	schemaResponse, err := b.instance.QuerySchema(req)
 	if err != nil {
-		fmt.Println(status.Error("Binding failed %v\n"), err)
+		fmt.Println(status.Error("Error"), err)
 		return rtmv1.QueryWhatIsResponse{}, err
 	}
 
-	return querySchema, nil
+	return *schemaResponse, nil
 }
 
 /*

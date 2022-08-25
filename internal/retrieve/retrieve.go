@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/sonr-io/sonr/pkg/motor"
-	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
 	"github.com/ttacon/chalk"
 )
 
@@ -16,7 +16,7 @@ func GetObject(ctx context.Context, m motor.MotorNode, schemaDid string, cid str
 	}
 
 	// Create new QueryWhatIs request for the object
-	querySchema, err := m.QueryWhatIs(ctx, querySchemaReq)
+	querySchema, err := m.QuerySchema(querySchemaReq)
 	if err != nil {
 		fmt.Println(chalk.Red.Color("Error"), err)
 		return nil, err
@@ -48,13 +48,13 @@ func GetSchema(ctx context.Context, m motor.MotorNode, creator string, schemaDid
 	}
 
 	// query schema
-	querySchemaRes, err := m.QueryWhatIs(ctx, querySchemaReq)
+	querySchemaRes, err := m.QuerySchema(querySchemaReq)
 	if err != nil {
 		fmt.Printf("Command failed %v\n", err)
 		return rtmv1.QueryWhatIsResponse{}, err
 	}
 
-	return querySchemaRes, nil
+	return *querySchemaRes, nil
 }
 
 // TODO: Add GetBucket when implemented

@@ -8,7 +8,7 @@ import (
 
 	"github.com/denisbrodbeck/machineid"
 	"github.com/sonr-io/sonr/pkg/motor"
-	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
@@ -85,10 +85,12 @@ func CreateAccount(m motor.MotorNode, req rtmv1.CreateAccountRequest) (rtmv1.Cre
 		return res, err
 	}
 
-	if storage.Store("psk.key", res.AesPsk) != nil {
-		fmt.Println("Storage Error: ", err)
+	psk, err := storage.StoreKeyring("psk.key", res.AesPsk)
+	if err != nil {
+		fmt.Println("Store Key Error: ", err)
 		return res, err
 	}
+	fmt.Println("PSK: ", psk)
 
 	if storage.StoreInfo("address.snr", m) != nil {
 		fmt.Println("Storage Error: ", err)

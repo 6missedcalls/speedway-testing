@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	rtmv1 "github.com/sonr-io/sonr/pkg/motor/types"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/storage"
 )
@@ -37,14 +37,15 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 		})
 		return
 	}
-	aesPskKey, err := storage.Load("psk.key")
+	aesPskKey, err := storage.LoadKeyring("psk.key")
 	if err != nil {
 		fmt.Println("err", err)
 	}
+
 	req := rtmv1.LoginRequest{
 		Did:       body.Address,
 		Password:  body.Password,
-		AesPskKey: aesPskKey,
+		AesPskKey: aesPskKey.Data,
 	}
 
 	m := binding.CreateInstance()

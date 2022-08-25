@@ -1,9 +1,11 @@
 package storage
 
 import (
+	"fmt"
 	"os"
 
-	"github.com/sonr-io/sonr/pkg/motor"
+	"github.com/99designs/keyring"
+	mtr "github.com/sonr-io/sonr/pkg/motor"
 )
 
 // StoreKey stores the key in the ~/.speedway/key directory
@@ -28,7 +30,7 @@ func Store(name string, data []byte) error {
 }
 
 // StoreInfo stores the account information in the ~/.speedway/info directory
-func StoreInfo(name string, m motor.MotorNode) error {
+func StoreInfo(name string, m mtr.MotorNode) error {
 	homedir, err := os.UserHomeDir()
 	if err != nil {
 		return err
@@ -54,4 +56,25 @@ func StoreInfo(name string, m motor.MotorNode) error {
 	}
 
 	return err
+}
+
+func StoreKeyring(name string, data []byte) (keyring.Item, error) {
+	ring, _ := keyring.Open(keyring.Config{
+		ServiceName: "speedway",
+	})
+
+	_ = ring.Set(keyring.Item{
+		Key:  name,
+		Data: data,
+	})
+
+	key, err := ring.Get(name)
+	if err != nil {
+		return key, err
+	}
+	if key.Data == nil {
+		return key, fmt.Errorf("no data found")
+	}
+
+	return key, nil
 }
