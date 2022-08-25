@@ -5,6 +5,12 @@ import _ from "lodash"
 import md5 from "md5"
 import storage from "node-persist"
 
+function arrayStringDistinct(arr) {
+	return arr.sort().filter(function (item, pos, ary) {
+		return !pos || item != ary[pos - 1]
+	})
+}
+
 const generateAddress = () => `snr${md5(Math.random())}`
 const generateDid = () => `did:snr:${md5(Math.random())}`
 const generateCid = () => md5(Math.random())
@@ -58,6 +64,7 @@ app.get("/proxy/schemas", async (_, res) => {
 
 app.post("/api/v1/account/create", async ({ body }, res) => {
 	const address = generateAddress()
+
 	const password = body.password || ""
 
 	await storage.setItem(accountStoreKey(address), {
@@ -163,7 +170,7 @@ app.post("/api/v1/bucket/get", async ({ body }, res) => {
 
 app.post("/api/v1/bucket/update", async ({ body }, res) => {
 	const bucket = await storage.getItem(bucketStoreKey(body.bucket))
-	bucket.objects = body.objects
+	bucket.objects = arrayStringDistinct(bucket.objects.concat(body.objects))
 	await storage.setItem(bucketStoreKey(body.bucket), bucket)
 	res.json(bucket)
 })
@@ -171,7 +178,7 @@ app.post("/api/v1/bucket/update", async ({ body }, res) => {
 app.post("/api/v1/bucket/content", async ({ body }, res) => {
 	const bucket = await storage.getItem(bucketStoreKey(body.bucket))
 	const objects = await Promise.all(
-		_.chain(bucket.objects).map(objectStoreKey).map(storage.getItem).valueOf()
+		bucket.objects.map(objectStoreKey).map(storage.getItem)
 	)
 	res.json(objects)
 })
@@ -195,6 +202,7 @@ app.post("/api/v1/bucket/all", async ({ body }, res) => {
 
 app.post("/api/v1/object/build", async ({ body }, res) => {
 	const schema = await storage.getItem(schemaStoreKey(body.SchemaDid))
+
 	const fieldsExpected = _.map(schema.fields, "name")
 	const fieldsReceived = _.keys(body.Object)
 	if (_.difference(fieldsExpected, fieldsReceived).length > 0) {

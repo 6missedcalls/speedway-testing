@@ -37,7 +37,7 @@ function ButtonGroup({
 						skin={route === currentPath ? "primary" : ""}
 						label={label}
 						iconName={iconName}
-						iconType="outline"
+						iconType={route === currentPath ? "duotone" : "outline"}
 						onClick={() => navigate(route)}
 					/>
 				)

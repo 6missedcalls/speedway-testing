@@ -2,7 +2,10 @@ import { useContext } from "react"
 import LoadingCircleSvg from "../../assets/svgs/LoadingCircle"
 import EmptyList from "../../components/EmptyList"
 import LayoutMenu from "../../components/LayoutMenu"
-import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
+import {
+	AppModalContext,
+	IappModalContextState,
+} from "../../contexts/appModalContext/appModalContext"
 import { MODAL_CONTENT_NEW_BUCKET } from "../../utils/constants"
 import { Bucket } from "../../utils/types"
 
@@ -11,9 +14,10 @@ type Props = {
 	loading: boolean
 }
 const BucketsPageComponent = ({ data, loading }: Props) => {
-	const { setModalContent, openModal } = useContext(AppModalContext)
+	const { setModalContent, openModal } =
+		useContext<IappModalContextState>(AppModalContext)
 	const openNewBucketModal = () => {
-		setModalContent(MODAL_CONTENT_NEW_BUCKET)
+		setModalContent({ content: MODAL_CONTENT_NEW_BUCKET })
 		openModal()
 	}
 

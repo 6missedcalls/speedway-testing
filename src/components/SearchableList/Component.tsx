@@ -1,12 +1,16 @@
 import { NebulaIcon } from "@sonr-io/nebula-react"
 import React from "react"
-import { listTypes } from "../../utils/types"
+import {
+	listTypes,
+	IsearchableListItemData,
+	IsearchableListItem,
+} from "../../utils/types"
 import Headers from "./components/Headers"
 
 interface SearchableListComponentProps {
 	type: listTypes
 	fullListLength: number
-	list: any[]
+	list: Array<IsearchableListItem>
 	paginationSize?: number
 	paginationCurrentPage: number
 	toggleOrder: () => void
@@ -43,7 +47,7 @@ function SearchableListComponent({
 			<div className="flex justify-between p-6 w-full">
 				<input
 					onChange={onChange}
-					className="border border-default rounded-full px-4 py-2 font-normal w-80"
+					className="border border-default rounded-full px-4 py-2 font-normal w-80 mr-4"
 					placeholder="Search"
 				/>
 				{onClickNewItem && (
@@ -62,7 +66,7 @@ function SearchableListComponent({
 					</tr>
 				</thead>
 				<tbody className="text-custom-sm font-normal">
-					{list.map((row: any, rowIndex: number) => {
+					{list.map((row: IsearchableListItem, rowIndex: number) => {
 						const rowKeys = Object.keys(row)
 						return (
 							<tr
@@ -71,10 +75,14 @@ function SearchableListComponent({
 							>
 								{rowKeys.map((key: string, itemIndex: number) => {
 									if (key === "id") return null
-									const { text = "", Component, props } = row[key]
+									const {
+										text = "",
+										Component,
+										props,
+									} = row[key] as IsearchableListItemData
 									return (
 										<td className="px-4 py-5" key={`${key}-${itemIndex}`}>
-											{text}
+											{text as string}
 											{Component && <Component {...props} />}
 										</td>
 									)

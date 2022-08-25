@@ -12,6 +12,19 @@ interface createAccountProps {
 	password: string
 }
 
+interface AuthenticationState {
+	isLogged: boolean
+	loading: boolean
+	error: boolean
+	Address: string
+}
+export const initialState: AuthenticationState = {
+	isLogged: false,
+	loading: false,
+	error: false,
+	Address: "",
+}
+
 export const userLogin = createAsyncThunk(
 	"authentication/login",
 	async ({ walletAddress, password }: loginProps, thunkAPI) => {
@@ -35,19 +48,6 @@ export const userCreateAccount = createAsyncThunk(
 		}
 	}
 )
-
-interface AuthenticationState {
-	isLogged: boolean
-	loading: boolean
-	error: boolean
-	Address: string
-}
-export const initialState: AuthenticationState = {
-	isLogged: false,
-	loading: false,
-	error: false,
-	Address: "",
-}
 
 export const authenticationSlice = createSlice({
 	name: "authentication",
