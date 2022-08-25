@@ -29,6 +29,13 @@ let sessionAddress = null
 
 /// DEVELOPMENT
 
+app.use("*", async (req, _, next) => {
+	console.info(`${req.method} ${req.originalUrl}`)
+	// uncomment next line to simulate slower network response
+	// await new Promise((r) => setTimeout(r, 1000))
+	next()
+})
+
 app.get("/dump", async (_, res) => {
 	const data = await storage.values()
 	res.json({ data })
