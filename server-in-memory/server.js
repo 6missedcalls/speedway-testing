@@ -11,8 +11,6 @@ function arrayStringDistinct(arr) {
 	})
 }
 
-const didToCid = (did) => did.split(":")[2]
-
 const generateAddress = () => `snr${md5(Math.random())}`
 const generateDid = () => `did:snr:${md5(Math.random())}`
 const generateCid = () => md5(Math.random())
@@ -173,7 +171,7 @@ app.post("/api/v1/bucket/content", async ({ body }, res) => {
 	const bucket = await storage.getItem(bucketStoreKey(body.bucket))
 	const objects = await Promise.all(
 		bucket.objects
-			.map((did) => objectStoreKey(didToCid(did)))
+			.map(objectStoreKey)
 			.map(storage.getItem)
 	)
 	res.json(objects)

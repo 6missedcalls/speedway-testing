@@ -9,7 +9,6 @@ import {
 } from "../../../../redux/slices/bucketSlice"
 import { userCreateObject } from "../../../../redux/slices/objectsSlice"
 import { userGetSchema } from "../../../../redux/slices/schemasSlice"
-import { cidToDid } from "../../../../utils/did"
 import { IobjectPropertyChange } from "../../../../utils/types"
 import NewObjectModalContentComponent from "./Component"
 
@@ -93,7 +92,7 @@ function NewObjectModalContentContainer({
 
 		const bucketUpdatePayload = {
 			bucket: selectedBucket,
-			objects: [cidToDid(object.payload.reference.Cid)],
+			objects: [object.payload.reference.Cid],
 		}
 
 		await dispatch(updateBucket({ ...bucketUpdatePayload }))
