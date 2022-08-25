@@ -3,7 +3,6 @@ import {
 	AppModalContext,
 	IappModalContextState,
 } from "../../contexts/appModalContext/appModalContext"
-import { NewObjectModalContentContainerProps } from "../../pages/Objects/components/NewObjectModalContent/Container"
 import modalContentMap from "../../utils/modalContentMap"
 import AppModalComponent from "./Component"
 

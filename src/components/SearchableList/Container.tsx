@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import {
 	IsearchableListItem,
 	listTypes,
-	IsearchableListItemData,
 } from "../../utils/types"
 import SearchableListComponent from "./Component"
 
