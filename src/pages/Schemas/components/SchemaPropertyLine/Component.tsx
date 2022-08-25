@@ -1,6 +1,5 @@
 import { handlePropertyChangeProps, Iproperty } from "../../../../utils/types"
 import { NebulaIcon } from "@sonr-io/nebula-react"
-import { useRef } from "react"
 
 interface SchemaPropertyComponentProps {
 	handlePropertyChange: ({ index, data }: handlePropertyChangeProps) => void

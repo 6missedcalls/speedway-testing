@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../../../redux/slices/authenticationSlice"
 import {
-	getAllBuckets,
 	selectBuckets,
 	updateBucket,
 } from "../../../../redux/slices/bucketSlice"
@@ -37,6 +36,7 @@ function NewObjectModalContentContainer({
 		if (modalSelectedSchema) {
 			getSchema()
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [modalSelectedSchema])
 
 	async function getSchema() {

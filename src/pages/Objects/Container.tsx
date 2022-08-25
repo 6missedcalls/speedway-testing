@@ -16,7 +16,6 @@ import {
 } from "../../redux/slices/schemasSlice"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
 import { addressToDid } from "../../utils/did"
-import { obfuscateDid } from "../../utils/string"
 import ObjectsPageComponent from "./Component"
 
 function ObjectsPageContainer() {
@@ -37,6 +36,7 @@ function ObjectsPageContainer() {
 
 	useEffect(() => {
 		initialize()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(() => {
@@ -45,12 +45,14 @@ function ObjectsPageContainer() {
 				dispatch(userGetBucketObjects({ bucket: did }))
 			})
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [buckets])
 
 	useEffect(() => {
 		if (selectedSchemaDid) {
 			getSchema()
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedSchemaDid])
 
 	async function getSchema() {
