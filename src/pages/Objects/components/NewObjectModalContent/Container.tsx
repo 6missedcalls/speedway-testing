@@ -8,13 +8,14 @@ import {
 } from "../../../../redux/slices/bucketSlice"
 import { userCreateObject } from "../../../../redux/slices/objectsSlice"
 import { userGetSchema } from "../../../../redux/slices/schemasSlice"
-import { IobjectPropertyChange } from "../../../../utils/types"
+import { AppDispatch } from "../../../../redux/store"
+import { IobjectPropertyChange, Ischema } from "../../../../utils/types"
 import NewObjectModalContentComponent from "./Component"
 
 export interface NewObjectModalContentContainerProps {
 	initialSelectedSchema: string
-	initialSchemaFields: Array<any>
-	schemas: Array<any>
+	initialSchemaFields: Array<Record<string, any>>
+	schemas: Array<Ischema>
 }
 
 function NewObjectModalContentContainer({
@@ -23,7 +24,7 @@ function NewObjectModalContentContainer({
 	schemas,
 }: NewObjectModalContentContainerProps) {
 	const { closeModal } = useContext(AppModalContext)
-	const dispatch = useDispatch<any>()
+	const dispatch = useDispatch<AppDispatch>()
 	const [modalSelectedSchema, setModalSelectedSchema] = useState(
 		initialSelectedSchema
 	)
@@ -79,7 +80,7 @@ function NewObjectModalContentContainer({
 		const objectPayload = {
 			bucketDid: selectedBucket,
 			schemaDid: modalSelectedSchema,
-			label: selectedSchemaData.schema.label,
+			label: selectedSchemaData?.schema.label,
 			object: properties.reduce((acc, item) => {
 				return {
 					...acc,

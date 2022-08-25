@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react"
-import {
-	IsearchableListItem,
-	listTypes,
-} from "../../utils/types"
+import { IsearchableListItem, listTypes } from "../../utils/types"
 import SearchableListComponent from "./Component"
 
 interface SearchableListContainerProps {

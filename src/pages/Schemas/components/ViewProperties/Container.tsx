@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useDispatch } from "react-redux"
 import LoadingCircleSvg from "../../../../assets/svgs/LoadingCircle"
 import { userGetSchema } from "../../../../redux/slices/schemasSlice"
+import { AppDispatch } from "../../../../redux/store"
 import { IgetSchemaFields, IpropertyResponse } from "../../../../utils/types"
 import ViewPropertiesComponent from "./Component"
 
@@ -16,7 +17,7 @@ function ViewPropertiesContainer({
 	const [isOpen, setIsOpen] = useState(false)
 	const [loading, setLoading] = useState(false)
 	const [properties, setProperties] = useState<Array<IpropertyResponse>>([])
-	const dispatch = useDispatch<any>()
+	const dispatch = useDispatch<AppDispatch>()
 
 	async function getSchema() {
 		if (properties.length === 0) {
