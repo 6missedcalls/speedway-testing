@@ -22,7 +22,7 @@ function ObjectsEmptyListContainer({
 	return (
 		<ObjectsEmptyListComponent
 			goToSchemas={goToSchemas}
-			schemasCount={schemasCount}
+			hasSchema={schemasCount > 0}
 			openNewObjectModal={openNewObjectModal}
 			loading={loading}
 		/>

@@ -1,17 +1,18 @@
-import { Button, NebulaIcon } from "@sonr-io/nebula-react"
+import { Button } from "@sonr-io/nebula-react"
 import LoadingCircleSvg from "../../../../assets/svgs/LoadingCircle"
+import EmptyList from "../../../../components/EmptyList"
 
 interface ObjectsEmptyListComponentProps {
 	openNewObjectModal: () => void
 	loading: boolean
-	schemasCount: number
+	hasSchema: boolean
 	goToSchemas: () => void
 }
 
 function ObjectsEmptyListComponent({
 	openNewObjectModal,
 	loading,
-	schemasCount,
+	hasSchema,
 	goToSchemas,
 }: ObjectsEmptyListComponentProps) {
 	return (
@@ -24,39 +25,30 @@ function ObjectsEmptyListComponent({
 				</div>
 			) : (
 				<div className="flex justify-center items-center w-full">
-					<div className="flex flex-col justify-center items-center border border-[#DEDDE4] px-16 py-10 rounded-2xl mt-24">
-						<div className="flex justify-center items-center w-24 h-24 shadow-xxl bg-white rounded-2xl border-white border-2 mb-6">
-							<div className="flex justify-center items-center">
-								<NebulaIcon
-									className="w-12 h-12 cursor-pointer"
-									iconName="MessageQuestion"
-									iconType="duotone"
+					<EmptyList
+						message={
+							!hasSchema
+								? "You need to create a Schema before creating Objects"
+								: "No Objects using this Schema...Yet..."
+						}
+						cta={
+							!hasSchema ? (
+								<Button
+									styling="text-custom-md font-extrabold tracking-custom-tight h-12"
+									onClick={goToSchemas}
+									label="Go to Schemas Page"
 								/>
-							</div>
-						</div>
-						<div className="mb-10">
-							<span className="block text-custom-lg font-extrabold text-subdued">
-								{schemasCount === 0
-									? "You need to create a Schema before creating Objects"
-									: "No Objects using this Schema...Yet..."}
-							</span>
-						</div>
-						{schemasCount === 0 ? (
-							<Button
-								styling="text-custom-md font-extrabold tracking-custom-tight h-12"
-								onClick={goToSchemas}
-								label="Go to Schemas Page"
-							/>
-						) : (
-							<Button
-								styling="text-custom-md font-extrabold tracking-custom-tight h-12"
-								onClick={openNewObjectModal}
-								iconName="Add"
-								iconType="outline"
-								label="Create New Object"
-							/>
-						)}
-					</div>
+							) : (
+								<Button
+									styling="text-custom-md font-extrabold tracking-custom-tight h-12"
+									onClick={openNewObjectModal}
+									iconName="Add"
+									iconType="outline"
+									label="Create New Object"
+								/>
+							)
+						}
+					/>
 				</div>
 			)}
 		</>
