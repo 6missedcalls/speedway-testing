@@ -22,7 +22,6 @@ interface SearchableListComponentProps {
 	totalPages: number
 	onClickNewItem?: () => void
 }
-type bla = "text" | "Component" | "props"
 
 function SearchableListComponent({
 	list,
