@@ -47,7 +47,7 @@ function SearchableListComponent({
 			<div className="flex justify-between p-6 w-full">
 				<input
 					onChange={onChange}
-					className="border border-default rounded-full px-4 py-2 font-normal w-80"
+					className="border border-default rounded-full px-4 py-2 font-normal w-80 mr-4"
 					placeholder="Search"
 				/>
 				{onClickNewItem && (
