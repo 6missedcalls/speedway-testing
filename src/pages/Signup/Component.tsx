@@ -62,7 +62,7 @@ const Component = ({
 				</div>
 			}
 			content={
-				<div className="flex flex-col justify-center items-center w-96">
+				<div className="flex flex-col justify-center w-full max-w-sm">
 					<h1 className="text-custom-xl font-extrabold mb-8 text-emphasis">
 						Create Vault Password
 					</h1>
