@@ -3,13 +3,11 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../../../redux/slices/authenticationSlice"
 import {
-	getAllBuckets,
 	selectBuckets,
 	updateBucket,
 } from "../../../../redux/slices/bucketSlice"
 import { userCreateObject } from "../../../../redux/slices/objectsSlice"
 import { userGetSchema } from "../../../../redux/slices/schemasSlice"
-import { cidToDid } from "../../../../utils/did"
 import { IobjectPropertyChange } from "../../../../utils/types"
 import NewObjectModalContentComponent from "./Component"
 
@@ -38,6 +36,7 @@ function NewObjectModalContentContainer({
 		if (modalSelectedSchema) {
 			getSchema()
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [modalSelectedSchema])
 
 	async function getSchema() {
@@ -93,7 +92,7 @@ function NewObjectModalContentContainer({
 
 		const bucketUpdatePayload = {
 			bucket: selectedBucket,
-			objects: [cidToDid(object.payload.reference.Cid)],
+			objects: [object.payload.reference.Cid],
 		}
 
 		await dispatch(updateBucket({ ...bucketUpdatePayload }))

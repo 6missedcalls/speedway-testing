@@ -8,7 +8,7 @@ export function isEmptyObject(obj: Record<string, any>) {
 
 export function arrayStringDistinct(arr: Array<string>) {
 	return arr.sort().filter(function (item, pos, ary) {
-		return !pos || item != ary[pos - 1]
+		return !pos || item !== ary[pos - 1]
 	})
 }
 

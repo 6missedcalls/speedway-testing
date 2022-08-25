@@ -9,7 +9,7 @@ export const createAccount = async (
 ): Promise<CreateAccountResponse> => {
 	const url = `${BASE_API}/account/create`
 
-	const payload = JSON.stringify({ Password: password })
+	const payload = JSON.stringify({ password })
 
 	const options = {
 		method: "POST",

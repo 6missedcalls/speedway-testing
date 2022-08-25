@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { createObject, getBucketContent } from "../../service/objects"
-import { arrayObjectDistinct, arrayStringDistinct } from "../../utils/object"
-import { Bucket, InewObject } from "../../utils/types"
+import { arrayObjectDistinct } from "../../utils/object"
+import { InewObject } from "../../utils/types"
 import { RootState } from "../store"
 
 export interface ObjectsState {

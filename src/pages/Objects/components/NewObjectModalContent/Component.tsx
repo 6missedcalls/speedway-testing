@@ -46,7 +46,7 @@ function NewObjectModalContentComponent({
 				<div className="flex justify-between">
 					<div className="w-full flex flex-col justify-start">
 						<div>Schemas</div>
-						<div className="w-full relative pointer-events-none select-none border border-default-border rounded-md w-3/12 cursor-pointer flex justify-between">
+						<div className="relative pointer-events-none select-none border border-default-border rounded-md w-3/12 cursor-pointer flex justify-between">
 							<select
 								className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
 								onChange={(event) => setModalSelectedSchema(event.target.value)}
@@ -68,7 +68,7 @@ function NewObjectModalContentComponent({
 					<div className="w-6" />
 					<div className="w-full flex flex-col justify-start">
 						<div>Buckets</div>
-						<div className="w-full relative pointer-events-none select-none border border-default-border rounded-md w-3/12 cursor-pointer flex justify-between">
+						<div className="relative pointer-events-none select-none border border-default-border rounded-md w-3/12 cursor-pointer flex justify-between">
 							<select
 								className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
 								onChange={(event) => handleChangeBucket(event.target.value)}

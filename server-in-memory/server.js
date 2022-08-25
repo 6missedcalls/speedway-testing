@@ -11,8 +11,6 @@ function arrayStringDistinct(arr) {
 	})
 }
 
-const didToCid = (did) => did.split(":")[2]
-
 const generateAddress = () => `snr${md5(Math.random())}`
 const generateDid = () => `did:snr:${md5(Math.random())}`
 const generateCid = () => md5(Math.random())
@@ -59,7 +57,8 @@ app.get("/proxy/schemas", async (_, res) => {
 
 app.post("/api/v1/account/create", async ({ body }, res) => {
 	const address = generateAddress()
-	const password = body.Password || ""
+
+	const password = body.password || ""
 
 	await storage.setItem(accountStoreKey(address), {
 		address,
@@ -172,9 +171,7 @@ app.post("/api/v1/bucket/update", async ({ body }, res) => {
 app.post("/api/v1/bucket/content", async ({ body }, res) => {
 	const bucket = await storage.getItem(bucketStoreKey(body.bucket))
 	const objects = await Promise.all(
-		bucket.objects
-			.map((did) => objectStoreKey(didToCid(did)))
-			.map(storage.getItem)
+		bucket.objects.map(objectStoreKey).map(storage.getItem)
 	)
 	res.json(objects)
 })
