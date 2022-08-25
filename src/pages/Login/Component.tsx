@@ -8,7 +8,7 @@ import { Button } from "@sonr-io/nebula-react"
 
 type Props = {
 	onSubmit: () => void
-	errors: any
+	errors: Record<string, any>
 	togglePasswordVisible: () => void
 	passwordVisible: boolean
 	setPassword: React.Dispatch<React.SetStateAction<string>>

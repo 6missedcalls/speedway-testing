@@ -10,7 +10,11 @@ import {
 import { MODAL_CONTENT_NEW_SCHEMA } from "../../utils/constants"
 import { addressToDid } from "../../utils/did"
 import { obfuscateDid } from "../../utils/string"
-import { Ischema } from "../../utils/types"
+import {
+	Ischema,
+	IsearchableListItem,
+	IsearchableListItemData,
+} from "../../utils/types"
 import SchemasPageComponent from "./Component"
 import EmptyList from "./components/EmptyList"
 import ViewProperties from "./components/ViewProperties"
@@ -31,11 +35,11 @@ function SchemasPageContainer() {
 	}, [])
 
 	function openNewSchemaModal() {
-		setModalContent(MODAL_CONTENT_NEW_SCHEMA)
+		setModalContent({ content: MODAL_CONTENT_NEW_SCHEMA })
 		openModal()
 	}
 
-	function mapToListFormat(list: any) {
+	function mapToListFormat(list: Array<Ischema>) {
 		return list.map((item: Ischema) => {
 			const getSchemaPayload = {
 				address,
@@ -66,7 +70,7 @@ function SchemasPageContainer() {
 			{accountMetaData && accountMetaData.length > 0 ? (
 				<SchemasPageComponent
 					openNewSchemaModal={openNewSchemaModal}
-					list={mapToListFormat(accountMetaData)}
+					list={mapToListFormat(accountMetaData) as Array<IsearchableListItem>}
 					searchableAndSortableFieldKey="Schema name"
 					loading={loading}
 				/>
