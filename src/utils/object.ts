@@ -1,4 +1,4 @@
-export function isEmptyObject(obj: any) {
+export function isEmptyObject(obj: Record<string, any>) {
 	return (
 		obj &&
 		Object.keys(obj).length === 0 &&
@@ -12,10 +12,13 @@ export function arrayStringDistinct(arr: Array<string>) {
 	})
 }
 
-export function arrayObjectDistinct(arr: Array<Object>, key: string) {
+export function arrayObjectDistinct(
+	arr: Array<Record<string, any>>,
+	key: string
+) {
 	const uniqueIds: Array<boolean> = []
 
-	return arr.filter((element: any) => {
+	return arr.filter((element: Record<string, any>) => {
 		const isDuplicate = uniqueIds.includes(element[key])
 
 		if (!isDuplicate) {

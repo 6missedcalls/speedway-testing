@@ -1,17 +1,17 @@
 import { Button, NebulaIcon } from "@sonr-io/nebula-react"
 import TextInput from "../../../../components/TextInput"
-import { IobjectPropertyChange } from "../../../../utils/types"
+import { Bucket, IobjectPropertyChange, Ischema } from "../../../../utils/types"
 
 interface NewSchemaModalContentComponentProps {
 	closeModal: () => void
 	modalSelectedSchema: string
 	setModalSelectedSchema: React.Dispatch<React.SetStateAction<string>>
-	properties: Array<any>
+	properties: Array<Record<string, any>>
 	handlePropertiesChange: ({ value, index }: IobjectPropertyChange) => void
-	schemas: any
+	schemas: Array<Ischema>
 	save: () => void
 	handleChangeBucket: (value: string) => void
-	buckets: Array<any>
+	buckets: Array<Bucket>
 	selectedBucket: string
 }
 
@@ -52,7 +52,7 @@ function NewObjectModalContentComponent({
 								onChange={(event) => setModalSelectedSchema(event.target.value)}
 								value={modalSelectedSchema}
 							>
-								{schemas.map((item: any) => (
+								{schemas.map((item: Ischema) => (
 									<option key={item.schema.did} value={item.schema.did}>
 										{item.schema.label}
 									</option>
@@ -74,7 +74,7 @@ function NewObjectModalContentComponent({
 								onChange={(event) => handleChangeBucket(event.target.value)}
 								value={selectedBucket}
 							>
-								{buckets.map((item: any) => (
+								{buckets.map((item: Bucket) => (
 									<option key={item.did} value={item.did}>
 										{item.label}
 									</option>

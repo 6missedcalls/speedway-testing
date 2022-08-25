@@ -62,7 +62,7 @@ const bucketSlice = createSlice({
 			const { payload } = action
 			const editedBucketDid = payload.did
 			const addedObjects = payload.objects
-			const editedBucket: any =
+			const editedBucket =
 				state.list.find((bucket) => bucket.did === editedBucketDid) || []
 			const editedBucketIndex = state.list.findIndex(
 				(bucket) => bucket.did === editedBucketDid
@@ -70,7 +70,7 @@ const bucketSlice = createSlice({
 
 			if (editedBucketIndex !== -1) {
 				state.list[editedBucketIndex].objects = arrayStringDistinct(
-					editedBucket.objects.concat(addedObjects)
+					(editedBucket as Bucket).objects.concat(addedObjects)
 				)
 			}
 		})

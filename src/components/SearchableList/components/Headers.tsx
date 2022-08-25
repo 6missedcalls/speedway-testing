@@ -1,10 +1,10 @@
-import { listTypes } from "../../../utils/types"
+import { listTypes, IsearchableListItem } from "../../../utils/types"
 import ObjectHeaders from "./ObjectsHeader"
 import SchemaHeaders from "./SchemaHeaders"
 
 interface HeadersProps {
 	type: listTypes
-	list: any
+	list: Array<IsearchableListItem>
 	orderAsc: boolean
 	toggleOrder: () => void
 }

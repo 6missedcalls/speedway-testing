@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { createObject, getBucketContent } from "../../service/objects"
 import { arrayObjectDistinct, arrayStringDistinct } from "../../utils/object"
-import { InewObject } from "../../utils/types"
+import { Bucket, InewObject } from "../../utils/types"
 import { RootState } from "../store"
 
 export interface ObjectsState {
@@ -30,7 +30,7 @@ export const userCreateObject = createAsyncThunk(
 
 export const userGetBucketObjects = createAsyncThunk(
 	"bucket/content",
-	async ({ bucket }: any, thunkAPI) => {
+	async ({ bucket }: { bucket: string }, thunkAPI) => {
 		try {
 			const data = await getBucketContent({ bucket })
 			return data

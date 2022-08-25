@@ -2,8 +2,8 @@ import React, { useState } from "react"
 
 interface TextInputProps {
 	testId?: string
-	LeftIcon?: any
-	RightIcon?: any
+	LeftIcon?: React.FC
+	RightIcon?: React.FC
 	onHandleFocus?: Function
 	handleOnClick?: Function
 	handleOnChange: Function
@@ -14,7 +14,7 @@ interface TextInputProps {
 	error?: string | boolean
 	value: string
 	className?: string
-	inputRef?: any
+	inputRef?: React.MutableRefObject<null>
 	rightIconOnClick?: Function
 }
 

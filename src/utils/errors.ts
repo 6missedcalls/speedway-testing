@@ -6,7 +6,7 @@ interface formatApiErrorProps {
 
 export function formatApiError({ error, url, options }: formatApiErrorProps) {
 	if (typeof error === "string") return error
-	if (error.message && typeof error.message === "string") return error.message
+	if (error?.message && typeof error.message === "string") return error.message
 	return `Error calling ${url} with options: ${JSON.stringify(
 		options,
 		null,

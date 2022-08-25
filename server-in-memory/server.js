@@ -59,7 +59,7 @@ app.get("/proxy/schemas", async (_, res) => {
 
 app.post("/api/v1/account/create", async ({ body }, res) => {
 	const address = generateAddress()
-	const password = body.password || body.Password || ""
+	const password = body.Password || ""
 
 	await storage.setItem(accountStoreKey(address), {
 		address,

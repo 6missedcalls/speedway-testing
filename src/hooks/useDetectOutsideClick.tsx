@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react"
+import React, { useEffect } from "react"
 
 interface useDetectOutsideClickProps {
 	ref: React.RefObject<HTMLInputElement>
-	callback: any
+	callback: Function
 }
 
 function useDetectOutsideClick({ ref, callback }: useDetectOutsideClickProps) {

@@ -2,16 +2,16 @@ import LayoutMenu from "../../components/LayoutMenu"
 import SearchableList from "../../components/SearchableList"
 import { NebulaIcon } from "@sonr-io/nebula-react"
 import EmptyList from "./components/EmptyList"
-import { listTypes } from "../../utils/types"
+import { Ischema, listTypes, IsearchableListItem } from "../../utils/types"
 
 interface ObjectsPageComponentProps {
-	schemas: Array<any>
+	schemas: Array<Ischema>
 	selectedSchemaDid: string
 	setSelectedSchema: React.Dispatch<React.SetStateAction<string>>
 	openNewObjectModal: () => void
 	loading: boolean
 	schemasCount: number
-	list: any
+	list: Array<IsearchableListItem>
 }
 
 const ObjectsPageComponent = ({

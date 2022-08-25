@@ -41,7 +41,7 @@ export interface Ischema {
 		did: string
 		label: string
 		cid?: string
-		fields?: any
+		fields?: Record<string, any>
 	}
 	creator: string
 	timestamp?: number
@@ -62,7 +62,7 @@ export interface InewSchema {
 export interface InewObject {
 	schemaDid: string
 	label: string
-	object: any
+	object: Record<string, any>
 }
 
 export interface IobjectPropertyChange {
@@ -78,4 +78,16 @@ export type Bucket = {
 	label: string
 	objects: string[]
 	did: string
+}
+
+export interface IsearchableListItemData {
+	text?: string
+	Component?: React.FC
+	props?: Record<string, any>
+}
+
+export interface IsearchableListItem {
+	[key: string]: {
+		[key: string]: IsearchableListItemData
+	}
 }

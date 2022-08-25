@@ -13,7 +13,7 @@ import { cidToDid } from "../../../../utils/did"
 import { IobjectPropertyChange } from "../../../../utils/types"
 import NewObjectModalContentComponent from "./Component"
 
-interface NewObjectModalContentContainerProps {
+export interface NewObjectModalContentContainerProps {
 	initialSelectedSchema: string
 	initialSchemaFields: Array<any>
 	schemas: Array<any>

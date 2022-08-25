@@ -32,7 +32,7 @@ export const createObject = async ({
 	}
 }
 
-export const getBucketContent = async ({ bucket }: any) => {
+export const getBucketContent = async ({ bucket }: { bucket: string }) => {
 	const url = `${BASE_API}/bucket/content`
 
 	const payload = JSON.stringify({ bucket })

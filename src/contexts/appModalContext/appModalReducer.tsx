@@ -3,8 +3,17 @@ import {
 	OPEN_MODAL,
 	SET_MODAL_CONTENT,
 } from "../../utils/constants"
+import { IappModalContextState } from "./appModalContext"
 
-function AppModalReducer(state: any, { type, payload }: any) {
+interface AppModalReducerAction {
+	type: string
+	payload: Record<string, any>
+}
+
+function AppModalReducer(
+	state: IappModalContextState,
+	{ type, payload }: AppModalReducerAction
+) {
 	switch (type) {
 		case SET_MODAL_CONTENT: {
 			return {
