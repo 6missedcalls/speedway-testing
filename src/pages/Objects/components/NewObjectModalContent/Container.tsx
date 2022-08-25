@@ -36,7 +36,7 @@ function NewObjectModalContentContainer({
 		if (modalSelectedSchema) {
 			getSchema()
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [modalSelectedSchema])
 
 	async function getSchema() {

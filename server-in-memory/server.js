@@ -170,9 +170,7 @@ app.post("/api/v1/bucket/update", async ({ body }, res) => {
 app.post("/api/v1/bucket/content", async ({ body }, res) => {
 	const bucket = await storage.getItem(bucketStoreKey(body.bucket))
 	const objects = await Promise.all(
-		bucket.objects
-			.map(objectStoreKey)
-			.map(storage.getItem)
+		bucket.objects.map(objectStoreKey).map(storage.getItem)
 	)
 	res.json(objects)
 })
