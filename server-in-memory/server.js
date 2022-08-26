@@ -30,7 +30,8 @@ let sessionAddress = null
 /// DEVELOPMENT
 
 app.use("*", async (req, _, next) => {
-	console.info(`${req.method} ${req.originalUrl}`)
+	// uncomment next line to see request log
+	// console.info(`${req.method} ${req.originalUrl}`)
 	// uncomment next line to simulate slower network response
 	// await new Promise((r) => setTimeout(r, 1000))
 	next()
@@ -156,16 +157,13 @@ app.post("/api/v1/bucket/create", async ({ body }, res) => {
 	const bucket = {
 		did,
 		label: body.label,
+		creator: body.creator,
 		objects: [],
-		creator: sessionAddress,
 	}
 	await storage.setItem(bucketStoreKey(did), bucket)
-	res.json(bucket)
-})
-
-app.post("/api/v1/bucket/get", async ({ body }, res) => {
-	const bucket = await storage.getItem(bucketStoreKey(body.bucket))
-	res.json(bucket)
+	res.json({
+		"service-information": { serviceEndpoint: { did } },
+	})
 })
 
 app.post("/api/v1/bucket/update", async ({ body }, res) => {
