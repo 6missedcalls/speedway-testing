@@ -17,6 +17,8 @@ import {
 } from "@sonr-io/validation/dist/validation"
 import validate from "@sonr-io/validation/dist/validator"
 import Signup from "./Component"
+import { AppDispatch } from "../../redux/store"
+import { loginPayload } from "../../utils/types"
 
 const passwordRules = [
 	{
@@ -53,7 +55,7 @@ const Container = () => {
 	const [password, setPassword] = useState("")
 	const [passwordConfirm, setPasswordConfirm] = useState("")
 	const [passwordVisible, setPasswordVisible] = useState(false)
-	const [errors, setErrors] = useState<any>({
+	const [errors, setErrors] = useState<Record<string, any>>({
 		vaultPassword: {
 			noSpaces: false,
 			hasSpecialCharacter: true,
@@ -67,7 +69,7 @@ const Container = () => {
 
 	const loading = useSelector(selectAuthenticationIsLoading)
 	const navigate = useNavigate()
-	const dispatch = useDispatch<any>()
+	const dispatch = useDispatch<AppDispatch>()
 
 	async function createAccountAndLogin() {
 		if (!validateStatePassword()) return
@@ -75,7 +77,7 @@ const Container = () => {
 		const createAccountResponse = await dispatch(
 			userCreateAccount({ password })
 		)
-		const { payload } = createAccountResponse
+		const payload = createAccountResponse.payload as loginPayload
 
 		await dispatch(userLogin({ walletAddress: payload.Address, password }))
 		navigate(ROUTE_POST_SIGNUP)

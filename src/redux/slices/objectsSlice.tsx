@@ -5,7 +5,7 @@ import { InewObject } from "../../utils/types"
 import { RootState } from "../store"
 
 export interface ObjectsState {
-	list: Array<any>
+	list: Array<Record<string, any>>
 	loading: boolean
 	error: boolean
 }

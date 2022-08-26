@@ -3,6 +3,11 @@ export enum listTypes {
 	object,
 }
 
+export type loginPayload = {
+	Address: string
+	Password: string
+}
+
 export interface IlistItem {
 	name: string
 	did: string
@@ -61,7 +66,7 @@ export interface InewSchema {
 
 export interface InewObject {
 	schemaDid: string
-	label: string
+	label?: string
 	object: Record<string, any>
 }
 

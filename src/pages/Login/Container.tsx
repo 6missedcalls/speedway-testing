@@ -38,7 +38,7 @@ const Container = () => {
 	const isLogged = useSelector(selectIsLogged)
 	const loginError = useSelector(selectLoginError)
 	const loading = useSelector(selectAuthenticationIsLoading)
-	const [errors, setErrors] = useState<any>({})
+	const [errors, setErrors] = useState<Record<string, any>>({})
 
 	useEffect(() => {
 		if (isLogged) {

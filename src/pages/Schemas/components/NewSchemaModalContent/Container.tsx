@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../../../redux/slices/authenticationSlice"
 import { userCreateSchema } from "../../../../redux/slices/schemasSlice"
+import { AppDispatch } from "../../../../redux/store"
 import { IschemaTypeMap, schemaTypeMap } from "../../../../utils/mappings"
 import { isEmptyObject } from "../../../../utils/object"
 import {
@@ -18,7 +19,7 @@ const emptyProperty = {
 }
 
 function NewSchemaModalContentContainer() {
-	const dispatch = useDispatch<any>()
+	const dispatch = useDispatch<AppDispatch>()
 	const address = useSelector(selectAddress)
 	const { closeModal } = useContext(AppModalContext)
 	const [schemaName, setSchemaName] = useState("")

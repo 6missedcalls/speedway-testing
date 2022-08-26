@@ -7,14 +7,11 @@ import {
 	selectSchemasMetaDataList,
 	userGetAllSchemas,
 } from "../../redux/slices/schemasSlice"
+import { AppDispatch } from "../../redux/store"
 import { MODAL_CONTENT_NEW_SCHEMA } from "../../utils/constants"
 import { addressToDid } from "../../utils/did"
 import { obfuscateDid } from "../../utils/string"
-import {
-	Ischema,
-	IsearchableListItem,
-	IsearchableListItemData,
-} from "../../utils/types"
+import { Ischema, IsearchableListItem } from "../../utils/types"
 import SchemasPageComponent from "./Component"
 import EmptyList from "./components/EmptyList"
 import ViewProperties from "./components/ViewProperties"
@@ -26,7 +23,7 @@ function SchemasPageContainer() {
 	const accountMetaData = allMetaData.filter(
 		(schema) => schema.creator === addressToDid(address)
 	)
-	const dispatch = useDispatch<any>()
+	const dispatch = useDispatch<AppDispatch>()
 	const loading = useSelector(selectSchemasLoading)
 
 	useEffect(() => {

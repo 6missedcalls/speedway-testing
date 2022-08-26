@@ -5,10 +5,11 @@ import {
 	selectBuckets,
 	selectBucketsLoading,
 } from "../../redux/slices/bucketSlice"
+import { AppDispatch } from "../../redux/store"
 import BucketsPageComponent from "./Component"
 
 function BucketsPageContainer() {
-	const dispatch = useDispatch<any>()
+	const dispatch = useDispatch<AppDispatch>()
 	const buckets = useSelector(selectBuckets)
 	const loading = useSelector(selectBucketsLoading)
 	useEffect(() => {

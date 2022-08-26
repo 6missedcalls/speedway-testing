@@ -9,7 +9,6 @@ export const selectBuckets = (state: RootState) => {
 	return state.bucket.list
 }
 
-
 export const selectBucketCreationLoading = (state: RootState) => {
 	return state.bucket.creating
 }
@@ -19,7 +18,6 @@ export const selectBucketsLoading = (state: RootState) => {
 }
 
 export const getAllBuckets = createAsyncThunk("bucket/getAll", async () => {
-
 	return await fetch(`${BASE_API}/bucket/all`, {
 		method: "POST",
 		headers: { "content-type": "application/json" },

@@ -14,13 +14,14 @@ import {
 	userGetAllSchemas,
 	userGetSchema,
 } from "../../redux/slices/schemasSlice"
+import { AppDispatch } from "../../redux/store"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
 import { addressToDid } from "../../utils/did"
 import ObjectsPageComponent from "./Component"
 
 function ObjectsPageContainer() {
 	const { setModalContent, openModal } = useContext(AppModalContext)
-	const dispatch = useDispatch<any>()
+	const dispatch = useDispatch<AppDispatch>()
 	const [selectedSchemaDid, setSelectedSchema] = useState("")
 	const [schemaFields, setSchemaFields] = useState("")
 	const objectsList = useSelector(selectObjectsList)
