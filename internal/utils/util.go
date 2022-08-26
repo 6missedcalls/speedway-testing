@@ -14,10 +14,6 @@ import (
 	"github.com/sonr-io/speedway/internal/storage"
 )
 
-const (
-	ipfsURL = "https://ipfs.sonr.ws/ipfs/"
-)
-
 type ObjectBuilder struct {
 	Label  string                 `json:"label"`
 	Object map[string]interface{} `json:"object"`
@@ -45,6 +41,7 @@ func DeserializeWhatIs(whatis []byte) *st.WhatIs {
 
 // ResolveIPFS returns the schema definition of the given CID.
 func ResolveIPFS(cid string) (st.SchemaDefinition, error) {
+	ipfsURL := "https://ipfs.sonr.ws/ipfs/"
 	getReq, err := http.NewRequest("GET", ipfsURL+cid, nil)
 	if err != nil {
 		fmt.Printf("Request to IPFS failed %v\n", err)

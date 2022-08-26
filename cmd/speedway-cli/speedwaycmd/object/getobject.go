@@ -8,9 +8,7 @@ import (
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
-	"github.com/sonr-io/speedway/internal/retrieve"
 	"github.com/sonr-io/speedway/internal/status"
-	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -22,9 +20,9 @@ func BootstrapGetObjectCommand(ctx context.Context, logger *golog.Logger) (getOb
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
-			m := binding.InitMotor()
+			m := binding.CreateInstance()
 
-			loginResult, err := utils.Login(m, loginRequest)
+			loginResult, err := m.Login(loginRequest)
 			if err != nil {
 				logger.Fatalf(status.Error("Login Error: "), err)
 				return
@@ -57,7 +55,7 @@ func BootstrapGetObjectCommand(ctx context.Context, logger *golog.Logger) (getOb
 			}
 
 			// Retrieve the object
-			object, err := retrieve.GetObject(ctx, m, schemaDid, cid)
+			object, err := m.GetObject(ctx, schemaDid, cid)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return

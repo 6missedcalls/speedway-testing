@@ -41,10 +41,8 @@ func bootstrapCreateAccountCommand(ctx context.Context, logger *golog.Logger) (c
 			if err != nil {
 				logger.Fatalf(status.Error("Error: %s"), err)
 			}
-			// if storage.Store("aes.key", aesKey) != nil {
-			// 	logger.Fatalf(status.Error("Storage Error: %s"), err)
-			// }
-			store, err := storage.Store("aes", aesKey)
+
+			store, err := storage.Store("dsc", aesKey)
 			if err != nil {
 				logger.Fatalf(status.Error("Storage Error: %s"), err)
 			}

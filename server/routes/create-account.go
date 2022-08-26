@@ -46,7 +46,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 		})
 		return
 	}
-	store, err := storage.Store("aes", aesKey)
+	store, err := storage.Store("dsc", aesKey)
 	if err != nil {
 		fmt.Println("Keyring Error", err)
 	}

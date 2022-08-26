@@ -26,13 +26,19 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 
 			loginResult, err := utils.Login(m, loginRequest)
 			if err != nil {
-				logger.Fatalf("Login Error: ", err)
+				fmt.Println(status.Error("Error: %s"), err)
 				return
 			}
 			if loginResult.Success {
-				logger.Info(status.Success("Login Successful"))
+				fmt.Println(status.Success("Login successful"))
 			} else {
-				logger.Fatalf(status.Error("Login Failed"))
+				fmt.Println(status.Error("Login failed"))
+				return
+			}
+
+			creatorDid := m.GetDID()
+			if err != nil {
+				fmt.Println(status.Error("Error: %s"), err)
 				return
 			}
 
@@ -44,20 +50,27 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
+				// todo: run prompt again
 			}
 
 			// query whatis req
 			querySchemaReq := rtmv1.QueryWhatIsRequest{
-				Creator: m.GetDID().String(),
+				Creator: creatorDid.String(),
 				Did:     schemaDid,
 			}
 
-			// query whatis
 			querySchema, err := m.QuerySchema(querySchemaReq)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
+
+			definition, err := utils.ResolveIPFS(querySchema.WhatIs.Schema.Cid)
+			if err != nil {
+				fmt.Printf("Command failed %v\n", err)
+				return
+			}
+			fmt.Println(status.Debug, "Resolved Schema:", definition)
 
 			// create new object builder
 			objBuilder, err := m.NewObjectBuilder(schemaDid)
@@ -66,46 +79,47 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 				return
 			}
 
-			// ! Might Work (not tested)
-			definition, err := utils.ResolveIPFS(querySchema.WhatIs.Schema.Cid)
+			objectLabel := promptui.Prompt{
+				Label: "Enter Object Label",
+			}
+			label, err := objectLabel.Run()
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			logger.Info(status.Debug, "Resolved Schema: ", definition)
+			objBuilder.SetLabel(label)
 
-			fpPrompt := promptui.Prompt{
-				Label: "Please enter the filepath to the object",
+			for _, field := range definition.Fields {
+				valuePrompt := promptui.Prompt{
+					Label: "Enter Value for " + field.Name,
+				}
+				value, err := valuePrompt.Run()
+				if err != nil {
+					fmt.Printf("Command failed %v\n", err)
+					return
+				}
+				err = objBuilder.Set(field.Name, value)
+				if err != nil {
+					fmt.Printf("Command failed %v\n", err)
+					return
+				}
 			}
-			fp, err := fpPrompt.Run()
+
+			// build the object
+			build, err := objBuilder.Build()
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
+			fmt.Printf("Built: %v\n", build)
 
-			// Open the file and read it
-			data, err := utils.GetFile(fp)
-			if err != nil {
-				fmt.Printf("Command failed %v\n", err)
-				return
-			}
-
-			// Add the Label to the object
-			objBuilder.SetLabel(data.Label)
-
-			// Iterate through object and add to builder
-			for k, v := range data.Object {
-				objBuilder.Set(k, v)
-			}
-
-			// Upload the object
+			// upload the object
 			upload, err := objBuilder.Upload()
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			logger.Info("Upload Reference: %v\n", upload.Reference)
-
+			fmt.Printf("Upload: %v\n", upload.Reference)
 		},
 	}
 	return

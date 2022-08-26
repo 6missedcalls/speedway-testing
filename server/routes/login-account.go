@@ -16,6 +16,15 @@ type LoginRequestBody struct {
 	Password string `json:"password"`
 }
 
+type FailedLogin struct {
+	Success bool `json:"success"`
+}
+
+type SuccessfulLogin struct {
+	Success bool   `json:"success"`
+	Address string `json:"address"`
+}
+
 // @BasePath /api/v1
 // @Summary LoginAccount
 // @Schemes
@@ -61,24 +70,18 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 	}
 	fmt.Println("Result", res)
 	if !res.Success {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"Success": false,
-			"error":   "Login failed",
+		c.JSON(http.StatusUnauthorized, FailedLogin{
+			Success: false,
 		})
 	} else {
 		addr, err := m.GetAddress()
 		if err != nil {
 			fmt.Println("GetAddress Error: ", err)
 		}
-		didDocument, err := m.GetDidDocument()
-		if err != nil {
-			fmt.Println("GetDidDocument Error: ", err)
-		}
-		c.JSON(http.StatusOK, gin.H{
-			"Success":     true,
-			"Address":     addr,
-			"DIDDocument": didDocument,
+		// use SuccessfulLogin struct to return address
+		c.JSON(http.StatusOK, SuccessfulLogin{
+			Success: true,
+			Address: addr,
 		})
 	}
-
 }

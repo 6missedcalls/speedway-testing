@@ -10,7 +10,6 @@ import (
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
-	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -49,8 +48,8 @@ func bootstrapLoginCommand(ctx context.Context, logger *golog.Logger) (loginCmd 
 			if err != nil {
 				logger.Fatalf(status.Error("LoginRequest Error: %s"), err)
 			}
-			m := binding.InitMotor()
-			res, err := utils.Login(m, req)
+			m := binding.CreateInstance()
+			res, err := m.Login(req)
 			if err != nil {
 				logger.Fatalf(status.Error("Login Error: %s"), err)
 				return

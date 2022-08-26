@@ -79,7 +79,7 @@ func bootstrapCreateBucketCommand(ctx context.Context, logger *golog.Logger) (cr
 			req.Role = ConvertRole(role)
 			logger.Info("Creating bucket with label: ", bucketLabel)
 
-			res, err := m.CreateBucket(context.Background(), req)
+			res, err := m.CreateBucket(ctx, req)
 			if err != nil {
 				logger.Fatal("create bucket error: ", err)
 				return

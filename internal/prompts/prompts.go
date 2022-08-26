@@ -64,13 +64,13 @@ func QuitSelector(label string) bool {
 	}
 	_, result, err := prompt.Run()
 	if err != nil {
-		fmt.Printf("Command failed %v\n", err)
-		return false
-	}
-	if result == "Yes" {
+		fmt.Printf("Prompt failed %v\n", err)
 		return true
 	}
-	return false
+	if result == "Yes" {
+		return false
+	}
+	return true
 }
 
 func SplashScreen() string {

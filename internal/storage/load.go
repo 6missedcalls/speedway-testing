@@ -49,7 +49,7 @@ func LoadInfo(name string) (string, error) {
 AutoLoad utilizes the Load function to load the specified key from the keyring
 */
 func AutoLoad() ([]byte, []byte, error) {
-	aesKey, err := Load("aes")
+	aesKey, err := Load("dsc")
 	if aesKey.Data == nil || len(aesKey.Data) != 32 {
 		fmt.Println(chalk.Yellow, "Please add this device to your current account or make another account", chalk.Reset)
 		return nil, nil, err

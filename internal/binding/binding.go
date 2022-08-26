@@ -289,7 +289,7 @@ func (b *SpeedwayBinding) UpdateBucketItems(ctx context.Context, bucketDid strin
 
 	content := res.GetBucketItems()
 	if content == nil {
-		return nil, nil
+		return nil, fmt.Errorf("no bucket items found")
 	}
 
 	return content, nil

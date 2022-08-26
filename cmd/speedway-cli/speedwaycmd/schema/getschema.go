@@ -57,7 +57,9 @@ func bootstrapQuerySchemaCommand(ctx context.Context, logger *golog.Logger) (que
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			definition, err := utils.ResolveIPFS(schema.WhatIs.Schema.Cid)
+			cid := schema.WhatIs.Schema.Cid
+			fmt.Println(cid)
+			definition, err := utils.ResolveIPFS(cid)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
