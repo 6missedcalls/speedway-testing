@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	"github.com/sonr-io/sonr/pkg/did"
-	"github.com/sonr-io/sonr/pkg/did/ssi"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	"github.com/sonr-io/sonr/third_party/types/common"
@@ -119,10 +118,10 @@ Get the object and return a map of the object
 */
 func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid string) (map[string]interface{}, error) {
 	if b.instance == nil {
-		return map[string]interface{}{}, ErrMotorNotInitialized
+		return nil, ErrMotorNotInitialized
 	}
 	if !b.loggedIn {
-		return map[string]interface{}{}, ErrNotAuthenticated
+		return nil, ErrNotAuthenticated
 	}
 
 	queryObjectReq := rtmv1.QueryWhatIsRequest{
@@ -229,23 +228,26 @@ func (b *SpeedwayBinding) CreateSchema(req rtmv1.CreateSchemaRequest) (rtmv1.Cre
 /*
 Create the bucket and return the WhereIsResponse
 */
-func (b *SpeedwayBinding) CreateBucket(ctx context.Context, req rtmv1.CreateBucketRequest) (ssi.URI, error) {
+func (b *SpeedwayBinding) CreateBucket(ctx context.Context, req rtmv1.CreateBucketRequest) ([]*btv1.BucketItem, did.Service, error) {
 	if b.instance == nil {
-		return ssi.URI{}, ErrMotorNotInitialized
+		return nil, did.Service{}, ErrMotorNotInitialized
 	}
 	if !b.loggedIn {
-		return ssi.URI{}, ErrNotAuthenticated
+		return nil, did.Service{}, ErrNotAuthenticated
 	}
 
 	res, err := b.instance.CreateBucket(ctx, req)
 	if err != nil {
 		fmt.Println(status.Error("Error"), err)
-		return ssi.URI{}, err
+		return nil, did.Service{}, err
 	}
 
 	serv := res.CreateBucketServiceEndpoint()
+	fmt.Println(status.Info, "Service Endpoint", serv)
 
-	return serv.ID, nil
+	bucket := res.GetBucketItems()
+
+	return bucket, serv, nil
 }
 
 /*

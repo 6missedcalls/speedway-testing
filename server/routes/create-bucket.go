@@ -93,7 +93,7 @@ func (ns *NebulaServer) CreateBucket(c *gin.Context) {
 	b := binding.CreateInstance()
 
 	// create the bucket
-	res, err := b.CreateBucket(context.Background(), createBucketReq)
+	bucket, service, err := b.CreateBucket(context.Background(), createBucketReq)
 	if err != nil {
 		fmt.Println("Create Bucket Error: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -102,5 +102,8 @@ func (ns *NebulaServer) CreateBucket(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, gin.H{
+		"bucket-contents":     bucket,
+		"service-information": service,
+	})
 }

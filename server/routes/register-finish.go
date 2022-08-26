@@ -30,7 +30,7 @@ func (ns *NebulaServer) FinishRegistration(c *gin.Context) {
 	// user doesn't exist
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": fmt.Errorf("Could not find session for user: '%s': %v", username, err),
+			"error": fmt.Errorf("could not find session for user: '%s': %v", username, err),
 		})
 		return
 	}
@@ -41,7 +41,7 @@ func (ns *NebulaServer) FinishRegistration(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": fmt.Errorf("Could not find session for user: '%s': %v", username, err),
+			"error": fmt.Errorf("could not find session for user: '%s': %v", username, err),
 		})
 		return
 	}
@@ -50,7 +50,7 @@ func (ns *NebulaServer) FinishRegistration(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": fmt.Errorf("Could not find session for user: '%s': %v", username, err),
+			"error": fmt.Errorf("could not find session for user: '%s': %v", username, err),
 		})
 		return
 	}
@@ -59,7 +59,7 @@ func (ns *NebulaServer) FinishRegistration(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": fmt.Errorf("Could not find session for user: '%s': %v", username, err),
+			"error": fmt.Errorf("could not find session for user: '%s': %v", username, err),
 		})
 		return
 	}
@@ -71,7 +71,7 @@ func (ns *NebulaServer) FinishRegistration(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": fmt.Errorf("Could not find session for user: '%s': %v", username, err),
+			"error": fmt.Errorf("could not find session for user: '%s': %v", username, err),
 		})
 
 		return

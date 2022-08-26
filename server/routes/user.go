@@ -11,7 +11,7 @@ import (
 
 type User struct {
 	Username            string                   `json:"username"`
-	VerificationMethods []did.VerificationMethod `json:verificationMethods`
+	VerificationMethods []did.VerificationMethod `json:"verificationMethods"`
 	Os                  string                   `json:"os"`
 	Label               string                   `json:"label"`
 }
