@@ -6,15 +6,37 @@ interface ObjectsEmptyListComponentProps {
 	openNewObjectModal: () => void
 	loading: boolean
 	hasSchema: boolean
+	hasBucket: boolean
 	goToSchemas: () => void
+	goToBuckets: () => void
 }
 
 function ObjectsEmptyListComponent({
 	openNewObjectModal,
 	loading,
 	hasSchema,
+	hasBucket,
 	goToSchemas,
+	goToBuckets,
 }: ObjectsEmptyListComponentProps) {
+	const message = !hasSchema
+		? "You need to create a Schema before you can create Objects"
+		: !hasBucket
+		? "You need to create a Bucket before you can create Objects"
+		: "No Objects using this Schema...Yet..."
+
+	const ctaLabel = !hasSchema
+		? "Go to Schemas Page"
+		: !hasBucket
+		? "Go to Buckets page"
+		: "Create New Object"
+
+	const ctaOnClick = !hasSchema
+		? goToSchemas
+		: !hasBucket
+		? goToBuckets
+		: openNewObjectModal
+
 	return (
 		<>
 			{loading ? (
@@ -26,27 +48,13 @@ function ObjectsEmptyListComponent({
 			) : (
 				<div className="flex justify-center items-center w-full">
 					<EmptyList
-						message={
-							!hasSchema
-								? "You need to create a Schema before creating Objects"
-								: "No Objects using this Schema...Yet..."
-						}
+						message={message}
 						cta={
-							!hasSchema ? (
-								<Button
-									styling="text-custom-md font-extrabold tracking-custom-tight h-12"
-									onClick={goToSchemas}
-									label="Go to Schemas Page"
-								/>
-							) : (
-								<Button
-									styling="text-custom-md font-extrabold tracking-custom-tight h-12"
-									onClick={openNewObjectModal}
-									iconName="Add"
-									iconType="outline"
-									label="Create New Object"
-								/>
-							)
+							<Button
+								styling="text-custom-md font-extrabold px-6 py-4"
+								onClick={ctaOnClick}
+								label={ctaLabel}
+							/>
 						}
 					/>
 				</div>
