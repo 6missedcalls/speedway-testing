@@ -212,7 +212,7 @@ it("fetches a list of buckets", async () => {
 	expect(result.where_is[1].content.length).toBe(1)
 })
 
-it.skip("can add objects to buckets", async () => {
+it("can add objects to buckets", async () => {
 	const address = await accountLoggedIn(app)
 
 	const responseSchema = await app.post("/api/v1/schema/create").send({
@@ -238,11 +238,13 @@ it.skip("can add objects to buckets", async () => {
 		content: { uri: objectCid },
 	})
 
-	// const { body: result } = await app.post("/api/v1/bucket/get").send({
-	// 	bucket: bucketDid,
-	// })
-	// expect(result.objects.length).toBe(1)
-	// expect(result.objects[0]).toBe(objectCid)
+	const { body: result } = await app.get("/proxy/buckets")
+	expect(result.where_is[0].did).toBe(bucketDid)
+	expect(result.where_is[0].creator).toBe(address)
+	expect(result.where_is[0].label).toBe("Mars colony")
+	expect(result.where_is[0].content.length).toBe(2)
+	expect(result.where_is[0].content[0].ui).toBeUndefined()
+	expect(result.where_is[0].content[1].uri).toBe(objectCid)
 })
 
 it.skip("gets a bucket content", async () => {
