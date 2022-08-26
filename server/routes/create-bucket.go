@@ -13,11 +13,11 @@ import (
 )
 
 type CreateBucketRequest struct {
-	Creator    string                       `json:"creator"`    // Creator of the bucket
-	Label      string                       `json:"label"`      // Label of the bucket
-	Visibility string                       `json:"visibility"` // Visibility of the bucket
-	Role       string                       `json:"role"`       // Role of the bucket
-	Content    map[string]*types.BucketItem `json:"content"`    // Content of the bucket
+	Creator    string            `json:"creator"`    // Creator of the bucket
+	Label      string            `json:"label"`      // Label of the bucket
+	Visibility string            `json:"visibility"` // Visibility of the bucket
+	Role       string            `json:"role"`       // Role of the bucket
+	Content    map[string]string `json:"content"`    // Content of the bucket
 }
 
 // create a function that takes the r.visibility and r.role and returns the visibility and role
@@ -66,14 +66,6 @@ func (ns *NebulaServer) CreateBucket(c *gin.Context) {
 		return
 	}
 
-	// Take r.Content and convert it to []*types.BucketItem
-	var items []*types.BucketItem
-	for k, v := range r.Content {
-		v.Name = k
-		items = append(items, v)
-	}
-	fmt.Println(items)
-
 	vis, role, err := swap(r.Visibility, r.Role)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -81,7 +73,13 @@ func (ns *NebulaServer) CreateBucket(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Printf("visibility: %v, role: %v", vis, role)
+
+	items := make([]*types.BucketItem, 0)
+	// add the name, uri and type to the items array
+	items = append(items, &types.BucketItem{
+		Name: r.Content["name"],
+		Uri:  r.Content["uri"],
+	})
 
 	// Create a new create bucket request
 	createBucketReq := rtmv1.CreateBucketRequest{
@@ -89,6 +87,7 @@ func (ns *NebulaServer) CreateBucket(c *gin.Context) {
 		Label:      r.Label,
 		Visibility: vis,
 		Role:       role,
+		Content:    items,
 	}
 
 	b := binding.CreateInstance()

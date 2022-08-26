@@ -60,7 +60,7 @@ func StoreInfo(name string, m mtr.MotorNode) error {
 
 func StoreKeyring(name string, data []byte) (keyring.Item, error) {
 	ring, _ := keyring.Open(keyring.Config{
-		ServiceName: "speedway",
+		ServiceName: "Sonr Speedway",
 	})
 
 	_ = ring.Set(keyring.Item{

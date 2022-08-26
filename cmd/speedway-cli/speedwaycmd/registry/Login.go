@@ -36,15 +36,15 @@ func bootstrapLoginCommand(ctx context.Context, logger *golog.Logger) (loginCmd 
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			pskKey, err := storage.Load("psk.key")
-			if pskKey == nil || len(pskKey) != 32 {
+			pskKey, err := storage.LoadKeyring("psk")
+			if pskKey.Data == nil || len(pskKey.Data) != 32 {
 				logger.Fatalf(status.Warning("Please add this device to your current account or make another account"))
 				return
 			}
 			req := rtmv1.LoginRequest{
 				Did:       addr,
 				Password:  password,
-				AesPskKey: pskKey,
+				AesPskKey: pskKey.Data,
 			}
 			if err != nil {
 				logger.Fatalf(status.Error("LoginRequest Error: %s"), err)

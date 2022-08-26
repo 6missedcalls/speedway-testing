@@ -94,6 +94,7 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	// * Bucket Routes
 	ns.Router.POST("/api/v1/bucket/create", ns.CreateBucket)
 	ns.Router.POST("/api/v1/bucket/get", ns.GetBucket)
+	ns.Router.POST("/api/v1/bucket/update", ns.UpdateBucket)
 
 	// * Proxy Routes
 	ns.Router.GET("/proxy/schemas", ns.ProxyQuerySchemas)

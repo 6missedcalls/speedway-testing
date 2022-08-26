@@ -37,7 +37,7 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 		})
 		return
 	}
-	aesPskKey, err := storage.LoadKeyring("psk.key")
+	aesPskKey, err := storage.LoadKeyring("psk")
 	if err != nil {
 		fmt.Println("err", err)
 	}

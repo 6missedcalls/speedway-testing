@@ -46,10 +46,11 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 		})
 		return
 	}
-	if storage.Store("aes.key", aesKey) != nil {
-		fmt.Println("Storage Error: ", err)
-		return
+	store, err := storage.StoreKeyring("aes", aesKey)
+	if err != nil {
+		fmt.Println("Keyring Error", err)
 	}
+	fmt.Println("Store", store)
 
 	req := rtmv1.CreateAccountRequest{
 		Password:  body.Password,

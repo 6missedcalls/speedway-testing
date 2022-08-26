@@ -47,12 +47,12 @@ func LoadInfo(name string) (string, error) {
 // AutoLoad loads the key from the ~/.speedway/keys directory if it exists
 // otherwise it returns an error
 func AutoLoad() ([]byte, []byte, error) {
-	aesKey, err := LoadKeyring("aes.key")
+	aesKey, err := LoadKeyring("aes")
 	if aesKey.Data == nil || len(aesKey.Data) != 32 {
 		fmt.Println(chalk.Yellow, "Please add this device to your current account or make another account", chalk.Reset)
 		return nil, nil, err
 	}
-	pskKey, err := LoadKeyring("psk.key")
+	pskKey, err := LoadKeyring("psk")
 	if pskKey.Data == nil || len(pskKey.Data) != 32 {
 		fmt.Println(chalk.Yellow, "Please add this device to your current account or make another account", chalk.Reset)
 		return nil, nil, err
@@ -62,7 +62,7 @@ func AutoLoad() ([]byte, []byte, error) {
 
 func LoadKeyring(name string) (keyring.Item, error) {
 	ring, _ := keyring.Open(keyring.Config{
-		ServiceName: "speedway",
+		ServiceName: "Sonr Speedway",
 	})
 
 	key, err := ring.Get(name)
