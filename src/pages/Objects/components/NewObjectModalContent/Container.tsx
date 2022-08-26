@@ -92,8 +92,8 @@ function NewObjectModalContentContainer({
 		const object = await dispatch(userCreateObject({ ...objectPayload }))
 
 		const bucketUpdatePayload = {
-			bucket: selectedBucket,
-			objects: [object.payload.reference.Cid],
+			bucketDid: selectedBucket,
+			objectCid: object.payload.reference.Cid,
 		}
 
 		await dispatch(updateBucket({ ...bucketUpdatePayload }))
