@@ -18,7 +18,6 @@ const addressToDid = (address) => `did:snr:${address.slice(3)}`
 
 const accountStoreKey = (address) => `account-${address}`
 const schemaStoreKey = (did) => `schema-${did}`
-const bucketStoreKey = (did) => `bucket-${did}`
 const objectStoreKey = (cid) => `object-${cid}`
 
 const app = express()
@@ -52,13 +51,6 @@ app.get("/reset", async (_, res) => {
 app.get("/logout", (_, res) => {
 	sessionAddress = null
 	res.status(200).send()
-})
-
-/// CHAIN PROXY
-
-app.get("/proxy/schemas", async (_, res) => {
-	const metadata = (await storage.getItem("schemaMetaData")) || []
-	res.json({ what_is: metadata })
 })
 
 /// AUTHENTICATION
@@ -158,19 +150,24 @@ app.post("/api/v1/bucket/create", async ({ body }, res) => {
 		did,
 		label: body.label,
 		creator: body.creator,
-		objects: [],
+		content: [{}],
 	}
-	await storage.setItem(bucketStoreKey(did), bucket)
+
+	const allBuckets = (await storage.getItem("buckets")) || []
+	allBuckets.push(bucket)
+	await storage.setItem("buckets", allBuckets)
+
 	res.json({
 		"service-information": { serviceEndpoint: { did } },
 	})
 })
 
 app.post("/api/v1/bucket/update", async ({ body }, res) => {
-	const bucket = await storage.getItem(bucketStoreKey(body.bucket))
-	bucket.objects = arrayStringDistinct(bucket.objects.concat(body.objects))
-	await storage.setItem(bucketStoreKey(body.bucket), bucket)
-	res.json(bucket)
+	const allBuckets = await storage.getItem("buckets")
+	const bucket = _.find(allBuckets, { did: body.did })
+	bucket.content.push(body.content)
+	await storage.setItem("buckets", allBuckets)
+	res.json({})
 })
 
 app.post("/api/v1/bucket/content", async ({ body }, res) => {
@@ -179,21 +176,6 @@ app.post("/api/v1/bucket/content", async ({ body }, res) => {
 		bucket.objects.map(objectStoreKey).map(storage.getItem)
 	)
 	res.json(objects)
-})
-
-app.post("/api/v1/bucket/all", async ({ body }, res) => {
-	const keys = await storage.keys()
-	const allBuckets = await Promise.all(
-		_.chain(keys)
-			.filter((key) => key.slice(0, 6) === "bucket")
-			.map(storage.getItem)
-			.valueOf()
-	)
-	const buckets = _.chain(allBuckets)
-		.filter({ creator: sessionAddress })
-		.sortBy("label")
-		.valueOf()
-	res.json({ data: buckets })
 })
 
 /// OBJECTS
@@ -227,6 +209,18 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 app.post("/api/v1/object/get", async ({ body }, res) => {
 	const object = await storage.getItem(objectStoreKey(body.ObjectCid))
 	res.json(object)
+})
+
+/// CHAIN PROXY
+
+app.get("/proxy/schemas", async (_, res) => {
+	const metadata = (await storage.getItem("schemaMetaData")) || []
+	res.json({ what_is: metadata })
+})
+
+app.get("/proxy/buckets", async (_, res) => {
+	const buckets = (await storage.getItem("buckets")) || []
+	res.json({ where_is: buckets })
 })
 
 export default app
