@@ -37,7 +37,7 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 		})
 		return
 	}
-	aesPskKey, err := storage.LoadKeyring("psk")
+	aesPskKey, err := storage.Load("psk")
 	if err != nil {
 		fmt.Println("err", err)
 	}
@@ -62,7 +62,7 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 	fmt.Println("Result", res)
 	if !res.Success {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"success": false,
+			"Success": false,
 			"error":   "Login failed",
 		})
 	} else {
@@ -75,7 +75,7 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 			fmt.Println("GetDidDocument Error: ", err)
 		}
 		c.JSON(http.StatusOK, gin.H{
-			"success":     true,
+			"Success":     true,
 			"Address":     addr,
 			"DIDDocument": didDocument,
 		})

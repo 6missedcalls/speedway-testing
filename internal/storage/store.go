@@ -8,28 +8,33 @@ import (
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 )
 
-// StoreKey stores the key in the ~/.speedway/key directory
-func Store(name string, data []byte) error {
-	homedir, err := os.UserHomeDir()
+/*
+The Store function stores the specified key in the keyring
+*/
+func Store(name string, data []byte) (keyring.Item, error) {
+	ring, _ := keyring.Open(keyring.Config{
+		ServiceName: "Sonr Speedway",
+	})
+
+	_ = ring.Set(keyring.Item{
+		Key:  name,
+		Data: data,
+	})
+
+	key, err := ring.Get(name)
 	if err != nil {
-		return err
+		return key, err
 	}
-	if _, err := os.Stat(homedir + "/.speedway/keys/" + name); os.IsNotExist(err) {
-		err := os.MkdirAll(homedir+"/.speedway/keys/", 0700)
-		if err != nil {
-			return err
-		}
+	if key.Data == nil {
+		return key, fmt.Errorf("no data found")
 	}
-	store, err := os.Create(homedir + "/.speedway/keys/" + name)
-	if err != nil {
-		return err
-	}
-	_, err = store.Write(data)
-	defer store.Close()
-	return err
+
+	return key, nil
 }
 
-// StoreInfo stores the account information in the ~/.speedway/info directory
+/*
+The StoreInfo function stores the specified key in the ~/.speedway/info directory
+*/
 func StoreInfo(name string, m mtr.MotorNode) error {
 	homedir, err := os.UserHomeDir()
 	if err != nil {
@@ -56,25 +61,4 @@ func StoreInfo(name string, m mtr.MotorNode) error {
 	}
 
 	return err
-}
-
-func StoreKeyring(name string, data []byte) (keyring.Item, error) {
-	ring, _ := keyring.Open(keyring.Config{
-		ServiceName: "Sonr Speedway",
-	})
-
-	_ = ring.Set(keyring.Item{
-		Key:  name,
-		Data: data,
-	})
-
-	key, err := ring.Get(name)
-	if err != nil {
-		return key, err
-	}
-	if key.Data == nil {
-		return key, fmt.Errorf("no data found")
-	}
-
-	return key, nil
 }

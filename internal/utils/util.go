@@ -85,7 +85,7 @@ func CreateAccount(m motor.MotorNode, req rtmv1.CreateAccountRequest) (rtmv1.Cre
 		return res, err
 	}
 
-	psk, err := storage.StoreKeyring("psk", res.AesPsk)
+	psk, err := storage.Store("psk", res.AesPsk)
 	if err != nil {
 		fmt.Println("Store Key Error: ", err)
 		return res, err

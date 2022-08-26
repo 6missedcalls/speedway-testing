@@ -19,7 +19,7 @@ var (
 	ErrCannotParse   = fmt.Errorf("cannot parse response")
 )
 
-type Response struct {
+type SchemaResponse struct {
 	WhatIs []struct {
 		Did    string `json:"did"`
 		Schema struct {
@@ -52,7 +52,7 @@ func (ns *NebulaServer) ProxyQuerySchemas(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrCannotParse})
 	}
 
-	var result Response
+	var result SchemaResponse
 	json.Unmarshal([]byte(body), &result)
 
 	c.JSON(http.StatusOK, result)

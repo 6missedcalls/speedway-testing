@@ -79,7 +79,7 @@ func (b *SpeedwayBinding) CreateAccount(req rtmv1.CreateAccountRequest) (rtmv1.C
 		fmt.Println(status.Error("Create Account Error"), err)
 	}
 
-	psk, err := storage.StoreKeyring("psk", res.AesPsk)
+	psk, err := storage.Store("psk", res.AesPsk)
 	if err != nil {
 		fmt.Println(status.Error("Error"), err)
 	}

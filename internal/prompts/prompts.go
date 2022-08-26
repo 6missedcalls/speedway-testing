@@ -43,22 +43,16 @@ func LoginPrompt() rtmv1.LoginRequest {
 		address = fallbackAddr
 	}
 
-	aesKey, err := storage.LoadKeyring("aes")
-	if aesKey.Data == nil || len(aesKey.Data) != 32 {
-		fmt.Println(status.Error("AES Key Error: %s"), err)
+	aesKey, pskKey, err := storage.AutoLoad()
+	if err != nil {
+		fmt.Println(status.Error("AutoLoad Error: %s"), err)
 		return rtmv1.LoginRequest{}
 	}
-	pskKey, err := storage.LoadKeyring("psk")
-	if pskKey.Data == nil || len(pskKey.Data) != 32 {
-		fmt.Println(status.Error("PSK Key Error: %s"), err)
-		return rtmv1.LoginRequest{}
-	}
-
 	// Login Request
 	loginRequest := rtmv1.LoginRequest{
 		Did:       address,
-		AesDscKey: aesKey.Data,
-		AesPskKey: pskKey.Data,
+		AesDscKey: aesKey,
+		AesPskKey: pskKey,
 	}
 	return loginRequest
 }
