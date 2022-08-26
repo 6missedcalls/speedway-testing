@@ -48,10 +48,11 @@ func (ns *NebulaServer) UpdateBucket(c *gin.Context) {
 
 	b := binding.CreateInstance()
 
+	// ! TODO: Explore "Update Bucket Error: broadcast tx: failed to broadcast transaction: unable to resolve type URL /sonrio.sonr.bucket.UpdateWhereIs: tx parse error"
 	// Update the bucket's Content
 	updateContent, err := b.UpdateBucketItems(context.Background(), r.Did, items)
 	if err != nil {
-		fmt.Println("Update Bucket Error: ", err)
+		fmt.Println("Update Bucket Error:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Could Not Update Bucket",
 		})
