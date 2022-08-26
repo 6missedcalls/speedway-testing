@@ -59,7 +59,7 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 				Did:     schemaDid,
 			}
 
-			querySchema, err := m.QuerySchema(querySchemaReq)
+			querySchema, err := m.QueryWhatIs(querySchemaReq)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return

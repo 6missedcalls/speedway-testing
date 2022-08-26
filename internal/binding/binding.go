@@ -130,7 +130,7 @@ func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid s
 	}
 
 	// Create new QueryWhatIs request for the object
-	querySchema, err := b.instance.QuerySchema(queryObjectReq)
+	querySchema, err := b.instance.QueryWhatIs(queryObjectReq)
 	if err != nil {
 		fmt.Println(status.Error("Error"), err)
 		return nil, err
@@ -171,7 +171,7 @@ func (b *SpeedwayBinding) GetSchema(ctx context.Context, creator string, schemaD
 	}
 
 	// query schema
-	querySchemaRes, err := b.instance.QuerySchema(querySchemaReq)
+	querySchemaRes, err := b.instance.QueryWhatIs(querySchemaReq)
 	if err != nil {
 		fmt.Printf("Binding failed %v\n", err)
 		return rtmv1.QueryWhatIsResponse{}, err
@@ -306,7 +306,7 @@ func (b *SpeedwayBinding) QuerySchema(ctx context.Context, req rtmv1.QueryWhatIs
 		return rtmv1.QueryWhatIsResponse{}, ErrNotAuthenticated
 	}
 
-	schemaResponse, err := b.instance.QuerySchema(req)
+	schemaResponse, err := b.instance.QueryWhatIs(req)
 	if err != nil {
 		fmt.Println(status.Error("Error"), err)
 		return rtmv1.QueryWhatIsResponse{}, err

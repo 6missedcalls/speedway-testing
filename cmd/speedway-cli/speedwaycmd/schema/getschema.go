@@ -6,9 +6,9 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
-	"github.com/sonr-io/speedway/internal/retrieve"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
@@ -23,7 +23,7 @@ func bootstrapQuerySchemaCommand(ctx context.Context, logger *golog.Logger) (que
 
 			m := binding.InitMotor()
 
-			loginResult, err := utils.Login(m, loginRequest)
+			loginResult, err := m.Login(loginRequest)
 			if err != nil {
 				logger.Fatalf(status.Error("Error: %s"), err)
 				return
@@ -52,19 +52,27 @@ func bootstrapQuerySchemaCommand(ctx context.Context, logger *golog.Logger) (que
 				return
 			}
 
-			schema, err := retrieve.GetSchema(ctx, m, creator, schemaDid)
-			if schema.WhatIs != nil {
+			querySchemaReq := rtmv1.QueryWhatIsRequest{
+				Creator: creator,
+				Did:     schemaDid,
+			}
+
+			// query schema
+			querySchemaRes, err := m.QueryWhatIs(querySchemaReq)
+			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			cid := schema.WhatIs.Schema.Cid
+
+			cid := querySchemaRes.WhatIs.Schema.Cid
 			fmt.Println(cid)
+
 			definition, err := utils.ResolveIPFS(cid)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			logger.Info(status.Debug, "Schema: %v\n", definition)
+			logger.Info(status.Debug, "Schema:", definition)
 
 		},
 	}

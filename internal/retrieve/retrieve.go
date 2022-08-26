@@ -16,7 +16,7 @@ func GetObject(ctx context.Context, m motor.MotorNode, schemaDid string, cid str
 	}
 
 	// Create new QueryWhatIs request for the object
-	querySchema, err := m.QuerySchema(querySchemaReq)
+	querySchema, err := m.QueryWhatIs(querySchemaReq)
 	if err != nil {
 		fmt.Println(chalk.Red.Color("Error"), err)
 		return nil, err
@@ -38,23 +38,6 @@ func GetObject(ctx context.Context, m motor.MotorNode, schemaDid string, cid str
 	}
 
 	return getObject, nil
-}
-
-func GetSchema(ctx context.Context, m motor.MotorNode, creator string, schemaDid string) (rtmv1.QueryWhatIsResponse, error) {
-	// create new query schema request
-	querySchemaReq := rtmv1.QueryWhatIsRequest{
-		Creator: creator,
-		Did:     schemaDid,
-	}
-
-	// query schema
-	querySchemaRes, err := m.QuerySchema(querySchemaReq)
-	if err != nil {
-		fmt.Printf("Command failed %v\n", err)
-		return rtmv1.QueryWhatIsResponse{}, err
-	}
-
-	return *querySchemaRes, nil
 }
 
 // TODO: Add GetBucket when implemented
