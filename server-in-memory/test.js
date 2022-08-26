@@ -287,3 +287,45 @@ it("gets a bucket content", async () => {
 	expect(result[0].uri).toBeUndefined()
 	expect(result[1].uri).toBe(objectCid)
 })
+
+it("(compatibility) gets a bucket content", async () => {
+	const address = await accountLoggedIn(app)
+
+	const responseSchema = await app.post("/api/v1/schema/create").send({
+		label: "Dinosaurs",
+		fields: { firstName: 4 },
+	})
+	const schemaDid = responseSchema.body.whatIs.did
+
+	const responseBucket = await app.post("/api/v1/bucket/create").send({
+		label: "Mars colony",
+		creator: address,
+	})
+	const bucketDid = responseBucket.body["service-information"].serviceEndpoint.did
+
+	const responseObject = await app.post("/api/v1/object/build").send({
+		SchemaDid: schemaDid,
+		Label: "Sonrsaur",
+		Object: { firstName: "Marcel" },
+	})
+	const objectCid = responseObject.body.reference.Cid
+
+	await app.post("/api/v1/object/build").send({
+		SchemaDid: schemaDid,
+		Label: "Not on bucket",
+		Object: { firstName: "Jane" },
+	})
+
+	await app.post("/api/v1/bucket/update").send({
+		did: bucketDid,
+		content: {uri: objectCid},
+	})
+
+	const { body: result } = await app.post("/api/v1/bucket/content-compatible").send({
+		bucket: bucketDid,
+	})
+	expect(result.length).toBe(1)
+	expect(result[0].firstName).toBe("Marcel")
+	expect(result[0].cid).toBe(objectCid)
+	expect(result[0].schema).toBe(schemaDid)
+})

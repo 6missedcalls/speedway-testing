@@ -176,6 +176,20 @@ app.post("/api/v1/bucket/get", async ({ body }, res) => {
 	res.json(bucket.content)
 })
 
+app.post("/api/v1/bucket/content-compatible", async ({ body }, res) => {
+	const allBuckets = await storage.getItem("buckets")
+	const bucket = _.find(allBuckets, { did: body.bucket })
+	const objects = await Promise.all(
+		_.chain(bucket.content)
+			.filter("uri")
+			.map("uri")
+			.map(objectStoreKey)
+			.map(storage.getItem)
+			.valueOf()
+	)
+	res.json(objects)
+})
+
 /// OBJECTS
 
 app.post("/api/v1/object/build", async ({ body }, res) => {
