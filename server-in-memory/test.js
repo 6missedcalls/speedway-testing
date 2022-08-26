@@ -247,8 +247,8 @@ it("can add objects to buckets", async () => {
 	expect(result.where_is[0].content[1].uri).toBe(objectCid)
 })
 
-it.skip("gets a bucket content", async () => {
-	await accountLoggedIn(app)
+it("gets a bucket content", async () => {
+	const address = await accountLoggedIn(app)
 
 	const responseSchema = await app.post("/api/v1/schema/create").send({
 		label: "Dinosaurs",
@@ -258,8 +258,9 @@ it.skip("gets a bucket content", async () => {
 
 	const responseBucket = await app.post("/api/v1/bucket/create").send({
 		label: "Mars colony",
+		creator: address,
 	})
-	const bucketDid = responseBucket.body.did
+	const bucketDid = responseBucket.body["service-information"].serviceEndpoint.did
 
 	const responseObject = await app.post("/api/v1/object/build").send({
 		SchemaDid: schemaDid,
@@ -275,15 +276,14 @@ it.skip("gets a bucket content", async () => {
 	})
 
 	await app.post("/api/v1/bucket/update").send({
-		bucket: bucketDid,
-		objects: [objectCid],
+		did: bucketDid,
+		content: { uri: objectCid },
 	})
 
-	const { body: result } = await app.post("/api/v1/bucket/content").send({
-		bucket: bucketDid,
+	const { body: result } = await app.post("/api/v1/bucket/get").send({
+		did: bucketDid,
 	})
-	expect(result.length).toBe(1)
-	expect(result[0].firstName).toBe("Marcel")
-	expect(result[0].cid).toBe(objectCid)
-	expect(result[0].schema).toBe(schemaDid)
+	expect(result.length).toBe(2)
+	expect(result[0].uri).toBeUndefined()
+	expect(result[1].uri).toBe(objectCid)
 })
