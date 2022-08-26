@@ -1,22 +1,55 @@
 basePath: /api/v1
 definitions:
-  apiv1.CreateSchemaResponse:
+  github.com_sonr-io_speedway_server_routes.CreateBucketRequest:
     properties:
-      what_is:
-        items:
-          type: integer
-        type: array
+      content:
+        additionalProperties:
+          type: string
+        description: Content of the bucket
+        type: object
+      creator:
+        description: Creator of the bucket
+        type: string
+      label:
+        description: Label of the bucket
+        type: string
+      role:
+        description: Role of the bucket
+        type: string
+      visibility:
+        description: Visibility of the bucket
+        type: string
     type: object
-  apiv1.LoginResponse:
+  github.com_sonr-io_speedway_server_routes.UpdateBucketRequest:
     properties:
-      success:
-        type: boolean
+      content:
+        additionalProperties:
+          type: string
+        type: object
+      did:
+        type: string
+      resourceId:
+        type: integer
     type: object
   github.com_sonr-io_speedway_server_routes.uResponse:
     properties:
       address:
         type: string
       didDocument: {}
+    type: object
+  motor.CreateSchemaResponse:
+    properties:
+      status:
+        type: integer
+      what_is:
+        $ref: '#/definitions/types.WhatIs'
+    type: object
+  motor.LoginResponse:
+    properties:
+      success:
+        type: boolean
+      who_is:
+        $ref: '#/definitions/types.WhoIs'
     type: object
   object.ObjectReference:
     properties:
@@ -27,11 +60,108 @@ definitions:
       label:
         type: string
     type: object
+  server_routes.CreateBucketRequest:
+    properties:
+      content:
+        additionalProperties:
+          type: string
+        description: Content of the bucket
+        type: object
+      creator:
+        description: Creator of the bucket
+        type: string
+      label:
+        description: Label of the bucket
+        type: string
+      role:
+        description: Role of the bucket
+        type: string
+      visibility:
+        description: Visibility of the bucket
+        type: string
+    type: object
+  server_routes.UpdateBucketRequest:
+    properties:
+      content:
+        additionalProperties:
+          type: string
+        type: object
+      did:
+        type: string
+      resourceId:
+        type: integer
+    type: object
   server_routes.uResponse:
     properties:
       address:
         type: string
       didDocument: {}
+    type: object
+  types.Alias:
+    properties:
+      amount:
+        description: Amount is the amount listed for purchasing the Alias from the
+          User/Application
+        type: integer
+      is_for_sale:
+        description: IsForSale is the boolean value indicating if the Alias is for
+          sale
+        type: boolean
+      name:
+        description: Name is the string name of an Alias
+        type: string
+    type: object
+  types.DIDDocument:
+    properties:
+      also_known_as:
+        items:
+          type: string
+        type: array
+      assertion_method:
+        items:
+          type: string
+        type: array
+      authentication:
+        items:
+          type: string
+        type: array
+      capability_delegation:
+        items:
+          type: string
+        type: array
+      capability_invocation:
+        items:
+          type: string
+        type: array
+      context:
+        items:
+          type: string
+        type: array
+      controller:
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+      key_agreement:
+        items:
+          type: string
+        type: array
+      service:
+        items:
+          $ref: '#/definitions/types.Service'
+        type: array
+      verification_method:
+        items:
+          $ref: '#/definitions/types.VerificationMethod'
+        type: array
+    type: object
+  types.KeyValuePair:
+    properties:
+      key:
+        type: string
+      value:
+        type: string
     type: object
   types.SchemaDefinition:
     properties:
@@ -62,6 +192,111 @@ definitions:
         type: integer
       name:
         type: string
+    type: object
+  types.SchemaReference:
+    properties:
+      cid:
+        description: a reference to information stored within an IPFS node.
+        type: string
+      did:
+        description: the DID for this schema
+        type: string
+      label:
+        description: an alternative reference point
+        type: string
+    type: object
+  types.Service:
+    properties:
+      id:
+        type: string
+      service_endpoint:
+        items:
+          $ref: '#/definitions/types.KeyValuePair'
+        type: array
+      type:
+        type: string
+    type: object
+  types.VerificationMethod:
+    properties:
+      controller:
+        type: string
+      credential_json:
+        items:
+          type: integer
+        type: array
+      id:
+        type: string
+      public_key_base58:
+        type: string
+      public_key_jwk:
+        items:
+          $ref: '#/definitions/types.KeyValuePair'
+        type: array
+      type:
+        type: string
+    type: object
+  types.WhatIs:
+    properties:
+      creator:
+        description: Creator is the DID of the creator
+        type: string
+      did:
+        description: DID is the DID of the object
+        type: string
+      is_active:
+        description: IsActive is the status of the DID Document
+        type: boolean
+      metadata:
+        additionalProperties:
+          type: string
+        description: Metadata is a map of key-value pairs that can be used to store
+          additional information about the WhatIs (Schema)
+        type: object
+      schema:
+        $ref: '#/definitions/types.SchemaReference'
+        description: Object_doc is the object document
+      timestamp:
+        description: Timestamp is the time of the last update of the DID Document
+        type: integer
+    type: object
+  types.WhoIs:
+    properties:
+      alias:
+        description: Alias is the list of registered `alsoKnownAs` identifiers of
+          the User or Application
+        items:
+          $ref: '#/definitions/types.Alias'
+        type: array
+      controllers:
+        description: Credentials are the biometric info of the registered name and
+          account encoded with public key
+        items:
+          type: string
+        type: array
+      did_document:
+        $ref: '#/definitions/types.DIDDocument'
+        description: DIDDocument is the bytes representation of DIDDocument within
+          the WhoIs. Initially marshalled as JSON.
+      is_active:
+        description: IsActive is the status of the DID Document
+        type: boolean
+      metadata:
+        additionalProperties:
+          type: string
+        description: Metadata is a map of key-value pairs that can be used to store
+          additional information about the DID Document
+        type: object
+      owner:
+        description: Owner is the top level DID of the User or Application derived
+          from the multisignature wallet.
+        type: string
+      timestamp:
+        description: Timestamp is the time of the last update of the DID Document
+        type: integer
+      type:
+        description: 'Type is the kind of the entity. Possible values are: "user",
+          "application"'
+        type: integer
     type: object
 host: localhost:8080
 info:
@@ -145,7 +380,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/apiv1.LoginResponse'
+            $ref: '#/definitions/motor.LoginResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -153,6 +388,53 @@ paths:
       summary: LoginAccount
       tags:
       - account
+  /bucket/create:
+    post:
+      description: Create a bucket on Sonr using the object module of Sonr's Blockchain.
+      parameters:
+      - description: UpdateBucketRequest
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.UpdateBucketRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: UpdateBucket
+      tags:
+      - bucket
+  /bucket/get:
+    post:
+      description: Get a bucket on Sonr using the object module of Sonr's Blockchain.
+      parameters:
+      - description: BucketDid
+        example: '"did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+        in: body
+        name: bucketDid
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: GetBucket
+      tags:
+      - bucket
   /object/build:
     post:
       description: Build an object on Sonr using the object module of Sonr's Blockchain.
@@ -245,7 +527,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/apiv1.CreateSchemaResponse'
+            $ref: '#/definitions/motor.CreateSchemaResponse'
         "500":
           description: Internal Server Error
           schema:
