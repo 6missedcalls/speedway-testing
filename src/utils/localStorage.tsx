@@ -1,6 +1,6 @@
 const APP_STATE = "SonrSpeedwayState"
 
-export function localStoreSaveJson(key: string, json: any) {
+export function localStoreSaveJson(key: string, json: Record<string, any>) {
 	window.localStorage.setItem(key, JSON.stringify(json))
 }
 

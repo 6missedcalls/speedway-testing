@@ -17,7 +17,7 @@ const Component = ({ content, sidebarContent, route }: Props) => {
 				<div className="flex-1 dark text-default w-7/12 bg-surface-default">
 					<div className="flex flex-col bg-black-gray-logo bg-no-repeat bg-right-bottom h-full p-16 bg-[length:548px_548px]">
 						<div className="flex justify-between items-center">
-							<div className="flex">
+							<div className="flex mr-4">
 								<div className="w-11 h-11 mr-2.5">
 									<SonrLogoSvg />
 								</div>

@@ -2,9 +2,9 @@ import SonrLogoSvg from "../../assets/svgs/SonrLogo"
 import ButtonGroup from "./components/ButtonsGroup"
 import { NavigateFunction } from "react-router-dom"
 import {
+	ROUTE_OBJECTS,
 	ROUTE_SCHEMAS,
-	// ROUTE_OBJECTS,
-	// ROUTE_BUCKETS,
+	ROUTE_BUCKETS,
 } from "../../utils/constants"
 import { useSelector } from "react-redux"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
@@ -22,16 +22,16 @@ const modulesButtons = [
 		iconName: "Note1",
 		route: ROUTE_SCHEMAS,
 	},
-	// {
-	// 	label: "Objects",
-	// 	iconName: "Document",
-	// 	route: ROUTE_OBJECTS,
-	// },
-	// {
-	// 	label: "Buckets",
-	// 	iconName: "Document",
-	// 	route: ROUTE_BUCKETS,
-	// },
+	{
+		label: "Objects",
+		iconName: "Box1",
+		route: ROUTE_OBJECTS,
+	},
+	{
+		label: "Buckets",
+		iconName: "Bag2",
+		route: ROUTE_BUCKETS,
+	},
 ]
 
 function SideMenuComponent({ navigate, currentPath }: SideMenuComponentProps) {

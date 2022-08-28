@@ -1,30 +1,19 @@
 import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
-import { IgetSchemaFields, InewSchema } from "../utils/types"
+import { InewObject } from "../utils/types"
 
-export const getAllSchemas = async () => {
-	const url = `http://localhost:8080/proxy/schemas?pagination.limit=50000`
+export const createObject = async ({
+	schemaDid,
+	label,
+	object,
+}: InewObject) => {
+	const url = `${BASE_API}/object/build`
 
-	const options = {
-		method: "GET",
-		headers: { "content-type": "application/json" },
-	}
-
-	try {
-		const response: Response = await fetch(url, options)
-		if (!response.ok) throw new Error(response.statusText)
-		const data = await response.json()
-		return data
-	} catch (error) {
-		const errorMessage = formatApiError({ error, url, options })
-		throw new Error(errorMessage)
-	}
-}
-
-export const createSchema = async (schema: InewSchema) => {
-	const url = `${BASE_API}/schema/create`
-
-	const payload = JSON.stringify(schema)
+	const payload = JSON.stringify({
+		SchemaDid: schemaDid,
+		Label: label,
+		Object: object,
+	})
 
 	const options = {
 		method: "POST",
@@ -43,10 +32,10 @@ export const createSchema = async (schema: InewSchema) => {
 	}
 }
 
-export const getSchema = async (schema: IgetSchemaFields) => {
-	const url = `${BASE_API}/schema/get`
+export const getBucketContent = async ({ bucket }: { bucket: string }) => {
+	const url = `${BASE_API}/bucket/content`
 
-	const payload = JSON.stringify(schema)
+	const payload = JSON.stringify({ bucket })
 
 	const options = {
 		method: "POST",

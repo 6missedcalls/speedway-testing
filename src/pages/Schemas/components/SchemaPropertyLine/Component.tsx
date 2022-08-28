@@ -1,6 +1,5 @@
 import { handlePropertyChangeProps, Iproperty } from "../../../../utils/types"
 import { NebulaIcon } from "@sonr-io/nebula-react"
-import { useRef } from "react"
 
 interface SchemaPropertyComponentProps {
 	handlePropertyChange: ({ index, data }: handlePropertyChangeProps) => void
@@ -13,14 +12,6 @@ function SchemaPropertyComponent({
 	property,
 	propertyIndex,
 }: SchemaPropertyComponentProps) {
-	const selectRef = useRef(null)
-
-	function focusSelect() {
-		if (selectRef) {
-			;(selectRef.current! as HTMLElement).click()
-		}
-	}
-
 	return (
 		<div className="flex justify-between mb-4">
 			<input
@@ -37,7 +28,6 @@ function SchemaPropertyComponent({
 			/>
 			<div className="relative pointer-events-none select-none border border-default-border rounded-md w-3/12 ml-2 cursor-pointer flex justify-between">
 				<select
-					ref={selectRef}
 					className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
 					onChange={(event) =>
 						handlePropertyChange({

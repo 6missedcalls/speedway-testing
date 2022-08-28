@@ -10,11 +10,11 @@ import { Button } from "@sonr-io/nebula-react"
 
 type Props = {
 	onSubmit: () => void
-	errors: any
+	errors: Record<string, any>
 	validatePasswordOnChange: (value: string) => void
 	passwordVisible: boolean
 	togglePasswordVisible: () => void
-	setPasswordConfirm: any
+	setPasswordConfirm: React.Dispatch<React.SetStateAction<string>>
 	password: string
 	passwordConfirm: string
 }
@@ -62,7 +62,7 @@ const Component = ({
 				</div>
 			}
 			content={
-				<div className="flex flex-col justify-center items-center w-96">
+				<div className="flex flex-col justify-center w-full max-w-sm">
 					<h1 className="text-custom-xl font-extrabold mb-8 text-emphasis">
 						Create Vault Password
 					</h1>

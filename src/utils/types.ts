@@ -3,6 +3,11 @@ export enum listTypes {
 	object,
 }
 
+export type loginPayload = {
+	Address: string
+	Password: string
+}
+
 export interface IlistItem {
 	name: string
 	did: string
@@ -41,6 +46,7 @@ export interface Ischema {
 		did: string
 		label: string
 		cid?: string
+		fields?: Record<string, any>
 	}
 	creator: string
 	timestamp?: number
@@ -56,4 +62,37 @@ export interface InewSchema {
 	address: string
 	label: string
 	fields: Record<string, number>
+}
+
+export interface InewObject {
+	schemaDid: string
+	label?: string
+	object: Record<string, any>
+}
+
+export interface IobjectPropertyChange {
+	index: number
+	value: string
+}
+
+export type NewBucketPayload = {
+	label: string
+}
+
+export type Bucket = {
+	label: string
+	objects: string[]
+	did: string
+}
+
+export interface IsearchableListItemData {
+	text?: string
+	Component?: React.FC
+	props?: Record<string, any>
+}
+
+export interface IsearchableListItem {
+	[key: string]: {
+		[key: string]: IsearchableListItemData
+	}
 }

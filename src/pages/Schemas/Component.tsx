@@ -1,10 +1,10 @@
 import LoadingCircleSvg from "../../assets/svgs/LoadingCircle"
 import LayoutMenu from "../../components/LayoutMenu"
 import SearchableList from "../../components/SearchableList"
-import { listTypes } from "../../utils/types"
+import { IsearchableListItem, listTypes } from "../../utils/types"
 
 interface SchemasPageComponentProps {
-	list: any
+	list: Array<IsearchableListItem>
 	searchableAndSortableFieldKey: string
 	openNewSchemaModal: () => void
 	loading: boolean
@@ -19,7 +19,7 @@ function SchemasPageComponent({
 	return (
 		<LayoutMenu>
 			<div className="h-screen font-extrabold w-full bg-gray-100 px-10 pb-10 overflow-auto">
-				<h1 className="text-custom-3xl tracking-custom-x2tighter mt-14 mb-8">
+				<h1 className="text-custom-3xl tracking-custom-x2tighter mt-14 mb-8 text-default">
 					Schemas
 				</h1>
 				{loading && (

@@ -11,7 +11,12 @@ export const SET_MODAL_CONTENT = "SET_MODAL_CONTENT"
 export const OPEN_MODAL = "OPEN_MODAL"
 export const CLOSE_MODAL = "CLOSE_MODAL"
 export const MODAL_CONTENT_NEW_SCHEMA = "MODAL_CONTENT_NEW_SCHEMA"
+export const MODAL_CONTENT_NEW_BUCKET = "MODAL_CONTENT_NEW_BUCKET"
 export const MODAL_CONTENT_NEW_OBJECT = "MODAL_CONTENT_NEW_OBJECT"
+
+// custom redxu actions
+export const ROOT_INITIALIZE_FROM_CACHE = "root/initializeFromCache"
+export const ROOT_RESET = "root/reset"
 
 // APIs
 export const BASE_API = "http://localhost:8080/api/v1"
