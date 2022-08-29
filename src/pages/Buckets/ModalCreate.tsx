@@ -2,8 +2,10 @@ import { useContext, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import RefreshSvg from "../../assets/svgs/Refresh"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
+import { selectAddress } from "../../redux/slices/authenticationSlice"
 import {
 	createBucket,
+	getAllBuckets,
 	selectBucketCreationLoading,
 } from "../../redux/slices/bucketSlice"
 import { AppDispatch } from "../../redux/store"
@@ -12,8 +14,10 @@ const ModalCreateBucket = () => {
 	const [label, setLabel] = useState("")
 	const { closeModal } = useContext(AppModalContext)
 	const dispatch = useDispatch<AppDispatch>()
+	const address = useSelector(selectAddress)
 	const save = async () => {
-		await dispatch(createBucket({ label }))
+		await dispatch(createBucket({ label, creator: address }))
+		dispatch(getAllBuckets(address))
 		closeModal()
 	}
 	const loading = useSelector(selectBucketCreationLoading)

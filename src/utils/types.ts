@@ -77,12 +77,18 @@ export interface IobjectPropertyChange {
 
 export type NewBucketPayload = {
 	label: string
+	creator: string
 }
 
 export type Bucket = {
-	label: string
-	objects: string[]
 	did: string
+	label: string
+	creator: string
+	content: BucketContent[]
+}
+
+export type BucketContent = {
+	uri: string
 }
 
 export interface IsearchableListItemData {

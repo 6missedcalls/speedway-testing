@@ -82,7 +82,7 @@ const BucketCard = (bucket: Bucket) => (
 				</span>
 
 				<span className="px-[6px] py-[2px] font-extrabold">
-					{bucket.objects.length}
+					{bucket.content.length}
 				</span>
 			</div>
 		</div>

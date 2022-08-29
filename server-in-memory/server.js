@@ -5,12 +5,6 @@ import _ from "lodash"
 import md5 from "md5"
 import storage from "node-persist"
 
-function arrayStringDistinct(arr) {
-	return arr.sort().filter(function (item, pos, ary) {
-		return !pos || item != ary[pos - 1]
-	})
-}
-
 const generateAddress = () => `snr${md5(Math.random())}`
 const generateDid = () => `did:snr:${md5(Math.random())}`
 const generateCid = () => md5(Math.random())
@@ -18,7 +12,6 @@ const addressToDid = (address) => `did:snr:${address.slice(3)}`
 
 const accountStoreKey = (address) => `account-${address}`
 const schemaStoreKey = (did) => `schema-${did}`
-const bucketStoreKey = (did) => `bucket-${did}`
 const objectStoreKey = (cid) => `object-${cid}`
 
 const app = express()
@@ -30,7 +23,8 @@ let sessionAddress = null
 /// DEVELOPMENT
 
 app.use("*", async (req, _, next) => {
-	console.info(`${req.method} ${req.originalUrl}`)
+	// uncomment next line to see request log
+	// console.info(`${req.method} ${req.originalUrl}`)
 	// uncomment next line to simulate slower network response
 	// await new Promise((r) => setTimeout(r, 1000))
 	next()
@@ -51,13 +45,6 @@ app.get("/reset", async (_, res) => {
 app.get("/logout", (_, res) => {
 	sessionAddress = null
 	res.status(200).send()
-})
-
-/// CHAIN PROXY
-
-app.get("/proxy/schemas", async (_, res) => {
-	const metadata = (await storage.getItem("schemaMetaData")) || []
-	res.json({ what_is: metadata })
 })
 
 /// AUTHENTICATION
@@ -110,7 +97,7 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 	const did = generateDid()
 	const creator = addressToDid(sessionAddress)
 
-	const schemaMetaData = {
+	const schemaMetadata = {
 		did,
 		schema: {
 			did,
@@ -130,17 +117,17 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 		fields,
 	}
 
-	const allMetaData = (await storage.getItem("schemaMetaData")) || []
-	allMetaData.push(schemaMetaData)
+	const allMetadata = (await storage.getItem("schemaMetadata")) || []
+	allMetadata.push(schemaMetadata)
 
 	await Promise.all([
-		storage.setItem("schemaMetaData", allMetaData),
+		storage.setItem("schemaMetadata", allMetadata),
 		storage.setItem(schemaStoreKey(did), schema),
 	])
 
 	res.json({
 		definition: schema,
-		whatIs: schemaMetaData,
+		whatIs: schemaMetadata,
 	})
 })
 
@@ -156,46 +143,45 @@ app.post("/api/v1/bucket/create", async ({ body }, res) => {
 	const bucket = {
 		did,
 		label: body.label,
-		objects: [],
-		creator: sessionAddress,
+		creator: body.creator,
+		content: [{}],
 	}
-	await storage.setItem(bucketStoreKey(did), bucket)
-	res.json(bucket)
-})
 
-app.post("/api/v1/bucket/get", async ({ body }, res) => {
-	const bucket = await storage.getItem(bucketStoreKey(body.bucket))
-	res.json(bucket)
+	const allBuckets = (await storage.getItem("buckets")) || []
+	allBuckets.push(bucket)
+	await storage.setItem("buckets", allBuckets)
+
+	res.json({
+		"service-information": { serviceEndpoint: { did } },
+	})
 })
 
 app.post("/api/v1/bucket/update", async ({ body }, res) => {
-	const bucket = await storage.getItem(bucketStoreKey(body.bucket))
-	bucket.objects = arrayStringDistinct(bucket.objects.concat(body.objects))
-	await storage.setItem(bucketStoreKey(body.bucket), bucket)
-	res.json(bucket)
+	const allBuckets = await storage.getItem("buckets")
+	const bucket = _.find(allBuckets, { did: body.did })
+	bucket.content.push(body.content)
+	await storage.setItem("buckets", allBuckets)
+	res.json({})
 })
 
-app.post("/api/v1/bucket/content", async ({ body }, res) => {
-	const bucket = await storage.getItem(bucketStoreKey(body.bucket))
+app.post("/api/v1/bucket/get", async ({ body }, res) => {
+	const allBuckets = await storage.getItem("buckets")
+	const bucket = _.find(allBuckets, { did: body.did })
+	res.json(bucket.content)
+})
+
+app.post("/api/v1/bucket/content-compatible", async ({ body }, res) => {
+	const allBuckets = await storage.getItem("buckets")
+	const bucket = _.find(allBuckets, { did: body.bucket })
 	const objects = await Promise.all(
-		bucket.objects.map(objectStoreKey).map(storage.getItem)
-	)
-	res.json(objects)
-})
-
-app.post("/api/v1/bucket/all", async ({ body }, res) => {
-	const keys = await storage.keys()
-	const allBuckets = await Promise.all(
-		_.chain(keys)
-			.filter((key) => key.slice(0, 6) === "bucket")
+		_.chain(bucket.content)
+			.filter("uri")
+			.map("uri")
+			.map(objectStoreKey)
 			.map(storage.getItem)
 			.valueOf()
 	)
-	const buckets = _.chain(allBuckets)
-		.filter({ creator: sessionAddress })
-		.sortBy("label")
-		.valueOf()
-	res.json({ data: buckets })
+	res.json(objects)
 })
 
 /// OBJECTS
@@ -229,6 +215,18 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 app.post("/api/v1/object/get", async ({ body }, res) => {
 	const object = await storage.getItem(objectStoreKey(body.ObjectCid))
 	res.json(object)
+})
+
+/// CHAIN PROXY
+
+app.get("/proxy/schemas", async (_, res) => {
+	const metadata = (await storage.getItem("schemaMetadata")) || []
+	res.json({ what_is: metadata })
+})
+
+app.get("/proxy/buckets", async (_, res) => {
+	const buckets = (await storage.getItem("buckets")) || []
+	res.json({ where_is: buckets })
 })
 
 export default app
