@@ -25,6 +25,7 @@ import { useEffect, useState } from "react"
 import { getAccountInfo } from "./service/authentication"
 import { getAppStateFromLocalCache } from "./utils/localStorage"
 import { useDispatch } from "react-redux"
+import ErrorBoundary from "./components/ErrorBoundary"
 
 function App() {
 	const dispatch = useDispatch()
@@ -56,28 +57,30 @@ function App() {
 	return (
 		<BrowserRouter>
 			<LayoutBase>
-				<Routes>
-					<Route path={ROUTE_SIGNUP} element={<Signup />} />
-					<Route path={ROUTE_LOGIN} element={<Login />} />
-					<Route
-						path={ROUTE_POST_SIGNUP}
-						element={<PrivateRoute Component={PostSignup} />}
-					/>
-					<Route
-						path={ROUTE_SCHEMAS}
-						element={<PrivateRoute Component={Schemas} />}
-					/>
-					<Route
-						path={ROUTE_OBJECTS}
-						element={<PrivateRoute Component={Objects} />}
-					/>
-					<Route
-						path={ROUTE_BUCKETS}
-						element={<PrivateRoute Component={Buckets} />}
-					/>
-					<Route path={ROUTE_404} element={<NotFound />} />
-					<Route path="*" element={<Navigate to="/404" replace />} />
-				</Routes>
+				<ErrorBoundary>
+					<Routes>
+						<Route path={ROUTE_SIGNUP} element={<Signup />} />
+						<Route path={ROUTE_LOGIN} element={<Login />} />
+						<Route
+							path={ROUTE_POST_SIGNUP}
+							element={<PrivateRoute Component={PostSignup} />}
+						/>
+						<Route
+							path={ROUTE_SCHEMAS}
+							element={<PrivateRoute Component={Schemas} />}
+						/>
+						<Route
+							path={ROUTE_OBJECTS}
+							element={<PrivateRoute Component={Objects} />}
+						/>
+						<Route
+							path={ROUTE_BUCKETS}
+							element={<PrivateRoute Component={Buckets} />}
+						/>
+						<Route path={ROUTE_404} element={<NotFound />} />
+						<Route path="*" element={<Navigate to="/404" replace />} />
+					</Routes>
+				</ErrorBoundary>
 			</LayoutBase>
 		</BrowserRouter>
 	)

@@ -34,21 +34,22 @@ function ViewPropertiesComponent({
 					ref={divRef}
 					className="absolute min-w-52 shadow-3xl rounded bg-white right-0 top-11 border border-surface-button-subtle px-4 py-3 z-10"
 				>
-					{properties.map((property, index) => (
-						<div
-							className={`flex justify-between items-center ${
-								index === properties.length - 1 ? "" : "mb-6"
-							}`}
-							key={`${property.name}`}
-						>
-							<div className="text-default text-custom-xs font-extrabold whitespace-nowrap">
-								{property.name}
+					{properties?.length &&
+						properties.map((property, index) => (
+							<div
+								className={`flex justify-between items-center ${
+									index === properties.length - 1 ? "" : "mb-6"
+								}`}
+								key={`${property.name}`}
+							>
+								<div className="text-default text-custom-xs font-extrabold whitespace-nowrap">
+									{property.name}
+								</div>
+								<div className="text-custom-xxs font-extrabold text-subdued tracking-custom-tighter ml-4 whitespace-nowrap">
+									{typeSchemaMap[property.field as keyof ItypeSchemaMap]}
+								</div>
 							</div>
-							<div className="text-custom-xxs font-extrabold text-subdued tracking-custom-tighter ml-4 whitespace-nowrap">
-								{typeSchemaMap[property.field as keyof ItypeSchemaMap]}
-							</div>
-						</div>
-					))}
+						))}
 				</div>
 			)}
 		</div>
