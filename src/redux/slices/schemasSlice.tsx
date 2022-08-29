@@ -77,9 +77,7 @@ export const schemasSlice = createSlice({
 			state.list = payload
 		})
 
-		builder.addCase(userGetAllSchemas.rejected, (state, action) => {
-			console.log("state", state)
-			console.log("action", action)
+		builder.addCase(userGetAllSchemas.rejected, (state) => {
 			state.error = true
 			state.loading = false
 		})
