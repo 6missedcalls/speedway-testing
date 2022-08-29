@@ -16,6 +16,10 @@ export const selectBucketsLoading = (state: RootState) => {
 	return state.bucket.loading
 }
 
+export const selectBucketsError = (state: RootState) => {
+	return state.bucket.error
+}
+
 export const getAllBuckets = createAsyncThunk(
 	"bucket/getAll",
 	async (address: string) => {
@@ -63,11 +67,13 @@ export type BucketState = {
 	list: Bucket[]
 	creating: boolean
 	loading: boolean
+	error: boolean
 }
 export const initialState: BucketState = {
 	list: [],
 	creating: false,
 	loading: false,
+	error: false
 }
 const bucketSlice = createSlice({
 	name: "bucket",
@@ -79,6 +85,7 @@ const bucketSlice = createSlice({
 		})
 		builder.addCase(getAllBuckets.rejected, (state) => {
 			state.loading = false
+			state.error = true
 		})
 		builder.addCase(getAllBuckets.fulfilled, (state, action) => {
 			state.loading = false
@@ -90,6 +97,7 @@ const bucketSlice = createSlice({
 		})
 		builder.addCase(createBucket.rejected, (state) => {
 			state.creating = false
+			state.error = true
 		})
 		builder.addCase(createBucket.fulfilled, (state) => {
 			state.creating = false

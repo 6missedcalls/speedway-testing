@@ -112,9 +112,12 @@ export const schemasSlice = createSlice({
 				is_active: true,
 			})
 		})
-		builder.addCase(userCreateSchema.rejected, (state) => {
+		builder.addCase(userCreateSchema.rejected, (state, action) => {
+			console.log("state", state)
+			console.log("action", action)
 			state.error = true
 			state.loading = false
+			
 		})
 	},
 })
@@ -125,6 +128,10 @@ export const selectSchemasLoading = (state: RootState) => {
 
 export const selectGetSchemaLoading = (state: RootState) => {
 	return state.schemas.getSchemaLoading
+}
+
+export const selectSchemasError = (state: RootState) => {
+	return state.schemas.error
 }
 
 export const selectSchemasMetadataList = (state: RootState) => {
