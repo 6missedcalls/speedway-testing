@@ -113,6 +113,7 @@ function ObjectsPageContainer() {
 			openNewObjectModal={openNewObjectModal}
 			loading={loading}
 			list={mapToListFormat()}
+			bucketCount={buckets.length}
 			schemasCount={schemaMetadata.length}
 		/>
 	)
