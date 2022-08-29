@@ -83,9 +83,7 @@ export const authenticationSlice = createSlice({
 			state.Address = payload.Address
 		})
 
-		builder.addCase(userCreateAccount.rejected, (state, action) => {
-			console.log("state", state)
-			console.log("action", action)
+		builder.addCase(userCreateAccount.rejected, (state) => {
 			state.error = true
 			state.loading = false
 		})

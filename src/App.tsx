@@ -22,35 +22,35 @@ import Objects from "./pages/Objects"
 import Buckets from "./pages/Buckets"
 import PostSignup from "./pages/PostSignup"
 import { useEffect, useState } from "react"
-import { getAccountInfo } from "./service/authentication"
-import { getAppStateFromLocalCache } from "./utils/localStorage"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import ErrorBoundary from "./components/ErrorBoundary"
+import { isLoggedInServer } from "./utils/checkLogin"
+import { selectSchemasError } from "./redux/slices/schemasSlice"
+import { selectObjectsError } from "./redux/slices/objectsSlice"
+import { selectBucketsError } from "./redux/slices/bucketSlice"
 
 function App() {
+	const schemasSliceError = useSelector(selectSchemasError)
+	const objectsSliceError = useSelector(selectObjectsError)
+	const bucketsSliceError = useSelector(selectBucketsError)
+
 	const dispatch = useDispatch()
 	const [loading, setLoading] = useState(true)
 
 	async function fetchAccountInfo() {
-		try {
-			const cachedAddress = getAppStateFromLocalCache().authentication.Address
-			const data = await getAccountInfo()
-			if (data.Address === cachedAddress) {
-				dispatch({ type: ROOT_INITIALIZE_FROM_CACHE })
-			} else {
-				dispatch({ type: ROOT_RESET })
-			}
-			setLoading(false)
-		} catch (err) {
+		const isLogged = await isLoggedInServer()
+		if (isLogged) {
+			dispatch({ type: ROOT_INITIALIZE_FROM_CACHE })
+		} else {
 			dispatch({ type: ROOT_RESET })
-			setLoading(false)
 		}
+		setLoading(false)
 	}
 
 	useEffect(() => {
 		fetchAccountInfo()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	}, [schemasSliceError, objectsSliceError, bucketsSliceError])
 
 	if (loading) return null
 
