@@ -110,9 +110,7 @@ export const schemasSlice = createSlice({
 				is_active: true,
 			})
 		})
-		builder.addCase(userCreateSchema.rejected, (state, action) => {
-			console.log("state", state)
-			console.log("action", action)
+		builder.addCase(userCreateSchema.rejected, (state) => {
 			state.error = true
 			state.loading = false
 		})
