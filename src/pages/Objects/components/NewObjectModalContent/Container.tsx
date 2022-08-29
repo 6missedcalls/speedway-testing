@@ -6,7 +6,10 @@ import {
 	selectBuckets,
 	updateBucket,
 } from "../../../../redux/slices/bucketSlice"
-import { userCreateObject } from "../../../../redux/slices/objectsSlice"
+import {
+	userCreateObject,
+	userGetBucketObjects,
+} from "../../../../redux/slices/objectsSlice"
 import { userGetSchema } from "../../../../redux/slices/schemasSlice"
 import { AppDispatch } from "../../../../redux/store"
 import { IobjectPropertyChange, Ischema } from "../../../../utils/types"
@@ -97,6 +100,8 @@ function NewObjectModalContentContainer({
 		}
 
 		await dispatch(updateBucket({ ...bucketUpdatePayload }))
+
+		dispatch(userGetBucketObjects({ bucket: selectedBucket }))
 
 		closeModal()
 	}
