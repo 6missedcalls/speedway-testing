@@ -5,7 +5,6 @@ import { Bucket, NewBucketPayload } from "../../utils/types"
 import { RootState } from "../store"
 
 export const selectBuckets = (state: RootState) => {
-	console.log(state)
 	return state.bucket.list
 }
 
@@ -21,7 +20,15 @@ export const getAllBuckets = createAsyncThunk("bucket/getAll", async () => {
 	return await fetch("http://localhost:8080/proxy/buckets", {
 		method: "GET",
 		headers: { "content-type": "application/json" },
-	}).then((response) => response.json())
+	})
+		.then((response) => response.json())
+		.then((r) =>
+			r.where_is.map((bucket: Bucket) => ({
+				did: bucket.did,
+				label: bucket.label,
+				content: bucket.content.filter((c) => c.uri),
+			}))
+		)
 })
 
 export const updateBucket = createAsyncThunk(
@@ -70,7 +77,7 @@ const bucketSlice = createSlice({
 		})
 		builder.addCase(getAllBuckets.fulfilled, (state, action) => {
 			state.loading = false
-			state.list = action.payload.where_is
+			state.list = action.payload
 		})
 
 		builder.addCase(createBucket.pending, (state) => {
