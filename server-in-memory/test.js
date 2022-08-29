@@ -224,7 +224,8 @@ it("can add objects to buckets", async () => {
 		label: "Mars colony",
 		creator: address,
 	})
-	const bucketDid = responseBucket.body["service-information"].serviceEndpoint.did
+	const bucketDid =
+		responseBucket.body["service-information"].serviceEndpoint.did
 
 	const responseObject = await app.post("/api/v1/object/build").send({
 		SchemaDid: responseSchema.body.whatIs.did,
@@ -260,7 +261,8 @@ it("gets a bucket content", async () => {
 		label: "Mars colony",
 		creator: address,
 	})
-	const bucketDid = responseBucket.body["service-information"].serviceEndpoint.did
+	const bucketDid =
+		responseBucket.body["service-information"].serviceEndpoint.did
 
 	const responseObject = await app.post("/api/v1/object/build").send({
 		SchemaDid: schemaDid,
@@ -301,7 +303,8 @@ it("(compatibility) gets a bucket content", async () => {
 		label: "Mars colony",
 		creator: address,
 	})
-	const bucketDid = responseBucket.body["service-information"].serviceEndpoint.did
+	const bucketDid =
+		responseBucket.body["service-information"].serviceEndpoint.did
 
 	const responseObject = await app.post("/api/v1/object/build").send({
 		SchemaDid: schemaDid,
@@ -318,12 +321,14 @@ it("(compatibility) gets a bucket content", async () => {
 
 	await app.post("/api/v1/bucket/update").send({
 		did: bucketDid,
-		content: {uri: objectCid},
+		content: { uri: objectCid },
 	})
 
-	const { body: result } = await app.post("/api/v1/bucket/content-compatible").send({
-		bucket: bucketDid,
-	})
+	const { body: result } = await app
+		.post("/api/v1/bucket/content-compatible")
+		.send({
+			bucket: bucketDid,
+		})
 	expect(result.length).toBe(1)
 	expect(result[0].firstName).toBe("Marcel")
 	expect(result[0].cid).toBe(objectCid)

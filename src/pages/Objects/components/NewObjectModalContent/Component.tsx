@@ -90,18 +90,21 @@ function NewObjectModalContentComponent({
 				</div>
 				<div>
 					<div>Properties</div>
-					{properties?.length && properties.map((item, index) => (
-						<div key={`${item.name}-${index}`}>
-							<TextInput
-								label={item.name}
-								ariaLabel={item.name}
-								handleOnChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-									handlePropertiesChange({ value: event.target.value, index })
-								}
-								value={item?.value || ""}
-							/>
-						</div>
-					))}
+					{properties?.length &&
+						properties.map((item, index) => (
+							<div key={`${item.name}-${index}`}>
+								<TextInput
+									label={item.name}
+									ariaLabel={item.name}
+									handleOnChange={(
+										event: React.ChangeEvent<HTMLInputElement>
+									) =>
+										handlePropertiesChange({ value: event.target.value, index })
+									}
+									value={item?.value || ""}
+								/>
+							</div>
+						))}
 				</div>
 			</div>
 			<div className="bg-black w-full rounded-b-2xl justify-end flex relative">
