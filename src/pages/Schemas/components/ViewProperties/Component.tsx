@@ -34,7 +34,7 @@ function ViewPropertiesComponent({
 					ref={divRef}
 					className="absolute min-w-52 shadow-3xl rounded bg-white right-0 top-11 border border-surface-button-subtle px-4 py-3 z-10"
 				>
-					{properties.map((property, index) => (
+					{properties?.length && properties.map((property, index) => (
 						<div
 							className={`flex justify-between items-center ${
 								index === properties.length - 1 ? "" : "mb-6"

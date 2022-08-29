@@ -90,7 +90,7 @@ function NewObjectModalContentComponent({
 				</div>
 				<div>
 					<div>Properties</div>
-					{properties.map((item, index) => (
+					{properties?.length && properties.map((item, index) => (
 						<div key={`${item.name}-${index}`}>
 							<TextInput
 								label={item.name}

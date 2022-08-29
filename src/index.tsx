@@ -10,6 +10,7 @@ import reportWebVitals from "./reportWebVitals"
 import { store } from "./redux/store"
 import { Provider } from "react-redux"
 import { AppModalProvider } from "./contexts/appModalContext/appModalContext"
+import ErrorBoundary from "./components/ErrorBoundary"
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement)
 root.render(
