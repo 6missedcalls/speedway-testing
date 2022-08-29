@@ -114,7 +114,7 @@ function ObjectsPageContainer() {
 			loading={loading}
 			list={mapToListFormat()}
 			bucketCount={buckets.length}
-			schemasCount={schemaMetadata.length}
+			schemaCount={schemaMetadata.length}
 		/>
 	)
 }
