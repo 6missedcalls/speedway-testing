@@ -33,7 +33,7 @@ function App() {
 	const schemasSliceError = useSelector(selectSchemasError)
 	const objectsSliceError = useSelector(selectObjectsError)
 	const bucketsSliceError = useSelector(selectBucketsError)
-	
+
 	const dispatch = useDispatch()
 	const [loading, setLoading] = useState(true)
 

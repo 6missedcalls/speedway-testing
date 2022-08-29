@@ -73,7 +73,7 @@ export const initialState: BucketState = {
 	list: [],
 	creating: false,
 	loading: false,
-	error: false
+	error: false,
 }
 const bucketSlice = createSlice({
 	name: "bucket",

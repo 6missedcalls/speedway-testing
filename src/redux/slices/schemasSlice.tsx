@@ -117,7 +117,6 @@ export const schemasSlice = createSlice({
 			console.log("action", action)
 			state.error = true
 			state.loading = false
-			
 		})
 	},
 })
