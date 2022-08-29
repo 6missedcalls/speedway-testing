@@ -5,6 +5,7 @@ import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 import {
 	createBucket,
+	getAllBuckets,
 	selectBucketCreationLoading,
 } from "../../redux/slices/bucketSlice"
 import { AppDispatch } from "../../redux/store"
@@ -16,6 +17,7 @@ const ModalCreateBucket = () => {
 	const address = useSelector(selectAddress)
 	const save = async () => {
 		await dispatch(createBucket({ label, creator: address }))
+		dispatch(getAllBuckets())
 		closeModal()
 	}
 	const loading = useSelector(selectBucketCreationLoading)

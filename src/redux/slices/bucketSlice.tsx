@@ -18,7 +18,7 @@ export const selectBucketsLoading = (state: RootState) => {
 }
 
 export const getAllBuckets = createAsyncThunk("bucket/getAll", async () => {
-	return await fetch('http://localhost:8080/proxy/buckets', {
+	return await fetch("http://localhost:8080/proxy/buckets", {
 		method: "GET",
 		headers: { "content-type": "application/json" },
 	}).then((response) => response.json())
@@ -62,10 +62,10 @@ const bucketSlice = createSlice({
 	initialState,
 	reducers: {},
 	extraReducers: (builder) => {
-		builder.addCase(getAllBuckets.pending, (state, action) => {
+		builder.addCase(getAllBuckets.pending, (state) => {
 			state.loading = true
 		})
-		builder.addCase(getAllBuckets.rejected, (state, action) => {
+		builder.addCase(getAllBuckets.rejected, (state) => {
 			state.loading = false
 		})
 		builder.addCase(getAllBuckets.fulfilled, (state, action) => {
@@ -73,32 +73,14 @@ const bucketSlice = createSlice({
 			state.list = action.payload.where_is
 		})
 
-		builder.addCase(createBucket.pending, (state, action) => {
+		builder.addCase(createBucket.pending, (state) => {
 			state.creating = true
 		})
-		builder.addCase(createBucket.rejected, (state, action) => {
+		builder.addCase(createBucket.rejected, (state) => {
 			state.creating = false
 		})
-		builder.addCase(createBucket.fulfilled, (state, action) => {
+		builder.addCase(createBucket.fulfilled, (state) => {
 			state.creating = false
-			// state.list.push(action.payload)
-		})
-
-		builder.addCase(updateBucket.fulfilled, (state, action) => {
-			// const { payload } = action
-			// const editedBucketDid = payload.did
-			// const addedObjects = payload.objects
-			// const editedBucket =
-			// 	state.list.find((bucket) => bucket.did === editedBucketDid) || []
-			// const editedBucketIndex = state.list.findIndex(
-			// 	(bucket) => bucket.did === editedBucketDid
-			// )
-
-			// if (editedBucketIndex !== -1) {
-			// 	state.list[editedBucketIndex].content = arrayStringDistinct(
-			// 		(editedBucket as Bucket).content.concat(addedObjects)
-			// 	)
-			// }
 		})
 	},
 })
