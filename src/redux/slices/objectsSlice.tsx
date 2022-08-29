@@ -68,7 +68,7 @@ export const objectsSlice = createSlice({
 			}
 			state.loading = false
 		})
-		builder.addCase(userGetBucketObjects.rejected, (state, action) => {
+		builder.addCase(userGetBucketObjects.rejected, (state) => {
 			state.loading = false
 		})
 	},

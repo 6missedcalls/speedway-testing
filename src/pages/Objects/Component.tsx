@@ -10,7 +10,8 @@ interface ObjectsPageComponentProps {
 	setSelectedSchema: React.Dispatch<React.SetStateAction<string>>
 	openNewObjectModal: () => void
 	loading: boolean
-	schemasCount: number
+	schemaCount: number
+	bucketCount: number
 	list: Array<IsearchableListItem>
 }
 
@@ -21,7 +22,8 @@ const ObjectsPageComponent = ({
 	openNewObjectModal,
 	loading,
 	list,
-	schemasCount,
+	schemaCount,
+	bucketCount,
 }: ObjectsPageComponentProps) => {
 	return (
 		<LayoutMenu>
@@ -30,24 +32,26 @@ const ObjectsPageComponent = ({
 					<h1 className="text-custom-3xl tracking-custom-x2tighter text-default">
 						Objects
 					</h1>
-					<div className="relative pointer-events-none select-none border border-default-border rounded-md w-3/12 ml-2 cursor-pointer flex justify-between">
-						<select
-							className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
-							onChange={(event) => setSelectedSchema(event.target.value)}
-							value={selectedSchemaDid}
-						>
-							{schemas.map((item) => (
-								<option key={item.schema.did} value={item.schema.did}>
-									{item.schema.label}
-								</option>
-							))}
-						</select>
-						<NebulaIcon
-							iconName="ArrowSquareDown"
-							iconType="duotone"
-							className="w-8 h-8 pointer-events-none select-none absolute right-0 top-1"
-						/>
-					</div>
+					{schemaCount > 0 && (
+						<div className="relative pointer-events-none select-none border border-default-border rounded-md w-3/12 ml-2 cursor-pointer flex justify-between">
+							<select
+								className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
+								onChange={(event) => setSelectedSchema(event.target.value)}
+								value={selectedSchemaDid}
+							>
+								{schemas.map((item) => (
+									<option key={item.schema.did} value={item.schema.did}>
+										{item.schema.label}
+									</option>
+								))}
+							</select>
+							<NebulaIcon
+								iconName="ArrowSquareDown"
+								iconType="duotone"
+								className="w-8 h-8 pointer-events-none select-none absolute right-0 top-1"
+							/>
+						</div>
+					)}
 				</div>
 				<div>
 					{list.length > 0 ? (
@@ -62,7 +66,8 @@ const ObjectsPageComponent = ({
 						<EmptyList
 							openNewObjectModal={openNewObjectModal}
 							loading={loading}
-							schemasCount={schemasCount}
+							schemaCount={schemaCount}
+							bucketCount={bucketCount}
 						/>
 					)}
 				</div>

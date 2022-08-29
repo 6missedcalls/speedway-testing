@@ -97,23 +97,17 @@ it("gets an individual schema", async () => {
 })
 
 it("fetches a list of schemas", async () => {
+	const address = await accountLoggedIn(app)
+
 	const { body: resultEmpty } = await app.get("/proxy/schemas")
 	expect(resultEmpty).toHaveProperty("what_is")
 	expect(resultEmpty.what_is.length).toBe(0)
-
-	const responseAuth = await app.post("/api/v1/account/create").send({
-		password: "123",
-	})
-	const address = responseAuth.body.Address
-	await app.post("/api/v1/account/login").send({
-		Address: address,
-		Password: "123",
-	})
 
 	const responseSchema = await app.post("/api/v1/schema/create").send({
 		label: "Dinosaurs",
 		fields: { name: 4 },
 	})
+
 	const { body: result } = await app.get("/proxy/schemas")
 	expect(result.what_is.length).toBe(1)
 	expect(result.what_is[0].creator).toBe(addressToDid(address))
@@ -185,32 +179,41 @@ it("gets an object", async () => {
 })
 
 it("creates a bucket", async () => {
-	await accountLoggedIn(app)
+	const address = await accountLoggedIn(app)
 
 	const { body: result } = await app.post("/api/v1/bucket/create").send({
 		label: "Lunar base",
+		creator: address,
 	})
 
-	expect(result.did).toBeDid()
+	expect(result["service-information"].serviceEndpoint.did).toBeDid()
 })
 
-it("gets an individual bucket", async () => {
-	await accountLoggedIn(app)
+it("fetches a list of buckets", async () => {
+	const address = await accountLoggedIn(app)
 
-	const responseBucket = await app.post("/api/v1/bucket/create").send({
-		label: "Mars colony",
+	await app.post("/api/v1/bucket/create").send({
+		label: "Dragons",
+		content: address,
+	})
+	await app.post("/api/v1/bucket/create").send({
+		label: "Furniture",
+		content: address,
 	})
 
-	const { body: result } = await app.post("/api/v1/bucket/get").send({
-		bucket: responseBucket.body.did,
-	})
-	expect(result.did).toBe(responseBucket.body.did)
-	expect(result.label).toBe("Mars colony")
-	expect(result.objects.length).toBe(0)
+	const { body: result } = await app.get("/proxy/buckets")
+	expect(result).toHaveProperty("where_is")
+	expect(result.where_is.length).toBe(2)
+	expect(result.where_is[0].did).toBeDid()
+	expect(result.where_is[0].label).toBe("Dragons")
+	expect(result.where_is[0].content.length).toBe(1)
+	expect(result.where_is[1].did).toBeDid()
+	expect(result.where_is[1].label).toBe("Furniture")
+	expect(result.where_is[1].content.length).toBe(1)
 })
 
 it("can add objects to buckets", async () => {
-	await accountLoggedIn(app)
+	const address = await accountLoggedIn(app)
 
 	const responseSchema = await app.post("/api/v1/schema/create").send({
 		label: "Dinosaurs",
@@ -219,8 +222,9 @@ it("can add objects to buckets", async () => {
 
 	const responseBucket = await app.post("/api/v1/bucket/create").send({
 		label: "Mars colony",
+		creator: address,
 	})
-	const bucketDid = responseBucket.body.did
+	const bucketDid = responseBucket.body["service-information"].serviceEndpoint.did
 
 	const responseObject = await app.post("/api/v1/object/build").send({
 		SchemaDid: responseSchema.body.whatIs.did,
@@ -230,19 +234,21 @@ it("can add objects to buckets", async () => {
 	const objectCid = responseObject.body.reference.Cid
 
 	await app.post("/api/v1/bucket/update").send({
-		bucket: bucketDid,
-		objects: [objectCid],
+		did: bucketDid,
+		content: { uri: objectCid },
 	})
 
-	const { body: result } = await app.post("/api/v1/bucket/get").send({
-		bucket: bucketDid,
-	})
-	expect(result.objects.length).toBe(1)
-	expect(result.objects[0]).toBe(objectCid)
+	const { body: result } = await app.get("/proxy/buckets")
+	expect(result.where_is[0].did).toBe(bucketDid)
+	expect(result.where_is[0].creator).toBe(address)
+	expect(result.where_is[0].label).toBe("Mars colony")
+	expect(result.where_is[0].content.length).toBe(2)
+	expect(result.where_is[0].content[0].ui).toBeUndefined()
+	expect(result.where_is[0].content[1].uri).toBe(objectCid)
 })
 
 it("gets a bucket content", async () => {
-	await accountLoggedIn(app)
+	const address = await accountLoggedIn(app)
 
 	const responseSchema = await app.post("/api/v1/schema/create").send({
 		label: "Dinosaurs",
@@ -252,8 +258,9 @@ it("gets a bucket content", async () => {
 
 	const responseBucket = await app.post("/api/v1/bucket/create").send({
 		label: "Mars colony",
+		creator: address,
 	})
-	const bucketDid = responseBucket.body.did
+	const bucketDid = responseBucket.body["service-information"].serviceEndpoint.did
 
 	const responseObject = await app.post("/api/v1/object/build").send({
 		SchemaDid: schemaDid,
@@ -269,57 +276,56 @@ it("gets a bucket content", async () => {
 	})
 
 	await app.post("/api/v1/bucket/update").send({
-		bucket: bucketDid,
-		objects: [objectCid],
+		did: bucketDid,
+		content: { uri: objectCid },
 	})
 
-	const { body: result } = await app.post("/api/v1/bucket/content").send({
+	const { body: result } = await app.post("/api/v1/bucket/get").send({
+		did: bucketDid,
+	})
+	expect(result.length).toBe(2)
+	expect(result[0].uri).toBeUndefined()
+	expect(result[1].uri).toBe(objectCid)
+})
+
+it("(compatibility) gets a bucket content", async () => {
+	const address = await accountLoggedIn(app)
+
+	const responseSchema = await app.post("/api/v1/schema/create").send({
+		label: "Dinosaurs",
+		fields: { firstName: 4 },
+	})
+	const schemaDid = responseSchema.body.whatIs.did
+
+	const responseBucket = await app.post("/api/v1/bucket/create").send({
+		label: "Mars colony",
+		creator: address,
+	})
+	const bucketDid = responseBucket.body["service-information"].serviceEndpoint.did
+
+	const responseObject = await app.post("/api/v1/object/build").send({
+		SchemaDid: schemaDid,
+		Label: "Sonrsaur",
+		Object: { firstName: "Marcel" },
+	})
+	const objectCid = responseObject.body.reference.Cid
+
+	await app.post("/api/v1/object/build").send({
+		SchemaDid: schemaDid,
+		Label: "Not on bucket",
+		Object: { firstName: "Jane" },
+	})
+
+	await app.post("/api/v1/bucket/update").send({
+		did: bucketDid,
+		content: {uri: objectCid},
+	})
+
+	const { body: result } = await app.post("/api/v1/bucket/content-compatible").send({
 		bucket: bucketDid,
 	})
 	expect(result.length).toBe(1)
 	expect(result[0].firstName).toBe("Marcel")
 	expect(result[0].cid).toBe(objectCid)
 	expect(result[0].schema).toBe(schemaDid)
-})
-
-it("fetches a list of buckets", async () => {
-	await accountLoggedIn(app)
-
-	await app.post("/api/v1/bucket/create").send({
-		label: "Dragons",
-	})
-	await app.post("/api/v1/bucket/create").send({
-		label: "Furniture",
-	})
-
-	const { body: result } = await app.post("/api/v1/bucket/all")
-	expect(result.data.length).toBe(2)
-	expect(result.data[0].did).toBeDid()
-	expect(result.data[0].label).toBe("Dragons")
-	expect(result.data[0].objects.length).toBe(0)
-	expect(result.data[1].did).toBeDid()
-	expect(result.data[1].label).toBe("Furniture")
-	expect(result.data[1].objects.length).toBe(0)
-})
-
-it("respects account when fetching buckets", async () => {
-	await accountLoggedIn(app)
-
-	await app.post("/api/v1/bucket/create").send({
-		label: "Fruits",
-	})
-
-	await app.get("/logout")
-
-	await accountLoggedIn(app) // a new account gets created
-
-	await app.post("/api/v1/bucket/create").send({
-		label: "Candies",
-	})
-
-	const { body: result } = await app.post("/api/v1/bucket/all")
-	expect(result.data.length).toBe(1)
-	expect(result.data[0].did).toBeDid()
-	expect(result.data[0].label).toBe("Candies")
-	expect(result.data[0].objects.length).toBe(0)
 })
