@@ -1,6 +1,12 @@
 import { Button, NebulaIcon } from "@sonr-io/nebula-react"
+import { ChangeEvent } from "react"
 import TextInput from "../../../../components/TextInput"
-import { Bucket, IobjectPropertyChange, Ischema } from "../../../../utils/types"
+import {
+	Bucket,
+	IobjectPropertyChange,
+	Ischema,
+	IschemaField,
+} from "../../../../utils/types"
 
 interface NewSchemaModalContentComponentProps {
 	closeModal: () => void
@@ -105,15 +111,10 @@ function NewObjectModalContentComponent({
 					{properties?.length &&
 						properties.map((item, index) => (
 							<div key={`${item.name}-${index}`} className="mb-4">
-								<TextInput
-									label={item.name}
-									ariaLabel={item.name}
-									handleOnChange={(
-										event: React.ChangeEvent<HTMLInputElement>
-									) =>
-										handlePropertiesChange({ value: event.target.value, index })
-									}
-									value={item?.value || ""}
+								<SchemaField
+									field={{ name: item.name, field: item.field }}
+									value={item.value}
+									onChange={(value) => handlePropertiesChange({ value, index })}
 								/>
 							</div>
 						))}
@@ -129,6 +130,24 @@ function NewObjectModalContentComponent({
 				/>
 			</div>
 		</div>
+	)
+}
+
+type Props = {
+	field: IschemaField
+	value: string
+	onChange: (value: string) => void
+}
+const SchemaField = ({ field, value, onChange }: Props) => {
+	return (
+		<TextInput
+			label={field.name}
+			ariaLabel={field.name}
+			value={value}
+			handleOnChange={(event: ChangeEvent<HTMLInputElement>) =>
+				onChange(event.target.value)
+			}
+		/>
 	)
 }
 
