@@ -4,7 +4,7 @@ import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 import {
 	selectSchemasLoading,
-	selectSchemasMetaDataList,
+	selectSchemasMetadataList,
 	userGetAllSchemas,
 } from "../../redux/slices/schemasSlice"
 import { AppDispatch } from "../../redux/store"
@@ -18,7 +18,7 @@ import ViewProperties from "./components/ViewProperties"
 function SchemasPageContainer() {
 	const { setModalContent, openModal } = useContext(AppModalContext)
 	const address = useSelector(selectAddress)
-	const schemaMetadata = useSelector(selectSchemasMetaDataList)
+	const schemaMetadata = useSelector(selectSchemasMetadataList)
 	const dispatch = useDispatch<AppDispatch>()
 	const loading = useSelector(selectSchemasLoading)
 

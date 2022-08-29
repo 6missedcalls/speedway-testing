@@ -97,7 +97,7 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 	const did = generateDid()
 	const creator = addressToDid(sessionAddress)
 
-	const schemaMetaData = {
+	const schemaMetadata = {
 		did,
 		schema: {
 			did,
@@ -117,17 +117,17 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 		fields,
 	}
 
-	const allMetaData = (await storage.getItem("schemaMetaData")) || []
-	allMetaData.push(schemaMetaData)
+	const allMetadata = (await storage.getItem("schemaMetadata")) || []
+	allMetadata.push(schemaMetadata)
 
 	await Promise.all([
-		storage.setItem("schemaMetaData", allMetaData),
+		storage.setItem("schemaMetadata", allMetadata),
 		storage.setItem(schemaStoreKey(did), schema),
 	])
 
 	res.json({
 		definition: schema,
-		whatIs: schemaMetaData,
+		whatIs: schemaMetadata,
 	})
 })
 
@@ -220,7 +220,7 @@ app.post("/api/v1/object/get", async ({ body }, res) => {
 /// CHAIN PROXY
 
 app.get("/proxy/schemas", async (_, res) => {
-	const metadata = (await storage.getItem("schemaMetaData")) || []
+	const metadata = (await storage.getItem("schemaMetadata")) || []
 	res.json({ what_is: metadata })
 })
 

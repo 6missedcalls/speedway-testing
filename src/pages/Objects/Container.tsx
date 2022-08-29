@@ -10,7 +10,7 @@ import {
 } from "../../redux/slices/objectsSlice"
 import {
 	selectSchemasLoading,
-	selectSchemasMetaDataList,
+	selectSchemasMetadataList,
 	userGetAllSchemas,
 	userGetSchema,
 } from "../../redux/slices/schemasSlice"
@@ -28,7 +28,7 @@ function ObjectsPageContainer() {
 	const objectsLoading = useSelector(selectObjectsLoading)
 	const buckets = useSelector(selectBuckets)
 	const address = useSelector(selectAddress)
-	const schemaMetadata = useSelector(selectSchemasMetaDataList)
+	const schemaMetadata = useSelector(selectSchemasMetadataList)
 	const loading = schemasLoading && objectsLoading
 
 	useEffect(() => {

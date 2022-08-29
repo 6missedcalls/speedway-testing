@@ -125,7 +125,7 @@ export const selectGetSchemaLoading = (state: RootState) => {
 	return state.schemas.getSchemaLoading
 }
 
-export const selectSchemasMetaDataList = (state: RootState) => {
+export const selectSchemasMetadataList = (state: RootState) => {
 	return state.schemas.list
 }
 
