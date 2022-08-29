@@ -50,7 +50,7 @@ function TextInputComponent({
 		<div className={`${className} flex flex-col items-start`}>
 			{label && (
 				<div className="pb-1">
-					<span className="block text-custom-xs text-gray-800">{label}</span>
+					<span className="block text-custom-xs text-subdued">{label}</span>
 				</div>
 			)}
 			<div className="relative w-full ">
@@ -74,8 +74,8 @@ function TextInputComponent({
 					ref={inputRef}
 					className={`
                     bg-transparent appearance-none border rounded-md text-gray-900 w-full py-1 px-2 h-10 leading-tight focus:outline-none
-                    ${LeftIcon ? "pl-8" : ""} 
-                    ${focused ? "border-gray-900" : "border-gray-600"}
+                    ${LeftIcon ? "pl-8" : ""}
+                    ${focused ? "border-gray-900" : "border-default-border"}
                     `}
 					type={type}
 					onFocus={handleFocus}
