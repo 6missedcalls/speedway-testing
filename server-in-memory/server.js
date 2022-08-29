@@ -5,12 +5,6 @@ import _ from "lodash"
 import md5 from "md5"
 import storage from "node-persist"
 
-function arrayStringDistinct(arr) {
-	return arr.sort().filter(function (item, pos, ary) {
-		return !pos || item != ary[pos - 1]
-	})
-}
-
 const generateAddress = () => `snr${md5(Math.random())}`
 const generateDid = () => `did:snr:${md5(Math.random())}`
 const generateCid = () => md5(Math.random())
