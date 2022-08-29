@@ -16,20 +16,25 @@ export const selectBucketsLoading = (state: RootState) => {
 	return state.bucket.loading
 }
 
-export const getAllBuckets = createAsyncThunk("bucket/getAll", async () => {
-	return await fetch("http://localhost:8080/proxy/buckets", {
-		method: "GET",
-		headers: { "content-type": "application/json" },
-	})
-		.then((response) => response.json())
-		.then((r) =>
-			r.where_is.map((bucket: Bucket) => ({
-				did: bucket.did,
-				label: bucket.label,
-				content: bucket.content.filter((c) => c.uri),
-			}))
-		)
-})
+export const getAllBuckets = createAsyncThunk(
+	"bucket/getAll",
+	async (address: string) => {
+		return await fetch("http://localhost:8080/proxy/buckets", {
+			method: "GET",
+			headers: { "content-type": "application/json" },
+		})
+			.then((response) => response.json())
+			.then((response) =>
+				response.where_is
+					.filter((bucket: Bucket) => bucket.creator === address)
+					.map((bucket: Bucket) => ({
+						did: bucket.did,
+						label: bucket.label,
+						content: bucket.content.filter((c) => c.uri),
+					}))
+			)
+	}
+)
 
 export const updateBucket = createAsyncThunk(
 	"bucket/update",

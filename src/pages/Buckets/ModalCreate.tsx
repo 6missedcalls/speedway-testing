@@ -17,7 +17,7 @@ const ModalCreateBucket = () => {
 	const address = useSelector(selectAddress)
 	const save = async () => {
 		await dispatch(createBucket({ label, creator: address }))
-		dispatch(getAllBuckets())
+		dispatch(getAllBuckets(address))
 		closeModal()
 	}
 	const loading = useSelector(selectBucketCreationLoading)
