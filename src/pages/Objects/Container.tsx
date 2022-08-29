@@ -10,13 +10,12 @@ import {
 } from "../../redux/slices/objectsSlice"
 import {
 	selectSchemasLoading,
-	selectSchemasMetaDataList,
+	selectSchemasMetadataList,
 	userGetAllSchemas,
 	userGetSchema,
 } from "../../redux/slices/schemasSlice"
 import { AppDispatch } from "../../redux/store"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
-import { addressToDid } from "../../utils/did"
 import ObjectsPageComponent from "./Component"
 
 function ObjectsPageContainer() {
@@ -29,10 +28,7 @@ function ObjectsPageContainer() {
 	const objectsLoading = useSelector(selectObjectsLoading)
 	const buckets = useSelector(selectBuckets)
 	const address = useSelector(selectAddress)
-	const allMetaData = useSelector(selectSchemasMetaDataList)
-	const accountMetaData = allMetaData.filter(
-		(schema) => schema.creator === addressToDid(address)
-	)
+	const schemaMetadata = useSelector(selectSchemasMetadataList)
 	const loading = schemasLoading && objectsLoading
 
 	useEffect(() => {
@@ -57,7 +53,7 @@ function ObjectsPageContainer() {
 	}, [selectedSchemaDid])
 
 	async function getSchema() {
-		const selectedSchemaData = accountMetaData.find(
+		const selectedSchemaData = schemaMetadata.find(
 			(item) => item.schema.did === selectedSchemaDid
 		)!
 		const getSchemaPayload = {
@@ -75,8 +71,8 @@ function ObjectsPageContainer() {
 
 	async function initialize() {
 		await Promise.all([dispatch(userGetAllSchemas), dispatch(getAllBuckets)])
-		if (accountMetaData.length > 0) {
-			setSelectedSchema(accountMetaData[0].schema.did)
+		if (schemaMetadata.length > 0) {
+			setSelectedSchema(schemaMetadata[0].schema.did)
 		}
 	}
 
@@ -86,7 +82,7 @@ function ObjectsPageContainer() {
 			props: {
 				initialSelectedSchema: selectedSchemaDid,
 				initialSchemaFields: schemaFields,
-				schemas: accountMetaData,
+				schemas: schemaMetadata,
 			},
 		})
 		openModal()
@@ -111,13 +107,13 @@ function ObjectsPageContainer() {
 
 	return (
 		<ObjectsPageComponent
-			schemas={accountMetaData}
+			schemas={schemaMetadata}
 			selectedSchemaDid={selectedSchemaDid}
 			setSelectedSchema={setSelectedSchema}
 			openNewObjectModal={openNewObjectModal}
 			loading={loading}
 			list={mapToListFormat()}
-			schemasCount={accountMetaData.length}
+			schemasCount={schemaMetadata.length}
 		/>
 	)
 }

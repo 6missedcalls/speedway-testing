@@ -4,12 +4,11 @@ import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 import {
 	selectSchemasLoading,
-	selectSchemasMetaDataList,
+	selectSchemasMetadataList,
 	userGetAllSchemas,
 } from "../../redux/slices/schemasSlice"
 import { AppDispatch } from "../../redux/store"
 import { MODAL_CONTENT_NEW_SCHEMA } from "../../utils/constants"
-import { addressToDid } from "../../utils/did"
 import { obfuscateDid } from "../../utils/string"
 import { Ischema, IsearchableListItem } from "../../utils/types"
 import SchemasPageComponent from "./Component"
@@ -19,15 +18,12 @@ import ViewProperties from "./components/ViewProperties"
 function SchemasPageContainer() {
 	const { setModalContent, openModal } = useContext(AppModalContext)
 	const address = useSelector(selectAddress)
-	const allMetaData = useSelector(selectSchemasMetaDataList)
-	const accountMetaData = allMetaData.filter(
-		(schema) => schema.creator === addressToDid(address)
-	)
+	const schemaMetadata = useSelector(selectSchemasMetadataList)
 	const dispatch = useDispatch<AppDispatch>()
 	const loading = useSelector(selectSchemasLoading)
 
 	useEffect(() => {
-		dispatch(userGetAllSchemas())
+		dispatch(userGetAllSchemas(address))
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
@@ -64,10 +60,10 @@ function SchemasPageContainer() {
 
 	return (
 		<>
-			{accountMetaData && accountMetaData.length > 0 ? (
+			{schemaMetadata && schemaMetadata.length > 0 ? (
 				<SchemasPageComponent
 					openNewSchemaModal={openNewSchemaModal}
-					list={mapToListFormat(accountMetaData) as Array<IsearchableListItem>}
+					list={mapToListFormat(schemaMetadata) as Array<IsearchableListItem>}
 					searchableAndSortableFieldKey="Schema name"
 					loading={loading}
 				/>
