@@ -12,7 +12,7 @@ import (
 )
 
 type GetBucketBySchemaBody struct {
-	Creator   string `json:"creator"`   // DID of the creator
+	Creator   string `json:"creator"`   // Address of the creator
 	BucketDid string `json:"bucketDid"` // DID of the bucket
 	SchemaDid string `json:"schemaDid"` // DID of the schema
 }
@@ -24,10 +24,10 @@ type GetBucketBySchemaBody struct {
 // @Tags bucket
 // @Produce json
 // @Param 		 Creator body string true "Creator" example("snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
-// @Param 		 BucketDid body string true "bucketDid" example("did:snr:snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
-// @Param 		 SchemaDid body string true "schemaDid" example("did:snr:snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
+// @Param 		 BucketDid body string true "bucketDid" example("did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
+// @Param 		 SchemaDid body string true "schemaDid" example("did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
 // @Success 200 {object} rtmv1.SearchBucketContentBySchemaResponse
-// @Failure      500  {string}  message
+// @Failure      500  {object}  FailedResponse
 // @Router /bucket/get-by-schema [post]
 func (ns *NebulaServer) GetBucketBySchema(c *gin.Context) {
 	rBody := c.Request.Body

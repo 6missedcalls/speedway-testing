@@ -34,7 +34,7 @@ type SuccessfulLogin struct {
 // @Param 		 Did body string true "Did" example("snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
 // @Param 		 Password body string true "Password" example("Password")
 // @Success 200 {object} rtmv1.LoginResponse
-// @Failure      500  {string}  message
+// @Failure      500  {object}  FailedLogin
 // @Router /account/login [post]
 func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 	rBody := c.Request.Body

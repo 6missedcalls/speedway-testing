@@ -32,6 +32,11 @@ definitions:
       whatIs:
         $ref: '#/definitions/types.WhatIs'
     type: object
+  github.com_sonr-io_speedway_server_routes.FailedLogin:
+    properties:
+      success:
+        type: boolean
+    type: object
   github.com_sonr-io_speedway_server_routes.FailedResponse:
     properties:
       error:
@@ -114,6 +119,11 @@ definitions:
         $ref: '#/definitions/types.SchemaDefinition'
       whatIs:
         $ref: '#/definitions/types.WhatIs'
+    type: object
+  server_routes.FailedLogin:
+    properties:
+      success:
+        type: boolean
     type: object
   server_routes.FailedResponse:
     properties:
@@ -447,11 +457,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/server_routes.uResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.uResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: GetAccount
       tags:
       - account
@@ -484,7 +494,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/server_routes.FailedLogin'
       summary: LoginAccount
       tags:
       - account
@@ -540,11 +550,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.CreateBucketResponse'
+            $ref: '#/definitions/server_routes.CreateBucketResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: CreateBucket
       tags:
       - bucket
@@ -585,14 +595,14 @@ paths:
         schema:
           type: string
       - description: bucketDid
-        example: '"did:snr:snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+        example: '"did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
         in: body
         name: BucketDid
         required: true
         schema:
           type: string
       - description: schemaDid
-        example: '"did:snr:snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+        example: '"did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
         in: body
         name: SchemaDid
         required: true
@@ -608,7 +618,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: GetBucketBySchema
       tags:
       - bucket
@@ -630,23 +640,17 @@ paths:
         required: true
         schema:
           type: string
-      - description: ResourceIdentifier
-        example: '"did" or "cid"'
-        in: body
-        name: ResourceIdentifier
-        required: true
-        schema:
-          type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
-          schema: {}
+          schema:
+            $ref: '#/definitions/types.BucketItem'
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: UpdateBucketItems
       tags:
       - bucket
@@ -677,7 +681,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: UpdateBucketLabel
       tags:
       - bucket
@@ -708,7 +712,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: UpdateBucketVisibility
       tags:
       - bucket
@@ -833,11 +837,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.QuerySchemaResponse'
+            $ref: '#/definitions/server_routes.QuerySchemaResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: GetSchema
       tags:
       - schema

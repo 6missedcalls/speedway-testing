@@ -26,9 +26,8 @@ type UpdateBucketRequest struct {
 // @Produce json
 // @Param 		 Creator body string true "Creator" example("snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
 // @Param 		 Content body string true "Content" example("name: My Bucket, uri: bafyreifqum26tv4wprgri5t4ddef7tozknnicuayjcvd4m5gag5avgtvsa")
-// @Param 		 ResourceIdentifier body string true "ResourceIdentifier" example("did" or "cid")
-// @Success 200 {object} bucket.Bucket
-// @Failure      500  {string}  message
+// @Success 200 {object} types.BucketItem
+// @Failure      500  {object}  FailedResponse
 // @Router /bucket/update-items [post]
 func (ns *NebulaServer) UpdateBucketItems(c *gin.Context) {
 	rBody := c.Request.Body
