@@ -19,7 +19,7 @@ type UpdateBucketRequest struct {
 }
 
 // @BasePath /api/v1
-// @Summary UpdateBucket
+// @Summary UpdateBucketItems
 // @Schemes
 // @Description Update a bucket on Sonr using the bucket module of Sonr's Blockchain.
 // @Tags bucket
@@ -29,8 +29,8 @@ type UpdateBucketRequest struct {
 // @Param 		 ResourceIdentifier body string true "ResourceIdentifier" example("did" or "cid")
 // @Success 200 {object} bucket.Bucket
 // @Failure      500  {string}  message
-// @Router /bucket/update [post]
-func (ns *NebulaServer) UpdateBucket(c *gin.Context) {
+// @Router /bucket/update-items [post]
+func (ns *NebulaServer) UpdateBucketItems(c *gin.Context) {
 	rBody := c.Request.Body
 	var r UpdateBucketRequest
 	err := json.NewDecoder(rBody).Decode(&r)
@@ -69,6 +69,16 @@ func (ns *NebulaServer) UpdateBucket(c *gin.Context) {
 	})
 
 	b := binding.CreateInstance()
+
+	// Get the bucket (this is a temporary solution)
+	bucket, err := b.GetBuckets(context.Background(), r.Did)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: "Failed to get bucket",
+		})
+		return
+	}
+	fmt.Println("Bucket: ", bucket)
 
 	// Update the bucket's Content
 	updateContent, err := b.UpdateBucketItems(context.Background(), r.Did, items)

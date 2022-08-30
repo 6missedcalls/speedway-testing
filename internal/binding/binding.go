@@ -238,6 +238,26 @@ func (b *SpeedwayBinding) GetBuckets(ctx context.Context, bucketDid string) ([]*
 }
 
 /*
+Get a bucket with an associated schema and return the response
+*/
+func (b *SpeedwayBinding) GetBucketFromSchema(ctx context.Context, req rtmv1.SeachBucketContentBySchemaRequest) (rtmv1.SearchBucketContentBySchemaResponse, error) {
+	if b.instance == nil {
+		return rtmv1.SearchBucketContentBySchemaResponse{}, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return rtmv1.SearchBucketContentBySchemaResponse{}, ErrNotAuthenticated
+	}
+
+	res, err := b.instance.SeachBucketBySchema(req)
+	if err != nil {
+		fmt.Println(status.Error("Error"), err)
+		return rtmv1.SearchBucketContentBySchemaResponse{}, err
+	}
+
+	return res, nil
+}
+
+/*
 Create the schema and return the WhatIsResponse
 */
 func (b *SpeedwayBinding) CreateSchema(req rtmv1.CreateSchemaRequest) (rtmv1.CreateSchemaResponse, error) {
@@ -325,6 +345,69 @@ func (b *SpeedwayBinding) UpdateBucketItems(ctx context.Context, bucketDid strin
 	}
 
 	return content, nil
+}
+
+/*
+UpdateBucketLabel and return the bucket after the update
+*/
+func (b *SpeedwayBinding) UpdateBucketLabel(ctx context.Context, bucketDid string, label string) (*rtmv1.QueryWhereIsResponse, error) {
+	if b.instance == nil {
+		return nil, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return nil, ErrNotAuthenticated
+	}
+
+	res, err := b.instance.UpdateBucketLabel(ctx, bucketDid, label)
+	if err != nil {
+		fmt.Println(status.Error("Error"), err)
+		return nil, err
+	}
+
+	// query whereis
+	wReq := rtmv1.QueryWhereIsRequest{
+		Creator: res.GetCreator(),
+		Did:     res.GetDID(),
+	}
+
+	whereIs, err := b.instance.QueryWhereIs(wReq)
+	if err != nil {
+		fmt.Println(status.Error("Error"), err)
+		return nil, err
+	}
+
+	return whereIs, nil
+}
+
+/*
+UpdateBucketVisibility and return the bucket after the update
+*/
+func (b *SpeedwayBinding) UpdateBucketVisibility(ctx context.Context, bucketDid string, visibility *btv1.BucketVisibility) (*rtmv1.QueryWhereIsResponse, error) {
+	if b.instance == nil {
+		return nil, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return nil, ErrNotAuthenticated
+	}
+
+	res, err := b.instance.UpdateBucketVisibility(ctx, bucketDid, *visibility)
+	if err != nil {
+		fmt.Println(status.Error("Error"), err)
+		return nil, err
+	}
+
+	wReq := rtmv1.QueryWhereIsRequest{
+		Creator: res.GetCreator(),
+		Did:     res.GetDID(),
+	}
+
+	whereIs, err := b.instance.QueryWhereIs(wReq)
+	if err != nil {
+		fmt.Println(status.Error("Error"), err)
+		return nil, err
+	}
+
+	return whereIs, nil
 }
 
 /*
