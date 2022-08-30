@@ -20,7 +20,7 @@ require (
 	github.com/kataras/golog v0.1.7
 	github.com/manifoldco/promptui v0.9.0
 	github.com/shengdoushi/base58 v1.0.0
-	github.com/sonr-io/sonr v0.3.5
+	github.com/sonr-io/sonr v0.3.8
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31

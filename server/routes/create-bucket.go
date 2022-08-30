@@ -5,11 +5,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sonr-io/sonr/pkg/did"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
 	"github.com/sonr-io/sonr/x/bucket/types"
 	"github.com/sonr-io/speedway/internal/binding"
+	"github.com/sonr-io/speedway/internal/utils"
 )
 
 type CreateBucketRequest struct {
@@ -20,39 +23,33 @@ type CreateBucketRequest struct {
 	Content    map[string]string `json:"content"`    // Content of the bucket
 }
 
-// create a function that takes the r.visibility and r.role and returns the visibility and role
-func swap(visibility string, role string) (types.BucketVisibility, types.BucketRole, error) {
+type Content struct {
+	Name      string                   `json:"name"`
+	Uri       string                   `json:"uri"`
+	Timestamp int64                    `json:"timestamp"`
+	Type      types.ResourceIdentifier `json:"type"`
+	SchemaDid string                   `json:"schemaDid"`
+}
 
-	// convert the visibility string to an int
-	var visibilityInt types.BucketVisibility
-	switch visibility {
-	case "public":
-		visibilityInt = types.BucketVisibility_PUBLIC
-	case "private":
-		visibilityInt = types.BucketVisibility_PRIVATE
-	}
-
-	// convert the role string to an int
-	var roleInt types.BucketRole
-	switch role {
-	case "application":
-		roleInt = types.BucketRole_APPLICATION
-	case "private":
-		roleInt = types.BucketRole_USER
-	}
-
-	return visibilityInt, roleInt, nil
+type CreateBucketResponse struct {
+	Bucket  []*types.BucketItem `json:"bucket"`
+	Service *did.Service        `json:"service"`
 }
 
 // @BasePath /api/v1
 // @Summary CreateBucket
 // @Schemes
-// @Description Create a bucket on Sonr using the object module of Sonr's Blockchain.
+// @Description Create a bucket on Sonr using the bucket module of Sonr's Blockchain.
 // @Tags bucket
 // @Produce json
-// @Param 		 body body CreateBucketRequest true "CreateBucketRequest" example("{\"creator\":\"did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p\",\"label\":\"My Bucket\",\"visibility\":\"public\",\"role\":\"application\",\"content\":{\"key\":\"value\"}}")
-// @Success 200 {object} bucket.Bucket
-// @Failure      500  {string}  message
+// @Param 		 Creator body string true "Creator" example("snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
+// @Param 		 Label body string true "Label" example("My Bucket")
+// @Param 		 Visibility body string true "Visibility" example("public" or "private")
+// @Param 		 Role body string true "Role" example("application" or "user")
+// @Param 		 Content body string true "Content" example("name: My Bucket, uri: bafyreifqum26tv4wprgri5t4ddef7tozknnicuayjcvd4m5gag5avgtvsa")
+// @Param 		 ResourceIdentifier body string true "ResourceIdentifier" example("did" or "cid")
+// @Success 200 {object} CreateBucketResponse
+// @Failure      500  {object}  FailedResponse
 // @Router /bucket/create [post]
 func (ns *NebulaServer) CreateBucket(c *gin.Context) {
 	rBody := c.Request.Body
@@ -60,25 +57,52 @@ func (ns *NebulaServer) CreateBucket(c *gin.Context) {
 	err := json.NewDecoder(rBody).Decode(&r)
 	if err != nil {
 		fmt.Println(err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid Request Body",
+		c.JSON(http.StatusBadRequest, FailedResponse{
+			Error: "Invalid request body",
 		})
 		return
 	}
 
-	vis, role, err := swap(r.Visibility, r.Role)
+	vis, err := utils.ConvertBucketVisibility(r.Visibility)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Parse Error - Invalid Visibility or Role",
+		c.JSON(http.StatusBadRequest, FailedResponse{
+			Error: "Invalid Conversion of Visibility",
 		})
 		return
+	}
+
+	role, err := utils.ConvertBucketRole(r.Role)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, FailedResponse{
+			Error: "Invalid Conversion of Role",
+		})
+		return
+	}
+
+	rType, err := utils.ConvertResourceIdentifier(r.Content["type"])
+	if err != nil {
+		c.JSON(http.StatusBadRequest, FailedResponse{
+			Error: "Invalid Conversion of ResourceIdentifier",
+		})
+		return
+	}
+
+	// create the content
+	content := Content{
+		Name:      r.Content["name"],
+		Uri:       r.Content["uri"],
+		Timestamp: time.Now().Unix(),
+		Type:      rType,
+		SchemaDid: r.Content["schemaDid"],
 	}
 
 	items := make([]*types.BucketItem, 0)
-	// add the name, uri and type to the items array
 	items = append(items, &types.BucketItem{
-		Name: r.Content["name"],
-		Uri:  r.Content["uri"],
+		Name:      content.Name,
+		Uri:       content.Uri,
+		Timestamp: content.Timestamp,
+		Type:      content.Type,
+		SchemaDid: content.SchemaDid,
 	})
 
 	// Create a new create bucket request
@@ -96,14 +120,14 @@ func (ns *NebulaServer) CreateBucket(c *gin.Context) {
 	bucket, service, err := b.CreateBucket(context.Background(), createBucketReq)
 	if err != nil {
 		fmt.Println("Create Bucket Error: ", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Could Not Create Bucket",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: "Failed to create bucket",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"bucket-contents":     bucket,
-		"service-information": service,
+	c.JSON(http.StatusOK, CreateBucketResponse{
+		Bucket:  bucket,
+		Service: &service,
 	})
 }

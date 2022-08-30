@@ -102,6 +102,9 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 
 	// * Serve Static Route
 	ns.Router.Use(static.Serve("/", static.LocalFile(ns.Config.StaticDir, true)))
+	ns.Router.Use(static.Serve("/schema", static.LocalFile(ns.Config.StaticDir, true)))
+	ns.Router.Use(static.Serve("/objects", static.LocalFile(ns.Config.StaticDir, true)))
+	ns.Router.Use(static.Serve("/buckets", static.LocalFile(ns.Config.StaticDir, true)))
 
 	return nil
 }

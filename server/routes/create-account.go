@@ -17,6 +17,14 @@ type CARequestBody struct {
 	Password string `json:"password"`
 }
 
+type CAResponseBody struct {
+	Address string `json:"address"`
+}
+
+type FailedResponse struct {
+	Error string `json:"error"`
+}
+
 // @BasePath /api/v1
 // @Summary CreateAccount
 // @Schemes
@@ -24,16 +32,16 @@ type CARequestBody struct {
 // @Tags account
 // @Produce json
 // @Param 		 password body string true "Password"
-// @Success 	 200  {string}  message "Address"
-// @Failure      500  {string}  message "Error"
+// @Success 	 200  {object}  CAResponseBody
+// @Failure      500  {object}  FailedResponse
 // @Router /account/create [post]
 func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	rBody := c.Request.Body
 	var body CARequestBody
 	err := json.NewDecoder(rBody).Decode(&body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid Request Body",
+		c.JSON(http.StatusBadRequest, FailedResponse{
+			Error: "Invalid request body",
 		})
 		return
 	}
@@ -41,8 +49,8 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	aesKey, err := mpc.NewAesKey()
 	if err != nil {
 		fmt.Println("err", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Could not generate AES key",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: "Failed to generate AES key",
 		})
 		return
 	}
@@ -61,13 +69,13 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	res, err := b.CreateAccount(req)
 	if err != nil {
 		fmt.Println("err", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Could Not Create Account",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: "Failed to create account",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"Address": res.Address,
+	c.JSON(http.StatusOK, CAResponseBody{
+		Address: res.Address,
 	})
 }

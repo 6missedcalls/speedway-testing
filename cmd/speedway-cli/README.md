@@ -62,7 +62,7 @@ go run main.go schema query
 
 ## Object
 
-*If Built/Installed*
+_If Built/Installed_
 
 Build an object with the `build` command.
 ```bash
@@ -75,7 +75,7 @@ Get an object with the `get` command.
 speedway object get
 ```
 
-*If Not Built/Installed*
+_If Not Built/Installed_
 
 Build an object with the `build` command.
 ```bash
@@ -85,4 +85,29 @@ go run main.go object build
 Get an object with the `get` command.
 ```
 go run main.go object get
+```
+
+
+## Bucket
+
+_If Built/Installed_
+Create a bucket with the `create` command.
+```bash
+speedway bucket create
+```
+
+Get a bucket with the `get` command.
+```bash
+speedway bucket get all
+```
+
+_If Not Built/Installed_
+Create a bucket with the `create` command.
+```bash
+go run main.go bucket create
+```
+
+Get a bucket with the `get` command.
+```bash
+go run main.go bucket get all
 ```

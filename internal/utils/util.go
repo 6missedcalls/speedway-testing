@@ -9,6 +9,7 @@ import (
 	"github.com/denisbrodbeck/machineid"
 	"github.com/sonr-io/sonr/pkg/motor"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
+	"github.com/sonr-io/sonr/x/bucket/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
@@ -63,6 +64,7 @@ func ResolveIPFS(cid string) (st.SchemaDefinition, error) {
 	return *definition, err
 }
 
+// GetFile reads a file from a given path and return an object builder.
 func GetFile(path string) (*ObjectBuilder, error) {
 	file, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -78,6 +80,51 @@ func GetFile(path string) (*ObjectBuilder, error) {
 	return &objectBuilder, err
 }
 
+/*
+	Bucket Utils
+*/
+// Convert the bucket visibility from a string to the BucketVisibility type.
+func ConvertBucketVisibility(visibility string) (types.BucketVisibility, error) {
+	var visibilityInt types.BucketVisibility
+	switch visibility {
+	case "public":
+		visibilityInt = types.BucketVisibility_PUBLIC
+	case "private":
+		visibilityInt = types.BucketVisibility_PRIVATE
+	}
+
+	return visibilityInt, nil
+}
+
+// Convert the bucket role from a string to the BucketRole type.
+func ConvertBucketRole(role string) (types.BucketRole, error) {
+	var roleInt types.BucketRole
+	switch role {
+	case "application":
+		roleInt = types.BucketRole_APPLICATION
+	case "private":
+		roleInt = types.BucketRole_USER
+	}
+
+	return roleInt, nil
+}
+
+// Convert the bucket content resource identifier from a string to the ResourceIdentifier type.
+func ConvertResourceIdentifier(resourceIdentifier string) (types.ResourceIdentifier, error) {
+	var rType types.ResourceIdentifier
+	switch resourceIdentifier {
+	case "did":
+		rType = types.ResourceIdentifier_DID
+	case "cid":
+		rType = types.ResourceIdentifier_CID
+	}
+
+	return rType, nil
+}
+
+/*
+	CMD Utils
+*/
 func CreateAccount(m motor.MotorNode, req rtmv1.CreateAccountRequest) (rtmv1.CreateAccountResponse, error) {
 	res, err := m.CreateAccount(req)
 	if err != nil {

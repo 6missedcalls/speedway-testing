@@ -7,15 +7,19 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
 	"github.com/sonr-io/speedway/internal/binding"
-	"github.com/sonr-io/speedway/internal/status"
 )
 
 type BuildObjectBody struct {
 	SchemaDid string                 `json:"schemaDid"`
 	Label     string                 `json:"label"`
 	Object    map[string]interface{} `json:"object"`
+}
+
+type BuildObjectResponse struct {
+	ObjectUpload *object.ObjectUploadResult `json:"objectUpload"`
 }
 
 // @BasePath /api/v1
@@ -28,15 +32,15 @@ type BuildObjectBody struct {
 // @Param 		 Label body string true "Label" example("MyObject")
 // @Param 		 Object body map[string]interface{} true "Object" example({"name": "John Doe"})
 // @Success 200 {object} object.ObjectReference
-// @Failure      500  {string}  message
+// @Failure      500  {object}  FailedResponse
 // @Router /object/build [post]
 func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	rBody := c.Request.Body
 	var body BuildObjectBody
 	err := json.NewDecoder(rBody).Decode(&body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid Request Body",
+		c.JSON(http.StatusBadRequest, FailedResponse{
+			Error: "Invalid request body",
 		})
 		return
 	}
@@ -48,12 +52,11 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	// query whatis
 	did, err := m.GetDID()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to get DID",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: "Failed to get DID",
 		})
 		return
 	}
-	fmt.Println(status.Debug, "DID", did)
 
 	// query whatis req
 	querySchemaReq := rtmv1.QueryWhatIsRequest{
@@ -67,12 +70,13 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 		return
 	}
 	fmt.Printf("Schema WhatIs Response %v\n", querySchema)
+
 	// Initialize NewObjectBuilder
 	objBuilder, err := m.NewObjectBuilder(body.SchemaDid)
 	if err != nil {
 		fmt.Println("ObjectBuilder Error: ", err)
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"error": "ObjectBuilder Error",
+		c.JSON(http.StatusUnprocessableEntity, FailedResponse{
+			Error: "ObjectBuilder Error",
 		})
 	}
 
@@ -87,11 +91,11 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	upload, err := objBuilder.Upload()
 	if err != nil {
 		fmt.Println("err", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Object Upload Failed",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: "Failed to upload object",
 		})
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"reference": upload.Reference,
+	c.JSON(http.StatusOK, BuildObjectResponse{
+		ObjectUpload: upload,
 	})
 }

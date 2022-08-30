@@ -116,7 +116,7 @@ func (b *SpeedwayBinding) Login(req rtmv1.LoginRequest) (rtmv1.LoginResponse, er
 /*
 Get the object and return a map of the object
 */
-func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid string) (map[string]interface{}, error) {
+func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid string) (*object.Object, error) {
 	if b.instance == nil {
 		return nil, ErrMotorNotInitialized
 	}
@@ -151,7 +151,7 @@ func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid s
 		return nil, err
 	}
 
-	return getObject, nil
+	return &getObject, nil
 }
 
 /*
@@ -183,7 +183,39 @@ func (b *SpeedwayBinding) GetSchema(ctx context.Context, creator string, schemaD
 /*
 Get the bucket and return the Response
 */
-func (b *SpeedwayBinding) GetBucket(ctx context.Context, bucketDid string) ([]*btv1.BucketItem, error) {
+func (b *SpeedwayBinding) GetBucket(ctx context.Context, bucketDid string, contentId string) ([]*btv1.BucketItem, error) {
+	if b.instance == nil {
+		return nil, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return nil, ErrNotAuthenticated
+	}
+
+	res, err := b.instance.GetBucket(bucketDid)
+	if err != nil {
+		fmt.Println(status.Error("Error"), err)
+		return nil, err
+	}
+
+	content := res.GetBucketItems()
+	if content == nil {
+		return nil, nil
+	}
+
+	cById, err := res.GetContentById(contentId)
+	if err != nil {
+		fmt.Println(status.Error("Error"), err)
+		return nil, err
+	}
+	fmt.Println(status.Info, "Content by ID", cById)
+
+	return content, nil
+}
+
+/*
+Get a list of BucketItems from the bucket and return the list
+*/
+func (b *SpeedwayBinding) GetBuckets(ctx context.Context, bucketDid string) ([]*btv1.BucketItem, error) {
 	if b.instance == nil {
 		return nil, ErrMotorNotInitialized
 	}
@@ -363,4 +395,20 @@ func (b *SpeedwayBinding) GetAddress() (string, error) {
 	}
 
 	return address, nil
+}
+
+/*
+GetBalance and return the balance
+*/
+func (b *SpeedwayBinding) GetBalance() (int64, error) {
+	if b.instance == nil {
+		return 0, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return 0, ErrNotAuthenticated
+	}
+
+	balance := b.instance.GetBalance()
+
+	return balance, nil
 }

@@ -5,28 +5,31 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/sonr/x/bucket/types"
 	"github.com/sonr-io/speedway/internal/binding"
+	"github.com/sonr-io/speedway/internal/utils"
 )
 
 type UpdateBucketRequest struct {
-	Did        string                    `json:"did"`
-	Content    map[string]string         `json:"content"`
-	ResourceId *types.ResourceIdentifier `json:"resourceId"`
+	Did     string            `json:"did"`
+	Content map[string]string `json:"content"`
 }
 
 // @BasePath /api/v1
 // @Summary UpdateBucket
 // @Schemes
-// @Description Create a bucket on Sonr using the object module of Sonr's Blockchain.
+// @Description Update a bucket on Sonr using the bucket module of Sonr's Blockchain.
 // @Tags bucket
 // @Produce json
-// @Param body body UpdateBucketRequest true "UpdateBucketRequest" example("{\"creator\":\"did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p\",\"did\":\"did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p\",\"label\":\"My Bucket\",\"visibility\":\"public\",\"role\":\"application\",\"content\":{\"key\":\"value\"}}")
+// @Param 		 Creator body string true "Creator" example("snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
+// @Param 		 Content body string true "Content" example("name: My Bucket, uri: bafyreifqum26tv4wprgri5t4ddef7tozknnicuayjcvd4m5gag5avgtvsa")
+// @Param 		 ResourceIdentifier body string true "ResourceIdentifier" example("did" or "cid")
 // @Success 200 {object} bucket.Bucket
 // @Failure      500  {string}  message
-// @Router /bucket/create [post]
+// @Router /bucket/update [post]
 func (ns *NebulaServer) UpdateBucket(c *gin.Context) {
 	rBody := c.Request.Body
 	var r UpdateBucketRequest
@@ -39,22 +42,39 @@ func (ns *NebulaServer) UpdateBucket(c *gin.Context) {
 		return
 	}
 
+	rType, err := utils.ConvertResourceIdentifier(r.Content["type"])
+	if err != nil {
+		c.JSON(http.StatusBadRequest, FailedResponse{
+			Error: "Invalid Conversion of ResourceIdentifier",
+		})
+		return
+	}
+
+	// create the content
+	content := Content{
+		Name:      r.Content["name"],
+		Uri:       r.Content["uri"],
+		Timestamp: time.Now().Unix(),
+		Type:      rType,
+		SchemaDid: r.Content["schemaDid"],
+	}
+
 	items := make([]*types.BucketItem, 0)
-	// add the name, uri and type to the items array
 	items = append(items, &types.BucketItem{
-		Name: r.Content["name"],
-		Uri:  r.Content["uri"],
+		Name:      content.Name,
+		Uri:       content.Uri,
+		Timestamp: content.Timestamp,
+		Type:      content.Type,
+		SchemaDid: content.SchemaDid,
 	})
 
 	b := binding.CreateInstance()
 
-	// ! TODO: Explore "Update Bucket Error: broadcast tx: failed to broadcast transaction: unable to resolve type URL /sonrio.sonr.bucket.UpdateWhereIs: tx parse error"
 	// Update the bucket's Content
 	updateContent, err := b.UpdateBucketItems(context.Background(), r.Did, items)
 	if err != nil {
-		fmt.Println("Update Bucket Error:", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Could Not Update Bucket",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: "Update Bucket Error",
 		})
 		return
 	}

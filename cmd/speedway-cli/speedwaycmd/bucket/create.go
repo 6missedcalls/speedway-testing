@@ -7,7 +7,6 @@ import (
 	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
-	btv1 "github.com/sonr-io/sonr/x/bucket/types"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/status"
@@ -58,11 +57,14 @@ func bootstrapCreateBucketCommand(ctx context.Context, logger *golog.Logger) (cr
 				Size: 2,
 			}
 			_, visibility, err := visibilityPrompt.Run()
-
 			if err != nil {
 				return
 			}
-			req.Visibility = ConvertVisibility(visibility)
+
+			req.Visibility, err = utils.ConvertBucketVisibility(visibility)
+			if err != nil {
+				return
+			}
 			rolePrompt := promptui.Select{
 				Label: "Bucket Visibility",
 				Items: []string{
@@ -76,7 +78,10 @@ func bootstrapCreateBucketCommand(ctx context.Context, logger *golog.Logger) (cr
 				return
 			}
 
-			req.Role = ConvertRole(role)
+			req.Role, err = utils.ConvertBucketRole(role)
+			if err != nil {
+				return
+			}
 			logger.Info("Creating bucket with label: ", bucketLabel)
 
 			res, err := m.CreateBucket(ctx, req)
@@ -92,26 +97,4 @@ func bootstrapCreateBucketCommand(ctx context.Context, logger *golog.Logger) (cr
 	}
 
 	return
-}
-
-func ConvertVisibility(visibility string) btv1.BucketVisibility {
-	switch visibility {
-	case "public":
-		return btv1.BucketVisibility_PUBLIC
-	case "private":
-		return btv1.BucketVisibility_PRIVATE
-	}
-
-	return btv1.BucketVisibility_PRIVATE
-}
-
-func ConvertRole(role string) btv1.BucketRole {
-	switch role {
-	case "application":
-		return btv1.BucketRole_APPLICATION
-	case "private":
-		return btv1.BucketRole_USER
-	}
-
-	return btv1.BucketRole_USER
 }

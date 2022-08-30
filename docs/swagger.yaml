@@ -1,35 +1,58 @@
 basePath: /api/v1
 definitions:
-  github.com_sonr-io_speedway_server_routes.CreateBucketRequest:
+  did.Service:
     properties:
-      content:
+      id:
+        $ref: '#/definitions/ssi.URI'
+      serviceEndpoint:
         additionalProperties:
           type: string
-        description: Content of the bucket
         type: object
-      creator:
-        description: Creator of the bucket
-        type: string
-      label:
-        description: Label of the bucket
-        type: string
-      role:
-        description: Role of the bucket
-        type: string
-      visibility:
-        description: Visibility of the bucket
+      type:
         type: string
     type: object
-  github.com_sonr-io_speedway_server_routes.UpdateBucketRequest:
+  github.com_sonr-io_speedway_server_routes.CAResponseBody:
     properties:
-      content:
-        additionalProperties:
-          type: string
-        type: object
-      did:
+      address:
         type: string
-      resourceId:
-        type: integer
+    type: object
+  github.com_sonr-io_speedway_server_routes.CreateBucketResponse:
+    properties:
+      bucket:
+        items:
+          $ref: '#/definitions/types.BucketItem'
+        type: array
+      service:
+        $ref: '#/definitions/did.Service'
+    type: object
+  github.com_sonr-io_speedway_server_routes.CreateSchemaResponse:
+    properties:
+      definition:
+        $ref: '#/definitions/types.SchemaDefinition'
+      whatIs:
+        $ref: '#/definitions/types.WhatIs'
+    type: object
+  github.com_sonr-io_speedway_server_routes.FailedResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  github.com_sonr-io_speedway_server_routes.GetBucketResponse:
+    properties:
+      bucket:
+        items:
+          $ref: '#/definitions/types.BucketItem'
+        type: array
+    type: object
+  github.com_sonr-io_speedway_server_routes.GetObjectResponse:
+    properties:
+      object:
+        $ref: '#/definitions/object.Object'
+    type: object
+  github.com_sonr-io_speedway_server_routes.QuerySchemaResponse:
+    properties:
+      definition:
+        $ref: '#/definitions/types.SchemaDefinition'
     type: object
   github.com_sonr-io_speedway_server_routes.uResponse:
     properties:
@@ -37,19 +60,15 @@ definitions:
         type: string
       didDocument: {}
     type: object
-  motor.CreateSchemaResponse:
-    properties:
-      status:
-        type: integer
-      what_is:
-        $ref: '#/definitions/types.WhatIs'
-    type: object
   motor.LoginResponse:
     properties:
       success:
         type: boolean
       who_is:
         $ref: '#/definitions/types.WhoIs'
+    type: object
+  object.Object:
+    additionalProperties: true
     type: object
   object.ObjectReference:
     properties:
@@ -60,42 +79,86 @@ definitions:
       label:
         type: string
     type: object
-  server_routes.CreateBucketRequest:
+  server_routes.CAResponseBody:
     properties:
-      content:
-        additionalProperties:
-          type: string
-        description: Content of the bucket
-        type: object
-      creator:
-        description: Creator of the bucket
-        type: string
-      label:
-        description: Label of the bucket
-        type: string
-      role:
-        description: Role of the bucket
-        type: string
-      visibility:
-        description: Visibility of the bucket
+      address:
         type: string
     type: object
-  server_routes.UpdateBucketRequest:
+  server_routes.CreateBucketResponse:
     properties:
-      content:
-        additionalProperties:
-          type: string
-        type: object
-      did:
+      bucket:
+        items:
+          $ref: '#/definitions/types.BucketItem'
+        type: array
+      service:
+        $ref: '#/definitions/did.Service'
+    type: object
+  server_routes.CreateSchemaResponse:
+    properties:
+      definition:
+        $ref: '#/definitions/types.SchemaDefinition'
+      whatIs:
+        $ref: '#/definitions/types.WhatIs'
+    type: object
+  server_routes.FailedResponse:
+    properties:
+      error:
         type: string
-      resourceId:
-        type: integer
+    type: object
+  server_routes.GetBucketResponse:
+    properties:
+      bucket:
+        items:
+          $ref: '#/definitions/types.BucketItem'
+        type: array
+    type: object
+  server_routes.GetObjectResponse:
+    properties:
+      object:
+        $ref: '#/definitions/object.Object'
+    type: object
+  server_routes.QuerySchemaResponse:
+    properties:
+      definition:
+        $ref: '#/definitions/types.SchemaDefinition'
     type: object
   server_routes.uResponse:
     properties:
       address:
         type: string
       didDocument: {}
+    type: object
+  ssi.URI:
+    properties:
+      forceQuery:
+        description: append a query ('?') even if RawQuery is empty
+        type: boolean
+      fragment:
+        description: fragment for references, without '#'
+        type: string
+      host:
+        description: host or host:port
+        type: string
+      opaque:
+        description: encoded opaque data
+        type: string
+      path:
+        description: path (relative paths may omit leading slash)
+        type: string
+      rawFragment:
+        description: encoded fragment hint (see EscapedFragment method)
+        type: string
+      rawPath:
+        description: encoded path hint (see EscapedPath method)
+        type: string
+      rawQuery:
+        description: encoded query values, without '?'
+        type: string
+      scheme:
+        type: string
+      user:
+        $ref: '#/definitions/url.Userinfo'
+        description: username and password information
     type: object
   types.Alias:
     properties:
@@ -109,6 +172,21 @@ definitions:
         type: boolean
       name:
         description: Name is the string name of an Alias
+        type: string
+    type: object
+  types.BucketItem:
+    properties:
+      name:
+        description: Name of the bucket item.
+        type: string
+      timestamp:
+        description: Timestamp of the last update. // optional
+        type: integer
+      type:
+        description: Type of the resource
+        type: integer
+      uri:
+        description: DID of the item. If applicable // optional
         type: string
     type: object
   types.DIDDocument:
@@ -298,6 +376,8 @@ definitions:
           "application"'
         type: integer
     type: object
+  url.Userinfo:
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -327,13 +407,13 @@ paths:
       - application/json
       responses:
         "200":
-          description: Address
+          description: OK
           schema:
-            type: string
+            $ref: '#/definitions/server_routes.CAResponseBody'
         "500":
-          description: Error
+          description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: CreateAccount
       tags:
       - account
@@ -347,14 +427,14 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.uResponse'
+            $ref: '#/definitions/server_routes.uResponse'
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: GetAccount
       tags:
-      - object
+      - account
   /account/login:
     post:
       description: Login to an existing account on Sonr using the Registry module
@@ -390,35 +470,111 @@ paths:
       - account
   /bucket/create:
     post:
-      description: Create a bucket on Sonr using the object module of Sonr's Blockchain.
+      description: Create a bucket on Sonr using the bucket module of Sonr's Blockchain.
       parameters:
-      - description: UpdateBucketRequest
+      - description: Creator
+        example: '"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
         in: body
-        name: body
+        name: Creator
         required: true
         schema:
-          $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.UpdateBucketRequest'
+          type: string
+      - description: Label
+        example: '"My Bucket"'
+        in: body
+        name: Label
+        required: true
+        schema:
+          type: string
+      - description: Visibility
+        example: '"public" or "private"'
+        in: body
+        name: Visibility
+        required: true
+        schema:
+          type: string
+      - description: Role
+        example: '"application" or "user"'
+        in: body
+        name: Role
+        required: true
+        schema:
+          type: string
+      - description: Content
+        example: '"name: My Bucket, uri: bafyreifqum26tv4wprgri5t4ddef7tozknnicuayjcvd4m5gag5avgtvsa"'
+        in: body
+        name: Content
+        required: true
+        schema:
+          type: string
+      - description: ResourceIdentifier
+        example: '"did" or "cid"'
+        in: body
+        name: ResourceIdentifier
+        required: true
+        schema:
+          type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
-          schema: {}
+          schema:
+            $ref: '#/definitions/server_routes.CreateBucketResponse'
         "500":
           description: Internal Server Error
           schema:
-            type: string
-      summary: UpdateBucket
+            $ref: '#/definitions/server_routes.FailedResponse'
+      summary: CreateBucket
       tags:
       - bucket
   /bucket/get:
     post:
-      description: Get a bucket on Sonr using the object module of Sonr's Blockchain.
+      description: Get a bucket on Sonr using the bucket module of Sonr's Blockchain.
       parameters:
       - description: BucketDid
-        example: '"did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+        example: '"did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
         in: body
         name: bucketDid
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/server_routes.GetBucketResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/server_routes.FailedResponse'
+      summary: GetBucket
+      tags:
+      - bucket
+  /bucket/update:
+    post:
+      description: Update a bucket on Sonr using the bucket module of Sonr's Blockchain.
+      parameters:
+      - description: Creator
+        example: '"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+        in: body
+        name: Creator
+        required: true
+        schema:
+          type: string
+      - description: Content
+        example: '"name: My Bucket, uri: bafyreifqum26tv4wprgri5t4ddef7tozknnicuayjcvd4m5gag5avgtvsa"'
+        in: body
+        name: Content
+        required: true
+        schema:
+          type: string
+      - description: ResourceIdentifier
+        example: '"did" or "cid"'
+        in: body
+        name: ResourceIdentifier
         required: true
         schema:
           type: string
@@ -432,7 +588,7 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: GetBucket
+      summary: UpdateBucket
       tags:
       - bucket
   /object/build:
@@ -470,7 +626,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: BuildObject
       tags:
       - object
@@ -498,11 +654,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/object.ObjectReference'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.GetObjectResponse'
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: GetObject
       tags:
       - object
@@ -527,11 +683,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/motor.CreateSchemaResponse'
+            $ref: '#/definitions/server_routes.CreateSchemaResponse'
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: CreateSchema
       tags:
       - schema
@@ -556,11 +712,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/types.SchemaDefinition'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.QuerySchemaResponse'
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: GetSchema
       tags:
       - schema

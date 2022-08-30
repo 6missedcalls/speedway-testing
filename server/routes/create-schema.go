@@ -18,6 +18,11 @@ type CreateSchemaRequest struct {
 	Metadata    map[string]string           `json:"metadata"` // Metadata of the schema
 }
 
+type CreateSchemaResponse struct {
+	WhatIs     *types.WhatIs           `json:"whatIs"`
+	Definition *types.SchemaDefinition `json:"definition"`
+}
+
 // @BasePath /api/v1
 // @Summary CreateSchema
 // @Schemes
@@ -26,8 +31,8 @@ type CreateSchemaRequest struct {
 // @Produce json
 // @Param label query string true "Label of the schema"
 // @Param fields query string true "Fields of the schema"
-// @Success 	 200  {object}  rtmv1.CreateSchemaResponse
-// @Failure      500  {string}  message
+// @Success 	 200  {object}  CreateSchemaResponse
+// @Failure      500  {object}  FailedResponse
 // @Router /schema/create [post]
 func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	rBody := c.Request.Body
@@ -35,8 +40,8 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	err := json.NewDecoder(rBody).Decode(&r)
 	if err != nil {
 		fmt.Println(err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid Request Body",
+		c.JSON(http.StatusBadRequest, FailedResponse{
+			Error: "Invalid Request Body",
 		})
 		return
 	}
@@ -53,21 +58,21 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	res, err := b.CreateSchema(createSchemaReq)
 	if err != nil {
 		fmt.Println("Create Schema Error: ", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Could Not Create Schema",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: "Create Schema Error",
 		})
 		return
 	}
 
-	definition, err := utils.ResolveIPFS(res.WhatIs.Schema.Cid)
+	schemaDefinition, err := utils.ResolveIPFS(res.WhatIs.Schema.Cid)
 	if err != nil {
 		fmt.Println("err", err)
 		return
 	}
 
 	c.JSON(http.StatusOK,
-		gin.H{
-			"whatIs":     res.WhatIs,
-			"definition": definition,
+		CreateSchemaResponse{
+			WhatIs:     res.WhatIs,
+			Definition: &schemaDefinition,
 		})
 }
