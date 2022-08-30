@@ -16,7 +16,7 @@ interface NewSchemaModalContentComponentProps {
 	schemas: Array<Ischema>
 	buckets: Array<Bucket>
 	properties: Array<Record<string, any>>
-	selectedSchema: string
+	selectedSchemaDid: string
 	selectedBucket: string
 }
 
@@ -29,7 +29,7 @@ function NewObjectModalContentComponent({
 	schemas,
 	properties,
 	buckets,
-	selectedSchema,
+	selectedSchemaDid,
 	selectedBucket,
 }: NewSchemaModalContentComponentProps) {
 	return (
@@ -57,7 +57,7 @@ function NewObjectModalContentComponent({
 						<select
 							className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
 							onChange={(event) => onChangeSchema(event.target.value)}
-							value={selectedSchema}
+							value={selectedSchemaDid}
 						>
 							{schemas.map((item: Ischema) => (
 								<option key={item.schema.did} value={item.schema.did}>

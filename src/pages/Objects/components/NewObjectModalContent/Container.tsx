@@ -16,36 +16,35 @@ import { IobjectPropertyChange, Ischema } from "../../../../utils/types"
 import NewObjectModalContentComponent from "./Component"
 
 export interface NewObjectModalContentContainerProps {
-	initialSelectedSchema: string
+	selectedSchemaDid: string
+	setSelectedSchema: React.Dispatch<React.SetStateAction<string>>
 	initialSchemaFields: Array<Record<string, any>>
 	schemas: Array<Ischema>
 }
 
 function NewObjectModalContentContainer({
-	initialSelectedSchema,
+	selectedSchemaDid,
+	setSelectedSchema,
 	initialSchemaFields = [],
 	schemas,
 }: NewObjectModalContentContainerProps) {
 	const { closeModal } = useContext(AppModalContext)
 	const dispatch = useDispatch<AppDispatch>()
-	const [modalSelectedSchema, setModalSelectedSchema] = useState(
-		initialSelectedSchema
-	)
 	const buckets = useSelector(selectBuckets)
 	const [selectedBucket, setSelectedBucket] = useState(buckets[0].did)
 	const [properties, setProperties] = useState(initialSchemaFields)
 	const address = useSelector(selectAddress)
 
 	useEffect(() => {
-		if (modalSelectedSchema) {
+		if (selectedSchemaDid) {
 			getSchema()
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [modalSelectedSchema])
+	}, [selectedSchemaDid])
 
 	async function getSchema() {
 		const selectedSchemaData = schemas.find(
-			(item) => item.schema.did === modalSelectedSchema
+			(item) => item.schema.did === selectedSchemaDid
 		)!
 		const getSchemaPayload = {
 			address,
@@ -77,12 +76,12 @@ function NewObjectModalContentContainer({
 
 	async function save() {
 		const selectedSchemaData = schemas.find(
-			(item) => item.schema.did === modalSelectedSchema
+			(item) => item.schema.did === selectedSchemaDid
 		)
 
 		const objectPayload = {
 			bucketDid: selectedBucket,
-			schemaDid: modalSelectedSchema,
+			schemaDid: selectedSchemaDid,
 			label: selectedSchemaData?.schema.label,
 			object: properties.reduce((acc, item) => {
 				return {
@@ -110,13 +109,13 @@ function NewObjectModalContentContainer({
 		<NewObjectModalContentComponent
 			onClose={closeModal}
 			onSave={save}
-			onChangeSchema={setModalSelectedSchema}
+			onChangeSchema={setSelectedSchema}
 			onChangeBucket={handleChangeBucket}
 			onChangeProperty={handlePropertiesChange}
 			schemas={schemas}
 			buckets={buckets}
 			properties={properties}
-			selectedSchema={modalSelectedSchema}
+			selectedSchemaDid={selectedSchemaDid}
 			selectedBucket={selectedBucket}
 		/>
 	)

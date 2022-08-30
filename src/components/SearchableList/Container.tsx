@@ -84,12 +84,16 @@ function SearchableListContainer({
 
 	function getFilteredList(previousList: Array<IsearchableListItem>) {
 		if (!searchTerm) return previousList
-		return [...previousList].filter(
-			(item) =>
-				(item[searchableAndSortableFieldKey].text as string)
-					.toLowerCase()
-					.indexOf(searchTerm.toLowerCase()) !== -1
-		)
+
+		return [...previousList].filter((item) => {
+			const textFields = Object.keys(item).map((key) => {
+				return item[key]?.text ? item[key]?.text : ""
+			})
+			return (
+				textFields.join(" ").toLowerCase().indexOf(searchTerm.toLowerCase()) !==
+				-1
+			)
+		})
 	}
 
 	function nextPage() {

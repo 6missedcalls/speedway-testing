@@ -48,6 +48,15 @@ function ObjectsPageContainer() {
 	useEffect(() => {
 		if (selectedSchemaDid) {
 			getSchema()
+			setModalContent({
+				content: MODAL_CONTENT_NEW_OBJECT,
+				props: {
+					selectedSchemaDid,
+					setSelectedSchema,
+					initialSchemaFields: schemaFields,
+					schemas: schemaMetadata,
+				},
+			})
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedSchemaDid])
@@ -80,7 +89,8 @@ function ObjectsPageContainer() {
 		setModalContent({
 			content: MODAL_CONTENT_NEW_OBJECT,
 			props: {
-				initialSelectedSchema: selectedSchemaDid,
+				selectedSchemaDid,
+				setSelectedSchema,
 				initialSchemaFields: schemaFields,
 				schemas: schemaMetadata,
 			},
