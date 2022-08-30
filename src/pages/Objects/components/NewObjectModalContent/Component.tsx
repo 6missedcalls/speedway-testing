@@ -1,6 +1,4 @@
 import { Button, NebulaIcon } from "@sonr-io/nebula-react"
-import { ChangeEvent } from "react"
-import TextInput from "../../../../components/TextInput"
 import {
 	Bucket,
 	IobjectPropertyChange,
@@ -111,6 +109,9 @@ function NewObjectModalContentComponent({
 					{properties?.length &&
 						properties.map((item, index) => (
 							<div key={`${item.name}-${index}`} className="mb-4">
+								<div className="text-custom-xs text-subdued pb-1">
+									{item.name}
+								</div>
 								<SchemaField
 									field={{ name: item.name, field: item.field }}
 									value={item.value}
@@ -139,16 +140,30 @@ type Props = {
 	onChange: (value: string) => void
 }
 const SchemaField = ({ field, value, onChange }: Props) => {
-	return (
-		<TextInput
-			label={field.name}
-			ariaLabel={field.name}
-			value={value}
-			handleOnChange={(event: ChangeEvent<HTMLInputElement>) =>
-				onChange(event.target.value)
-			}
-		/>
-	)
+	switch (field.field) {
+		case 2:
+			return (
+				<input
+					type="number"
+					className="border border-default-border rounded-md w-full p-2"
+					value={value}
+					onChange={(event) => onChange(event.target.value)}
+				/>
+			)
+
+		case 4:
+			return (
+				<input
+					type="text"
+					className="border border-default-border rounded-md w-full p-2"
+					value={value}
+					onChange={(event) => onChange(event.target.value)}
+				/>
+			)
+
+		default:
+			return <div className="italic text-subdued">Unrecognized field type</div>
+	}
 }
 
 export default NewObjectModalContentComponent
