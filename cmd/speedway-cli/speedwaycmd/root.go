@@ -24,5 +24,7 @@ func bootstrapRootCommand(ctx context.Context) (rootCmd *cobra.Command) {
 	rootCmd.AddCommand(registry.BootstrapRegistryCommand(ctx))
 	rootCmd.AddCommand(schema.BootstrapSchemaCommand(ctx))
 	rootCmd.AddCommand(object.BootstrapObjectCommand(ctx))
+	rootCmd.AddCommand(BootstrapServeCommand(ctx))
+
 	return
 }
