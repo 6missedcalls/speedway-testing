@@ -4,40 +4,41 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
-	"github.com/sonr-io/speedway/internal/account"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
+	"github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
-func convertSchemaKind(kind string) rtmv1.CreateSchemaRequest_SchemaKind {
+func convertSchemaKind(kind string) types.SchemaKind {
 
-	schemaKind := rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRING
+	schemaKind := types.SchemaKind_STRING
 	switch kind {
 	case "LIST":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LIST
+		schemaKind = types.SchemaKind_LIST
 	case "BOOL":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_BOOL
+		schemaKind = types.SchemaKind_BOOL
 	case "INT":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_INT
+		schemaKind = types.SchemaKind_INT
 	case "FLOAT":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_FLOAT
+		schemaKind = types.SchemaKind_FLOAT
 	case "STRING":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_STRING
+		schemaKind = types.SchemaKind_STRING
 	case "BYTES":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_BYTES
+		schemaKind = types.SchemaKind_BYTES
 	case "LINK":
-		schemaKind = rtmv1.CreateSchemaRequest_SCHEMA_KIND_LINK
+		schemaKind = types.SchemaKind_LINK
 	}
 
 	return schemaKind
 }
 
-func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.Command) {
+func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (createSchemaCmd *cobra.Command) {
 	createSchemaCmd = &cobra.Command{
 		Use:   "create",
 		Short: "Use: create",
@@ -47,19 +48,19 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 
 			m := binding.InitMotor()
 
-			loginResult, err := account.Login(m, loginRequest)
+			loginResult, err := utils.Login(m, loginRequest)
 			if err != nil {
-				fmt.Println(status.Error("Login Error: "), err)
+				logger.Fatalf(status.Error("Login Error: "), err)
 				return
 			}
 			if loginResult.Success {
-				fmt.Println(status.Success("Login Successful"))
+				logger.Info(status.Success("Login Successful"))
 			} else {
-				fmt.Println(status.Error("Login Failed"))
+				logger.Fatalf(status.Error("Login Failed"))
 				return
 			}
 
-			fmt.Println(status.Info, "Creating schema...")
+			logger.Info(status.Info, "Creating schema...")
 			schemaPrompt := promptui.Prompt{
 				Label: "Enter the Schema Label",
 			}
@@ -68,7 +69,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fields := make(map[string]rtmv1.CreateSchemaRequest_SchemaKind)
+			fields := make(map[string]types.SchemaKind)
 
 			prompt := promptui.Prompt{
 				Label: "Enter your Schema Fields",
@@ -111,16 +112,15 @@ func bootstrapCreateSchemaCommand(ctx context.Context) (createSchemaCmd *cobra.C
 			}
 
 			// create schema
-			fmt.Println(status.Debug, "Schema request: ", createSchemaRequest)
+			logger.Info(status.Debug, "Schema request: ", createSchemaRequest)
 			createSchemaResult, err := m.CreateSchema(createSchemaRequest)
 			if err != nil {
-				fmt.Println(status.Error("CreateSchema Error: "), err)
+				logger.Fatalf(status.Error("CreateSchema Error: "), err)
 				return
 			}
-			fmt.Println(status.Success("Create Schema Successful"))
+			logger.Info(status.Success("Create Schema Successful"))
 			// desearialize the scehma result to get the schema did
-			whatIs := utils.DeserializeWhatIs(createSchemaResult.WhatIs)
-			fmt.Println(status.Debug, "Schema WhatIs: ", whatIs.Schema)
+			logger.Info(status.Debug, "Schema WhatIs: ", createSchemaResult.WhatIs.Schema)
 		},
 	}
 	return

@@ -6,14 +6,23 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/storage"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
 type LoginRequestBody struct {
 	Address  string `json:"address"`
 	Password string `json:"password"`
+}
+
+type FailedLogin struct {
+	Success bool `json:"success"`
+}
+
+type SuccessfulLogin struct {
+	Success bool   `json:"success"`
+	Address string `json:"address"`
 }
 
 // @BasePath /api/v1
@@ -25,7 +34,7 @@ type LoginRequestBody struct {
 // @Param 		 Did body string true "Did" example("snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
 // @Param 		 Password body string true "Password" example("Password")
 // @Success 200 {object} rtmv1.LoginResponse
-// @Failure      500  {string}  message
+// @Failure      500  {object}  FailedLogin
 // @Router /account/login [post]
 func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 	rBody := c.Request.Body
@@ -37,14 +46,15 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 		})
 		return
 	}
-	aesPskKey, err := storage.Load("psk.key")
+	aesPskKey, err := storage.Load("psk")
 	if err != nil {
 		fmt.Println("err", err)
 	}
+
 	req := rtmv1.LoginRequest{
 		Did:       body.Address,
 		Password:  body.Password,
-		AesPskKey: aesPskKey,
+		AesPskKey: aesPskKey.Data,
 	}
 
 	m := binding.CreateInstance()
@@ -60,24 +70,18 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 	}
 	fmt.Println("Result", res)
 	if !res.Success {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"success": false,
-			"error":   "Login failed",
+		c.JSON(http.StatusUnauthorized, FailedLogin{
+			Success: false,
 		})
 	} else {
 		addr, err := m.GetAddress()
 		if err != nil {
 			fmt.Println("GetAddress Error: ", err)
 		}
-		didDocument, err := m.GetDidDocument()
-		if err != nil {
-			fmt.Println("GetDidDocument Error: ", err)
-		}
-		c.JSON(http.StatusOK, gin.H{
-			"success":     true,
-			"Address":     addr,
-			"DIDDocument": didDocument,
+		// use SuccessfulLogin struct to return address
+		c.JSON(http.StatusOK, SuccessfulLogin{
+			Success: true,
+			Address: addr,
 		})
 	}
-
 }
