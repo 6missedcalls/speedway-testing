@@ -17,7 +17,7 @@ func (ns *NebulaServer) BeginLogin(c *gin.Context) {
 	username := vals.Get("username")
 	if username == "" {
 		c.JSON(http.StatusBadGateway, gin.H{
-			"error": fmt.Errorf("must supply a valid username i.e. foo@bar.com", http.StatusBadRequest),
+			"error": fmt.Errorf("must supply a valid username i.e. foo@bar.com"),
 		})
 		return
 	}
@@ -26,7 +26,7 @@ func (ns *NebulaServer) BeginLogin(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
-			"error": fmt.Errorf("could not find registered domain name", http.StatusBadRequest),
+			"error": fmt.Errorf("could not find registered domain name"),
 		})
 		return
 	}

@@ -4,19 +4,17 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
-	"github.com/sonr-io/speedway/internal/account"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
-// ! Speak to Nick about JSON versus what I'm doing now
-
-func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Command) {
+func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (buildObjCmd *cobra.Command) {
 	buildObjCmd = &cobra.Command{
 		Use:   "build",
 		Short: "Use: build",
@@ -26,7 +24,7 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 
 			m := binding.InitMotor()
 
-			loginResult, err := account.Login(m, loginRequest)
+			loginResult, err := utils.Login(m, loginRequest)
 			if err != nil {
 				fmt.Println(status.Error("Error: %s"), err)
 				return
@@ -35,6 +33,12 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				fmt.Println(status.Success("Login successful"))
 			} else {
 				fmt.Println(status.Error("Login failed"))
+				return
+			}
+
+			creatorDid := m.GetDID()
+			if err != nil {
+				fmt.Println(status.Error("Error: %s"), err)
 				return
 			}
 
@@ -49,19 +53,24 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				// todo: run prompt again
 			}
 
-			// query whatis
-			querySchema, err := m.QueryWhatIs(ctx, rtmv1.QueryWhatIsRequest{
-				Creator: m.GetDID().String(),
+			// query whatis req
+			querySchemaReq := rtmv1.QueryWhatIsRequest{
+				Creator: creatorDid.String(),
 				Did:     schemaDid,
-			})
+			}
+
+			querySchema, err := m.QueryWhatIs(querySchemaReq)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fmt.Printf("%v\n", querySchema.WhatIs)
 
-			// deserialize the whatis
-			whatIs := utils.DeserializeWhatIs(querySchema.WhatIs)
+			definition, err := utils.ResolveIPFS(querySchema.WhatIs.Schema.Cid)
+			if err != nil {
+				fmt.Printf("Command failed %v\n", err)
+				return
+			}
+			fmt.Println(status.Debug, "Resolved Schema:", definition)
 
 			// create new object builder
 			objBuilder, err := m.NewObjectBuilder(schemaDid)
@@ -69,13 +78,6 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-
-			definition, err := utils.ResolveIPFS(whatIs.Schema.Cid)
-			if err != nil {
-				fmt.Printf("Command failed %v\n", err)
-				return
-			}
-			fmt.Println(status.Debug, "Resolved Schema:", definition)
 
 			objectLabel := promptui.Prompt{
 				Label: "Enter Object Label",
@@ -118,7 +120,6 @@ func BootstrapBuildObjectCommand(ctx context.Context) (buildObjCmd *cobra.Comman
 				return
 			}
 			fmt.Printf("Upload: %v\n", upload.Reference)
-
 		},
 	}
 	return

@@ -28,7 +28,7 @@ func (ns *NebulaServer) FinishLogin(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": fmt.Errorf("Error while looking up session context"),
+			"error": fmt.Errorf("error while looking up session context"),
 		})
 		return
 	}
@@ -38,7 +38,7 @@ func (ns *NebulaServer) FinishLogin(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": fmt.Errorf("Error while looking up session context"),
+			"error": fmt.Errorf("error while looking up session context"),
 		})
 		return
 	}
@@ -48,14 +48,14 @@ func (ns *NebulaServer) FinishLogin(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": fmt.Errorf("Error while resolving user login"),
+			"error": fmt.Errorf("error while resolving user login"),
 		})
 		return
 	}
 
 	if cred.Authenticator.CloneWarning {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": fmt.Errorf("Err resolving device"),
+			"error": fmt.Errorf("error resolving device"),
 		})
 	}
 
