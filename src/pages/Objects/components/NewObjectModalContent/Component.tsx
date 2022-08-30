@@ -1,4 +1,5 @@
 import { Button, NebulaIcon } from "@sonr-io/nebula-react"
+import { Dispatch, SetStateAction } from "react"
 import {
 	Bucket,
 	IobjectPropertyChange,
@@ -7,29 +8,29 @@ import {
 } from "../../../../utils/types"
 
 interface NewSchemaModalContentComponentProps {
-	closeModal: () => void
-	modalSelectedSchema: string
-	setModalSelectedSchema: React.Dispatch<React.SetStateAction<string>>
-	properties: Array<Record<string, any>>
-	handlePropertiesChange: ({ value, index }: IobjectPropertyChange) => void
+	onClose: () => void
+	onSave: () => void
+	onChangeSchema: Dispatch<SetStateAction<string>>
+	onChangeBucket: (value: string) => void
+	onChangeProperty: ({ value, index }: IobjectPropertyChange) => void
 	schemas: Array<Ischema>
-	save: () => void
-	handleChangeBucket: (value: string) => void
 	buckets: Array<Bucket>
+	properties: Array<Record<string, any>>
+	selectedSchema: string
 	selectedBucket: string
 }
 
 function NewObjectModalContentComponent({
-	closeModal,
-	save,
+	onClose,
+	onSave,
+	onChangeSchema,
+	onChangeBucket,
+	onChangeProperty,
 	schemas,
 	properties,
-	handlePropertiesChange,
-	modalSelectedSchema,
-	setModalSelectedSchema,
-	handleChangeBucket,
-	selectedBucket,
 	buckets,
+	selectedSchema,
+	selectedBucket,
 }: NewSchemaModalContentComponentProps) {
 	return (
 		<div className="flex flex-col max-h-[90vh]">
@@ -41,7 +42,7 @@ function NewObjectModalContentComponent({
 				</div>
 				<div
 					className="cursor-pointer text-button-transparent tracking-custom-tight text-custom-sm font-extrabold"
-					onClick={closeModal}
+					onClick={onClose}
 				>
 					Cancel
 				</div>
@@ -55,8 +56,8 @@ function NewObjectModalContentComponent({
 					<div className="relative pointer-events-none select-none border border-default-border rounded-md cursor-pointer flex justify-between">
 						<select
 							className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
-							onChange={(event) => setModalSelectedSchema(event.target.value)}
-							value={modalSelectedSchema}
+							onChange={(event) => onChangeSchema(event.target.value)}
+							value={selectedSchema}
 						>
 							{schemas.map((item: Ischema) => (
 								<option key={item.schema.did} value={item.schema.did}>
@@ -81,7 +82,7 @@ function NewObjectModalContentComponent({
 					<div className="relative pointer-events-none select-none border border-default-border rounded-md cursor-pointer flex justify-between">
 						<select
 							className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
-							onChange={(event) => handleChangeBucket(event.target.value)}
+							onChange={(event) => onChangeBucket(event.target.value)}
 							value={selectedBucket}
 						>
 							{buckets.map((item: Bucket) => (
@@ -115,7 +116,7 @@ function NewObjectModalContentComponent({
 								<SchemaField
 									field={{ name: item.name, field: item.field }}
 									value={item.value}
-									onChange={(value) => handlePropertiesChange({ value, index })}
+									onChange={(value) => onChangeProperty({ value, index })}
 								/>
 							</div>
 						))}
@@ -126,7 +127,7 @@ function NewObjectModalContentComponent({
 				<div className="absolute rounded-b-2xl w-full h-6 bg-white -top-px" />
 				<Button
 					styling="w-48 h-12 mb-6 mt-12 mr-8 justify-center items-center text-custom-md font-extrabold tracking-custom-tight"
-					onClick={save}
+					onClick={onSave}
 					label="Save"
 				/>
 			</div>

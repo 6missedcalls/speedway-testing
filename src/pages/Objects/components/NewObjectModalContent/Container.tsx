@@ -108,16 +108,16 @@ function NewObjectModalContentContainer({
 
 	return (
 		<NewObjectModalContentComponent
+			onClose={closeModal}
+			onSave={save}
+			onChangeSchema={setModalSelectedSchema}
+			onChangeBucket={handleChangeBucket}
+			onChangeProperty={handlePropertiesChange}
 			schemas={schemas}
-			save={save}
-			modalSelectedSchema={modalSelectedSchema}
-			setModalSelectedSchema={setModalSelectedSchema}
-			properties={properties}
-			handlePropertiesChange={handlePropertiesChange}
-			closeModal={closeModal}
 			buckets={buckets}
+			properties={properties}
+			selectedSchema={modalSelectedSchema}
 			selectedBucket={selectedBucket}
-			handleChangeBucket={handleChangeBucket}
 		/>
 	)
 }
