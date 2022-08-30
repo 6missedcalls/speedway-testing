@@ -23,12 +23,13 @@ func bootstrapRootCommand(ctx context.Context, logger *golog.Logger) (rootCmd *c
 		Long: prompts.SplashScreen() + `
 		Manage your account, create and manage your schemas, objects and buckets.
 		For more information, visit https://docs.sonr.io/.`,
-
-		// Run: func(cmd *cobra.Command, args []string) {},
 	}
+
 	rootCmd.AddCommand(registry.BootstrapRegistryCommand(ctx, logger))
 	rootCmd.AddCommand(schema.BootstrapSchemaCommand(ctx, logger))
 	rootCmd.AddCommand(object.BootstrapObjectCommand(ctx, logger))
 	rootCmd.AddCommand(bucket.BootstrapBucketCommand(ctx, logger))
+	rootCmd.AddCommand(BootstrapServeCommand(ctx))
+
 	return
 }
