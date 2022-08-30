@@ -28,71 +28,83 @@ function NewObjectModalContentComponent({
 	buckets,
 }: NewSchemaModalContentComponentProps) {
 	return (
-		<div>
-			<div className="flex flex-col p-8 rounded-2xl">
-				<div className="flex justify-between">
-					<div>
-						<span className="text-custom-2xs text-default uppercase font-semibold tracking-custom-x2wider">
-							Object Properties
-						</span>
-					</div>
-					<div
-						className="cursor-pointer text-button-transparent tracking-custom-tight text-custom-sm font-extrabold"
-						onClick={closeModal}
-					>
-						Cancel
-					</div>
-				</div>
-				<div className="flex justify-between">
-					<div className="w-full flex flex-col justify-start">
-						<div>Schemas</div>
-						<div className="relative pointer-events-none select-none border border-default-border rounded-md w-3/12 cursor-pointer flex justify-between">
-							<select
-								className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
-								onChange={(event) => setModalSelectedSchema(event.target.value)}
-								value={modalSelectedSchema}
-							>
-								{schemas.map((item: Ischema) => (
-									<option key={item.schema.did} value={item.schema.did}>
-										{item.schema.label}
-									</option>
-								))}
-							</select>
-							<NebulaIcon
-								iconName="ArrowSquareDown"
-								iconType="duotone"
-								className="w-8 h-8 pointer-events-none select-none absolute right-0 top-1"
-							/>
-						</div>
-					</div>
-					<div className="w-6" />
-					<div className="w-full flex flex-col justify-start">
-						<div>Buckets</div>
-						<div className="relative pointer-events-none select-none border border-default-border rounded-md w-3/12 cursor-pointer flex justify-between">
-							<select
-								className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
-								onChange={(event) => handleChangeBucket(event.target.value)}
-								value={selectedBucket}
-							>
-								{buckets.map((item: Bucket) => (
-									<option key={item.did} value={item.did}>
-										{item.label}
-									</option>
-								))}
-							</select>
-							<NebulaIcon
-								iconName="ArrowSquareDown"
-								iconType="duotone"
-								className="w-8 h-8 pointer-events-none select-none absolute right-0 top-1"
-							/>
-						</div>
-					</div>
-				</div>
+		<div className="flex flex-col max-h-[90vh]">
+			<div className="flex justify-between px-8 my-8">
 				<div>
-					<div>Properties</div>
+					<span className="text-custom-2xs text-default uppercase font-semibold tracking-custom-x2wider">
+						Create Object
+					</span>
+				</div>
+				<div
+					className="cursor-pointer text-button-transparent tracking-custom-tight text-custom-sm font-extrabold"
+					onClick={closeModal}
+				>
+					Cancel
+				</div>
+			</div>
+
+			<div className="flex px-8 mb-8">
+				<div className="w-full flex flex-col justify-start">
+					<div className="text-default text-custom-sm mb-2 font-extrabold">
+						Schema
+					</div>
+					<div className="relative pointer-events-none select-none border border-default-border rounded-md cursor-pointer flex justify-between">
+						<select
+							className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
+							onChange={(event) => setModalSelectedSchema(event.target.value)}
+							value={modalSelectedSchema}
+						>
+							{schemas.map((item: Ischema) => (
+								<option key={item.schema.did} value={item.schema.did}>
+									{item.schema.label}
+								</option>
+							))}
+						</select>
+						<NebulaIcon
+							iconName="ArrowSquareDown"
+							iconType="duotone"
+							className="w-8 h-8 pointer-events-none select-none absolute right-0 top-1"
+						/>
+					</div>
+				</div>
+
+				<div className="w-6" />
+
+				<div className="w-full flex flex-col justify-start">
+					<div className="text-default text-custom-sm mb-2 font-extrabold">
+						Bucket
+					</div>
+					<div className="relative pointer-events-none select-none border border-default-border rounded-md cursor-pointer flex justify-between">
+						<select
+							className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
+							onChange={(event) => handleChangeBucket(event.target.value)}
+							value={selectedBucket}
+						>
+							{buckets.map((item: Bucket) => (
+								<option key={item.did} value={item.did}>
+									{item.label}
+								</option>
+							))}
+						</select>
+
+						<NebulaIcon
+							iconName="ArrowSquareDown"
+							iconType="duotone"
+							className="w-8 h-8 pointer-events-none select-none absolute right-0 top-1"
+						/>
+					</div>
+				</div>
+			</div>
+
+			<div className="flex-1 flex flex-col px-8 rounded-2xl overflow-scroll">
+				<div className="mb-4 text-default text-custom-sm font-extrabold">
+					Properties
+				</div>
+
+				<div className="overflow-scroll">
 					{properties?.length &&
 						properties.map((item, index) => (
-							<div key={`${item.name}-${index}`}>
+							<div key={`${item.name}-${index}`} className="mb-4">
 								<TextInput
 									label={item.name}
 									ariaLabel={item.name}
@@ -107,6 +119,7 @@ function NewObjectModalContentComponent({
 						))}
 				</div>
 			</div>
+
 			<div className="bg-black w-full rounded-b-2xl justify-end flex relative">
 				<div className="absolute rounded-b-2xl w-full h-6 bg-white -top-px" />
 				<Button

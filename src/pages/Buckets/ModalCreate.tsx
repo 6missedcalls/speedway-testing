@@ -28,7 +28,7 @@ const ModalCreateBucket = () => {
 				<>
 					<div className="rounded-2xl p-8">
 						<div className="flex flex-row mb-2">
-							<span className="flex-1 uppercase font-semibold text-custom-sm text-default">
+							<span className="flex-1 uppercase font-semibold text-custom-2xs text-default">
 								New Bucket
 							</span>
 							<button
