@@ -1,20 +1,34 @@
 # Speedway
 
-## Up and running
+### Running the UI: dev mode
+This mode is ideal for UI development. Changes to the code will reflect on the browser automatically and there is no need to build. Any data generated will be local only.
 
-### Create your .env file
-First create the .env file in the root folder, for local development you can use this example:
+**run the UI:**
 ```
-REACT_APP_BASE_API="http://localhost:8080/api/v1"
+npm install
+npm start
 ```
-### Run the development mock server
+
+**on a second terminal, run the development server:**
 ```
-$ cd server-in-memory
-$ npm install
-$ npm run start
+cd server-in-memory
+npm install
+npm start
 ```
-### Then in another terminal at the root folder run:
+
+The UI should open automatically on your browser, but if that's not the case, it can be found under `localhost:3000`
+
+**to reset the local data, go to:**
 ```
-$ npm install
-$ npm run start
+localhost:8080/reset
 ```
+
+### Running the UI with real data
+In this mode, actions on the UI will generate real on-chain data.
+```
+npm install
+npm run build
+```
+Then go to the `server` folder and run either one of those:
+`task webserver:run:prod`
+`task webserver:run:debug`

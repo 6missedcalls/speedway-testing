@@ -17,7 +17,7 @@ export const userGetAllSchemas = createAsyncThunk(
 	async (address: string, thunkAPI) => {
 		try {
 			const data = await getAllSchemas()
-			return data.filter(
+			return data.what_is.filter(
 				(schema: any) => schema.creator === addressToDid(address)
 			)
 		} catch (err) {
@@ -74,7 +74,7 @@ export const schemasSlice = createSlice({
 		builder.addCase(userGetAllSchemas.fulfilled, (state, action) => {
 			const { payload } = action
 			state.loading = false
-			state.list = payload.what_is
+			state.list = payload
 		})
 
 		builder.addCase(userGetAllSchemas.rejected, (state) => {
@@ -123,6 +123,10 @@ export const selectSchemasLoading = (state: RootState) => {
 
 export const selectGetSchemaLoading = (state: RootState) => {
 	return state.schemas.getSchemaLoading
+}
+
+export const selectSchemasError = (state: RootState) => {
+	return state.schemas.error
 }
 
 export const selectSchemasMetadataList = (state: RootState) => {

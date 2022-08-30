@@ -22,7 +22,7 @@ export const createAccount = async (
 		if (!response.ok) throw new Error(response.statusText)
 		const data = await response.json()
 		return data
-	} catch (error) {
+	} catch (error: any) {
 		const errorMessage = formatApiError({ error, url, options })
 		throw new Error(errorMessage)
 	}
