@@ -79,7 +79,11 @@ func bootstrapCreateBucketCommand(ctx context.Context, logger *golog.Logger) (cr
 				return
 			}
 
-			req.Role = ConvertRole(role)
+			req.Role, err = utils.ConvertBucketRole(role)
+
+			if err != nil {
+				logger.Fatalf("Error while assinging bucket role: %s", err)
+			}
 
 			items := prompts.BucketContentPrompt(logger)
 			req.Content = items
@@ -98,7 +102,7 @@ func bootstrapCreateBucketCommand(ctx context.Context, logger *golog.Logger) (cr
 				Did:     resp.GetDID(),
 			})
 			b, err := json.MarshalIndent(wiResp, "", "\t")
-			fmt.Print(string(b))
+			fmt.Print(status.Success(string(b)))
 		},
 	}
 
