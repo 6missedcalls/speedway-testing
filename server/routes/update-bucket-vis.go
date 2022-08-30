@@ -26,7 +26,7 @@ type UpdateBucketVisibilityRequest struct {
 // @Param 		 visibility body string true "Visibility" example("public")
 // @Success 200 {object} bucket.Bucket
 // @Failure      500  {string}  message
-// @Router /bucket/update-items [post]
+// @Router /bucket/update-visibility [post]
 func (ns *NebulaServer) UpdateBucketVisibility(c *gin.Context) {
 	rBody := c.Request.Body
 	var r UpdateBucketVisibilityRequest

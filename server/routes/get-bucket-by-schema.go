@@ -17,6 +17,18 @@ type GetBucketBySchemaBody struct {
 	SchemaDid string `json:"schemaDid"` // DID of the schema
 }
 
+// @BasePath /api/v1
+// @Summary GetBucketBySchema
+// @Schemes
+// @Description Get a bucket on Sonr using a Schema.
+// @Tags bucket
+// @Produce json
+// @Param 		 Creator body string true "Creator" example("snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
+// @Param 		 BucketDid body string true "bucketDid" example("did:snr:snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
+// @Param 		 SchemaDid body string true "schemaDid" example("did:snr:snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
+// @Success 200 {object} rtmv1.SearchBucketContentBySchemaResponse
+// @Failure      500  {string}  message
+// @Router /bucket/get-by-schema [post]
 func (ns *NebulaServer) GetBucketBySchema(c *gin.Context) {
 	rBody := c.Request.Body
 	var body GetBucketBySchemaBody

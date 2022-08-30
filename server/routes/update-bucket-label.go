@@ -25,7 +25,7 @@ type UpdateBucketLabelRequest struct {
 // @Param 		 label body string true "Label" example("My Bucket")
 // @Success 200 {object} bucket.Bucket
 // @Failure      500  {string}  message
-// @Router /bucket/update-items [post]
+// @Router /bucket/update-label [post]
 func (ns *NebulaServer) UpdateBucketLabel(c *gin.Context) {
 	rBody := c.Request.Body
 	var r UpdateBucketLabelRequest
