@@ -51,7 +51,7 @@ func (ns *NebulaServer) BeginRegistration(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": fmt.Errorf("Error while storing sessino state"),
+			"error": fmt.Errorf("error while storing sessino state"),
 		})
 		return
 	}
@@ -61,7 +61,7 @@ func (ns *NebulaServer) BeginRegistration(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": fmt.Errorf("Error while storing sessino state"),
+			"error": fmt.Errorf("error while storing sessino state"),
 		})
 		return
 	}

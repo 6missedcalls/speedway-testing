@@ -2,14 +2,24 @@ package routes
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sonr-io/speedway/internal/status"
 )
 
-type Response struct {
+const (
+	queryURL = "http://v1-beta.sonr.ws:1317/sonr-io/sonr/schema/query/all_schemas?"
+)
+
+var (
+	ErrNotAuthorized = fmt.Errorf("you are not authorized to perform this action. please login again")
+	ErrCannotParse   = fmt.Errorf("cannot parse response")
+)
+
+type SchemaResponse struct {
 	WhatIs []struct {
 		Did    string `json:"did"`
 		Schema struct {
@@ -30,17 +40,19 @@ type Response struct {
 }
 
 func (ns *NebulaServer) ProxyQuerySchemas(c *gin.Context) {
-	resp, err := http.Get("http://v1-beta.sonr.ws:1317/sonr-io/sonr/schema/query/all_schemas?" + c.Request.URL.RawQuery)
+	resp, err := http.Get(queryURL + c.Request.URL.RawQuery)
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println(status.Error("Error: "), err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrNotAuthorized})
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println(status.Error("Error: "), err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrCannotParse})
 	}
 
-	var result Response
+	var result SchemaResponse
 	json.Unmarshal([]byte(body), &result)
 
 	c.JSON(http.StatusOK, result)

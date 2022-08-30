@@ -5,17 +5,18 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/sonr/pkg/crypto/mpc"
-	"github.com/sonr-io/speedway/internal/account"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
+	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
 )
 
-func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Command) {
+func bootstrapCreateAccountCommand(ctx context.Context, logger *golog.Logger) (createCmd *cobra.Command) {
 	createCmd = &cobra.Command{
 		Use:   "create",
 		Short: "Use: registry create",
@@ -38,29 +39,32 @@ func bootstrapCreateAccountCommand(ctx context.Context) (createCmd *cobra.Comman
 			}
 			aesKey, err := mpc.NewAesKey()
 			if err != nil {
-				fmt.Println(status.Error("Error: %s"), err)
+				logger.Fatalf(status.Error("Error: %s"), err)
 			}
-			if storage.Store("aes.key", aesKey) != nil {
-				fmt.Println(status.Error("Storage Error: %s"), err)
+
+			store, err := storage.Store("dsc", aesKey)
+			if err != nil {
+				logger.Fatalf(status.Error("Storage Error: %s"), err)
 			}
+			logger.Info("Store: %s", store)
 
 			req := rtmv1.CreateAccountRequest{
 				Password:  result,
 				AesDscKey: aesKey,
 			}
-			fmt.Println(status.Debug, "Create Account Request: %s", req)
+			logger.Info(status.Debug, "Create Account Request: %s", req)
 			if err != nil {
-				fmt.Println(status.Error("Error: %s"), err)
+				logger.Fatalf(status.Error("Error: %s"), err)
 			}
 			m := binding.InitMotor()
-			res, err := account.CreateAccount(m, req)
+			res, err := utils.CreateAccount(m, req)
 			if err != nil {
-				fmt.Println(status.Error("CreateAccount Error: %s"), err)
+				logger.Fatalf(status.Error("CreateAccount Error: %s"), err)
 				return
 			}
 
-			fmt.Println(status.Debug, "Create Account Response: %s", res)
-			fmt.Println(status.Info, "Account Address: %s", res.Address)
+			logger.Info(status.Debug, "Create Account Response: %s", res)
+			logger.Info(status.Info, "Account Address: %s", res.Address)
 		},
 	}
 	return

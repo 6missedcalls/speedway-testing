@@ -1,22 +1,94 @@
 basePath: /api/v1
 definitions:
-  apiv1.CreateSchemaResponse:
+  did.Service:
     properties:
-      what_is:
-        items:
-          type: integer
-        type: array
+      id:
+        $ref: '#/definitions/ssi.URI'
+      serviceEndpoint:
+        additionalProperties:
+          type: string
+        type: object
+      type:
+        type: string
     type: object
-  apiv1.LoginResponse:
+  github.com_sonr-io_speedway_server_routes.CAResponseBody:
+    properties:
+      address:
+        type: string
+    type: object
+  github.com_sonr-io_speedway_server_routes.CreateBucketResponse:
+    properties:
+      bucket:
+        items:
+          $ref: '#/definitions/types.BucketItem'
+        type: array
+      service:
+        $ref: '#/definitions/did.Service'
+    type: object
+  github.com_sonr-io_speedway_server_routes.CreateSchemaResponse:
+    properties:
+      definition:
+        $ref: '#/definitions/types.SchemaDefinition'
+      whatIs:
+        $ref: '#/definitions/types.WhatIs'
+    type: object
+  github.com_sonr-io_speedway_server_routes.FailedLogin:
     properties:
       success:
         type: boolean
+    type: object
+  github.com_sonr-io_speedway_server_routes.FailedResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  github.com_sonr-io_speedway_server_routes.GetBucketResponse:
+    properties:
+      bucket:
+        items:
+          $ref: '#/definitions/types.BucketItem'
+        type: array
+    type: object
+  github.com_sonr-io_speedway_server_routes.GetObjectResponse:
+    properties:
+      object:
+        $ref: '#/definitions/object.Object'
+    type: object
+  github.com_sonr-io_speedway_server_routes.QuerySchemaResponse:
+    properties:
+      definition:
+        $ref: '#/definitions/types.SchemaDefinition'
     type: object
   github.com_sonr-io_speedway_server_routes.uResponse:
     properties:
       address:
         type: string
       didDocument: {}
+    type: object
+  motor.LoginResponse:
+    properties:
+      success:
+        type: boolean
+      who_is:
+        $ref: '#/definitions/types.WhoIs'
+    type: object
+  motor.SearchBucketContentBySchemaResponse:
+    properties:
+      bucket_did:
+        type: string
+      content:
+        items:
+          items:
+            type: integer
+          type: array
+        type: array
+      schema_did:
+        type: string
+      status:
+        type: integer
+    type: object
+  object.Object:
+    additionalProperties: true
     type: object
   object.ObjectReference:
     properties:
@@ -27,11 +99,177 @@ definitions:
       label:
         type: string
     type: object
+  server_routes.CAResponseBody:
+    properties:
+      address:
+        type: string
+    type: object
+  server_routes.CreateBucketResponse:
+    properties:
+      bucket:
+        items:
+          $ref: '#/definitions/types.BucketItem'
+        type: array
+      service:
+        $ref: '#/definitions/did.Service'
+    type: object
+  server_routes.CreateSchemaResponse:
+    properties:
+      definition:
+        $ref: '#/definitions/types.SchemaDefinition'
+      whatIs:
+        $ref: '#/definitions/types.WhatIs'
+    type: object
+  server_routes.FailedLogin:
+    properties:
+      success:
+        type: boolean
+    type: object
+  server_routes.FailedResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  server_routes.GetBucketResponse:
+    properties:
+      bucket:
+        items:
+          $ref: '#/definitions/types.BucketItem'
+        type: array
+    type: object
+  server_routes.GetObjectResponse:
+    properties:
+      object:
+        $ref: '#/definitions/object.Object'
+    type: object
+  server_routes.QuerySchemaResponse:
+    properties:
+      definition:
+        $ref: '#/definitions/types.SchemaDefinition'
+    type: object
   server_routes.uResponse:
     properties:
       address:
         type: string
       didDocument: {}
+    type: object
+  ssi.URI:
+    properties:
+      forceQuery:
+        description: append a query ('?') even if RawQuery is empty
+        type: boolean
+      fragment:
+        description: fragment for references, without '#'
+        type: string
+      host:
+        description: host or host:port
+        type: string
+      opaque:
+        description: encoded opaque data
+        type: string
+      path:
+        description: path (relative paths may omit leading slash)
+        type: string
+      rawFragment:
+        description: encoded fragment hint (see EscapedFragment method)
+        type: string
+      rawPath:
+        description: encoded path hint (see EscapedPath method)
+        type: string
+      rawQuery:
+        description: encoded query values, without '?'
+        type: string
+      scheme:
+        type: string
+      user:
+        $ref: '#/definitions/url.Userinfo'
+        description: username and password information
+    type: object
+  types.Alias:
+    properties:
+      amount:
+        description: Amount is the amount listed for purchasing the Alias from the
+          User/Application
+        type: integer
+      is_for_sale:
+        description: IsForSale is the boolean value indicating if the Alias is for
+          sale
+        type: boolean
+      name:
+        description: Name is the string name of an Alias
+        type: string
+    type: object
+  types.BucketItem:
+    properties:
+      name:
+        description: Name of the bucket item.
+        type: string
+      schema_did:
+        description: |-
+          References the schema and item within the bucket is associated with.
+          Bucket items do not need to use the same schema if the bucket is "generic" // optional
+        type: string
+      timestamp:
+        description: Timestamp of the last update. // optional
+        type: integer
+      type:
+        description: Type of the resource
+        type: integer
+      uri:
+        description: DID of the item. If applicable // optional
+        type: string
+    type: object
+  types.DIDDocument:
+    properties:
+      also_known_as:
+        items:
+          type: string
+        type: array
+      assertion_method:
+        items:
+          type: string
+        type: array
+      authentication:
+        items:
+          type: string
+        type: array
+      capability_delegation:
+        items:
+          type: string
+        type: array
+      capability_invocation:
+        items:
+          type: string
+        type: array
+      context:
+        items:
+          type: string
+        type: array
+      controller:
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+      key_agreement:
+        items:
+          type: string
+        type: array
+      service:
+        items:
+          $ref: '#/definitions/types.Service'
+        type: array
+      verification_method:
+        items:
+          $ref: '#/definitions/types.VerificationMethod'
+        type: array
+    type: object
+  types.KeyValuePair:
+    properties:
+      key:
+        type: string
+      value:
+        type: string
     type: object
   types.SchemaDefinition:
     properties:
@@ -63,6 +301,113 @@ definitions:
       name:
         type: string
     type: object
+  types.SchemaReference:
+    properties:
+      cid:
+        description: a reference to information stored within an IPFS node.
+        type: string
+      did:
+        description: the DID for this schema
+        type: string
+      label:
+        description: an alternative reference point
+        type: string
+    type: object
+  types.Service:
+    properties:
+      id:
+        type: string
+      service_endpoint:
+        items:
+          $ref: '#/definitions/types.KeyValuePair'
+        type: array
+      type:
+        type: string
+    type: object
+  types.VerificationMethod:
+    properties:
+      controller:
+        type: string
+      credential_json:
+        items:
+          type: integer
+        type: array
+      id:
+        type: string
+      public_key_base58:
+        type: string
+      public_key_jwk:
+        items:
+          $ref: '#/definitions/types.KeyValuePair'
+        type: array
+      type:
+        type: string
+    type: object
+  types.WhatIs:
+    properties:
+      creator:
+        description: Creator is the DID of the creator
+        type: string
+      did:
+        description: DID is the DID of the object
+        type: string
+      is_active:
+        description: IsActive is the status of the DID Document
+        type: boolean
+      metadata:
+        additionalProperties:
+          type: string
+        description: Metadata is a map of key-value pairs that can be used to store
+          additional information about the WhatIs (Schema)
+        type: object
+      schema:
+        $ref: '#/definitions/types.SchemaReference'
+        description: Object_doc is the object document
+      timestamp:
+        description: Timestamp is the time of the last update of the DID Document
+        type: integer
+    type: object
+  types.WhoIs:
+    properties:
+      alias:
+        description: Alias is the list of registered `alsoKnownAs` identifiers of
+          the User or Application
+        items:
+          $ref: '#/definitions/types.Alias'
+        type: array
+      controllers:
+        description: Credentials are the biometric info of the registered name and
+          account encoded with public key
+        items:
+          type: string
+        type: array
+      did_document:
+        $ref: '#/definitions/types.DIDDocument'
+        description: DIDDocument is the bytes representation of DIDDocument within
+          the WhoIs. Initially marshalled as JSON.
+      is_active:
+        description: IsActive is the status of the DID Document
+        type: boolean
+      metadata:
+        additionalProperties:
+          type: string
+        description: Metadata is a map of key-value pairs that can be used to store
+          additional information about the DID Document
+        type: object
+      owner:
+        description: Owner is the top level DID of the User or Application derived
+          from the multisignature wallet.
+        type: string
+      timestamp:
+        description: Timestamp is the time of the last update of the DID Document
+        type: integer
+      type:
+        description: 'Type is the kind of the entity. Possible values are: "user",
+          "application"'
+        type: integer
+    type: object
+  url.Userinfo:
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -92,13 +437,13 @@ paths:
       - application/json
       responses:
         "200":
-          description: Address
+          description: OK
           schema:
-            type: string
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.CAResponseBody'
         "500":
-          description: Error
+          description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: CreateAccount
       tags:
       - account
@@ -116,10 +461,10 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: GetAccount
       tags:
-      - object
+      - account
   /account/login:
     post:
       description: Login to an existing account on Sonr using the Registry module
@@ -145,14 +490,232 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/apiv1.LoginResponse'
+            $ref: '#/definitions/motor.LoginResponse'
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/server_routes.FailedLogin'
       summary: LoginAccount
       tags:
       - account
+  /bucket/create:
+    post:
+      description: Create a bucket on Sonr using the bucket module of Sonr's Blockchain.
+      parameters:
+      - description: Creator
+        example: '"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+        in: body
+        name: Creator
+        required: true
+        schema:
+          type: string
+      - description: Label
+        example: '"My Bucket"'
+        in: body
+        name: Label
+        required: true
+        schema:
+          type: string
+      - description: Visibility
+        example: '"public" or "private"'
+        in: body
+        name: Visibility
+        required: true
+        schema:
+          type: string
+      - description: Role
+        example: '"application" or "user"'
+        in: body
+        name: Role
+        required: true
+        schema:
+          type: string
+      - description: Content
+        example: '"name: My Bucket, uri: bafyreifqum26tv4wprgri5t4ddef7tozknnicuayjcvd4m5gag5avgtvsa"'
+        in: body
+        name: Content
+        required: true
+        schema:
+          type: string
+      - description: ResourceIdentifier
+        example: '"did" or "cid"'
+        in: body
+        name: ResourceIdentifier
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/server_routes.CreateBucketResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/server_routes.FailedResponse'
+      summary: CreateBucket
+      tags:
+      - bucket
+  /bucket/get:
+    post:
+      description: Get a bucket on Sonr using the bucket module of Sonr's Blockchain.
+      parameters:
+      - description: BucketDid
+        example: '"did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+        in: body
+        name: bucketDid
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/server_routes.GetBucketResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/server_routes.FailedResponse'
+      summary: GetBucket
+      tags:
+      - bucket
+  /bucket/get-by-schema:
+    post:
+      description: Get a bucket on Sonr using a Schema.
+      parameters:
+      - description: Creator
+        example: '"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+        in: body
+        name: Creator
+        required: true
+        schema:
+          type: string
+      - description: bucketDid
+        example: '"did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+        in: body
+        name: BucketDid
+        required: true
+        schema:
+          type: string
+      - description: schemaDid
+        example: '"did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+        in: body
+        name: SchemaDid
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/motor.SearchBucketContentBySchemaResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/server_routes.FailedResponse'
+      summary: GetBucketBySchema
+      tags:
+      - bucket
+  /bucket/update-items:
+    post:
+      description: Update a bucket on Sonr using the bucket module of Sonr's Blockchain.
+      parameters:
+      - description: Creator
+        example: '"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+        in: body
+        name: Creator
+        required: true
+        schema:
+          type: string
+      - description: Content
+        example: '"name: My Bucket, uri: bafyreifqum26tv4wprgri5t4ddef7tozknnicuayjcvd4m5gag5avgtvsa"'
+        in: body
+        name: Content
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.BucketItem'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/server_routes.FailedResponse'
+      summary: UpdateBucketItems
+      tags:
+      - bucket
+  /bucket/update-label:
+    post:
+      description: Update a bucket on Sonr using the bucket module of Sonr's Blockchain.
+      parameters:
+      - description: BucketDid
+        example: '"did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+        in: body
+        name: bucketDid
+        required: true
+        schema:
+          type: string
+      - description: Label
+        example: '"My Bucket"'
+        in: body
+        name: label
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+      summary: UpdateBucketLabel
+      tags:
+      - bucket
+  /bucket/update-visibility:
+    post:
+      description: Update a bucket on Sonr using the bucket module of Sonr's Blockchain.
+      parameters:
+      - description: BucketDid
+        example: '"did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+        in: body
+        name: bucketDid
+        required: true
+        schema:
+          type: string
+      - description: Visibility
+        example: '"public"'
+        in: body
+        name: visibility
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+      summary: UpdateBucketVisibility
+      tags:
+      - bucket
   /object/build:
     post:
       description: Build an object on Sonr using the object module of Sonr's Blockchain.
@@ -188,7 +751,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: BuildObject
       tags:
       - object
@@ -216,11 +779,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/object.ObjectReference'
+            $ref: '#/definitions/server_routes.GetObjectResponse'
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: GetObject
       tags:
       - object
@@ -245,11 +808,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/apiv1.CreateSchemaResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.CreateSchemaResponse'
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: CreateSchema
       tags:
       - schema
@@ -274,11 +837,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/types.SchemaDefinition'
+            $ref: '#/definitions/server_routes.QuerySchemaResponse'
         "500":
           description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: GetSchema
       tags:
       - schema
