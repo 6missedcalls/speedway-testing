@@ -44,7 +44,12 @@ export const updateBucket = createAsyncThunk(
 	"bucket/update-items",
 	async ({ bucketDid, objectCid, objectName, schemaDid }: any, thunkAPI) => {
 		try {
-			const data = await updateBucketService({ bucketDid, objectCid, objectName, schemaDid })
+			const data = await updateBucketService({
+				bucketDid,
+				objectCid,
+				objectName,
+				schemaDid,
+			})
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)

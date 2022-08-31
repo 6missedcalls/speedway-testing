@@ -1,6 +1,6 @@
 import { BASE_API } from "../utils/constants"
 
-interface  updateBucketServiceProps {
+interface updateBucketServiceProps {
 	bucketDid: string
 	objectCid: string
 	objectName: string
@@ -11,29 +11,38 @@ interface getBucketProps {
 	bucketDid: string
 }
 
-export const updateBucketService = async ({ bucketDid, objectCid, objectName, schemaDid }: updateBucketServiceProps) => {
+export const updateBucketService = async ({
+	bucketDid,
+	objectCid,
+	objectName,
+	schemaDid,
+}: updateBucketServiceProps) => {
 	const url = `${BASE_API}/bucket/update-items`
-	
-	const newObject ={
+
+	const newObject = {
 		schemaDid: schemaDid,
 		type: "cid",
 		name: objectName,
-		uri: objectCid
+		uri: objectCid,
 	}
-	
+
 	try {
 		const getBucketResponse = await getBucket({ bucketDid })
 
 		const payload = JSON.stringify({
 			bucketDid: bucketDid,
-			content: getBucketResponse?.bucket ? getBucketResponse.bucket.map((item: any) => ({
-				schemaDid: item.schemaDid,
-				type: "cid",
-				"name": item.name,
-				"uri": item.uri
-			})).concat([newObject]) : [newObject]
+			content: getBucketResponse?.bucket
+				? getBucketResponse.bucket
+						.map((item: any) => ({
+							schemaDid: item.schemaDid,
+							type: "cid",
+							name: item.name,
+							uri: item.uri,
+						}))
+						.concat([newObject])
+				: [newObject],
 		})
-	
+
 		const options = {
 			method: "POST",
 			headers: { "content-type": "application/json" },
@@ -54,7 +63,7 @@ export const getBucket = async ({ bucketDid }: getBucketProps) => {
 	const url = `${BASE_API}/bucket/get`
 
 	const payload = JSON.stringify({
-		bucketDid
+		bucketDid,
 	})
 
 	const options = {

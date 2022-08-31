@@ -50,8 +50,8 @@ function SearchableListContainer({
 	}
 
 	function getOrderedList(previousList: Array<IsearchableListItem>) {
-		if(!searchableAndSortableFieldKey) return previousList
-		
+		if (!searchableAndSortableFieldKey) return previousList
+
 		let orderedList
 		if (orderAsc) {
 			orderedList = [...previousList].sort(

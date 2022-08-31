@@ -99,13 +99,13 @@ function NewObjectModalContentContainer({
 			bucketDid: selectedBucket,
 			objectCid: object.payload.Cid,
 			objectName: object.payload.Label,
-			schemaDid: selectedSchemaDid
+			schemaDid: selectedSchemaDid,
 		}
-		
+
 		await dispatch(updateBucket({ ...bucketUpdatePayload }))
 
 		dispatch(
-			userGetAllBucketObjects({ 
+			userGetAllBucketObjects({
 				buckets: buckets.map((item) => item.did),
 			})
 		)

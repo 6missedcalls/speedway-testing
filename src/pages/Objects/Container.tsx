@@ -2,7 +2,11 @@ import { useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
-import { getAllBuckets, selectBuckets, selectBucketsLoading } from "../../redux/slices/bucketSlice"
+import {
+	getAllBuckets,
+	selectBuckets,
+	selectBucketsLoading,
+} from "../../redux/slices/bucketSlice"
 import {
 	selectObjectsList,
 	selectObjectsLoading,
@@ -40,7 +44,7 @@ function ObjectsPageContainer() {
 	useEffect(() => {
 		if (buckets.length > 0) {
 			dispatch(
-				userGetAllBucketObjects({ 
+				userGetAllBucketObjects({
 					buckets: buckets.map((item) => item.did),
 				})
 			)
@@ -103,11 +107,8 @@ function ObjectsPageContainer() {
 
 	function mapToListFormat() {
 		return objectsList
-			.reduce((acc: any, item: any) => ([
-				...acc,
-				...item
-			]), [])
-			.filter((item:  any) => item.schemaDid === selectedSchemaDid)
+			.reduce((acc: any, item: any) => [...acc, ...item], [])
+			.filter((item: any) => item.schemaDid === selectedSchemaDid)
 			.map(({ objects }: any) => {
 				return Object.keys(objects).reduce((acc, key) => {
 					if (key === "schema") return acc
