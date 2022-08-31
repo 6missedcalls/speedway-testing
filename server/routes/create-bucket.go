@@ -113,7 +113,7 @@ func (ns *NebulaServer) CreateBucket(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Create Bucket Error: ", err)
 		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: "Failed to create bucket",
+			Error: err.Error(),
 		})
 		return
 	}

@@ -52,7 +52,7 @@ func (ns *NebulaServer) GetBucketBySchema(c *gin.Context) {
 	bucket, err := b.GetBucketFromSchema(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: "Failed to get bucket",
+			Error: err.Error(),
 		})
 		return
 	}

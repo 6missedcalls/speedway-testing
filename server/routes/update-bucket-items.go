@@ -76,7 +76,7 @@ func (ns *NebulaServer) UpdateBucketItems(c *gin.Context) {
 	updateContent, err := b.UpdateBucketItems(context.Background(), r.BucketDid, content)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: "Update Bucket Error",
+			Error: err.Error(),
 		})
 		return
 	}

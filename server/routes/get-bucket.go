@@ -66,7 +66,7 @@ func (ns *NebulaServer) GetBucket(c *gin.Context) {
 		content, err := b.GetContentById(context.Background(), body.BucketDid, bucketItem.Uri)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, FailedResponse{
-				Error: "Failed to get content",
+				Error: err.Error(),
 			})
 			return
 		}

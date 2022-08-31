@@ -76,7 +76,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	if err != nil {
 		fmt.Println("ObjectBuilder Error: ", err)
 		c.JSON(http.StatusUnprocessableEntity, FailedResponse{
-			Error: "ObjectBuilder Error",
+			Error: err.Error(),
 		})
 	}
 
@@ -92,7 +92,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	if err != nil {
 		fmt.Println("err", err)
 		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: "Failed to upload object",
+			Error: err.Error(),
 		})
 	}
 	c.JSON(http.StatusOK, BuildObjectResponse{
