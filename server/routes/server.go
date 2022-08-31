@@ -108,6 +108,7 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	ns.Router.Use(static.Serve("/schema", static.LocalFile(ns.Config.StaticDir, true)))
 	ns.Router.Use(static.Serve("/objects", static.LocalFile(ns.Config.StaticDir, true)))
 	ns.Router.Use(static.Serve("/buckets", static.LocalFile(ns.Config.StaticDir, true)))
+	ns.Router.Use(static.Serve("/swagger-ui", static.LocalFile("../../docs", true)))
 
 	return nil
 }
