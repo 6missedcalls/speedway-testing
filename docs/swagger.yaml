@@ -458,6 +458,7 @@ info:
     the Sonr architecture.
   license:
     name: OpenGLv3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
   termsOfService: https://sonr.io/terms
   title: Speedway API
   version: "2.0"
@@ -479,11 +480,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/server_routes.CAResponseBody'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.CAResponseBody'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: CreateAccount
       tags:
       - account
@@ -497,11 +498,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/server_routes.uResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.uResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: GetAccount
       tags:
       - account
@@ -534,7 +535,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedLogin'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedLogin'
       summary: LoginAccount
       tags:
       - account
@@ -590,11 +591,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/server_routes.CreateBucketResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.CreateBucketResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: CreateBucket
       tags:
       - bucket
@@ -615,11 +616,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.GetBucketResponse'
+            $ref: '#/definitions/server_routes.GetBucketResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: GetBucket
       tags:
       - bucket
@@ -658,7 +659,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: GetBucketBySchema
       tags:
       - bucket
@@ -666,10 +667,10 @@ paths:
     post:
       description: Update a bucket on Sonr using the bucket module of Sonr's Blockchain.
       parameters:
-      - description: Creator
-        example: '"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
+      - description: BucketDid
+        example: '"did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
         in: body
-        name: Creator
+        name: bucketDid
         required: true
         schema:
           type: string
@@ -690,7 +691,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: UpdateBucketItems
       tags:
       - bucket
@@ -721,7 +722,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: UpdateBucketLabel
       tags:
       - bucket
@@ -791,7 +792,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: BuildObject
       tags:
       - object
@@ -819,11 +820,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/server_routes.GetObjectResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.GetObjectResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: GetObject
       tags:
       - object
@@ -848,11 +849,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/server_routes.CreateSchemaResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.CreateSchemaResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: CreateSchema
       tags:
       - schema
@@ -877,11 +878,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/server_routes.QuerySchemaResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.QuerySchemaResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: GetSchema
       tags:
       - schema

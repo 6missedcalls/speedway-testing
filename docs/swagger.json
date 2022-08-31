@@ -1,0 +1,1296 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Create accounts, schemas, buckets and objects in a scalable way utilizing the Sonr architecture.",
+        "title": "Speedway API",
+        "termsOfService": "https://sonr.io/terms",
+        "contact": {
+            "name": "API Support",
+            "url": "https://sonr.io/",
+            "email": "team@sonr.io"
+        },
+        "license": {
+            "name": "OpenGLv3",
+            "url": "https://www.gnu.org/licenses/gpl-3.0.en.html"
+        },
+        "version": "2.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/account/create": {
+            "post": {
+                "description": "Create a new account on Sonr using the Registry module of Sonr's Blockchain.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "account"
+                ],
+                "summary": "CreateAccount",
+                "parameters": [
+                    {
+                        "description": "Password",
+                        "name": "password",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.CAResponseBody"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/account/info": {
+            "get": {
+                "description": "Get Account information from the Sonr Blockchain. This is a read-only endpoint.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "account"
+                ],
+                "summary": "GetAccount",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.uResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/account/login": {
+            "post": {
+                "description": "Login to an existing account on Sonr using the Registry module of Sonr's Blockchain.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "account"
+                ],
+                "summary": "LoginAccount",
+                "parameters": [
+                    {
+                        "example": "\"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p\"",
+                        "description": "Did",
+                        "name": "Did",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "example": "\"Password\"",
+                        "description": "Password",
+                        "name": "Password",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/motor.LoginResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedLogin"
+                        }
+                    }
+                }
+            }
+        },
+        "/bucket/create": {
+            "post": {
+                "description": "Create a bucket on Sonr using the bucket module of Sonr's Blockchain.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bucket"
+                ],
+                "summary": "CreateBucket",
+                "parameters": [
+                    {
+                        "example": "\"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p\"",
+                        "description": "Creator",
+                        "name": "Creator",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "example": "\"My Bucket\"",
+                        "description": "Label",
+                        "name": "Label",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "example": "\"public\" or \"private\"",
+                        "description": "Visibility",
+                        "name": "Visibility",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "example": "\"application\" or \"user\"",
+                        "description": "Role",
+                        "name": "Role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "example": "\"name: My Bucket, uri: bafyreifqum26tv4wprgri5t4ddef7tozknnicuayjcvd4m5gag5avgtvsa\"",
+                        "description": "Content",
+                        "name": "Content",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "example": "\"did\" or \"cid\"",
+                        "description": "ResourceIdentifier",
+                        "name": "ResourceIdentifier",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.CreateBucketResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/bucket/get": {
+            "post": {
+                "description": "Get a bucket on Sonr using the bucket module of Sonr's Blockchain.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bucket"
+                ],
+                "summary": "GetBucket",
+                "parameters": [
+                    {
+                        "example": "\"did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p\"",
+                        "description": "BucketDid",
+                        "name": "bucketDid",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/server_routes.GetBucketResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server_routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/bucket/get-by-schema": {
+            "post": {
+                "description": "Get a bucket on Sonr using a Schema.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bucket"
+                ],
+                "summary": "GetBucketBySchema",
+                "parameters": [
+                    {
+                        "example": "\"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p\"",
+                        "description": "Creator",
+                        "name": "Creator",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "example": "\"did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p\"",
+                        "description": "bucketDid",
+                        "name": "BucketDid",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "example": "\"did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p\"",
+                        "description": "schemaDid",
+                        "name": "SchemaDid",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/motor.SearchBucketContentBySchemaResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/bucket/update-items": {
+            "post": {
+                "description": "Update a bucket on Sonr using the bucket module of Sonr's Blockchain.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bucket"
+                ],
+                "summary": "UpdateBucketItems",
+                "parameters": [
+                    {
+                        "example": "\"did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p\"",
+                        "description": "BucketDid",
+                        "name": "bucketDid",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "example": "\"name: My Bucket, uri: bafyreifqum26tv4wprgri5t4ddef7tozknnicuayjcvd4m5gag5avgtvsa\"",
+                        "description": "Content",
+                        "name": "Content",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.BucketItem"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server_routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/bucket/update-label": {
+            "post": {
+                "description": "Update a bucket on Sonr using the bucket module of Sonr's Blockchain.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bucket"
+                ],
+                "summary": "UpdateBucketLabel",
+                "parameters": [
+                    {
+                        "example": "\"did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p\"",
+                        "description": "BucketDid",
+                        "name": "bucketDid",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "example": "\"My Bucket\"",
+                        "description": "Label",
+                        "name": "label",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/bucket/update-visibility": {
+            "post": {
+                "description": "Update a bucket on Sonr using the bucket module of Sonr's Blockchain.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bucket"
+                ],
+                "summary": "UpdateBucketVisibility",
+                "parameters": [
+                    {
+                        "example": "\"did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p\"",
+                        "description": "BucketDid",
+                        "name": "bucketDid",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "example": "\"public\"",
+                        "description": "Visibility",
+                        "name": "visibility",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server_routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/object/build": {
+            "post": {
+                "description": "Build an object on Sonr using the object module of Sonr's Blockchain.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "object"
+                ],
+                "summary": "BuildObject",
+                "parameters": [
+                    {
+                        "example": "\"did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p\"",
+                        "description": "SchemaDid",
+                        "name": "SchemaDid",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "example": "\"MyObject\"",
+                        "description": "Label",
+                        "name": "Label",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Object",
+                        "name": "Object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/object.ObjectReference"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server_routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/object/get": {
+            "post": {
+                "description": "Get an object on Sonr using the object module of Sonr's Blockchain.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "object"
+                ],
+                "summary": "GetObject",
+                "parameters": [
+                    {
+                        "example": "\"did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p\"",
+                        "description": "SchemaDid",
+                        "name": "SchemaDid",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "example": "\"bafyreigfzxrtvfzuaoyhn5vgndneeeirq62efgf2s3igmoenxgx7jxy2cm\"",
+                        "description": "ObjectCid",
+                        "name": "ObjectCid",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.GetObjectResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/schema/create": {
+            "post": {
+                "description": "Create a schema utilizing motor client. Returns the WhatIs of the schema created.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "schema"
+                ],
+                "summary": "CreateSchema",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Label of the schema",
+                        "name": "label",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Fields of the schema",
+                        "name": "fields",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.CreateSchemaResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/schema/get": {
+            "post": {
+                "description": "Get a schema utilizing motor client. Returns the WhatIs of the schema that is retrieved.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "schema"
+                ],
+                "summary": "GetSchema",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Creator",
+                        "name": "creator",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Schema",
+                        "name": "schema",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.QuerySchemaResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "did.Service": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/ssi.URI"
+                },
+                "serviceEndpoint": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "github.com_sonr-io_speedway_server_routes.CAResponseBody": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                }
+            }
+        },
+        "github.com_sonr-io_speedway_server_routes.ConvertBucketRes": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "$ref": "#/definitions/motor.BucketContent"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "schemaDid": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "integer"
+                },
+                "uri": {
+                    "type": "string"
+                }
+            }
+        },
+        "github.com_sonr-io_speedway_server_routes.CreateBucketResponse": {
+            "type": "object",
+            "properties": {
+                "bucket": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.BucketItem"
+                    }
+                },
+                "service": {
+                    "$ref": "#/definitions/did.Service"
+                }
+            }
+        },
+        "github.com_sonr-io_speedway_server_routes.CreateSchemaResponse": {
+            "type": "object",
+            "properties": {
+                "definition": {
+                    "$ref": "#/definitions/types.SchemaDefinition"
+                },
+                "whatIs": {
+                    "$ref": "#/definitions/types.WhatIs"
+                }
+            }
+        },
+        "github.com_sonr-io_speedway_server_routes.FailedLogin": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "github.com_sonr-io_speedway_server_routes.FailedResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "github.com_sonr-io_speedway_server_routes.GetBucketResponse": {
+            "type": "object",
+            "properties": {
+                "bucket": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.ConvertBucketRes"
+                    }
+                }
+            }
+        },
+        "github.com_sonr-io_speedway_server_routes.GetObjectResponse": {
+            "type": "object",
+            "properties": {
+                "object": {
+                    "$ref": "#/definitions/object.Object"
+                }
+            }
+        },
+        "github.com_sonr-io_speedway_server_routes.QuerySchemaResponse": {
+            "type": "object",
+            "properties": {
+                "definition": {
+                    "$ref": "#/definitions/types.SchemaDefinition"
+                }
+            }
+        },
+        "github.com_sonr-io_speedway_server_routes.uResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "didDocument": {}
+            }
+        },
+        "motor.BucketContent": {
+            "type": "object",
+            "properties": {
+                "content_type": {
+                    "description": "Type of the resource",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "Content id a CID, DID, or unspecified",
+                    "type": "string"
+                },
+                "item": {
+                    "description": "Raw content serialized to bytes",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "motor.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "who_is": {
+                    "$ref": "#/definitions/types.WhoIs"
+                }
+            }
+        },
+        "motor.SearchBucketContentBySchemaResponse": {
+            "type": "object",
+            "properties": {
+                "bucket_did": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "schema_did": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "object.Object": {
+            "type": "object",
+            "additionalProperties": true
+        },
+        "object.ObjectReference": {
+            "type": "object",
+            "properties": {
+                "cid": {
+                    "type": "string"
+                },
+                "did": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                }
+            }
+        },
+        "server_routes.CAResponseBody": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                }
+            }
+        },
+        "server_routes.ConvertBucketRes": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "$ref": "#/definitions/motor.BucketContent"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "schemaDid": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "integer"
+                },
+                "uri": {
+                    "type": "string"
+                }
+            }
+        },
+        "server_routes.CreateBucketResponse": {
+            "type": "object",
+            "properties": {
+                "bucket": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.BucketItem"
+                    }
+                },
+                "service": {
+                    "$ref": "#/definitions/did.Service"
+                }
+            }
+        },
+        "server_routes.CreateSchemaResponse": {
+            "type": "object",
+            "properties": {
+                "definition": {
+                    "$ref": "#/definitions/types.SchemaDefinition"
+                },
+                "whatIs": {
+                    "$ref": "#/definitions/types.WhatIs"
+                }
+            }
+        },
+        "server_routes.FailedLogin": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "server_routes.FailedResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "server_routes.GetBucketResponse": {
+            "type": "object",
+            "properties": {
+                "bucket": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/server_routes.ConvertBucketRes"
+                    }
+                }
+            }
+        },
+        "server_routes.GetObjectResponse": {
+            "type": "object",
+            "properties": {
+                "object": {
+                    "$ref": "#/definitions/object.Object"
+                }
+            }
+        },
+        "server_routes.QuerySchemaResponse": {
+            "type": "object",
+            "properties": {
+                "definition": {
+                    "$ref": "#/definitions/types.SchemaDefinition"
+                }
+            }
+        },
+        "server_routes.uResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "didDocument": {}
+            }
+        },
+        "ssi.URI": {
+            "type": "object",
+            "properties": {
+                "forceQuery": {
+                    "description": "append a query ('?') even if RawQuery is empty",
+                    "type": "boolean"
+                },
+                "fragment": {
+                    "description": "fragment for references, without '#'",
+                    "type": "string"
+                },
+                "host": {
+                    "description": "host or host:port",
+                    "type": "string"
+                },
+                "opaque": {
+                    "description": "encoded opaque data",
+                    "type": "string"
+                },
+                "path": {
+                    "description": "path (relative paths may omit leading slash)",
+                    "type": "string"
+                },
+                "rawFragment": {
+                    "description": "encoded fragment hint (see EscapedFragment method)",
+                    "type": "string"
+                },
+                "rawPath": {
+                    "description": "encoded path hint (see EscapedPath method)",
+                    "type": "string"
+                },
+                "rawQuery": {
+                    "description": "encoded query values, without '?'",
+                    "type": "string"
+                },
+                "scheme": {
+                    "type": "string"
+                },
+                "user": {
+                    "description": "username and password information",
+                    "$ref": "#/definitions/url.Userinfo"
+                }
+            }
+        },
+        "types.Alias": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "description": "Amount is the amount listed for purchasing the Alias from the User/Application",
+                    "type": "integer"
+                },
+                "is_for_sale": {
+                    "description": "IsForSale is the boolean value indicating if the Alias is for sale",
+                    "type": "boolean"
+                },
+                "name": {
+                    "description": "Name is the string name of an Alias",
+                    "type": "string"
+                }
+            }
+        },
+        "types.BucketItem": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": "Name of the bucket item.",
+                    "type": "string"
+                },
+                "schema_did": {
+                    "description": "References the schema and item within the bucket is associated with.\nBucket items do not need to use the same schema if the bucket is \"generic\" // optional",
+                    "type": "string"
+                },
+                "timestamp": {
+                    "description": "Timestamp of the last update. // optional",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "Type of the resource",
+                    "type": "integer"
+                },
+                "uri": {
+                    "description": "DID of the item. If applicable // optional",
+                    "type": "string"
+                }
+            }
+        },
+        "types.DIDDocument": {
+            "type": "object",
+            "properties": {
+                "also_known_as": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "assertion_method": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "authentication": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "capability_delegation": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "capability_invocation": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "context": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "controller": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "key_agreement": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "service": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.Service"
+                    }
+                },
+                "verification_method": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.VerificationMethod"
+                    }
+                }
+            }
+        },
+        "types.KeyValuePair": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.SchemaDefinition": {
+            "type": "object",
+            "properties": {
+                "creator": {
+                    "description": "Represents the types of fields a schema can have\nthe DID for this schema",
+                    "type": "string"
+                },
+                "fields": {
+                    "description": "the properties of this schema",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.SchemaKindDefinition"
+                    }
+                },
+                "label": {
+                    "description": "an alternative reference point",
+                    "type": "string"
+                }
+            }
+        },
+        "types.SchemaKindDefinition": {
+            "type": "object",
+            "properties": {
+                "field": {
+                    "description": "Type of a single schema property",
+                    "type": "integer"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "link_kind": {
+                    "description": "Optional field for a link context if `SchemaKind` is of type `Link`",
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.SchemaReference": {
+            "type": "object",
+            "properties": {
+                "cid": {
+                    "description": "a reference to information stored within an IPFS node.",
+                    "type": "string"
+                },
+                "did": {
+                    "description": "the DID for this schema",
+                    "type": "string"
+                },
+                "label": {
+                    "description": "an alternative reference point",
+                    "type": "string"
+                }
+            }
+        },
+        "types.Service": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "service_endpoint": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.KeyValuePair"
+                    }
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.VerificationMethod": {
+            "type": "object",
+            "properties": {
+                "controller": {
+                    "type": "string"
+                },
+                "credential_json": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "public_key_base58": {
+                    "type": "string"
+                },
+                "public_key_jwk": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.KeyValuePair"
+                    }
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.WhatIs": {
+            "type": "object",
+            "properties": {
+                "creator": {
+                    "description": "Creator is the DID of the creator",
+                    "type": "string"
+                },
+                "did": {
+                    "description": "DID is the DID of the object",
+                    "type": "string"
+                },
+                "is_active": {
+                    "description": "IsActive is the status of the DID Document",
+                    "type": "boolean"
+                },
+                "metadata": {
+                    "description": "Metadata is a map of key-value pairs that can be used to store additional information about the WhatIs (Schema)",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "schema": {
+                    "description": "Object_doc is the object document",
+                    "$ref": "#/definitions/types.SchemaReference"
+                },
+                "timestamp": {
+                    "description": "Timestamp is the time of the last update of the DID Document",
+                    "type": "integer"
+                }
+            }
+        },
+        "types.WhoIs": {
+            "type": "object",
+            "properties": {
+                "alias": {
+                    "description": "Alias is the list of registered `alsoKnownAs` identifiers of the User or Application",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.Alias"
+                    }
+                },
+                "controllers": {
+                    "description": "Credentials are the biometric info of the registered name and account encoded with public key",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "did_document": {
+                    "description": "DIDDocument is the bytes representation of DIDDocument within the WhoIs. Initially marshalled as JSON.",
+                    "$ref": "#/definitions/types.DIDDocument"
+                },
+                "is_active": {
+                    "description": "IsActive is the status of the DID Document",
+                    "type": "boolean"
+                },
+                "metadata": {
+                    "description": "Metadata is a map of key-value pairs that can be used to store additional information about the DID Document",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "owner": {
+                    "description": "Owner is the top level DID of the User or Application derived from the multisignature wallet.",
+                    "type": "string"
+                },
+                "timestamp": {
+                    "description": "Timestamp is the time of the last update of the DID Document",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "Type is the kind of the entity. Possible values are: \"user\", \"application\"",
+                    "type": "integer"
+                }
+            }
+        },
+        "url.Userinfo": {
+            "type": "object"
+        }
+    }
+}
