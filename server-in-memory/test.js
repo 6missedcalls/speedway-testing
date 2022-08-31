@@ -225,6 +225,7 @@ it("can add objects to buckets", async () => {
 		label: "Dinosaurs",
 		fields: { firstName: 4 },
 	})
+	const schemaDid = responseSchema.body.whatIs.did
 
 	const responseBucket = await app.post("/api/v1/bucket/create").send({
 		label: "Mars colony",
@@ -233,7 +234,7 @@ it("can add objects to buckets", async () => {
 	const bucketDid = responseBucket.body.service.serviceEndpoint.did
 
 	const responseObject = await app.post("/api/v1/object/build").send({
-		SchemaDid: responseSchema.body.whatIs.did,
+		SchemaDid: schemaDid,
 		Label: "Sonrsaur",
 		Object: { firstName: "Rex" },
 	})
@@ -241,7 +242,13 @@ it("can add objects to buckets", async () => {
 
 	await app.post("/api/v1/bucket/update-items").send({
 		bucketDid: bucketDid,
-		content: { uri: objectCid },
+		content: [
+			{
+				schemaDid,
+				type: "cid",
+				uri: objectCid,
+			},
+		],
 	})
 
 	const { body: result } = await app.get("/proxy/buckets")
@@ -250,6 +257,7 @@ it("can add objects to buckets", async () => {
 	expect(result.where_is[0].label).toBe("Mars colony")
 	expect(result.where_is[0].content.length).toBe(1)
 	expect(result.where_is[0].content[0].uri).toBe(objectCid)
+	expect(result.where_is[0].content[0].schema_did).toBe(schemaDid)
 })
 
 it("gets a bucket content", async () => {
@@ -282,7 +290,12 @@ it("gets a bucket content", async () => {
 
 	await app.post("/api/v1/bucket/update-items").send({
 		bucketDid: bucketDid,
-		content: { uri: objectCid },
+		content: [
+			{
+				type: "cid",
+				uri: objectCid,
+			},
+		],
 	})
 
 	const { body: result } = await app.post("/api/v1/bucket/get").send({
