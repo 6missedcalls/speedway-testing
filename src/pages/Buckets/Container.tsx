@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 import {
@@ -18,7 +18,13 @@ function BucketsPageContainer() {
 		dispatch(getAllBuckets(address))
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
-	return <BucketsPageComponent data={buckets} loading={loading} />
+
+	return (
+		<BucketsPageComponent 
+			data={buckets} 
+			loading={loading}
+		/>
+	)
 }
 
 export default BucketsPageContainer

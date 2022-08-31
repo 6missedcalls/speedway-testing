@@ -10,6 +10,7 @@ import { useSelector } from "react-redux"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 import IconLinkAccessApi from "../../assets/svgs/LinkAccessApi"
 import IconLinkDocsSupport from "../../assets/svgs/LinkDocsSupport"
+import AlertSvg from "../../assets/svgs/Alert"
 
 interface SideMenuComponentProps {
 	navigate: NavigateFunction
@@ -92,7 +93,9 @@ function SideMenuComponent({ navigate, currentPath }: SideMenuComponentProps) {
 					rel="noreferrer"
 				>
 					<span className="mr-2">
-						<IconLinkDocsSupport />
+						<div className="w-6 flex items-center">
+							<AlertSvg />
+						</div>
 					</span>
 					<span>Report Bugs</span>
 				</a>
