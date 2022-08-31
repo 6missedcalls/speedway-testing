@@ -63,7 +63,9 @@ app.post("/api/v1/account/create", async ({ body }, res) => {
 })
 
 app.post("/api/v1/account/login", async ({ body }, res) => {
-	const account = await storage.getItem(accountStoreKey(body.Address))
+	const account = await storage.getItem(
+		accountStoreKey(body.Address.toLowerCase())
+	)
 
 	if (!account || account.password !== body.Password) {
 		res.status(500).send()
