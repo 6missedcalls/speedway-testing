@@ -16,6 +16,19 @@ definitions:
       address:
         type: string
     type: object
+  github.com_sonr-io_speedway_server_routes.ConvertBucketRes:
+    properties:
+      content:
+        $ref: '#/definitions/motor.BucketContent'
+      name:
+        type: string
+      schemaDid:
+        type: string
+      timestamp:
+        type: integer
+      uri:
+        type: string
+    type: object
   github.com_sonr-io_speedway_server_routes.CreateBucketResponse:
     properties:
       bucket:
@@ -46,7 +59,7 @@ definitions:
     properties:
       bucket:
         items:
-          $ref: '#/definitions/types.BucketItem'
+          $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.ConvertBucketRes'
         type: array
     type: object
   github.com_sonr-io_speedway_server_routes.GetObjectResponse:
@@ -64,6 +77,20 @@ definitions:
       address:
         type: string
       didDocument: {}
+    type: object
+  motor.BucketContent:
+    properties:
+      content_type:
+        description: Type of the resource
+        type: integer
+      id:
+        description: Content id a CID, DID, or unspecified
+        type: string
+      item:
+        description: Raw content serialized to bytes
+        items:
+          type: integer
+        type: array
     type: object
   motor.LoginResponse:
     properties:
@@ -104,6 +131,19 @@ definitions:
       address:
         type: string
     type: object
+  server_routes.ConvertBucketRes:
+    properties:
+      content:
+        $ref: '#/definitions/motor.BucketContent'
+      name:
+        type: string
+      schemaDid:
+        type: string
+      timestamp:
+        type: integer
+      uri:
+        type: string
+    type: object
   server_routes.CreateBucketResponse:
     properties:
       bucket:
@@ -134,7 +174,7 @@ definitions:
     properties:
       bucket:
         items:
-          $ref: '#/definitions/types.BucketItem'
+          $ref: '#/definitions/server_routes.ConvertBucketRes'
         type: array
     type: object
   server_routes.GetObjectResponse:
@@ -439,11 +479,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.CAResponseBody'
+            $ref: '#/definitions/server_routes.CAResponseBody'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: CreateAccount
       tags:
       - account
@@ -457,11 +497,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.uResponse'
+            $ref: '#/definitions/server_routes.uResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: GetAccount
       tags:
       - account
@@ -575,11 +615,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/server_routes.GetBucketResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.GetBucketResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: GetBucket
       tags:
       - bucket
@@ -650,7 +690,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: UpdateBucketItems
       tags:
       - bucket
@@ -681,7 +721,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: UpdateBucketLabel
       tags:
       - bucket
@@ -712,7 +752,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: UpdateBucketVisibility
       tags:
       - bucket
@@ -751,7 +791,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: BuildObject
       tags:
       - object
@@ -808,11 +848,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.CreateSchemaResponse'
+            $ref: '#/definitions/server_routes.CreateSchemaResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: CreateSchema
       tags:
       - schema

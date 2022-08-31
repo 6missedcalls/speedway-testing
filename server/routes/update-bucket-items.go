@@ -14,8 +14,8 @@ import (
 )
 
 type UpdateBucketRequest struct {
-	Did     string            `json:"did"`
-	Content map[string]string `json:"content"`
+	Did     string              `json:"did"`
+	Content []map[string]string `json:"content"`
 }
 
 // @BasePath /api/v1
@@ -41,31 +41,24 @@ func (ns *NebulaServer) UpdateBucketItems(c *gin.Context) {
 		return
 	}
 
-	rType, err := utils.ConvertResourceIdentifier(r.Content["type"])
-	if err != nil {
-		c.JSON(http.StatusBadRequest, FailedResponse{
-			Error: "Invalid Conversion of ResourceIdentifier",
+	var content []*types.BucketItem
+	for _, item := range r.Content {
+		rid, err := utils.ConvertResourceIdentifier(item["type"])
+		if err != nil {
+			c.JSON(http.StatusBadRequest, FailedResponse{
+				Error: "Invalid Conversion of ResourceIdentifier",
+			})
+			return
+		}
+
+		content = append(content, &types.BucketItem{
+			Name:      item["name"],
+			Uri:       item["uri"],
+			Timestamp: time.Now().Unix(),
+			Type:      rid,
+			SchemaDid: item["schemaDid"],
 		})
-		return
 	}
-
-	// create the content
-	content := Content{
-		Name:      r.Content["name"],
-		Uri:       r.Content["uri"],
-		Timestamp: time.Now().Unix(),
-		Type:      rType,
-		SchemaDid: r.Content["schemaDid"],
-	}
-
-	items := make([]*types.BucketItem, 0)
-	items = append(items, &types.BucketItem{
-		Name:      content.Name,
-		Uri:       content.Uri,
-		Timestamp: content.Timestamp,
-		Type:      content.Type,
-		SchemaDid: content.SchemaDid,
-	})
 
 	b := binding.CreateInstance()
 
@@ -80,7 +73,7 @@ func (ns *NebulaServer) UpdateBucketItems(c *gin.Context) {
 	fmt.Println("Bucket: ", bucket)
 
 	// Update the bucket's Content
-	updateContent, err := b.UpdateBucketItems(context.Background(), r.Did, items)
+	updateContent, err := b.UpdateBucketItems(context.Background(), r.Did, content)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: "Update Bucket Error",

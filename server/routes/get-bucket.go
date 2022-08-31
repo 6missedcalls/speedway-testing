@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/sonr/x/bucket/types"
+	"github.com/sonr-io/sonr/third_party/types/motor"
 	"github.com/sonr-io/speedway/internal/binding"
 )
 
@@ -16,7 +16,15 @@ type GetBucketBody struct {
 }
 
 type GetBucketResponse struct {
-	Bucket []*types.BucketItem `json:"bucket"`
+	Bucket []*ConvertBucketRes `json:"bucket"`
+}
+
+type ConvertBucketRes struct {
+	Name      string              `json:"name"`
+	Uri       string              `json:"uri"`
+	Timestamp int64               `json:"timestamp"`
+	SchemaDid string              `json:"schemaDid"`
+	Content   motor.BucketContent `json:"content"`
 }
 
 // @BasePath /api/v1
@@ -51,8 +59,28 @@ func (ns *NebulaServer) GetBucket(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK,
-		GetBucketResponse{
-			Bucket: bucket,
-		})
+	var res []*ConvertBucketRes
+
+	// for each bucketitem in bucket get the content
+	for _, bucketItem := range bucket {
+		content, err := b.GetContentById(context.Background(), body.Did, bucketItem.Uri)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, FailedResponse{
+				Error: "Failed to get content",
+			})
+			return
+		}
+		ConvertBucketRes := ConvertBucketRes{
+			Name:      bucketItem.Name,
+			Uri:       bucketItem.Uri,
+			Timestamp: bucketItem.Timestamp,
+			SchemaDid: bucketItem.SchemaDid,
+			Content:   content,
+		}
+		res = append(res, &ConvertBucketRes)
+	}
+
+	c.JSON(http.StatusOK, GetBucketResponse{
+		Bucket: res,
+	})
 }

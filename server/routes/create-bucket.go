@@ -16,11 +16,11 @@ import (
 )
 
 type CreateBucketRequest struct {
-	Creator    string            `json:"creator"`    // Creator of the bucket
-	Label      string            `json:"label"`      // Label of the bucket
-	Visibility string            `json:"visibility"` // Visibility of the bucket
-	Role       string            `json:"role"`       // Role of the bucket
-	Content    map[string]string `json:"content"`    // Content of the bucket
+	Creator    string              `json:"creator"`    // Creator of the bucket
+	Label      string              `json:"label"`      // Label of the bucket
+	Visibility string              `json:"visibility"` // Visibility of the bucket
+	Role       string              `json:"role"`       // Role of the bucket
+	Content    []map[string]string `json:"content"`    // Content of the bucket
 }
 
 type Content struct {
@@ -79,39 +79,31 @@ func (ns *NebulaServer) CreateBucket(c *gin.Context) {
 		return
 	}
 
-	rType, err := utils.ConvertResourceIdentifier(r.Content["type"])
-	if err != nil {
-		c.JSON(http.StatusBadRequest, FailedResponse{
-			Error: "Invalid Conversion of ResourceIdentifier",
+	var content []*types.BucketItem
+	for _, item := range r.Content {
+		rid, err := utils.ConvertResourceIdentifier(item["type"])
+		if err != nil {
+			c.JSON(http.StatusBadRequest, FailedResponse{
+				Error: "Invalid Conversion of ResourceIdentifier",
+			})
+			return
+		}
+
+		content = append(content, &types.BucketItem{
+			Name:      item["name"],
+			Uri:       item["uri"],
+			Timestamp: time.Now().Unix(),
+			Type:      rid,
+			SchemaDid: item["schemaDid"],
 		})
-		return
 	}
 
-	// create the content
-	content := Content{
-		Name:      r.Content["name"],
-		Uri:       r.Content["uri"],
-		Timestamp: time.Now().Unix(),
-		Type:      rType,
-		SchemaDid: r.Content["schemaDid"],
-	}
-
-	items := make([]*types.BucketItem, 0)
-	items = append(items, &types.BucketItem{
-		Name:      content.Name,
-		Uri:       content.Uri,
-		Timestamp: content.Timestamp,
-		Type:      content.Type,
-		SchemaDid: content.SchemaDid,
-	})
-
-	// Create a new create bucket request
 	createBucketReq := rtmv1.CreateBucketRequest{
 		Creator:    r.Creator,
 		Label:      r.Label,
 		Visibility: vis,
 		Role:       role,
-		Content:    items,
+		Content:    content,
 	}
 
 	b := binding.CreateInstance()
