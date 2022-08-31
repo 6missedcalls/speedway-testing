@@ -2,7 +2,7 @@ import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
 
 type CreateAccountResponse = {
-	Address: string
+	address: string
 }
 export const createAccount = async (
 	password: string
@@ -29,7 +29,7 @@ export const createAccount = async (
 }
 
 type LoginResponse = {
-	Address: string
+	address: string
 }
 
 export const login = async (
@@ -57,7 +57,10 @@ export const login = async (
 	}
 }
 
-export const getAccountInfo = async (): Promise<LoginResponse> => {
+type AccountInfoResponse = {
+	address: string
+}
+export const getAccountInfo = async (): Promise<AccountInfoResponse> => {
 	const url = `${BASE_API}/account/info`
 
 	const options = {

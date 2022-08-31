@@ -18,7 +18,6 @@ import {
 import validate from "@sonr-io/validation/dist/validator"
 import Signup from "./Component"
 import { AppDispatch } from "../../redux/store"
-import { loginPayload } from "../../utils/types"
 
 const passwordRules = [
 	{
@@ -77,9 +76,10 @@ const Container = () => {
 		const createAccountResponse = await dispatch(
 			userCreateAccount({ password })
 		)
-		const payload = createAccountResponse.payload as loginPayload
-
-		await dispatch(userLogin({ walletAddress: payload.Address, password }))
+		const payload = createAccountResponse.payload as {
+			address: string
+		}
+		await dispatch(userLogin({ walletAddress: payload.address, password }))
 		navigate(ROUTE_POST_SIGNUP)
 	}
 
