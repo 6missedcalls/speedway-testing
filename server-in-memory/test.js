@@ -225,6 +225,7 @@ it("can add objects to buckets", async () => {
 		label: "Dinosaurs",
 		fields: { firstName: 4 },
 	})
+	const schemaDid = responseSchema.body.whatIs.did
 
 	const responseBucket = await app.post("/api/v1/bucket/create").send({
 		label: "Mars colony",
@@ -233,15 +234,21 @@ it("can add objects to buckets", async () => {
 	const bucketDid = responseBucket.body.service.serviceEndpoint.did
 
 	const responseObject = await app.post("/api/v1/object/build").send({
-		SchemaDid: responseSchema.body.whatIs.did,
+		SchemaDid: schemaDid,
 		Label: "Sonrsaur",
 		Object: { firstName: "Rex" },
 	})
 	const objectCid = responseObject.body.objectUpload.Reference.Cid
 
 	await app.post("/api/v1/bucket/update-items").send({
-		did: bucketDid,
-		content: { uri: objectCid },
+		bucketDid: bucketDid,
+		content: [
+			{
+				schemaDid,
+				type: "cid",
+				uri: objectCid,
+			},
+		],
 	})
 
 	const { body: result } = await app.get("/proxy/buckets")
@@ -250,6 +257,7 @@ it("can add objects to buckets", async () => {
 	expect(result.where_is[0].label).toBe("Mars colony")
 	expect(result.where_is[0].content.length).toBe(1)
 	expect(result.where_is[0].content[0].uri).toBe(objectCid)
+	expect(result.where_is[0].content[0].schema_did).toBe(schemaDid)
 })
 
 it("gets a bucket content", async () => {
@@ -281,16 +289,23 @@ it("gets a bucket content", async () => {
 	})
 
 	await app.post("/api/v1/bucket/update-items").send({
-		did: bucketDid,
-		content: { uri: objectCid },
+		bucketDid: bucketDid,
+		content: [
+			{
+				schemaDid,
+				type: "cid",
+				uri: objectCid,
+			},
+		],
 	})
 
 	const { body: result } = await app.post("/api/v1/bucket/get").send({
-		did: bucketDid,
+		bucketDid: bucketDid,
 	})
 	expect(result).toHaveProperty("bucket")
 	expect(result.bucket.length).toBe(1)
 	expect(result.bucket[0].uri).toBe(objectCid)
-	expect(result.bucket[0].schema).toBe(schemaDid)
-	expect(result.bucket[0].firstName).toBe("Marcel")
+	expect(result.bucket[0].schemaDid).toBe(schemaDid)
+	expect(result.bucket[0].content).toHaveProperty("item")
+	expect(result.bucket[0].content.item).toBe("eyJmaXJzdE5hbWUiOiJNYXJjZWwifQ==")
 })

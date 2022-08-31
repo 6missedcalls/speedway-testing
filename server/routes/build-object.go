@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -84,6 +85,27 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 
 	// Iterate through object and add to builder
 	for k, v := range body.Object {
+		// TODO: this is a hack, for floats to typecast to int type, will throw bad things if it cant. which means it should stay a float.
+		// using the error on the typecast to know when something "is" a float.
+		switch v.(type) {
+		case float32:
+			value := float64(v.(float32))
+			if _, rem := math.Modf(value); rem > 0 {
+				objBuilder.Set(k, value)
+			} else {
+				objBuilder.Set(k, int(v.(float32)))
+			}
+			continue
+		case float64:
+			value := float64(v.(float64))
+			if _, rem := math.Modf(value); rem > 0 {
+				objBuilder.Set(k, value)
+			} else {
+				objBuilder.Set(k, int(v.(float64)))
+			}
+			continue
+		}
+
 		objBuilder.Set(k, v)
 	}
 
