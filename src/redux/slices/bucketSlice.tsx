@@ -41,10 +41,10 @@ export const getAllBuckets = createAsyncThunk(
 )
 
 export const updateBucket = createAsyncThunk(
-	"bucket/update",
-	async ({ bucketDid, objectCid }: any, thunkAPI) => {
+	"bucket/update-items",
+	async ({ bucketDid, objectCid, objectName, schemaDid }: any, thunkAPI) => {
 		try {
-			const data = await updateBucketService({ bucketDid, objectCid })
+			const data = await updateBucketService({ bucketDid, objectCid, objectName, schemaDid })
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
@@ -101,6 +101,17 @@ const bucketSlice = createSlice({
 		})
 		builder.addCase(createBucket.fulfilled, (state) => {
 			state.creating = false
+		})
+
+		builder.addCase(updateBucket.pending, (state) => {
+			state.loading = true
+		})
+		builder.addCase(updateBucket.rejected, (state) => {
+			state.loading = false
+			state.error = true
+		})
+		builder.addCase(updateBucket.fulfilled, (state) => {
+			state.loading = false
 		})
 	},
 })

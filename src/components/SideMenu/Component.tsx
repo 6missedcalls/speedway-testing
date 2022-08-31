@@ -85,6 +85,17 @@ function SideMenuComponent({ navigate, currentPath }: SideMenuComponentProps) {
 					</span>
 					<span>Docs & Support</span>
 				</a>
+				<a
+					className="flex px-2 h-10 font-extrabold"
+					href="mailto:speedway@sonr.io"
+					target="_blank"
+					rel="noreferrer"
+				>
+					<span className="mr-2">
+						<IconLinkDocsSupport />
+					</span>
+					<span>Report Bugs</span>
+				</a>
 			</div>
 
 			<div className="border-b border-outlined-disabled mb-10 w-full h-px" />

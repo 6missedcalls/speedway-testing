@@ -22,3 +22,13 @@ export function arrayObjectDistinct(
 		return false
 	})
 }
+
+
+export function parseJsonFromBase64String(string: string){
+	try  {
+		return JSON.parse(window.atob(string))
+	} catch(error){
+		console.error(error)
+		return {}
+	}
+}

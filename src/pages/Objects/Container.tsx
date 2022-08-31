@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
-import { getAllBuckets, selectBuckets } from "../../redux/slices/bucketSlice"
+import { getAllBuckets, selectBuckets, selectBucketsLoading } from "../../redux/slices/bucketSlice"
 import {
 	selectObjectsList,
 	selectObjectsLoading,
@@ -25,11 +25,12 @@ function ObjectsPageContainer() {
 	const [schemaFields, setSchemaFields] = useState("")
 	const objectsList = useSelector(selectObjectsList)
 	const schemasLoading = useSelector(selectSchemasLoading)
+	const bucketsLoading = useSelector(selectBucketsLoading)
 	const objectsLoading = useSelector(selectObjectsLoading)
 	const buckets = useSelector(selectBuckets)
 	const address = useSelector(selectAddress)
 	const schemaMetadata = useSelector(selectSchemasMetadataList)
-	const loading = schemasLoading && objectsLoading
+	const loading = schemasLoading && objectsLoading && bucketsLoading
 
 	useEffect(() => {
 		initialize()
@@ -39,7 +40,9 @@ function ObjectsPageContainer() {
 	useEffect(() => {
 		if (buckets.length > 0) {
 			dispatch(
-				userGetAllBucketObjects({ buckets: buckets.map((item) => item.did) })
+				userGetAllBucketObjects({ 
+					buckets: buckets.map((item) => item.did),
+				})
 			)
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -99,22 +102,24 @@ function ObjectsPageContainer() {
 	}
 
 	function mapToListFormat() {
-		const objectsBySchema = objectsList.filter(
-			(obj) => obj.schema === selectedSchemaDid
-		)
+		return objectsList
+			.reduce((acc: any, item: any) => ([
+				...acc,
+				...item
+			]), [])
+			.filter((item:  any) => item.schemaDid === selectedSchemaDid)
+			.map(({ objects }: any) => {
+				return Object.keys(objects).reduce((acc, key) => {
+					if (key === "schema") return acc
 
-		return objectsBySchema.map((object) => {
-			return Object.keys(object).reduce((acc, key) => {
-				if (key === "schema") return acc
-
-				return {
-					...acc,
-					[key]: {
-						text: object[key],
-					},
-				}
-			}, {})
-		})
+					return {
+						...acc,
+						[key]: {
+							text: objects[key],
+						},
+					}
+				}, {})
+			})
 	}
 
 	return (
