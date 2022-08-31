@@ -2,8 +2,10 @@ package object
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
+	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/binding"
@@ -15,8 +17,8 @@ import (
 func BootstrapGetObjectCommand(ctx context.Context, logger *golog.Logger) (getObjectCmd *cobra.Command) {
 	getObjectCmd = &cobra.Command{
 		Use:   "get",
-		Short: "Use: get",
-		Long:  "Use: get",
+		Short: "Use: retrieves and object from storage referenced by it's content identifier",
+		Long:  "Use: retrieves and object from storage referenced by it's content identifier",
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
@@ -34,34 +36,31 @@ func BootstrapGetObjectCommand(ctx context.Context, logger *golog.Logger) (getOb
 				return
 			}
 
-			// Prompt for Schema Did
-			schemaPrompt := promptui.Prompt{
-				Label: "Please enter the associated Schema DID",
+			var id string
+			if cid, err := cmd.Flags().GetString("cid"); err == nil && cid == "" {
+				// Prompt for the object CID
+				cidPrompt := promptui.Prompt{
+					Label: "Enter the CID of the object to get",
+				}
+				id, err = cidPrompt.Run()
+				if err != nil {
+					fmt.Printf("Command failed %v\n", err)
+					return
+				}
 			}
-			schemaDid, err := schemaPrompt.Run()
-			if err != nil {
-				logger.Fatalf(status.Error("Schema DID not provided, command cannot continue..."))
-				return
-			}
-
-			// Prompt for the object CID
-			cidPrompt := promptui.Prompt{
-				Label: "Enter the CID of the object to get",
-			}
-			cid, err := cidPrompt.Run()
-			if err != nil {
-				fmt.Printf("Command failed %v\n", err)
-				return
-			}
-
+			sh := shell.NewShell(m.Instance.GetClient().GetIPFSApiAddress())
 			// Retrieve the object
-			object, err := m.GetObject(ctx, schemaDid, cid)
+			object := make(map[string]interface{})
+			err = sh.DagGet(id, &object)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fmt.Printf("%v\n", object)
+			b, _ := json.MarshalIndent(object, "", "\t")
+			fmt.Print(string(b))
 		},
 	}
+
+	getObjectCmd.PersistentFlags().String("cid", "", "CID  of the object to resolve")
 	return
 }
