@@ -156,3 +156,20 @@ func Login(m motor.MotorNode, req rtmv1.LoginRequest) (rtmv1.LoginResponse, erro
 
 	return res, err
 }
+
+func LoadObjectDefinitionFromDisk(path string) (map[string]interface{}, error) {
+	file, err := ioutil.ReadFile(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	fields := make(map[string]interface{})
+	err = json.Unmarshal(file, &fields)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return fields, nil
+}
