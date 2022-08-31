@@ -24,7 +24,7 @@ function SchemasPageComponent({
 				</h1>
 				{loading && (
 					<div className="w-full flex justify-center mt-20">
-						<div className="w-28 animate-reverse-spin flex justify-center items-center">
+						<div className="w-28 animate-spin flex justify-center items-center">
 							<LoadingCircleSvg />
 						</div>
 					</div>

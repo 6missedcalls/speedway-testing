@@ -193,8 +193,8 @@ app.post("/api/v1/bucket/get", async ({ body }, res) => {
 		uri: content.uri,
 		schemaDid: content.schema_did,
 		content: {
-			item: objectItems[content.uri]
-		}
+			item: objectItems[content.uri],
+		},
 	}))
 	res.json({ bucket: contents })
 })
