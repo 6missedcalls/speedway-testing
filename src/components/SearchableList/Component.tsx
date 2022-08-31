@@ -1,5 +1,6 @@
 import { NebulaIcon } from "@sonr-io/nebula-react"
 import React from "react"
+import { obfuscateDidOrCid } from "../../utils/string"
 import {
 	listTypes,
 	IsearchableListItemData,
@@ -59,74 +60,82 @@ function SearchableListComponent({
 					</button>
 				)}
 			</div>
-			<table className="w-full text-left">
-				<thead>
-					<tr className="h-10 bg-button-subtle items-center px-4 py-5 text-button-subtle text-custom-xs">
-						{Headers({ type, list, toggleOrder, orderAsc })}
-					</tr>
-				</thead>
-				<tbody className="text-custom-sm font-normal">
-					{list.map((row: IsearchableListItem, rowIndex: number) => {
-						const rowKeys = Object.keys(row)
-						return (
-							<tr
-								key={`listrow-${rowIndex}`}
-								className="border-b border-gray-200 last:border-0"
-							>
-								{rowKeys.map((key: string, itemIndex: number) => {
-									if (key === "id") return null
-									const {
-										text = "",
-										Component,
-										props,
-									} = row[key] as IsearchableListItemData
-									return (
-										<td className="px-4 py-5" key={`${key}-${itemIndex}`}>
-											{text as string}
-											{Component && <Component {...props} />}
-										</td>
-									)
-								})}
-							</tr>
-						)
-					})}
-					{totalPages > 1 && (
-						<tr>
-							<td className="px-4 py-5 flex">
-								<div className="flex justify-center items-center ">
-									<div
-										className={`
-                                            ${previousPageButtonClass}
-                                            flex justify-center items-center bg-button-subtle rounded-md w-8 h-8
-                                        `}
-										onClick={() => (isFirstPage ? null : previousPage())}
-									>
-										<NebulaIcon
-											className="h-3"
-											iconName="ArrowLeft2"
-											iconType="outline"
-										/>
-									</div>
-									<span className="block mx-4">{`${paginationCurrentPage} of ${totalPages}`}</span>
-									<div
-										className={`
-                                            ${nextPageButtonClass}
-                                            flex justify-center items-center bg-button-subtle rounded-md w-8 h-8
-                                        `}
-										onClick={() => (isLastPage ? null : nextPage())}
-									>
-										<NebulaIcon
-											className="h-3"
-											iconName="ArrowRight3"
-											iconType="outline"
-										/>
-									</div>
-								</div>
-							</td>
+			<div className="overflow-auto">
+				<table className="text-left w-full">
+					<thead>
+						<tr className="h-10 bg-button-subtle items-center px-4 py-5 text-button-subtle text-custom-xs">
+							{Headers({ type, list, toggleOrder, orderAsc })}
 						</tr>
-					)}
-				</tbody>
-			</table>
+					</thead>
+					<tbody className="text-custom-sm font-normal">
+						{list.map((row: IsearchableListItem, rowIndex: number) => {
+							const rowKeys = Object.keys(row)
+							return (
+								<tr
+									key={`listrow-${rowIndex}`}
+									className="border-b border-gray-200 last:border-0"
+								>
+									{rowKeys.map((key: string, itemIndex: number) => {
+										if (key === "id") return null
+										const {
+											text = "",
+											Component,
+											props,
+										} = row[key] as IsearchableListItemData
+										return (
+											<td
+												className="px-4 py-5"
+												key={`${key}-${itemIndex}`}
+												title={text}
+											>
+												{key.toLowerCase() === "did"
+													? obfuscateDidOrCid(text)
+													: text}
+												{Component && <Component {...props} />}
+											</td>
+										)
+									})}
+								</tr>
+							)
+						})}
+						{totalPages > 1 && (
+							<tr>
+								<td className="px-4 py-5 flex">
+									<div className="flex justify-center items-center ">
+										<div
+											className={`
+												${previousPageButtonClass}
+												flex justify-center items-center bg-button-subtle rounded-md w-8 h-8
+											`}
+											onClick={() => (isFirstPage ? null : previousPage())}
+										>
+											<NebulaIcon
+												className="h-3"
+												iconName="ArrowLeft2"
+												iconType="outline"
+											/>
+										</div>
+										<span className="block mx-4">{`${paginationCurrentPage} of ${totalPages}`}</span>
+										<div
+											className={`
+												${nextPageButtonClass}
+												flex justify-center items-center bg-button-subtle rounded-md w-8 h-8
+											`}
+											onClick={() => (isLastPage ? null : nextPage())}
+										>
+											<NebulaIcon
+												className="h-3"
+												iconName="ArrowRight3"
+												iconType="outline"
+											/>
+										</div>
+									</div>
+								</td>
+							</tr>
+						)}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	)
 }

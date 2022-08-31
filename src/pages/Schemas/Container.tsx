@@ -9,7 +9,6 @@ import {
 } from "../../redux/slices/schemasSlice"
 import { AppDispatch } from "../../redux/store"
 import { MODAL_CONTENT_NEW_SCHEMA } from "../../utils/constants"
-import { obfuscateDid } from "../../utils/string"
 import { Ischema, IsearchableListItem } from "../../utils/types"
 import SchemasPageComponent from "./Component"
 import EmptyList from "./components/EmptyList"
@@ -45,7 +44,7 @@ function SchemasPageContainer() {
 					text: item.schema.label,
 				},
 				DID: {
-					text: obfuscateDid(item.did),
+					text: item.did,
 				},
 				Fields: {
 					Component: ViewProperties,

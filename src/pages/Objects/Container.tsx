@@ -6,7 +6,7 @@ import { getAllBuckets, selectBuckets } from "../../redux/slices/bucketSlice"
 import {
 	selectObjectsList,
 	selectObjectsLoading,
-	userGetBucketObjects,
+	userGetAllBucketObjects,
 } from "../../redux/slices/objectsSlice"
 import {
 	selectSchemasLoading,
@@ -38,9 +38,9 @@ function ObjectsPageContainer() {
 
 	useEffect(() => {
 		if (buckets.length > 0) {
-			buckets.forEach(({ did }) => {
-				dispatch(userGetBucketObjects({ bucket: did }))
-			})
+			dispatch(
+				userGetAllBucketObjects({ buckets: buckets.map((item) => item.did) })
+			)
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [buckets])
@@ -105,6 +105,8 @@ function ObjectsPageContainer() {
 
 		return objectsBySchema.map((object) => {
 			return Object.keys(object).reduce((acc, key) => {
+				if (key === "schema") return acc
+
 				return {
 					...acc,
 					[key]: {

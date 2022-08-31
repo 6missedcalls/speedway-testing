@@ -8,7 +8,7 @@ import {
 } from "../../../../redux/slices/bucketSlice"
 import {
 	userCreateObject,
-	userGetBucketObjects,
+	userGetAllBucketObjects,
 } from "../../../../redux/slices/objectsSlice"
 import { userGetSchema } from "../../../../redux/slices/schemasSlice"
 import { AppDispatch } from "../../../../redux/store"
@@ -100,7 +100,9 @@ function NewObjectModalContentContainer({
 
 		await dispatch(updateBucket({ ...bucketUpdatePayload }))
 
-		dispatch(userGetBucketObjects({ bucket: selectedBucket }))
+		dispatch(
+			userGetAllBucketObjects({ buckets: buckets.map((item) => item.did) })
+		)
 
 		closeModal()
 	}
