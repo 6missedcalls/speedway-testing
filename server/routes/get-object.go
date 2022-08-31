@@ -50,7 +50,7 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 	if err != nil {
 		fmt.Printf("GetObject failed %v\n", err)
 		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: "Get Object failed",
+			Error: err.Error(),
 		})
 		return
 	}

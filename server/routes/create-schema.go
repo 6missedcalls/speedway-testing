@@ -59,7 +59,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Create Schema Error: ", err)
 		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: "Create Schema Error",
+			Error: err.Error(),
 		})
 		return
 	}

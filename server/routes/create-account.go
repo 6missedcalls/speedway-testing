@@ -70,7 +70,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	if err != nil {
 		fmt.Println("err", err)
 		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: "Failed to create account",
+			Error: err.Error(),
 		})
 		return
 	}

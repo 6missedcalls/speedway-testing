@@ -50,6 +50,9 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	schema, err := m.GetSchema(ctx, r.Creator, r.Schema)
 	if schema.WhatIs == nil {
 		fmt.Printf("GetSchema failed %v\n", err)
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
+		})
 		return
 	}
 
