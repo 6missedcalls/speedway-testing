@@ -160,15 +160,18 @@ app.post("/api/v1/bucket/create", async ({ body }, res) => {
 
 app.post("/api/v1/bucket/update-items", async ({ body }, res) => {
 	const allBuckets = await storage.getItem("buckets")
-	const bucket = _.find(allBuckets, { did: body.did })
-	bucket.content.push(body.content)
+	const bucket = _.find(allBuckets, { did: body.bucketDid })
+	bucket.content = _.map(body.content, (c) => ({
+		uri: c.uri,
+		schema_did: c.schemaDid,
+	}))
 	await storage.setItem("buckets", allBuckets)
 	res.json({})
 })
 
 app.post("/api/v1/bucket/get", async ({ body }, res) => {
 	const allBuckets = await storage.getItem("buckets")
-	const bucket = _.find(allBuckets, { did: body.did })
+	const bucket = _.find(allBuckets, { did: body.bucketDid })
 	const objects = await Promise.all(
 		_.chain(bucket.content)
 			.filter("uri")
@@ -177,7 +180,22 @@ app.post("/api/v1/bucket/get", async ({ body }, res) => {
 			.map(storage.getItem)
 			.valueOf()
 	)
-	const contents = _.map(objects, (obj) => ({ uri: obj.cid, ...obj }))
+	const objectItems = _.reduce(
+		objects,
+		(acc, object) => {
+			acc[object.cid] = btoa(JSON.stringify(_.omit(object, ["cid", "schema"])))
+			return acc
+		},
+		{}
+	)
+
+	const contents = _.map(bucket.content, (content) => ({
+		uri: content.uri,
+		schemaDid: content.schema_did,
+		content: {
+			item: objectItems[content.uri]
+		}
+	}))
 	res.json({ bucket: contents })
 })
 
