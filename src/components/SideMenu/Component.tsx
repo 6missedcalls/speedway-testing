@@ -37,7 +37,7 @@ const modulesButtons = [
 function SideMenuComponent({ navigate, currentPath }: SideMenuComponentProps) {
 	const Address = useSelector(selectAddress)
 	return (
-		<div className="dark text-default flex flex-col w-80 bg-brand-tertiary h-screen px-6 py-[42px] shrink-0">
+		<div className="dark text-default flex flex-col w-80 bg-brand-tertiary h-full px-6 py-[42px] shrink-0 fixed z-10">
 			<div className="flex w-full mb-10">
 				<div className="w-11 h-11 mr-2.5">
 					<SonrLogoSvg />

@@ -101,12 +101,12 @@ function NewObjectModalContentComponent({
 				</div>
 			</div>
 
-			<div className="flex-1 flex flex-col px-8 rounded-2xl overflow-scroll">
+			<div className="flex-1 flex flex-col px-8 rounded-2xl overflow-auto">
 				<div className="mb-4 text-default text-custom-sm font-extrabold">
 					Properties
 				</div>
 
-				<div className="overflow-scroll">
+				<div className="overflow-auto">
 					{properties?.length &&
 						properties.map((item, index) => (
 							<div key={`${item.name}-${index}`} className="mb-4">
@@ -140,6 +140,7 @@ type Props = {
 	value: string
 	onChange: (value: string) => void
 }
+
 const SchemaField = ({ field, value, onChange }: Props) => {
 	switch (field.field) {
 		case 2:
