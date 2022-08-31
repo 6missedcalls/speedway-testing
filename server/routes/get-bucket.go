@@ -12,7 +12,7 @@ import (
 )
 
 type GetBucketBody struct {
-	Did string `json:"did"` // DID of the bucket
+	BucketDid string `json:"bucketDid"` // DID of the bucket
 }
 
 type GetBucketResponse struct {
@@ -51,7 +51,7 @@ func (ns *NebulaServer) GetBucket(c *gin.Context) {
 
 	b := binding.CreateInstance()
 
-	bucket, err := b.GetBuckets(context.Background(), body.Did)
+	bucket, err := b.GetBuckets(context.Background(), body.BucketDid)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: "Failed to get bucket",
@@ -63,7 +63,7 @@ func (ns *NebulaServer) GetBucket(c *gin.Context) {
 
 	// for each bucketitem in bucket get the content
 	for _, bucketItem := range bucket {
-		content, err := b.GetContentById(context.Background(), body.Did, bucketItem.Uri)
+		content, err := b.GetContentById(context.Background(), body.BucketDid, bucketItem.Uri)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, FailedResponse{
 				Error: "Failed to get content",
