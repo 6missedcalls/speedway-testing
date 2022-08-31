@@ -75,6 +75,8 @@ function NewObjectModalContentContainer({
 	}
 
 	async function save() {
+		closeModal()
+
 		const selectedSchemaData = schemas.find(
 			(item) => item.schema.did === selectedSchemaDid
 		)
@@ -96,15 +98,17 @@ function NewObjectModalContentContainer({
 		const bucketUpdatePayload = {
 			bucketDid: selectedBucket,
 			objectCid: object.payload.Cid,
+			objectName: object.payload.Label,
+			schemaDid: selectedSchemaDid,
 		}
 
 		await dispatch(updateBucket({ ...bucketUpdatePayload }))
 
 		dispatch(
-			userGetAllBucketObjects({ buckets: buckets.map((item) => item.did) })
+			userGetAllBucketObjects({
+				buckets: buckets.map((item) => item.did),
+			})
 		)
-
-		closeModal()
 	}
 
 	return (

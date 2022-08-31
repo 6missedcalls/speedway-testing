@@ -3,6 +3,7 @@ import SearchableList from "../../components/SearchableList"
 import { NebulaIcon } from "@sonr-io/nebula-react"
 import EmptyList from "./components/EmptyList"
 import { Ischema, listTypes, IsearchableListItem } from "../../utils/types"
+import LoadingCircleSvg from "../../assets/svgs/LoadingCircle"
 
 interface ObjectsPageComponentProps {
 	schemas: Array<Ischema>
@@ -53,10 +54,16 @@ const ObjectsPageComponent = ({
 						</div>
 					)}
 				</div>
-				<div>
+				{loading && (
+					<div className="w-full flex justify-center mt-20">
+						<div className="w-28 animate-reverse-spin flex justify-center items-center">
+							<LoadingCircleSvg />
+						</div>
+					</div>
+				)}
+				<div className={`${loading ? "hidden" : ""}`}>
 					{list.length > 0 ? (
 						<SearchableList
-							searchableAndSortableFieldKey="cid"
 							handleOpenModal={openNewObjectModal}
 							initialList={list}
 							type={listTypes.object}

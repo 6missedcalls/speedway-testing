@@ -1,10 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import {
-	createObject,
-	getAllBucketContent,
-	getBucketContent,
-} from "../../service/objects"
-import { arrayObjectDistinct } from "../../utils/object"
+import { createObject, getAllBucketContent } from "../../service/objects"
 import { InewObject } from "../../utils/types"
 import { RootState } from "../store"
 
@@ -68,9 +63,8 @@ export const objectsSlice = createSlice({
 
 		builder.addCase(userGetAllBucketObjects.fulfilled, (state, action) => {
 			const { payload } = action
-			console.log("payload", payload)
 			state.loading = false
-			state.list = arrayObjectDistinct(payload, "cid")
+			state.list = payload
 		})
 
 		builder.addCase(userGetAllBucketObjects.rejected, (state) => {
