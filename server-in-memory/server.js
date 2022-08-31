@@ -167,12 +167,6 @@ app.post("/api/v1/bucket/update-items", async ({ body }, res) => {
 app.post("/api/v1/bucket/get", async ({ body }, res) => {
 	const allBuckets = await storage.getItem("buckets")
 	const bucket = _.find(allBuckets, { did: body.did })
-	res.json({bucket: bucket.content})
-})
-
-app.post("/api/v1/bucket/content-compatible", async ({ body }, res) => {
-	const allBuckets = await storage.getItem("buckets")
-	const bucket = _.find(allBuckets, { did: body.bucket })
 	const objects = await Promise.all(
 		_.chain(bucket.content)
 			.filter("uri")
@@ -181,7 +175,8 @@ app.post("/api/v1/bucket/content-compatible", async ({ body }, res) => {
 			.map(storage.getItem)
 			.valueOf()
 	)
-	res.json(objects)
+	const contents = _.map(objects, (obj) => ({uri: obj.cid, ...obj}))
+	res.json({ bucket: contents })
 })
 
 /// OBJECTS

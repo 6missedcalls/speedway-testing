@@ -293,49 +293,6 @@ it("gets a bucket content", async () => {
 	expect(result).toHaveProperty("bucket")
 	expect(result.bucket.length).toBe(1)
 	expect(result.bucket[0].uri).toBe(objectCid)
+	expect(result.bucket[0].schema).toBe(schemaDid)
+	expect(result.bucket[0].firstName).toBe("Marcel")
 })
-
-// it("(compatibility) gets a bucket content", async () => {
-// 	const address = await accountLoggedIn(app)
-
-// 	const responseSchema = await app.post("/api/v1/schema/create").send({
-// 		label: "Dinosaurs",
-// 		fields: { firstName: 4 },
-// 	})
-// 	const schemaDid = responseSchema.body.whatIs.did
-
-// 	const responseBucket = await app.post("/api/v1/bucket/create").send({
-// 		label: "Mars colony",
-// 		creator: address,
-// 	})
-// 	const bucketDid =
-// 		responseBucket.body.service.serviceEndpoint.did
-
-// 	const responseObject = await app.post("/api/v1/object/build").send({
-// 		SchemaDid: schemaDid,
-// 		Label: "Sonrsaur",
-// 		Object: { firstName: "Marcel" },
-// 	})
-// 	const objectCid = responseObject.body.objectUpload.Reference.Cid
-
-// 	await app.post("/api/v1/object/build").send({
-// 		SchemaDid: schemaDid,
-// 		Label: "Not on bucket",
-// 		Object: { firstName: "Jane" },
-// 	})
-
-// 	await app.post("/api/v1/bucket/update-items").send({
-// 		did: bucketDid,
-// 		content: { uri: objectCid },
-// 	})
-
-// 	const { body: result } = await app
-// 		.post("/api/v1/bucket/content-compatible")
-// 		.send({
-// 			bucket: bucketDid,
-// 		})
-// 	expect(result.length).toBe(1)
-// 	expect(result[0].firstName).toBe("Marcel")
-// 	expect(result[0].cid).toBe(objectCid)
-// 	expect(result[0].schema).toBe(schemaDid)
-// })
