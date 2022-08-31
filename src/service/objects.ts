@@ -25,7 +25,7 @@ export const createObject = async ({
 		const response: Response = await fetch(url, options)
 		if (!response.ok) throw new Error(response.statusText)
 		const data = await response.json()
-		return data
+		return data.objectUpload.Reference
 	} catch (error) {
 		const errorMessage = formatApiError({ error, url, options })
 		throw new Error(errorMessage)
@@ -33,9 +33,9 @@ export const createObject = async ({
 }
 
 export const getBucketContent = async ({ bucket }: { bucket: string }) => {
-	const url = `${BASE_API}/bucket/content-compatible`
+	const url = `${BASE_API}/bucket/get`
 
-	const payload = JSON.stringify({ bucket })
+	const payload = JSON.stringify({ did: bucket })
 
 	const options = {
 		method: "POST",
@@ -47,7 +47,7 @@ export const getBucketContent = async ({ bucket }: { bucket: string }) => {
 		const response: Response = await fetch(url, options)
 		if (!response.ok) throw new Error(response.statusText)
 		const data = await response.json()
-		return data
+		return data.bucket
 	} catch (error) {
 		const errorMessage = formatApiError({ error, url, options })
 		throw new Error(errorMessage)

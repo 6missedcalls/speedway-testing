@@ -4,16 +4,15 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
-	"github.com/sonr-io/speedway/internal/account"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
-	"github.com/sonr-io/speedway/internal/retrieve"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/spf13/cobra"
 )
 
-func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command) {
+func BootstrapGetObjectCommand(ctx context.Context, logger *golog.Logger) (getObjectCmd *cobra.Command) {
 	getObjectCmd = &cobra.Command{
 		Use:   "get",
 		Short: "Use: get",
@@ -21,17 +20,17 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
-			m := binding.InitMotor()
+			m := binding.CreateInstance()
 
-			loginResult, err := account.Login(m, loginRequest)
+			loginResult, err := m.Login(loginRequest)
 			if err != nil {
-				fmt.Println(status.Error("Error: %s"), err)
+				logger.Fatalf(status.Error("Login Error: "), err)
 				return
 			}
 			if loginResult.Success {
-				fmt.Println(status.Success("Login successful"))
+				logger.Info(status.Success("Login successful"))
 			} else {
-				fmt.Println(status.Error("Login failed"))
+				logger.Fatalf(status.Error("Login failed"))
 				return
 			}
 
@@ -41,7 +40,7 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 			}
 			schemaDid, err := schemaPrompt.Run()
 			if err != nil {
-				fmt.Println(status.Error("Error: %s"), err)
+				logger.Fatalf(status.Error("Schema DID not provided, command cannot continue..."))
 				return
 			}
 
@@ -56,7 +55,7 @@ func BootstrapGetObjectCommand(ctx context.Context) (getObjectCmd *cobra.Command
 			}
 
 			// Retrieve the object
-			object, err := retrieve.GetObject(ctx, m, schemaDid, cid)
+			object, err := m.GetObject(ctx, schemaDid, cid)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return

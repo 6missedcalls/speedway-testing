@@ -1,14 +1,14 @@
 export const accountLoggedIn = async (app) => {
 	const {
-		body: { Address },
+		body: { address },
 	} = await app.post("/api/v1/account/create").send({
 		password: "123",
 	})
 
 	await app.post("/api/v1/account/login").send({
-		Address,
+		Address: address,
 		Password: "123",
 	})
 
-	return Address
+	return address
 }

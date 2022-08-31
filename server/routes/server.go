@@ -91,11 +91,23 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	ns.Router.POST("/api/v1/object/build", ns.BuildObject)
 	ns.Router.POST("/api/v1/object/get", ns.GetObject)
 
+	// * Bucket Routes
+	ns.Router.POST("/api/v1/bucket/create", ns.CreateBucket)
+	ns.Router.POST("/api/v1/bucket/get", ns.GetBucket)
+	ns.Router.POST("/api/v1/bucket/get-from-schema", ns.GetBucketBySchema)
+	ns.Router.POST("/api/v1/bucket/update-items", ns.UpdateBucketItems)
+	ns.Router.POST("/api/v1/bucket/update-label", ns.UpdateBucketLabel)
+	ns.Router.POST("/api/v1/bucket/update-visibility", ns.UpdateBucketVisibility)
+
 	// * Proxy Routes
 	ns.Router.GET("/proxy/schemas", ns.ProxyQuerySchemas)
+	ns.Router.GET("/proxy/buckets", ns.ProxyQueryBuckets)
 
 	// * Serve Static Route
 	ns.Router.Use(static.Serve("/", static.LocalFile(ns.Config.StaticDir, true)))
+	ns.Router.Use(static.Serve("/schema", static.LocalFile(ns.Config.StaticDir, true)))
+	ns.Router.Use(static.Serve("/objects", static.LocalFile(ns.Config.StaticDir, true)))
+	ns.Router.Use(static.Serve("/buckets", static.LocalFile(ns.Config.StaticDir, true)))
 
 	return nil
 }

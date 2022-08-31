@@ -10,11 +10,19 @@ import (
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/storage"
 
-	rtmv1 "go.buf.build/grpc/go/sonr-io/motor/api/v1"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
 )
 
 type CARequestBody struct {
 	Password string `json:"password"`
+}
+
+type CAResponseBody struct {
+	Address string `json:"address"`
+}
+
+type FailedResponse struct {
+	Error string `json:"error"`
 }
 
 // @BasePath /api/v1
@@ -24,16 +32,16 @@ type CARequestBody struct {
 // @Tags account
 // @Produce json
 // @Param 		 password body string true "Password"
-// @Success 	 200  {string}  message "Address"
-// @Failure      500  {string}  message "Error"
+// @Success 	 200  {object}  CAResponseBody
+// @Failure      500  {object}  FailedResponse
 // @Router /account/create [post]
 func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	rBody := c.Request.Body
 	var body CARequestBody
 	err := json.NewDecoder(rBody).Decode(&body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid Request Body",
+		c.JSON(http.StatusBadRequest, FailedResponse{
+			Error: "Invalid request body",
 		})
 		return
 	}
@@ -41,32 +49,33 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	aesKey, err := mpc.NewAesKey()
 	if err != nil {
 		fmt.Println("err", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Could not generate AES key",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: "Failed to generate AES key",
 		})
 		return
 	}
-	if storage.Store("aes.key", aesKey) != nil {
-		fmt.Println("Storage Error: ", err)
-		return
+	store, err := storage.Store("dsc", aesKey)
+	if err != nil {
+		fmt.Println("Keyring Error", err)
 	}
+	fmt.Println("Store", store)
 
 	req := rtmv1.CreateAccountRequest{
 		Password:  body.Password,
 		AesDscKey: aesKey,
 	}
-	instance := binding.CreateInstance()
+	b := binding.CreateInstance()
 
-	res, err := instance.CreateAccount(req)
+	res, err := b.CreateAccount(req)
 	if err != nil {
 		fmt.Println("err", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Could Not Create Account",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"Address": res.Address,
+	c.JSON(http.StatusOK, CAResponseBody{
+		Address: res.Address,
 	})
 }
