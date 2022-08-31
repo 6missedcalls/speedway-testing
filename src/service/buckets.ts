@@ -6,7 +6,7 @@ type Props = {
 	objectCid: string
 }
 export const updateBucketService = async ({ bucketDid, objectCid }: Props) => {
-	const url = `${BASE_API}/bucket/update`
+	const url = `${BASE_API}/bucket/update-items`
 
 	const payload = JSON.stringify({
 		did: bucketDid,

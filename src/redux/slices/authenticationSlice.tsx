@@ -66,7 +66,7 @@ export const authenticationSlice = createSlice({
 			const { payload } = action
 			state.loading = false
 			state.isLogged = true
-			state.Address = payload.Address
+			state.Address = payload.address
 		})
 
 		builder.addCase(userLogin.rejected, (state) => {
@@ -80,7 +80,7 @@ export const authenticationSlice = createSlice({
 		builder.addCase(userCreateAccount.fulfilled, (state, action) => {
 			const { payload } = action
 			state.loading = false
-			state.Address = payload.Address
+			state.Address = payload.address
 		})
 
 		builder.addCase(userCreateAccount.rejected, (state) => {
