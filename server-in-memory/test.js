@@ -86,7 +86,7 @@ it("gets an individual schema", async () => {
 		schema: responseSchema.body.whatIs.did,
 	})
 
-	expect(result).toHaveProperty('definition')
+	expect(result).toHaveProperty("definition")
 	expect(result.definition.creator).toBe(addressToDid(address))
 	expect(result.definition.label).toBe("Dinosaurs")
 	expect(result.definition.fields.length).toBe(1)
@@ -189,9 +189,9 @@ it("creates a bucket", async () => {
 		creator: address,
 	})
 
-	expect(result).toHaveProperty('service')
-	expect(result.service).toHaveProperty('serviceEndpoint')
-	expect(result.service.serviceEndpoint).toHaveProperty('did')
+	expect(result).toHaveProperty("service")
+	expect(result.service).toHaveProperty("serviceEndpoint")
+	expect(result.service.serviceEndpoint).toHaveProperty("did")
 	expect(result.service.serviceEndpoint.did).toBeDid()
 })
 
@@ -230,8 +230,7 @@ it("can add objects to buckets", async () => {
 		label: "Mars colony",
 		creator: address,
 	})
-	const bucketDid =
-		responseBucket.body.service.serviceEndpoint.did
+	const bucketDid = responseBucket.body.service.serviceEndpoint.did
 
 	const responseObject = await app.post("/api/v1/object/build").send({
 		SchemaDid: responseSchema.body.whatIs.did,
@@ -266,8 +265,7 @@ it("gets a bucket content", async () => {
 		label: "Mars colony",
 		creator: address,
 	})
-	const bucketDid =
-		responseBucket.body.service.serviceEndpoint.did
+	const bucketDid = responseBucket.body.service.serviceEndpoint.did
 
 	const responseObject = await app.post("/api/v1/object/build").send({
 		SchemaDid: schemaDid,

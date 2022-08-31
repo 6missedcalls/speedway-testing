@@ -175,7 +175,7 @@ app.post("/api/v1/bucket/get", async ({ body }, res) => {
 			.map(storage.getItem)
 			.valueOf()
 	)
-	const contents = _.map(objects, (obj) => ({uri: obj.cid, ...obj}))
+	const contents = _.map(objects, (obj) => ({ uri: obj.cid, ...obj }))
 	res.json({ bucket: contents })
 })
 
