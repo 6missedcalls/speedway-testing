@@ -292,6 +292,7 @@ it("gets a bucket content", async () => {
 		bucketDid: bucketDid,
 		content: [
 			{
+				schemaDid,
 				type: "cid",
 				uri: objectCid,
 			},
@@ -304,6 +305,7 @@ it("gets a bucket content", async () => {
 	expect(result).toHaveProperty("bucket")
 	expect(result.bucket.length).toBe(1)
 	expect(result.bucket[0].uri).toBe(objectCid)
-	expect(result.bucket[0].schema).toBe(schemaDid)
-	expect(result.bucket[0].firstName).toBe("Marcel")
+	expect(result.bucket[0].schemaDid).toBe(schemaDid)
+	expect(result.bucket[0].content).toHaveProperty("item")
+	expect(result.bucket[0].content.item).toBe("eyJmaXJzdE5hbWUiOiJNYXJjZWwifQ==")
 })

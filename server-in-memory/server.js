@@ -180,7 +180,22 @@ app.post("/api/v1/bucket/get", async ({ body }, res) => {
 			.map(storage.getItem)
 			.valueOf()
 	)
-	const contents = _.map(objects, (obj) => ({ uri: obj.cid, ...obj }))
+	const objectItems = _.reduce(
+		objects,
+		(acc, object) => {
+			acc[object.cid] = btoa(JSON.stringify(_.omit(object, ["cid", "schema"])))
+			return acc
+		},
+		{}
+	)
+
+	const contents = _.map(bucket.content, (content) => ({
+		uri: content.uri,
+		schemaDid: content.schema_did,
+		content: {
+			item: objectItems[content.uri]
+		}
+	}))
 	res.json({ bucket: contents })
 })
 
