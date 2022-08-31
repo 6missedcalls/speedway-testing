@@ -5,7 +5,7 @@ export async function isLoggedInServer() {
 	try {
 		const cachedAddress = getAppStateFromLocalCache().authentication.Address
 		const data = await getAccountInfo()
-		if (data.address === cachedAddress) {
+		if (data.Address === cachedAddress) {
 			return true
 		} else {
 			return false

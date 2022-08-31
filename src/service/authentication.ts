@@ -58,7 +58,7 @@ export const login = async (
 }
 
 type AccountInfoResponse = {
-	address: string
+	Address: string
 }
 export const getAccountInfo = async (): Promise<AccountInfoResponse> => {
 	const url = `${BASE_API}/account/info`
