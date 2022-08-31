@@ -240,7 +240,7 @@ it("can add objects to buckets", async () => {
 	const objectCid = responseObject.body.objectUpload.Reference.Cid
 
 	await app.post("/api/v1/bucket/update-items").send({
-		did: bucketDid,
+		bucketDid: bucketDid,
 		content: { uri: objectCid },
 	})
 
@@ -281,12 +281,12 @@ it("gets a bucket content", async () => {
 	})
 
 	await app.post("/api/v1/bucket/update-items").send({
-		did: bucketDid,
+		bucketDid: bucketDid,
 		content: { uri: objectCid },
 	})
 
 	const { body: result } = await app.post("/api/v1/bucket/get").send({
-		did: bucketDid,
+		bucketDid: bucketDid,
 	})
 	expect(result).toHaveProperty("bucket")
 	expect(result.bucket.length).toBe(1)

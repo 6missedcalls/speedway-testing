@@ -160,7 +160,7 @@ app.post("/api/v1/bucket/create", async ({ body }, res) => {
 
 app.post("/api/v1/bucket/update-items", async ({ body }, res) => {
 	const allBuckets = await storage.getItem("buckets")
-	const bucket = _.find(allBuckets, { did: body.did })
+	const bucket = _.find(allBuckets, { did: body.bucketDid })
 	bucket.content.push(body.content)
 	await storage.setItem("buckets", allBuckets)
 	res.json({})
@@ -168,7 +168,7 @@ app.post("/api/v1/bucket/update-items", async ({ body }, res) => {
 
 app.post("/api/v1/bucket/get", async ({ body }, res) => {
 	const allBuckets = await storage.getItem("buckets")
-	const bucket = _.find(allBuckets, { did: body.did })
+	const bucket = _.find(allBuckets, { did: body.bucketDid })
 	const objects = await Promise.all(
 		_.chain(bucket.content)
 			.filter("uri")
