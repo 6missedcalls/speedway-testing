@@ -17,5 +17,6 @@ func BootstrapBucketCommand(ctx context.Context, logger *golog.Logger) (bucketCm
 	logger = logger.Child("[Buckets] ")
 	bucketCmd.AddCommand(bootstrapCreateBucketCommand(ctx, logger))
 	bucketCmd.AddCommand(bootstrapQueryCommand(ctx, logger))
+	bucketCmd.AddCommand(bootstrapSearchCommand(ctx, logger))
 	return
 }
