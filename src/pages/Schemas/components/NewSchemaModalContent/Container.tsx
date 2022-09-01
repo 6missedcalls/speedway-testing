@@ -1,10 +1,7 @@
 import { useContext, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../../../contexts/appModalContext/appModalContext"
-import {
-	selectAddress,
-	selectLoginError,
-} from "../../../../redux/slices/authenticationSlice"
+import { selectAddress } from "../../../../redux/slices/authenticationSlice"
 import { userCreateSchema } from "../../../../redux/slices/schemasSlice"
 import { AppDispatch } from "../../../../redux/store"
 import { IschemaTypeMap, schemaTypeMap } from "../../../../utils/mappings"

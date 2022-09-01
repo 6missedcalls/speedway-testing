@@ -117,7 +117,6 @@ function NewObjectModalContentComponent({
 								</div>
 								<SchemaField
 									field={{ name: item.name, field: item.field }}
-									value={item.value}
 									onChange={(value) => onChangeProperty({ value, index })}
 								/>
 							</div>
@@ -143,28 +142,43 @@ function NewObjectModalContentComponent({
 
 type Props = {
 	field: IschemaField
-	value: string
 	onChange: (value: string) => void
 }
 
-const SchemaField = ({ field, value, onChange }: Props) => {
+const SchemaField = ({ field, onChange }: Props) => {
 	switch (field.field) {
+		case 1:
+			return (
+				<select
+					className="border border-default-border rounded w-40 p-2"
+					onChange={(event) => onChange(event.target.value)}
+				>
+					<option></option>
+					<option value="true">True</option>
+					<option value="false">False</option>
+				</select>
+			)
 		case 2:
 			return (
 				<input
 					type="number"
 					className="border border-default-border rounded-md w-full p-2"
-					value={value}
 					onChange={(event) => onChange(event.target.value)}
 				/>
 			)
-
+		case 3:
+			return (
+				<input
+					type="number"
+					className="border border-default-border rounded-md w-full p-2"
+					onChange={(event) => onChange(event.target.value)}
+				/>
+			)
 		case 4:
 			return (
 				<input
 					type="text"
 					className="border border-default-border rounded-md w-full p-2"
-					value={value}
 					onChange={(event) => onChange(event.target.value)}
 				/>
 			)
