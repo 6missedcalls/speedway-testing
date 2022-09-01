@@ -27,7 +27,8 @@ type CreateSchemaResponse struct {
 // @Summary CreateSchema
 // @Schemes
 // @Description Create a schema utilizing motor client. Returns the WhatIs of the schema created.
-// @Tags schema
+// @Tags Schema
+// @Accept json
 // @Produce json
 // @Param label query string true "Label of the schema"
 // @Param fields query string true "Fields of the schema"

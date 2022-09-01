@@ -34,37 +34,37 @@ func bootstrapCreateAccountCommand(ctx context.Context, logger *golog.Logger) (c
 			}
 			result, err := prompt.Run()
 			if err != nil {
-				fmt.Printf("Command failed %s\n", err)
+				fmt.Printf("Command failed %v\n", err)
 				return
 			}
 			aesKey, err := mpc.NewAesKey()
 			if err != nil {
-				logger.Fatalf(status.Error("Error: %s"), err)
+				logger.Fatalf(status.Error("Error: "), err)
 			}
 
 			store, err := storage.Store("dsc", aesKey)
 			if err != nil {
 				logger.Fatalf(status.Error("Storage Error: %s"), err)
 			}
-			logger.Info("Store: %s", store)
+			logger.Info("Store: ", store)
 
 			req := rtmv1.CreateAccountRequest{
 				Password:  result,
 				AesDscKey: aesKey,
 			}
-			logger.Info(status.Debug, "Create Account Request: %s", req)
+			logger.Info(status.Debug, "Create Account Request: ", req)
 			if err != nil {
 				logger.Fatalf(status.Error("Error: %s"), err)
 			}
 			m := binding.InitMotor()
 			res, err := utils.CreateAccount(m, req)
 			if err != nil {
-				logger.Fatalf(status.Error("CreateAccount Error: %s"), err)
+				logger.Fatalf(status.Error("CreateAccount Error: "), err)
 				return
 			}
 
-			logger.Info(status.Debug, "Create Account Response: %s", res)
-			logger.Info(status.Info, "Account Address: %s", res.Address)
+			logger.Info(status.Debug, "Create Account Response: ", res)
+			logger.Info(status.Info, "Account Address: ", res.Address)
 		},
 	}
 	return

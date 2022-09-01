@@ -24,7 +24,8 @@ type GetObjectResponse struct {
 // @Summary GetObject
 // @Schemes
 // @Description Get an object on Sonr using the object module of Sonr's Blockchain.
-// @Tags object
+// @Tags Object
+// @Accept json
 // @Produce json
 // @Param 		 SchemaDid body string true "SchemaDid" example("did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
 // @Param 		 ObjectCid body string true "ObjectCid" example("bafyreigfzxrtvfzuaoyhn5vgndneeeirq62efgf2s3igmoenxgx7jxy2cm")

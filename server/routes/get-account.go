@@ -17,7 +17,8 @@ type uResponse struct {
 // @Summary GetAccount
 // @Schemes
 // @Description Get Account information from the Sonr Blockchain. This is a read-only endpoint.
-// @Tags account
+// @Tags Account
+// @Accept json
 // @Produce json
 // @Success 200 {object} uResponse
 // @Failure      500  {object} FailedResponse

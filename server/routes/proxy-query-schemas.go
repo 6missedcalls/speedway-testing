@@ -39,6 +39,15 @@ type SchemaResponse struct {
 	} `json:"pagination"`
 }
 
+// @BasePath /api/v1
+// @Summary QuerySchemas
+// @Schemes
+// @Description Query the Sonr Blockchain for all public schemas on the Blockchain. This is a read-only endpoint.
+// @Tags Schema
+// @Produce json
+// @Success 200 {object} SchemaResponse
+// @Failure      500  {object} FailedResponse
+// @Router /schema/query [get]
 func (ns *NebulaServer) ProxyQuerySchemas(c *gin.Context) {
 	resp, err := http.Get(queryURL + c.Request.URL.RawQuery)
 	if err != nil {
