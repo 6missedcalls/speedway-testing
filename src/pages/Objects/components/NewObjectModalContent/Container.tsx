@@ -82,16 +82,26 @@ function NewObjectModalContentContainer({
 			(item) => item.schema.did === selectedSchemaDid
 		)
 
+		const castValue = (type: Number, value: string) => {
+			switch (type) {
+				case 2:
+					return parseInt(value)
+				default:
+					return value
+			}
+		}
+
 		const objectPayload = {
 			bucketDid: selectedBucket,
 			schemaDid: selectedSchemaDid,
 			label: selectedSchemaData?.schema.label,
-			object: properties.reduce((acc, item) => {
-				return {
+			object: properties.reduce(
+				(acc, item) => ({
 					...acc,
-					[item.name]: item.value,
-				}
-			}, {}),
+					[item.name]: castValue(item.field, item.value),
+				}),
+				{}
+			),
 		}
 
 		if (
