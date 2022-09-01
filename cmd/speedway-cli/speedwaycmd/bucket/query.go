@@ -28,6 +28,8 @@ func bootstrapSearchBySchemaIdCommand(ctx context.Context, logger *golog.Logger)
 	searchBucketBySchemaIdCmd = &cobra.Command{
 		Use:   "schema",
 		Short: "Use: retrieves all buckets for user",
+		Long:  "Queries contents of a bucket by a schema returns all content matching by schema did",
+		Args:  cobra.ExactArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
