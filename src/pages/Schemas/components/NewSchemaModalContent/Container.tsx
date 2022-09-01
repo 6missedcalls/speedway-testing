@@ -33,6 +33,13 @@ function NewSchemaModalContentContainer() {
 	}
 
 	function handlePropertyChange({ index, data }: handlePropertyChangeProps) {
+		if (data.name && !/(^[a-zA-Z])([a-zA-Z0-9]?)+$/g.test(data.name)) {
+			setError(
+				"Properties must start with letters and contain only letters and numbers."
+			)
+			return
+		}
+
 		setError("")
 		const newProperties = [...properties]
 		newProperties.splice(index, 1, {
