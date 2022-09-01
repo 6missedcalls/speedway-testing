@@ -18,6 +18,7 @@ interface NewSchemaModalContentComponentProps {
 	properties: Array<Record<string, any>>
 	selectedSchemaDid: string
 	selectedBucket: string
+	error: string
 }
 
 function NewObjectModalContentComponent({
@@ -31,6 +32,7 @@ function NewObjectModalContentComponent({
 	buckets,
 	selectedSchemaDid,
 	selectedBucket,
+	error,
 }: NewSchemaModalContentComponentProps) {
 	return (
 		<div className="flex flex-col max-h-[90vh]">
@@ -101,12 +103,12 @@ function NewObjectModalContentComponent({
 				</div>
 			</div>
 
-			<div className="flex-1 flex flex-col px-8 rounded-2xl overflow-scroll">
+			<div className="flex-1 flex flex-col px-8 rounded-2xl overflow-auto">
 				<div className="mb-4 text-default text-custom-sm font-extrabold">
 					Properties
 				</div>
 
-				<div className="overflow-scroll">
+				<div className="overflow-auto">
 					{properties?.length &&
 						properties.map((item, index) => (
 							<div key={`${item.name}-${index}`} className="mb-4">
@@ -115,14 +117,17 @@ function NewObjectModalContentComponent({
 								</div>
 								<SchemaField
 									field={{ name: item.name, field: item.field }}
-									value={item.value}
 									onChange={(value) => onChangeProperty({ value, index })}
 								/>
 							</div>
 						))}
 				</div>
 			</div>
-
+			{error && (
+				<div className="ml-8">
+					<span className="text-tertiary-red block text-xs">{error}</span>
+				</div>
+			)}
 			<div className="bg-black w-full rounded-b-2xl justify-end flex relative">
 				<div className="absolute rounded-b-2xl w-full h-6 bg-white -top-px" />
 				<Button
@@ -137,27 +142,43 @@ function NewObjectModalContentComponent({
 
 type Props = {
 	field: IschemaField
-	value: string
 	onChange: (value: string) => void
 }
-const SchemaField = ({ field, value, onChange }: Props) => {
+
+const SchemaField = ({ field, onChange }: Props) => {
 	switch (field.field) {
+		case 1:
+			return (
+				<select
+					className="border border-default-border rounded w-40 p-2"
+					onChange={(event) => onChange(event.target.value)}
+				>
+					<option></option>
+					<option value="true">True</option>
+					<option value="false">False</option>
+				</select>
+			)
 		case 2:
 			return (
 				<input
 					type="number"
 					className="border border-default-border rounded-md w-full p-2"
-					value={value}
 					onChange={(event) => onChange(event.target.value)}
 				/>
 			)
-
+		case 3:
+			return (
+				<input
+					type="number"
+					className="border border-default-border rounded-md w-full p-2"
+					onChange={(event) => onChange(event.target.value)}
+				/>
+			)
 		case 4:
 			return (
 				<input
 					type="text"
 					className="border border-default-border rounded-md w-full p-2"
-					value={value}
 					onChange={(event) => onChange(event.target.value)}
 				/>
 			)

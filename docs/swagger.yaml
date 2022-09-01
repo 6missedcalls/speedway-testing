@@ -386,7 +386,7 @@ definitions:
     type: object
   url.Userinfo:
     type: object
-host: localhost:8080
+host: localhost:4040
 info:
   contact:
     email: team@sonr.io

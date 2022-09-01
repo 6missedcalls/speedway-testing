@@ -22,6 +22,7 @@ function NewSchemaModalContentContainer() {
 	const dispatch = useDispatch<AppDispatch>()
 	const address = useSelector(selectAddress)
 	const { closeModal } = useContext(AppModalContext)
+	const [error, setError] = useState("")
 	const [schemaName, setSchemaName] = useState("")
 	const [properties, setProperties] = useState<Array<Iproperty>>([
 		emptyProperty,
@@ -32,6 +33,14 @@ function NewSchemaModalContentContainer() {
 	}
 
 	function handlePropertyChange({ index, data }: handlePropertyChangeProps) {
+		if (data.name && !/(^[a-zA-Z])([a-zA-Z0-9]?)+$/g.test(data.name)) {
+			setError(
+				"Properties must start with letters and contain only letters and numbers."
+			)
+			return
+		}
+
+		setError("")
 		const newProperties = [...properties]
 		newProperties.splice(index, 1, {
 			...properties[index],
@@ -41,7 +50,10 @@ function NewSchemaModalContentContainer() {
 	}
 
 	function saveSchema() {
-		if (!schemaName || properties.length === 0) return
+		if (!schemaName || properties.length === 0) {
+			setError("Schema name is required.")
+			return
+		}
 
 		const filledFields = properties
 			.filter((property) => property.name && property.type)
@@ -52,7 +64,10 @@ function NewSchemaModalContentContainer() {
 				}
 			}, {})
 
-		if (isEmptyObject(filledFields)) return
+		if (isEmptyObject(filledFields)) {
+			setError("Properties are required.")
+			return
+		}
 
 		const schema: InewSchema = {
 			address,
@@ -66,13 +81,19 @@ function NewSchemaModalContentContainer() {
 		closeModal()
 	}
 
+	function onChangeSchemaName(value: string) {
+		setError("")
+		setSchemaName(value)
+	}
+
 	return (
 		<NewSchemaModalContentComponent
 			closeModal={closeModal}
 			properties={properties}
 			addProperty={addProperty}
 			schemaName={schemaName}
-			setSchemaName={setSchemaName}
+			error={error}
+			onChangeSchemaName={onChangeSchemaName}
 			handlePropertyChange={handlePropertyChange}
 			saveSchema={saveSchema}
 		/>

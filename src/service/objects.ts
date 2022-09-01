@@ -1,5 +1,6 @@
 import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
+import { parseJsonFromBase64String } from "../utils/object"
 import { InewObject } from "../utils/types"
 
 export const createObject = async ({
@@ -51,5 +52,51 @@ export const getBucketContent = async ({ bucket }: { bucket: string }) => {
 	} catch (error) {
 		const errorMessage = formatApiError({ error, url, options })
 		throw new Error(errorMessage)
+	}
+}
+
+export const getAllBucketContent = async ({
+	buckets,
+}: {
+	buckets: Array<string>
+}) => {
+	try {
+		const url = `${BASE_API}/bucket/get`
+		const bucketObjectsList = await Promise.all(
+			buckets.map(async (did) => {
+				const payload = JSON.stringify({ bucketDid: did })
+
+				const options = {
+					method: "POST",
+					headers: { "content-type": "application/json" },
+					body: payload,
+				}
+				const response: Response = await fetch(url, options)
+				if (!response.ok) throw new Error(response.statusText)
+				const data = await response.json()
+				return data.bucket
+			})
+		)
+
+		const objectsWithDid = bucketObjectsList
+			.filter((item) => !!item)
+			.map((item) => {
+				return item.reduce((acc: any, { content, schemaDid, uri }: any) => {
+					return [
+						...acc,
+						{
+							objects: {
+								CID: uri,
+								...parseJsonFromBase64String(content.item),
+							},
+							schemaDid,
+						},
+					]
+				}, [])
+			})
+
+		return objectsWithDid
+	} catch (error) {
+		throw error
 	}
 }

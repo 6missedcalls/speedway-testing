@@ -10,6 +10,7 @@ import { useSelector } from "react-redux"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 import IconLinkAccessApi from "../../assets/svgs/LinkAccessApi"
 import IconLinkDocsSupport from "../../assets/svgs/LinkDocsSupport"
+import AlertSvg from "../../assets/svgs/Alert"
 
 interface SideMenuComponentProps {
 	navigate: NavigateFunction
@@ -37,7 +38,7 @@ const modulesButtons = [
 function SideMenuComponent({ navigate, currentPath }: SideMenuComponentProps) {
 	const Address = useSelector(selectAddress)
 	return (
-		<div className="dark text-default flex flex-col w-80 bg-brand-tertiary h-screen px-6 py-[42px] shrink-0">
+		<div className="dark text-default flex flex-col w-80 bg-brand-tertiary h-full px-6 py-[42px] shrink-0 fixed z-10">
 			<div className="flex w-full mb-10">
 				<div className="w-11 h-11 mr-2.5">
 					<SonrLogoSvg />
@@ -85,11 +86,24 @@ function SideMenuComponent({ navigate, currentPath }: SideMenuComponentProps) {
 					</span>
 					<span>Docs & Support</span>
 				</a>
+				<a
+					className="flex px-2 h-10 font-extrabold"
+					href="mailto:speedway@sonr.io"
+					target="_blank"
+					rel="noreferrer"
+				>
+					<span className="mr-2">
+						<div className="w-6 flex items-center">
+							<AlertSvg />
+						</div>
+					</span>
+					<span>Report Bugs</span>
+				</a>
 			</div>
 
 			<div className="border-b border-outlined-disabled mb-10 w-full h-px" />
 
-			<div className="break-words text-ellipsis overflow-hidden whitespace-nowrap uppercase">
+			<div className="break-words text-ellipsis overflow-hidden whitespace-nowrap">
 				{Address}
 			</div>
 		</div>
