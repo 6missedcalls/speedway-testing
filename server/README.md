@@ -5,8 +5,8 @@
 GIN_MODE: "debug"
 RPDisplayName: "Speedway"
 RPID: "localhost"
-RPOrigin: "http://localhost:8080"
-Address: "localhost:8080"
+RPOrigin: "http://localhost:4040"
+Address: "localhost:4040"
 StaticDir: "./build"
 ```
 

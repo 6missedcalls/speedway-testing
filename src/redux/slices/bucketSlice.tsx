@@ -23,7 +23,7 @@ export const selectBucketsError = (state: RootState) => {
 export const getAllBuckets = createAsyncThunk(
 	"bucket/getAll",
 	async (address: string) => {
-		return await fetch("http://localhost:8080/proxy/buckets", {
+		return await fetch("http://localhost:4040/proxy/buckets", {
 			method: "GET",
 			headers: { "content-type": "application/json" },
 		})

@@ -19,4 +19,4 @@ export const ROOT_INITIALIZE_FROM_CACHE = "root/initializeFromCache"
 export const ROOT_RESET = "root/reset"
 
 // APIs
-export const BASE_API = "http://localhost:8080/api/v1"
+export const BASE_API = "http://localhost:4040/api/v1"
