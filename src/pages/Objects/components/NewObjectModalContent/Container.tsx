@@ -35,7 +35,7 @@ function NewObjectModalContentContainer({
 	schemas,
 }: NewObjectModalContentContainerProps) {
 	const { closeModal } = useContext(AppModalContext)
-	const dispatch = useDispatch<AppDispatch>()
+	const dispatch: Function = useDispatch()
 	const buckets = useSelector(selectBuckets)
 	const [error, setError] = useState("")
 	const [selectedBucket, setSelectedBucket] = useState(buckets[0].did)
@@ -145,9 +145,7 @@ function NewObjectModalContentContainer({
 
 		if (floatError) return
 
-		const object = (await dispatch(
-			userCreateObject({ ...objectPayload })
-		)) as any
+		const object = await dispatch(userCreateObject({ ...objectPayload }))
 		if (object?.error) {
 			setError("Could not create object or update bucket.")
 			console.error(error)
