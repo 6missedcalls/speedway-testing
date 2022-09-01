@@ -40,13 +40,14 @@ type CreateBucketResponse struct {
 // @Summary CreateBucket
 // @Schemes
 // @Description Create a bucket on Sonr using the bucket module of Sonr's Blockchain.
-// @Tags bucket
+// @Tags Bucket
+// @Accept json
 // @Produce json
-// @Param 		 Creator body string true "Creator" example("snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
-// @Param 		 Label body string true "Label" example("My Bucket")
-// @Param 		 Visibility body string true "Visibility" example("public" or "private")
-// @Param 		 Role body string true "Role" example("application" or "user")
-// @Param 		 Content body string true "Content" example("name: My Bucket, uri: bafyreifqum26tv4wprgri5t4ddef7tozknnicuayjcvd4m5gag5avgtvsa")
+// @Param 		 Creator body string true "creator" example("snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
+// @Param 		 Label body string true "label" example("My Bucket")
+// @Param 		 Visibility body string true "visibility" example("public" or "private")
+// @Param 		 Role body string true "role" example("application" or "user")
+// @Param 		 Content body string true "content" example("name: My Bucket, uri: bafyreifqum26tv4wprgri5t4ddef7tozknnicuayjcvd4m5gag5avgtvsa")
 // @Param 		 ResourceIdentifier body string true "ResourceIdentifier" example("did" or "cid")
 // @Success 200 {object} CreateBucketResponse
 // @Failure      500  {object}  FailedResponse

@@ -46,15 +46,15 @@ func bootstrapLoginCommand(ctx context.Context, logger *golog.Logger) (loginCmd 
 				AesPskKey: pskKey.Data,
 			}
 			if err != nil {
-				logger.Fatalf(status.Error("LoginRequest Error: %s"), err)
+				logger.Fatalf(status.Error("LoginRequest Error: "), err)
 			}
 			m := binding.CreateInstance()
 			res, err := m.Login(req)
 			if err != nil {
-				logger.Fatalf(status.Error("Login Error: %s"), err)
+				logger.Fatalf(status.Error("Login Error: "), err)
 				return
 			}
-			logger.Info(status.Debug, "Login Response: %s", res)
+			logger.Info(status.Debug, "Login Response: ", res)
 			if res.Success {
 				logger.Info(status.Success("Login Successful"))
 			} else {

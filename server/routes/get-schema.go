@@ -25,10 +25,11 @@ type QuerySchemaResponse struct {
 // @Summary GetSchema
 // @Schemes
 // @Description Get a schema utilizing motor client. Returns the WhatIs of the schema that is retrieved.
-// @Tags schema
+// @Tags Schema
+// @Accept json
 // @Produce json
-// @Param creator query string true "Creator"
-// @Param schema query string true "Schema"
+// @Param creator body string true "Creator"
+// @Param schema body string true "Schema"
 // @Success      200  {object} QuerySchemaResponse
 // @Failure      500  {object} FailedResponse
 // @Router /schema/get [post]

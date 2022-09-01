@@ -23,6 +23,9 @@ require (
 	github.com/sonr-io/sonr v0.3.8
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.8.0 // indirect
+	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
+	github.com/swaggo/gin-swagger v1.5.0
+	github.com/swaggo/swag v1.8.1
 	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31
 	google.golang.org/grpc v1.48.0
 )

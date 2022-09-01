@@ -29,9 +29,10 @@ type FailedResponse struct {
 // @Summary CreateAccount
 // @Schemes
 // @Description Create a new account on Sonr using the Registry module of Sonr's Blockchain.
-// @Tags account
+// @Tags Account
+// @Accept json
 // @Produce json
-// @Param 		 password body string true "Password"
+// @Param 		 password body string true "password" example("Password")
 // @Success 	 200  {object}  CAResponseBody
 // @Failure      500  {object}  FailedResponse
 // @Router /account/create [post]
