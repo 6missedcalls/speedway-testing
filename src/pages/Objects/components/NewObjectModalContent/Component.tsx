@@ -1,5 +1,5 @@
 import { Button, NebulaIcon } from "@sonr-io/nebula-react"
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react"
+import { Dispatch, SetStateAction } from "react"
 import {
 	Bucket,
 	IobjectPropertyChange,
@@ -146,19 +146,24 @@ type Props = {
 }
 
 const SchemaField = ({ field, onChange }: Props) => {
-	const [value, setValue] = useState("")
-	const changeValue = (event: ChangeEvent<HTMLInputElement>) => {
-		setValue(event.target.value)
-		onChange(value)
-	}
 	switch (field.field) {
+		case 1:
+			return (
+				<select
+					className="border border-default-border rounded w-40 p-2"
+					onChange={(event) => onChange(event.target.value)}
+				>
+					<option></option>
+					<option value="true">True</option>
+					<option value="false">False</option>
+				</select>
+			)
 		case 2:
 			return (
 				<input
 					type="number"
 					className="border border-default-border rounded-md w-full p-2"
-					value={value}
-					onChange={changeValue}
+					onChange={(event) => onChange(event.target.value)}
 				/>
 			)
 
@@ -167,8 +172,7 @@ const SchemaField = ({ field, onChange }: Props) => {
 				<input
 					type="text"
 					className="border border-default-border rounded-md w-full p-2"
-					value={value}
-					onChange={changeValue}
+					onChange={(event) => onChange(event.target.value)}
 				/>
 			)
 

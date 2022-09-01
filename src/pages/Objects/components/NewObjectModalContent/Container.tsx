@@ -84,10 +84,14 @@ function NewObjectModalContentContainer({
 
 		const castValue = (type: Number, value: string) => {
 			switch (type) {
+				case 1:
+					if (value === "true") return true
+					if (value === "false") return false
+					return null
 				case 2:
-					return parseInt(value)
+					return isNaN(parseInt(value)) ? null : parseInt(value)
 				default:
-					return value
+					return !value ? null : value
 			}
 		}
 
@@ -106,7 +110,7 @@ function NewObjectModalContentContainer({
 
 		if (
 			!Object.keys(objectPayload.object).every(
-				(key) => !!objectPayload.object[key]
+				(key) => objectPayload.object[key] !== null
 			)
 		) {
 			setError("Properties are required.")
