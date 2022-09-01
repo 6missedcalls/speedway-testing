@@ -34,7 +34,7 @@ function ObjectsPageContainer() {
 	const buckets = useSelector(selectBuckets)
 	const address = useSelector(selectAddress)
 	const schemaMetadata = useSelector(selectSchemasMetadataList)
-	const loading = schemasLoading && objectsLoading && bucketsLoading
+	const loading = schemasLoading || objectsLoading || bucketsLoading
 
 	useEffect(() => {
 		initialize()
