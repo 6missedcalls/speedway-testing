@@ -3,7 +3,7 @@ import { formatApiError } from "../utils/errors"
 import { IgetSchemaFields, InewSchema } from "../utils/types"
 
 export const getAllSchemas = async () => {
-	const url = `http://localhost:8080/proxy/schemas?pagination.limit=50000`
+	const url = `http://localhost:4040/proxy/schemas?pagination.limit=50000`
 
 	const options = {
 		method: "GET",

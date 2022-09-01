@@ -14,8 +14,8 @@ tasks:
       GIN_MODE: "debug"
       RPDisplayName: "Sonr - Speedway"
       RPID: "localhost"
-      RPOrigin: "http://0.0.0.0:8080"
-      Address: "0.0.0.0:8080"
+      RPOrigin: "http://0.0.0.0:4040"
+      Address: "0.0.0.0:4040"
       StaticDir: "./build"
       SONR_RPC_ADDR_PUBLIC: 137.184.190.146:9090
 
@@ -27,7 +27,7 @@ tasks:
       GIN_MODE: "release"
       RPDisplayName: "Sonr - Speedway"
       RPID: "localhost"
-      RPOrigin: "http://0.0.0.0:8080"
-      Address: "0.0.0.0:8080"
+      RPOrigin: "http://0.0.0.0:4040"
+      Address: "0.0.0.0:4040"
       StaticDir: "./build"
       SONR_RPC_ADDR_PUBLIC: 137.184.190.146:9090

@@ -9,8 +9,8 @@ tasks:
       GIN_MODE: "release"
       RPDisplayName: "Sonr - Nebula"
       RPID: "localhost"
-      RPOrigin: "http://0.0.0.0:8080"
-      Address: "0.0.0.0:8080"
+      RPOrigin: "http://0.0.0.0:4040"
+      Address: "0.0.0.0:4040"
       StaticDir: "./build"
       SONR_RPC_ADDR_PUBLIC: 137.184.190.146:9090
 
@@ -21,7 +21,7 @@ tasks:
       GIN_MODE: "debug"
       RPDisplayName: "Sonr - Nebula"
       RPID: "localhost"
-      RPOrigin: "http://localhost:8080"
-      Address: "localhost:8080"
+      RPOrigin: "http://localhost:4040"
+      Address: "localhost:4040"
       StaticDir: "./build"
       SONR_RPC_ADDR_PUBLIC: 137.184.190.146:9090

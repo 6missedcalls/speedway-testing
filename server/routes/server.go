@@ -8,7 +8,7 @@ package routes
 // @contact.url    	https://sonr.io/
 // @contact.email  	team@sonr.io
 // @license.name 		OpenGLv3
-// @host      			localhost:8080
+// @host      			localhost:4040
 // @BasePath  			/api/v1
 
 import (
@@ -27,7 +27,7 @@ import (
 var (
 	RPDisplayName = "Sonr - Speedway"
 	RPID          = "localhost"
-	RPOrigin      = "http://localhost:8080"
+	RPOrigin      = "http://localhost:4040"
 )
 
 type NebulaServer struct {
