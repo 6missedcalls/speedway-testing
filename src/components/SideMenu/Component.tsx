@@ -103,7 +103,7 @@ function SideMenuComponent({ navigate, currentPath }: SideMenuComponentProps) {
 
 			<div className="border-b border-outlined-disabled mb-10 w-full h-px" />
 
-			<div className="break-words text-ellipsis overflow-hidden whitespace-nowrap uppercase">
+			<div className="break-words text-ellipsis overflow-hidden whitespace-nowrap">
 				{Address}
 			</div>
 		</div>
