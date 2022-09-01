@@ -87,7 +87,7 @@ export const getAllBucketContent = async ({
 						{
 							objects: {
 								CID: uri,
-								...parseJsonFromBase64String(content.item)
+								...parseJsonFromBase64String(content.item),
 							},
 							schemaDid,
 						},

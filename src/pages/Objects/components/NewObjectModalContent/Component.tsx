@@ -32,7 +32,7 @@ function NewObjectModalContentComponent({
 	buckets,
 	selectedSchemaDid,
 	selectedBucket,
-	error
+	error,
 }: NewSchemaModalContentComponentProps) {
 	return (
 		<div className="flex flex-col max-h-[90vh]">
