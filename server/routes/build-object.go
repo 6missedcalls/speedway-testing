@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
 	"github.com/sonr-io/speedway/internal/binding"
 )
@@ -20,7 +19,7 @@ type BuildObjectBody struct {
 }
 
 type BuildObjectResponse struct {
-	ObjectUpload *object.ObjectUploadResult `json:"objectUpload"`
+	ObjectUpload *rtmv1.UploadObjectResponse `json:"objectUpload"`
 }
 
 // @BasePath /api/v1
@@ -33,7 +32,7 @@ type BuildObjectResponse struct {
 // @Param SchemaDid body string true "schemaDid" example("did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
 // @Param Label body string true "label" example("MyObject")
 // @Param Object body map[string]interface{} true "object" example({"name": "John Doe"})
-// @Success 200 {object} object.ObjectReference
+// @Success 200 {object} rtmv1.UploadObjectResponse
 // @Failure 500  {object}  FailedResponse
 // @Router /object/build [post]
 func (ns *NebulaServer) BuildObject(c *gin.Context) {

@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/sonr/third_party/types/motor"
+	btv1 "github.com/sonr-io/sonr/x/bucket/types"
 	"github.com/sonr-io/speedway/internal/binding"
 )
 
@@ -24,7 +24,7 @@ type ConvertBucketRes struct {
 	Uri       string              `json:"uri"`
 	Timestamp int64               `json:"timestamp"`
 	SchemaDid string              `json:"schemaDid"`
-	Content   motor.BucketContent `json:"content"`
+	Content   *btv1.BucketContent `json:"content"`
 }
 
 // @BasePath /api/v1
@@ -55,7 +55,7 @@ func (ns *NebulaServer) GetBucket(c *gin.Context) {
 	bucket, err := b.GetBuckets(context.Background(), body.BucketDid)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: "Failed to get bucket",
+			Error: err.Error(),
 		})
 		return
 	}
