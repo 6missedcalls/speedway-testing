@@ -63,7 +63,7 @@ func (ns *NebulaServer) UpdateBucketVisibility(c *gin.Context) {
 	updateContent, err := b.UpdateBucketVisibility(context.Background(), r.BucketDid, &vis)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: "Update Bucket Error",
+			Error: err.Error(),
 		})
 		return
 	}

@@ -1,16 +1,5 @@
 package routes
 
-// @title           Speedway API
-// @version         2.0
-// @description     Create accounts, schemas, buckets and objects in a scalable way utilizing the Sonr architecture.
-// @termsOfService  https://sonr.io/terms
-// @contact.name   	API Support
-// @contact.url    	https://sonr.io/
-// @contact.email  	team@sonr.io
-// @license.name 		OpenGLv3
-// @host      			localhost:8080
-// @BasePath  			/api/v1
-
 import (
 	"context"
 	"fmt"
@@ -22,6 +11,9 @@ import (
 	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
+	_ "github.com/sonr-io/speedway/docs"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 var (
@@ -70,9 +62,22 @@ func New(options ServerOptions) (*NebulaServer, error) {
 	return &srvr, nil
 }
 
+// @title           Speedway API
+// @version         2.0
+// @description     Create accounts, schemas, buckets and objects in a scalable way utilizing the Sonr architecture.
+// @termsOfService  https://sonr.io/terms
+
+// @contact.name   	API Support
+// @contact.url    	https://sonr.io/
+// @contact.email  	team@sonr.io
+
+// @license.name 		OpenGLv3
+// @license.url 		https://www.gnu.org/licenses/gpl-3.0.en.html
+
+// @host      			localhost:8080
+// @BasePath  			/api/v1
 func (ns *NebulaServer) ConfigureRoutes() error {
 	// * WebAuthn API routes (Working but currently disabled for testing) ** Thanks Josh :D **
-	// Webauthn Routes
 	// ns.Router.GET("/api/webauthn/register-begin", ns.BeginRegistration)
 	// ns.Router.POST("/api/webauthn/register-finish", ns.FinishRegistration)
 	// ns.Router.GET("/api/webauthn/login-begin", ns.BeginLogin)
@@ -108,6 +113,7 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	ns.Router.Use(static.Serve("/schema", static.LocalFile(ns.Config.StaticDir, true)))
 	ns.Router.Use(static.Serve("/objects", static.LocalFile(ns.Config.StaticDir, true)))
 	ns.Router.Use(static.Serve("/buckets", static.LocalFile(ns.Config.StaticDir, true)))
+	ns.Router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return nil
 }

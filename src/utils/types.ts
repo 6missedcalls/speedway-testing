@@ -3,11 +3,6 @@ export enum listTypes {
 	object,
 }
 
-export type loginPayload = {
-	Address: string
-	Password: string
-}
-
 export interface IlistItem {
 	name: string
 	did: string

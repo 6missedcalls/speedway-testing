@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { createObject, getBucketContent } from "../../service/objects"
-import { arrayObjectDistinct } from "../../utils/object"
+import { createObject, getAllBucketContent } from "../../service/objects"
 import { InewObject } from "../../utils/types"
 import { RootState } from "../store"
 
@@ -28,11 +27,11 @@ export const userCreateObject = createAsyncThunk(
 	}
 )
 
-export const userGetBucketObjects = createAsyncThunk(
-	"bucket/content",
-	async ({ bucket }: { bucket: string }, thunkAPI) => {
+export const userGetAllBucketObjects = createAsyncThunk(
+	"bucket/all/content",
+	async ({ buckets }: { buckets: Array<string> }, thunkAPI) => {
 		try {
-			const data = await getBucketContent({ bucket })
+			const data = await getAllBucketContent({ buckets })
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
@@ -58,17 +57,17 @@ export const objectsSlice = createSlice({
 			state.loading = false
 		})
 
-		builder.addCase(userGetBucketObjects.pending, (state) => {
+		builder.addCase(userGetAllBucketObjects.pending, (state) => {
 			state.loading = true
 		})
-		builder.addCase(userGetBucketObjects.fulfilled, (state, action) => {
+
+		builder.addCase(userGetAllBucketObjects.fulfilled, (state, action) => {
 			const { payload } = action
-			if (payload.length > 0) {
-				state.list = arrayObjectDistinct(state.list.concat(payload), "cid")
-			}
 			state.loading = false
+			state.list = payload
 		})
-		builder.addCase(userGetBucketObjects.rejected, (state) => {
+
+		builder.addCase(userGetAllBucketObjects.rejected, (state) => {
 			state.error = true
 			state.loading = false
 		})

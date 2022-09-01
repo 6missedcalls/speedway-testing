@@ -8,7 +8,7 @@ import {
 } from "../../../../redux/slices/bucketSlice"
 import {
 	userCreateObject,
-	userGetBucketObjects,
+	userGetAllBucketObjects,
 } from "../../../../redux/slices/objectsSlice"
 import { userGetSchema } from "../../../../redux/slices/schemasSlice"
 import { AppDispatch } from "../../../../redux/store"
@@ -31,6 +31,7 @@ function NewObjectModalContentContainer({
 	const { closeModal } = useContext(AppModalContext)
 	const dispatch = useDispatch<AppDispatch>()
 	const buckets = useSelector(selectBuckets)
+	const [error, setError] = useState("")
 	const [selectedBucket, setSelectedBucket] = useState(buckets[0].did)
 	const [properties, setProperties] = useState(initialSchemaFields)
 	const address = useSelector(selectAddress)
@@ -60,6 +61,8 @@ function NewObjectModalContentContainer({
 	}
 
 	function handlePropertiesChange({ value, index }: IobjectPropertyChange) {
+		setError("")
+
 		const newProperties = [...properties]
 
 		newProperties.splice(index, 1, {
@@ -79,30 +82,61 @@ function NewObjectModalContentContainer({
 			(item) => item.schema.did === selectedSchemaDid
 		)
 
+		const castValue = (type: Number, value: string) => {
+			switch (type) {
+				case 1:
+					if (value === "true") return true
+					if (value === "false") return false
+					return null
+				case 2:
+					return isNaN(parseInt(value)) ? null : parseInt(value)
+				case 3:
+					return isNaN(parseFloat(value)) ? null : parseFloat(value)
+				default:
+					return !value ? null : value
+			}
+		}
+
 		const objectPayload = {
 			bucketDid: selectedBucket,
 			schemaDid: selectedSchemaDid,
 			label: selectedSchemaData?.schema.label,
-			object: properties.reduce((acc, item) => {
-				return {
+			object: properties.reduce(
+				(acc, item) => ({
 					...acc,
-					[item.name]: item.value,
-				}
-			}, {}),
+					[item.name]: castValue(item.field, item.value),
+				}),
+				{}
+			),
 		}
+
+		if (
+			!Object.keys(objectPayload.object).every(
+				(key) => objectPayload.object[key] !== null
+			)
+		) {
+			setError("Properties are required.")
+			return
+		}
+
+		closeModal()
 
 		const object = await dispatch(userCreateObject({ ...objectPayload }))
 
 		const bucketUpdatePayload = {
 			bucketDid: selectedBucket,
-			objectCid: object.payload.reference.Cid,
+			objectCid: object.payload.Cid,
+			objectName: object.payload.Label,
+			schemaDid: selectedSchemaDid,
 		}
 
 		await dispatch(updateBucket({ ...bucketUpdatePayload }))
 
-		dispatch(userGetBucketObjects({ bucket: selectedBucket }))
-
-		closeModal()
+		dispatch(
+			userGetAllBucketObjects({
+				buckets: buckets.map((item) => item.did),
+			})
+		)
 	}
 
 	return (
@@ -113,6 +147,7 @@ function NewObjectModalContentContainer({
 			onChangeBucket={handleChangeBucket}
 			onChangeProperty={handlePropertiesChange}
 			schemas={schemas}
+			error={error}
 			buckets={buckets}
 			properties={properties}
 			selectedSchemaDid={selectedSchemaDid}

@@ -20,7 +20,7 @@ The UI should open automatically on your browser, but if that's not the case, it
 
 **to reset the local data, go to:**
 ```
-localhost:8080/reset
+localhost:4040/reset
 ```
 
 ### Running the UI with real data
