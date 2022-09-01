@@ -108,18 +108,21 @@ function NewObjectModalContentComponent({
 					Properties
 				</div>
 
-				<div className="overflow-auto">
+				<div className="overflow-auto flex flex-wrap box-border">
 					{properties?.length &&
 						properties.map((item, index) => (
-							<div key={`${item.name}-${index}`} className="mb-4">
-								<div className="text-custom-xs text-subdued pb-1">
-									{item.name}
+							<>
+								<div key={`${item.name}-${index}`} className="box-border mb-4 flex-[48%]">
+									<div className="text-custom-xs text-subdued pb-1">
+										{item.name}
+									</div>
+									<SchemaField
+										field={{ name: item.name, field: item.field }}
+										onChange={(value) => onChangeProperty({ value, index })}
+									/>
 								</div>
-								<SchemaField
-									field={{ name: item.name, field: item.field }}
-									onChange={(value) => onChangeProperty({ value, index })}
-								/>
-							</div>
+								<div className="w-4 flex-[2%]" />
+							</>
 						))}
 				</div>
 			</div>
@@ -150,7 +153,7 @@ const SchemaField = ({ field, onChange }: Props) => {
 		case 1:
 			return (
 				<select
-					className="border border-default-border rounded w-40 p-2"
+					className="w-full border border-default-border rounded w-40 p-2"
 					onChange={(event) => onChange(event.target.value)}
 				>
 					<option></option>
