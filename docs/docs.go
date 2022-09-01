@@ -40,7 +40,8 @@ const docTemplate = `{
                 "summary": "CreateAccount",
                 "parameters": [
                     {
-                        "description": "Password",
+                        "example": "\"Password\"",
+                        "description": "password",
                         "name": "password",
                         "in": "body",
                         "required": true,
@@ -53,13 +54,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.CAResponseBody"
+                            "$ref": "#/definitions/server_routes.CAResponseBody"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -82,13 +83,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.uResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.uResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
                         }
                     }
                 }
@@ -110,7 +111,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "example": "\"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p\"",
-                        "description": "Did",
+                        "description": "did",
                         "name": "Did",
                         "in": "body",
                         "required": true,
@@ -120,7 +121,7 @@ const docTemplate = `{
                     },
                     {
                         "example": "\"Password\"",
-                        "description": "Password",
+                        "description": "password",
                         "name": "Password",
                         "in": "body",
                         "required": true,
@@ -133,7 +134,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/motor.LoginResponse"
+                            "$ref": "#/definitions/server_routes.SuccessfulLogin"
                         }
                     },
                     "500": {
@@ -161,7 +162,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "example": "\"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p\"",
-                        "description": "Creator",
+                        "description": "creator",
                         "name": "Creator",
                         "in": "body",
                         "required": true,
@@ -171,7 +172,7 @@ const docTemplate = `{
                     },
                     {
                         "example": "\"My Bucket\"",
-                        "description": "Label",
+                        "description": "label",
                         "name": "Label",
                         "in": "body",
                         "required": true,
@@ -181,7 +182,7 @@ const docTemplate = `{
                     },
                     {
                         "example": "\"public\" or \"private\"",
-                        "description": "Visibility",
+                        "description": "visibility",
                         "name": "Visibility",
                         "in": "body",
                         "required": true,
@@ -191,7 +192,7 @@ const docTemplate = `{
                     },
                     {
                         "example": "\"application\" or \"user\"",
-                        "description": "Role",
+                        "description": "role",
                         "name": "Role",
                         "in": "body",
                         "required": true,
@@ -201,7 +202,7 @@ const docTemplate = `{
                     },
                     {
                         "example": "\"name: My Bucket, uri: bafyreifqum26tv4wprgri5t4ddef7tozknnicuayjcvd4m5gag5avgtvsa\"",
-                        "description": "Content",
+                        "description": "content",
                         "name": "Content",
                         "in": "body",
                         "required": true,
@@ -332,7 +333,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
                         }
                     }
                 }
@@ -426,7 +427,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -472,7 +473,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -494,7 +495,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "example": "\"did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p\"",
-                        "description": "SchemaDid",
+                        "description": "schemaDid",
                         "name": "SchemaDid",
                         "in": "body",
                         "required": true,
@@ -504,7 +505,7 @@ const docTemplate = `{
                     },
                     {
                         "example": "\"MyObject\"",
-                        "description": "Label",
+                        "description": "label",
                         "name": "Label",
                         "in": "body",
                         "required": true,
@@ -513,7 +514,7 @@ const docTemplate = `{
                         }
                     },
                     {
-                        "description": "Object",
+                        "description": "object",
                         "name": "Object",
                         "in": "body",
                         "required": true,
@@ -578,13 +579,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.GetObjectResponse"
+                            "$ref": "#/definitions/server_routes.GetObjectResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -623,13 +624,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.CreateSchemaResponse"
+                            "$ref": "#/definitions/server_routes.CreateSchemaResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -650,31 +651,61 @@ const docTemplate = `{
                 "summary": "GetSchema",
                 "parameters": [
                     {
-                        "type": "string",
                         "description": "Creator",
                         "name": "creator",
-                        "in": "query",
-                        "required": true
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
-                        "type": "string",
                         "description": "Schema",
                         "name": "schema",
-                        "in": "query",
-                        "required": true
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.QuerySchemaResponse"
+                            "$ref": "#/definitions/server_routes.QuerySchemaResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/schema/query": {
+            "get": {
+                "description": "Query the Sonr Blockchain for all public schemas on the Blockchain. This is a read-only endpoint.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Schema"
+                ],
+                "summary": "QuerySchemas",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/server_routes.SchemaResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -795,6 +826,68 @@ const docTemplate = `{
                 }
             }
         },
+        "github.com_sonr-io_speedway_server_routes.SchemaResponse": {
+            "type": "object",
+            "properties": {
+                "pagination": {
+                    "type": "object",
+                    "properties": {
+                        "next_key": {},
+                        "total": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "what_is": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "creator": {
+                                "type": "string"
+                            },
+                            "did": {
+                                "type": "string"
+                            },
+                            "is_active": {
+                                "type": "boolean"
+                            },
+                            "metadata": {
+                                "type": "object"
+                            },
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "cid": {
+                                        "type": "string"
+                                    },
+                                    "did": {
+                                        "type": "string"
+                                    },
+                                    "label": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "timestamp": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "github.com_sonr-io_speedway_server_routes.SuccessfulLogin": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
         "github.com_sonr-io_speedway_server_routes.uResponse": {
             "type": "object",
             "properties": {
@@ -821,17 +914,6 @@ const docTemplate = `{
                     "items": {
                         "type": "integer"
                     }
-                }
-            }
-        },
-        "motor.LoginResponse": {
-            "type": "object",
-            "properties": {
-                "success": {
-                    "type": "boolean"
-                },
-                "who_is": {
-                    "$ref": "#/definitions/types.WhoIs"
                 }
             }
         },
@@ -972,6 +1054,68 @@ const docTemplate = `{
                 }
             }
         },
+        "server_routes.SchemaResponse": {
+            "type": "object",
+            "properties": {
+                "pagination": {
+                    "type": "object",
+                    "properties": {
+                        "next_key": {},
+                        "total": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "what_is": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "creator": {
+                                "type": "string"
+                            },
+                            "did": {
+                                "type": "string"
+                            },
+                            "is_active": {
+                                "type": "boolean"
+                            },
+                            "metadata": {
+                                "type": "object"
+                            },
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "cid": {
+                                        "type": "string"
+                                    },
+                                    "did": {
+                                        "type": "string"
+                                    },
+                                    "label": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "timestamp": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "server_routes.SuccessfulLogin": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
         "server_routes.uResponse": {
             "type": "object",
             "properties": {
@@ -1025,23 +1169,6 @@ const docTemplate = `{
                 }
             }
         },
-        "types.Alias": {
-            "type": "object",
-            "properties": {
-                "amount": {
-                    "description": "Amount is the amount listed for purchasing the Alias from the User/Application",
-                    "type": "integer"
-                },
-                "is_for_sale": {
-                    "description": "IsForSale is the boolean value indicating if the Alias is for sale",
-                    "type": "boolean"
-                },
-                "name": {
-                    "description": "Name is the string name of an Alias",
-                    "type": "string"
-                }
-            }
-        },
         "types.BucketItem": {
             "type": "object",
             "properties": {
@@ -1063,85 +1190,6 @@ const docTemplate = `{
                 },
                 "uri": {
                     "description": "DID of the item. If applicable // optional",
-                    "type": "string"
-                }
-            }
-        },
-        "types.DIDDocument": {
-            "type": "object",
-            "properties": {
-                "also_known_as": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "assertion_method": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "authentication": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "capability_delegation": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "capability_invocation": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "context": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "controller": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "id": {
-                    "type": "string"
-                },
-                "key_agreement": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "service": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/types.Service"
-                    }
-                },
-                "verification_method": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/types.VerificationMethod"
-                    }
-                }
-            }
-        },
-        "types.KeyValuePair": {
-            "type": "object",
-            "properties": {
-                "key": {
-                    "type": "string"
-                },
-                "value": {
                     "type": "string"
                 }
             }
@@ -1202,52 +1250,6 @@ const docTemplate = `{
                 }
             }
         },
-        "types.Service": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "service_endpoint": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/types.KeyValuePair"
-                    }
-                },
-                "type": {
-                    "type": "string"
-                }
-            }
-        },
-        "types.VerificationMethod": {
-            "type": "object",
-            "properties": {
-                "controller": {
-                    "type": "string"
-                },
-                "credential_json": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "id": {
-                    "type": "string"
-                },
-                "public_key_base58": {
-                    "type": "string"
-                },
-                "public_key_jwk": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/types.KeyValuePair"
-                    }
-                },
-                "type": {
-                    "type": "string"
-                }
-            }
-        },
         "types.WhatIs": {
             "type": "object",
             "properties": {
@@ -1276,52 +1278,6 @@ const docTemplate = `{
                 },
                 "timestamp": {
                     "description": "Timestamp is the time of the last update of the DID Document",
-                    "type": "integer"
-                }
-            }
-        },
-        "types.WhoIs": {
-            "type": "object",
-            "properties": {
-                "alias": {
-                    "description": "Alias is the list of registered ` + "`" + `alsoKnownAs` + "`" + ` identifiers of the User or Application",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/types.Alias"
-                    }
-                },
-                "controllers": {
-                    "description": "Credentials are the biometric info of the registered name and account encoded with public key",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "did_document": {
-                    "description": "DIDDocument is the bytes representation of DIDDocument within the WhoIs. Initially marshalled as JSON.",
-                    "$ref": "#/definitions/types.DIDDocument"
-                },
-                "is_active": {
-                    "description": "IsActive is the status of the DID Document",
-                    "type": "boolean"
-                },
-                "metadata": {
-                    "description": "Metadata is a map of key-value pairs that can be used to store additional information about the DID Document",
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    }
-                },
-                "owner": {
-                    "description": "Owner is the top level DID of the User or Application derived from the multisignature wallet.",
-                    "type": "string"
-                },
-                "timestamp": {
-                    "description": "Timestamp is the time of the last update of the DID Document",
-                    "type": "integer"
-                },
-                "type": {
-                    "description": "Type is the kind of the entity. Possible values are: \"user\", \"application\"",
                     "type": "integer"
                 }
             }

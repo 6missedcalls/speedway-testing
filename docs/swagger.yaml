@@ -72,6 +72,46 @@ definitions:
       definition:
         $ref: '#/definitions/types.SchemaDefinition'
     type: object
+  github.com_sonr-io_speedway_server_routes.SchemaResponse:
+    properties:
+      pagination:
+        properties:
+          next_key: {}
+          total:
+            type: string
+        type: object
+      what_is:
+        items:
+          properties:
+            creator:
+              type: string
+            did:
+              type: string
+            is_active:
+              type: boolean
+            metadata:
+              type: object
+            schema:
+              properties:
+                cid:
+                  type: string
+                did:
+                  type: string
+                label:
+                  type: string
+              type: object
+            timestamp:
+              type: string
+          type: object
+        type: array
+    type: object
+  github.com_sonr-io_speedway_server_routes.SuccessfulLogin:
+    properties:
+      address:
+        type: string
+      success:
+        type: boolean
+    type: object
   github.com_sonr-io_speedway_server_routes.uResponse:
     properties:
       address:
@@ -91,13 +131,6 @@ definitions:
         items:
           type: integer
         type: array
-    type: object
-  motor.LoginResponse:
-    properties:
-      success:
-        type: boolean
-      who_is:
-        $ref: '#/definitions/types.WhoIs'
     type: object
   motor.SearchBucketContentBySchemaResponse:
     properties:
@@ -187,6 +220,46 @@ definitions:
       definition:
         $ref: '#/definitions/types.SchemaDefinition'
     type: object
+  server_routes.SchemaResponse:
+    properties:
+      pagination:
+        properties:
+          next_key: {}
+          total:
+            type: string
+        type: object
+      what_is:
+        items:
+          properties:
+            creator:
+              type: string
+            did:
+              type: string
+            is_active:
+              type: boolean
+            metadata:
+              type: object
+            schema:
+              properties:
+                cid:
+                  type: string
+                did:
+                  type: string
+                label:
+                  type: string
+              type: object
+            timestamp:
+              type: string
+          type: object
+        type: array
+    type: object
+  server_routes.SuccessfulLogin:
+    properties:
+      address:
+        type: string
+      success:
+        type: boolean
+    type: object
   server_routes.uResponse:
     properties:
       address:
@@ -225,20 +298,6 @@ definitions:
         $ref: '#/definitions/url.Userinfo'
         description: username and password information
     type: object
-  types.Alias:
-    properties:
-      amount:
-        description: Amount is the amount listed for purchasing the Alias from the
-          User/Application
-        type: integer
-      is_for_sale:
-        description: IsForSale is the boolean value indicating if the Alias is for
-          sale
-        type: boolean
-      name:
-        description: Name is the string name of an Alias
-        type: string
-    type: object
   types.BucketItem:
     properties:
       name:
@@ -257,58 +316,6 @@ definitions:
         type: integer
       uri:
         description: DID of the item. If applicable // optional
-        type: string
-    type: object
-  types.DIDDocument:
-    properties:
-      also_known_as:
-        items:
-          type: string
-        type: array
-      assertion_method:
-        items:
-          type: string
-        type: array
-      authentication:
-        items:
-          type: string
-        type: array
-      capability_delegation:
-        items:
-          type: string
-        type: array
-      capability_invocation:
-        items:
-          type: string
-        type: array
-      context:
-        items:
-          type: string
-        type: array
-      controller:
-        items:
-          type: string
-        type: array
-      id:
-        type: string
-      key_agreement:
-        items:
-          type: string
-        type: array
-      service:
-        items:
-          $ref: '#/definitions/types.Service'
-        type: array
-      verification_method:
-        items:
-          $ref: '#/definitions/types.VerificationMethod'
-        type: array
-    type: object
-  types.KeyValuePair:
-    properties:
-      key:
-        type: string
-      value:
         type: string
     type: object
   types.SchemaDefinition:
@@ -353,36 +360,6 @@ definitions:
         description: an alternative reference point
         type: string
     type: object
-  types.Service:
-    properties:
-      id:
-        type: string
-      service_endpoint:
-        items:
-          $ref: '#/definitions/types.KeyValuePair'
-        type: array
-      type:
-        type: string
-    type: object
-  types.VerificationMethod:
-    properties:
-      controller:
-        type: string
-      credential_json:
-        items:
-          type: integer
-        type: array
-      id:
-        type: string
-      public_key_base58:
-        type: string
-      public_key_jwk:
-        items:
-          $ref: '#/definitions/types.KeyValuePair'
-        type: array
-      type:
-        type: string
-    type: object
   types.WhatIs:
     properties:
       creator:
@@ -405,45 +382,6 @@ definitions:
         description: Object_doc is the object document
       timestamp:
         description: Timestamp is the time of the last update of the DID Document
-        type: integer
-    type: object
-  types.WhoIs:
-    properties:
-      alias:
-        description: Alias is the list of registered `alsoKnownAs` identifiers of
-          the User or Application
-        items:
-          $ref: '#/definitions/types.Alias'
-        type: array
-      controllers:
-        description: Credentials are the biometric info of the registered name and
-          account encoded with public key
-        items:
-          type: string
-        type: array
-      did_document:
-        $ref: '#/definitions/types.DIDDocument'
-        description: DIDDocument is the bytes representation of DIDDocument within
-          the WhoIs. Initially marshalled as JSON.
-      is_active:
-        description: IsActive is the status of the DID Document
-        type: boolean
-      metadata:
-        additionalProperties:
-          type: string
-        description: Metadata is a map of key-value pairs that can be used to store
-          additional information about the DID Document
-        type: object
-      owner:
-        description: Owner is the top level DID of the User or Application derived
-          from the multisignature wallet.
-        type: string
-      timestamp:
-        description: Timestamp is the time of the last update of the DID Document
-        type: integer
-      type:
-        description: 'Type is the kind of the entity. Possible values are: "user",
-          "application"'
         type: integer
     type: object
   url.Userinfo:
@@ -470,7 +408,8 @@ paths:
       description: Create a new account on Sonr using the Registry module of Sonr's
         Blockchain.
       parameters:
-      - description: Password
+      - description: password
+        example: '"Password"'
         in: body
         name: password
         required: true
@@ -482,11 +421,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.CAResponseBody'
+            $ref: '#/definitions/server_routes.CAResponseBody'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: CreateAccount
       tags:
       - Account
@@ -502,11 +441,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/server_routes.uResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.uResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: GetAccount
       tags:
       - Account
@@ -517,14 +456,14 @@ paths:
       description: Login to an existing account on Sonr using the Registry module
         of Sonr's Blockchain.
       parameters:
-      - description: Did
+      - description: did
         example: '"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
         in: body
         name: Did
         required: true
         schema:
           type: string
-      - description: Password
+      - description: password
         example: '"Password"'
         in: body
         name: Password
@@ -537,7 +476,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/motor.LoginResponse'
+            $ref: '#/definitions/server_routes.SuccessfulLogin'
         "500":
           description: Internal Server Error
           schema:
@@ -551,35 +490,35 @@ paths:
       - application/json
       description: Create a bucket on Sonr using the bucket module of Sonr's Blockchain.
       parameters:
-      - description: Creator
+      - description: creator
         example: '"snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
         in: body
         name: Creator
         required: true
         schema:
           type: string
-      - description: Label
+      - description: label
         example: '"My Bucket"'
         in: body
         name: Label
         required: true
         schema:
           type: string
-      - description: Visibility
+      - description: visibility
         example: '"public" or "private"'
         in: body
         name: Visibility
         required: true
         schema:
           type: string
-      - description: Role
+      - description: role
         example: '"application" or "user"'
         in: body
         name: Role
         required: true
         schema:
           type: string
-      - description: Content
+      - description: content
         example: '"name: My Bucket, uri: bafyreifqum26tv4wprgri5t4ddef7tozknnicuayjcvd4m5gag5avgtvsa"'
         in: body
         name: Content
@@ -671,7 +610,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: GetBucketBySchema
       tags:
       - Bucket
@@ -734,7 +673,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: UpdateBucketLabel
       tags:
       - bucket
@@ -765,7 +704,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: UpdateBucketVisibility
       tags:
       - bucket
@@ -775,21 +714,21 @@ paths:
       - application/json
       description: Build an object on Sonr using the object module of Sonr's Blockchain.
       parameters:
-      - description: SchemaDid
+      - description: schemaDid
         example: '"did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p"'
         in: body
         name: SchemaDid
         required: true
         schema:
           type: string
-      - description: Label
+      - description: label
         example: '"MyObject"'
         in: body
         name: Label
         required: true
         schema:
           type: string
-      - description: Object
+      - description: object
         in: body
         name: Object
         required: true
@@ -836,11 +775,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.GetObjectResponse'
+            $ref: '#/definitions/server_routes.GetObjectResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: GetObject
       tags:
       - Object
@@ -867,11 +806,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.CreateSchemaResponse'
+            $ref: '#/definitions/server_routes.CreateSchemaResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: CreateSchema
       tags:
       - Schema
@@ -883,27 +822,47 @@ paths:
         schema that is retrieved.
       parameters:
       - description: Creator
-        in: query
+        in: body
         name: creator
         required: true
-        type: string
+        schema:
+          type: string
       - description: Schema
-        in: query
+        in: body
         name: schema
         required: true
-        type: string
+        schema:
+          type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.QuerySchemaResponse'
+            $ref: '#/definitions/server_routes.QuerySchemaResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: GetSchema
+      tags:
+      - Schema
+  /schema/query:
+    get:
+      description: Query the Sonr Blockchain for all public schemas on the Blockchain.
+        This is a read-only endpoint.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/server_routes.SchemaResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/server_routes.FailedResponse'
+      summary: QuerySchemas
       tags:
       - Schema
 swagger: "2.0"
