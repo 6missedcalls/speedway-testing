@@ -1,5 +1,5 @@
 import { Button, NebulaIcon } from "@sonr-io/nebula-react"
-import { Dispatch, SetStateAction } from "react"
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react"
 import {
 	Bucket,
 	IobjectPropertyChange,
@@ -32,7 +32,7 @@ function NewObjectModalContentComponent({
 	buckets,
 	selectedSchemaDid,
 	selectedBucket,
-	error
+	error,
 }: NewSchemaModalContentComponentProps) {
 	return (
 		<div className="flex flex-col max-h-[90vh]">
@@ -117,7 +117,6 @@ function NewObjectModalContentComponent({
 								</div>
 								<SchemaField
 									field={{ name: item.name, field: item.field }}
-									value={item.value}
 									onChange={(value) => onChangeProperty({ value, index })}
 								/>
 							</div>
@@ -143,11 +142,15 @@ function NewObjectModalContentComponent({
 
 type Props = {
 	field: IschemaField
-	value: string
 	onChange: (value: string) => void
 }
 
-const SchemaField = ({ field, value, onChange }: Props) => {
+const SchemaField = ({ field, onChange }: Props) => {
+	const [value, setValue] = useState("")
+	const changeValue = (event: ChangeEvent<HTMLInputElement>) => {
+		setValue(event.target.value)
+		onChange(value)
+	}
 	switch (field.field) {
 		case 2:
 			return (
@@ -155,7 +158,7 @@ const SchemaField = ({ field, value, onChange }: Props) => {
 					type="number"
 					className="border border-default-border rounded-md w-full p-2"
 					value={value}
-					onChange={(event) => onChange(event.target.value)}
+					onChange={changeValue}
 				/>
 			)
 
@@ -165,7 +168,7 @@ const SchemaField = ({ field, value, onChange }: Props) => {
 					type="text"
 					className="border border-default-border rounded-md w-full p-2"
 					value={value}
-					onChange={(event) => onChange(event.target.value)}
+					onChange={changeValue}
 				/>
 			)
 

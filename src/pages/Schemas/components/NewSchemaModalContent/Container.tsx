@@ -1,7 +1,7 @@
 import { useContext, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../../../contexts/appModalContext/appModalContext"
-import { selectAddress, selectLoginError } from "../../../../redux/slices/authenticationSlice"
+import { selectAddress } from "../../../../redux/slices/authenticationSlice"
 import { userCreateSchema } from "../../../../redux/slices/schemasSlice"
 import { AppDispatch } from "../../../../redux/store"
 import { IschemaTypeMap, schemaTypeMap } from "../../../../utils/mappings"
@@ -22,7 +22,7 @@ function NewSchemaModalContentContainer() {
 	const dispatch = useDispatch<AppDispatch>()
 	const address = useSelector(selectAddress)
 	const { closeModal } = useContext(AppModalContext)
-	const [error, setError] = useState('')
+	const [error, setError] = useState("")
 	const [schemaName, setSchemaName] = useState("")
 	const [properties, setProperties] = useState<Array<Iproperty>>([
 		emptyProperty,
@@ -33,7 +33,7 @@ function NewSchemaModalContentContainer() {
 	}
 
 	function handlePropertyChange({ index, data }: handlePropertyChangeProps) {
-		setError('')
+		setError("")
 		const newProperties = [...properties]
 		newProperties.splice(index, 1, {
 			...properties[index],
@@ -44,7 +44,7 @@ function NewSchemaModalContentContainer() {
 
 	function saveSchema() {
 		if (!schemaName || properties.length === 0) {
-			setError('Schema name is required.')
+			setError("Schema name is required.")
 			return
 		}
 
@@ -58,7 +58,7 @@ function NewSchemaModalContentContainer() {
 			}, {})
 
 		if (isEmptyObject(filledFields)) {
-			setError('Properties are required.')
+			setError("Properties are required.")
 			return
 		}
 
@@ -74,8 +74,8 @@ function NewSchemaModalContentContainer() {
 		closeModal()
 	}
 
-	function onChangeSchemaName(value: string){
-		setError('')
+	function onChangeSchemaName(value: string) {
+		setError("")
 		setSchemaName(value)
 	}
 
