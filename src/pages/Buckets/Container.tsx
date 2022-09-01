@@ -19,12 +19,7 @@ function BucketsPageContainer() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
-	return (
-		<BucketsPageComponent 
-			data={buckets} 
-			loading={loading}
-		/>
-	)
+	return <BucketsPageComponent data={buckets} loading={loading} />
 }
 
 export default BucketsPageContainer
