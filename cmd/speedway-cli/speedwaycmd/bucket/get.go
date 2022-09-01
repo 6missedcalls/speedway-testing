@@ -70,6 +70,8 @@ func bootstrapQueryBucketByIdCommand(ctx context.Context, logger *golog.Logger) 
 	queryBucketByCreatorCmd = &cobra.Command{
 		Use:   "id",
 		Short: "Use: retrieves a bucket based on its id (did)",
+		Long:  "",
+		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) < 1 {
 				logger.Fatal("must provide a did")
