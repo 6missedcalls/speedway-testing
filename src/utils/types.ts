@@ -99,3 +99,7 @@ export interface IsearchableListItem {
 		[key: string]: IsearchableListItemData
 	}
 }
+
+export interface loginPayload {
+	address: string
+}

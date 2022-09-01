@@ -112,7 +112,10 @@ function NewObjectModalContentComponent({
 					{properties?.length &&
 						properties.map((item, index) => (
 							<>
-								<div key={`${item.name}-${index}`} className="box-border mb-4 flex-[48%]">
+								<div
+									key={`${item.name}-${index}`}
+									className="box-border mb-4 flex-[48%]"
+								>
 									<div className="text-custom-xs text-subdued pb-1">
 										{item.name}
 									</div>
