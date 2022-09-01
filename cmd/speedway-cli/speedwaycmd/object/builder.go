@@ -74,7 +74,8 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fmt.Println(status.Debug, "Resolved Schema:", definition)
+			defStr, _ := utils.MarshalJsonFmt(definition)
+			logger.Infof("Resolved Schema: %s", defStr)
 
 			// create new object builder
 			objBuilder, err := m.NewObjectBuilder(schemaDid)
@@ -82,7 +83,7 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			if label, err := cmd.Flags().GetString("file"); err == nil && label == "" {
+			if label, err := cmd.Flags().GetString("label"); err == nil && label == "" {
 				objectLabel := promptui.Prompt{
 					Label: "Enter Object Label",
 				}
@@ -140,7 +141,10 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 						}
 						continue
 					}
-					objBuilder.Set(k, v)
+					err := objBuilder.Set(k, v)
+					if err != nil {
+						logger.Errorf("Error while validating: %s: %s", k, err)
+					}
 				}
 			}
 
@@ -150,7 +154,8 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fmt.Printf("Built: %v\n", build)
+			buildStr, _ := utils.MarshalJsonFmt(build)
+			logger.Debugf("Built: %s\n", buildStr)
 
 			// upload the object
 			upload, err := objBuilder.Upload()
@@ -158,7 +163,8 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			fmt.Printf("Upload: %v\n", upload.Reference)
+			uploadStr, _ := utils.MarshalJsonFmt(upload)
+			fmt.Printf("Upload: %v\n", uploadStr)
 		},
 	}
 

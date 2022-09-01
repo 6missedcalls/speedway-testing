@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -172,4 +173,54 @@ func LoadObjectDefinitionFromDisk(path string) (map[string]interface{}, error) {
 	}
 
 	return fields, nil
+}
+
+func LoadSchemaFieldDefinitionFromDisk(path string) (rtmv1.CreateSchemaRequest, error) {
+	file, err := ioutil.ReadFile(path)
+
+	if err != nil {
+		return rtmv1.CreateSchemaRequest{}, err
+	}
+
+	req := rtmv1.CreateSchemaRequest{}
+
+	err = json.NewDecoder(bytes.NewReader(file)).Decode(&req)
+
+	if err != nil {
+		return rtmv1.CreateSchemaRequest{}, err
+	}
+
+	return req, nil
+}
+
+func ConvertSchemaKind(kind string) st.SchemaKind {
+
+	schemaKind := st.SchemaKind_STRING
+	switch kind {
+	case "LIST":
+		schemaKind = st.SchemaKind_LIST
+	case "BOOL":
+		schemaKind = st.SchemaKind_BOOL
+	case "INT":
+		schemaKind = st.SchemaKind_INT
+	case "FLOAT":
+		schemaKind = st.SchemaKind_FLOAT
+	case "STRING":
+		schemaKind = st.SchemaKind_STRING
+	case "BYTES":
+		schemaKind = st.SchemaKind_BYTES
+	case "LINK":
+		schemaKind = st.SchemaKind_LINK
+	}
+
+	return schemaKind
+}
+
+func MarshalJsonFmt(data interface{}) (string, error) {
+	b, err := json.MarshalIndent(data, "", "\t")
+	if err != nil {
+		return "", err
+	}
+
+	return string(b), err
 }
