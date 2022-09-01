@@ -116,7 +116,7 @@ function ObjectsPageContainer() {
 					return {
 						...acc,
 						[key]: {
-							text: objects[key],
+							text: objects[key].toString(),
 						},
 					}
 				}, {})

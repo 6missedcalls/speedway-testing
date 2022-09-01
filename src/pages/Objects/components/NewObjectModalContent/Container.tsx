@@ -82,21 +82,37 @@ function NewObjectModalContentContainer({
 			(item) => item.schema.did === selectedSchemaDid
 		)
 
+		const castValue = (type: Number, value: string) => {
+			switch (type) {
+				case 1:
+					if (value === "true") return true
+					if (value === "false") return false
+					return null
+				case 2:
+					return isNaN(parseInt(value)) ? null : parseInt(value)
+				case 3:
+					return isNaN(parseFloat(value)) ? null : parseFloat(value)
+				default:
+					return !value ? null : value
+			}
+		}
+
 		const objectPayload = {
 			bucketDid: selectedBucket,
 			schemaDid: selectedSchemaDid,
 			label: selectedSchemaData?.schema.label,
-			object: properties.reduce((acc, item) => {
-				return {
+			object: properties.reduce(
+				(acc, item) => ({
 					...acc,
-					[item.name]: item.value,
-				}
-			}, {}),
+					[item.name]: castValue(item.field, item.value),
+				}),
+				{}
+			),
 		}
 
 		if (
 			!Object.keys(objectPayload.object).every(
-				(key) => !!objectPayload.object[key]
+				(key) => objectPayload.object[key] !== null
 			)
 		) {
 			setError("Properties are required.")
