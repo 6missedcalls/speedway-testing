@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../../../contexts/appModalContext/appModalContext"
 import {
 	selectAddress,
-	selectLoginError,
 } from "../../../../redux/slices/authenticationSlice"
 import { userCreateSchema } from "../../../../redux/slices/schemasSlice"
 import { AppDispatch } from "../../../../redux/store"
