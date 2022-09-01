@@ -465,6 +465,8 @@ info:
 paths:
   /account/create:
     post:
+      consumes:
+      - application/json
       description: Create a new account on Sonr using the Registry module of Sonr's
         Blockchain.
       parameters:
@@ -487,9 +489,11 @@ paths:
             $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: CreateAccount
       tags:
-      - account
+      - Account
   /account/info:
     get:
+      consumes:
+      - application/json
       description: Get Account information from the Sonr Blockchain. This is a read-only
         endpoint.
       produces:
@@ -498,16 +502,18 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.uResponse'
+            $ref: '#/definitions/server_routes.uResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: GetAccount
       tags:
-      - account
+      - Account
   /account/login:
     post:
+      consumes:
+      - application/json
       description: Login to an existing account on Sonr using the Registry module
         of Sonr's Blockchain.
       parameters:
@@ -535,12 +541,14 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedLogin'
+            $ref: '#/definitions/server_routes.FailedLogin'
       summary: LoginAccount
       tags:
-      - account
+      - Account
   /bucket/create:
     post:
+      consumes:
+      - application/json
       description: Create a bucket on Sonr using the bucket module of Sonr's Blockchain.
       parameters:
       - description: Creator
@@ -591,16 +599,18 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.CreateBucketResponse'
+            $ref: '#/definitions/server_routes.CreateBucketResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: CreateBucket
       tags:
-      - bucket
+      - Bucket
   /bucket/get:
     post:
+      consumes:
+      - application/json
       description: Get a bucket on Sonr using the bucket module of Sonr's Blockchain.
       parameters:
       - description: BucketDid
@@ -623,9 +633,11 @@ paths:
             $ref: '#/definitions/server_routes.FailedResponse'
       summary: GetBucket
       tags:
-      - bucket
+      - Bucket
   /bucket/get-by-schema:
     post:
+      consumes:
+      - application/json
       description: Get a bucket on Sonr using a Schema.
       parameters:
       - description: Creator
@@ -659,10 +671,10 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/server_routes.FailedResponse'
       summary: GetBucketBySchema
       tags:
-      - bucket
+      - Bucket
   /bucket/update-items:
     post:
       description: Update a bucket on Sonr using the bucket module of Sonr's Blockchain.
@@ -691,7 +703,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: UpdateBucketItems
       tags:
       - bucket
@@ -753,12 +765,14 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: UpdateBucketVisibility
       tags:
       - bucket
   /object/build:
     post:
+      consumes:
+      - application/json
       description: Build an object on Sonr using the object module of Sonr's Blockchain.
       parameters:
       - description: SchemaDid
@@ -792,12 +806,14 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: BuildObject
       tags:
-      - object
+      - Object
   /object/get:
     post:
+      consumes:
+      - application/json
       description: Get an object on Sonr using the object module of Sonr's Blockchain.
       parameters:
       - description: SchemaDid
@@ -827,9 +843,11 @@ paths:
             $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: GetObject
       tags:
-      - object
+      - Object
   /schema/create:
     post:
+      consumes:
+      - application/json
       description: Create a schema utilizing motor client. Returns the WhatIs of the
         schema created.
       parameters:
@@ -856,9 +874,11 @@ paths:
             $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: CreateSchema
       tags:
-      - schema
+      - Schema
   /schema/get:
     post:
+      consumes:
+      - application/json
       description: Get a schema utilizing motor client. Returns the WhatIs of the
         schema that is retrieved.
       parameters:
@@ -885,5 +905,5 @@ paths:
             $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
       summary: GetSchema
       tags:
-      - schema
+      - Schema
 swagger: "2.0"

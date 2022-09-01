@@ -27,13 +27,14 @@ type BuildObjectResponse struct {
 // @Summary BuildObject
 // @Schemes
 // @Description Build an object on Sonr using the object module of Sonr's Blockchain.
-// @Tags object
+// @Tags Object
+// @Accept json
 // @Produce json
-// @Param 		 SchemaDid body string true "SchemaDid" example("did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
-// @Param 		 Label body string true "Label" example("MyObject")
-// @Param 		 Object body map[string]interface{} true "Object" example({"name": "John Doe"})
+// @Param SchemaDid body string true "schemaDid" example("did:sonr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
+// @Param Label body string true "label" example("MyObject")
+// @Param Object body map[string]interface{} true "object" example({"name": "John Doe"})
 // @Success 200 {object} object.ObjectReference
-// @Failure      500  {object}  FailedResponse
+// @Failure 500  {object}  FailedResponse
 // @Router /object/build [post]
 func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	rBody := c.Request.Body

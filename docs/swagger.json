@@ -21,11 +21,14 @@
         "/account/create": {
             "post": {
                 "description": "Create a new account on Sonr using the Registry module of Sonr's Blockchain.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "account"
+                    "Account"
                 ],
                 "summary": "CreateAccount",
                 "parameters": [
@@ -58,24 +61,27 @@
         "/account/info": {
             "get": {
                 "description": "Get Account information from the Sonr Blockchain. This is a read-only endpoint.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "account"
+                    "Account"
                 ],
                 "summary": "GetAccount",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.uResponse"
+                            "$ref": "#/definitions/server_routes.uResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -84,11 +90,14 @@
         "/account/login": {
             "post": {
                 "description": "Login to an existing account on Sonr using the Registry module of Sonr's Blockchain.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "account"
+                    "Account"
                 ],
                 "summary": "LoginAccount",
                 "parameters": [
@@ -123,7 +132,7 @@
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedLogin"
+                            "$ref": "#/definitions/server_routes.FailedLogin"
                         }
                     }
                 }
@@ -132,11 +141,14 @@
         "/bucket/create": {
             "post": {
                 "description": "Create a bucket on Sonr using the bucket module of Sonr's Blockchain.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "bucket"
+                    "Bucket"
                 ],
                 "summary": "CreateBucket",
                 "parameters": [
@@ -205,13 +217,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.CreateBucketResponse"
+                            "$ref": "#/definitions/server_routes.CreateBucketResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -220,11 +232,14 @@
         "/bucket/get": {
             "post": {
                 "description": "Get a bucket on Sonr using the bucket module of Sonr's Blockchain.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "bucket"
+                    "Bucket"
                 ],
                 "summary": "GetBucket",
                 "parameters": [
@@ -258,11 +273,14 @@
         "/bucket/get-by-schema": {
             "post": {
                 "description": "Get a bucket on Sonr using a Schema.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "bucket"
+                    "Bucket"
                 ],
                 "summary": "GetBucketBySchema",
                 "parameters": [
@@ -307,7 +325,7 @@
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -355,7 +373,7 @@
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
                         }
                     }
                 }
@@ -447,7 +465,7 @@
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
                         }
                     }
                 }
@@ -456,11 +474,14 @@
         "/object/build": {
             "post": {
                 "description": "Build an object on Sonr using the object module of Sonr's Blockchain.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "object"
+                    "Object"
                 ],
                 "summary": "BuildObject",
                 "parameters": [
@@ -505,7 +526,7 @@
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
                         }
                     }
                 }
@@ -514,11 +535,14 @@
         "/object/get": {
             "post": {
                 "description": "Get an object on Sonr using the object module of Sonr's Blockchain.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "object"
+                    "Object"
                 ],
                 "summary": "GetObject",
                 "parameters": [
@@ -562,11 +586,14 @@
         "/schema/create": {
             "post": {
                 "description": "Create a schema utilizing motor client. Returns the WhatIs of the schema created.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "schema"
+                    "Schema"
                 ],
                 "summary": "CreateSchema",
                 "parameters": [
@@ -604,11 +631,14 @@
         "/schema/get": {
             "post": {
                 "description": "Get a schema utilizing motor client. Returns the WhatIs of the schema that is retrieved.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "schema"
+                    "Schema"
                 ],
                 "summary": "GetSchema",
                 "parameters": [

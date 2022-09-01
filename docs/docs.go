@@ -28,11 +28,14 @@ const docTemplate = `{
         "/account/create": {
             "post": {
                 "description": "Create a new account on Sonr using the Registry module of Sonr's Blockchain.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "account"
+                    "Account"
                 ],
                 "summary": "CreateAccount",
                 "parameters": [
@@ -65,24 +68,27 @@ const docTemplate = `{
         "/account/info": {
             "get": {
                 "description": "Get Account information from the Sonr Blockchain. This is a read-only endpoint.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "account"
+                    "Account"
                 ],
                 "summary": "GetAccount",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.uResponse"
+                            "$ref": "#/definitions/server_routes.uResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -91,11 +97,14 @@ const docTemplate = `{
         "/account/login": {
             "post": {
                 "description": "Login to an existing account on Sonr using the Registry module of Sonr's Blockchain.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "account"
+                    "Account"
                 ],
                 "summary": "LoginAccount",
                 "parameters": [
@@ -130,7 +139,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedLogin"
+                            "$ref": "#/definitions/server_routes.FailedLogin"
                         }
                     }
                 }
@@ -139,11 +148,14 @@ const docTemplate = `{
         "/bucket/create": {
             "post": {
                 "description": "Create a bucket on Sonr using the bucket module of Sonr's Blockchain.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "bucket"
+                    "Bucket"
                 ],
                 "summary": "CreateBucket",
                 "parameters": [
@@ -212,13 +224,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.CreateBucketResponse"
+                            "$ref": "#/definitions/server_routes.CreateBucketResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -227,11 +239,14 @@ const docTemplate = `{
         "/bucket/get": {
             "post": {
                 "description": "Get a bucket on Sonr using the bucket module of Sonr's Blockchain.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "bucket"
+                    "Bucket"
                 ],
                 "summary": "GetBucket",
                 "parameters": [
@@ -265,11 +280,14 @@ const docTemplate = `{
         "/bucket/get-by-schema": {
             "post": {
                 "description": "Get a bucket on Sonr using a Schema.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "bucket"
+                    "Bucket"
                 ],
                 "summary": "GetBucketBySchema",
                 "parameters": [
@@ -314,7 +332,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -362,7 +380,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
                         }
                     }
                 }
@@ -454,7 +472,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
                         }
                     }
                 }
@@ -463,11 +481,14 @@ const docTemplate = `{
         "/object/build": {
             "post": {
                 "description": "Build an object on Sonr using the object module of Sonr's Blockchain.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "object"
+                    "Object"
                 ],
                 "summary": "BuildObject",
                 "parameters": [
@@ -512,7 +533,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
                         }
                     }
                 }
@@ -521,11 +542,14 @@ const docTemplate = `{
         "/object/get": {
             "post": {
                 "description": "Get an object on Sonr using the object module of Sonr's Blockchain.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "object"
+                    "Object"
                 ],
                 "summary": "GetObject",
                 "parameters": [
@@ -569,11 +593,14 @@ const docTemplate = `{
         "/schema/create": {
             "post": {
                 "description": "Create a schema utilizing motor client. Returns the WhatIs of the schema created.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "schema"
+                    "Schema"
                 ],
                 "summary": "CreateSchema",
                 "parameters": [
@@ -611,11 +638,14 @@ const docTemplate = `{
         "/schema/get": {
             "post": {
                 "description": "Get a schema utilizing motor client. Returns the WhatIs of the schema that is retrieved.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "schema"
+                    "Schema"
                 ],
                 "summary": "GetSchema",
                 "parameters": [

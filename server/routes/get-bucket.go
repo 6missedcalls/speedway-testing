@@ -31,7 +31,8 @@ type ConvertBucketRes struct {
 // @Summary GetBucket
 // @Schemes
 // @Description Get a bucket on Sonr using the bucket module of Sonr's Blockchain.
-// @Tags bucket
+// @Tags Bucket
+// @Accept json
 // @Produce json
 // @Param 		 bucketDid body string true "BucketDid" example("did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
 // @Success 200 {object} GetBucketResponse
