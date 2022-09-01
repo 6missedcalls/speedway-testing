@@ -148,8 +148,8 @@ function NewObjectModalContentContainer({
 
 		const bucketUpdatePayload = {
 			bucketDid: selectedBucket,
-			objectCid: object.payload.Cid,
-			objectName: object.payload.Label,
+			objectCid: object.payload?.cid || object.payload?.Cid,
+			objectName: object.payload?.label || object.payload?.Label,
 			schemaDid: selectedSchemaDid,
 		}
 

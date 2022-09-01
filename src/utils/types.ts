@@ -73,6 +73,8 @@ export interface IobjectPropertyChange {
 export type NewBucketPayload = {
 	label: string
 	creator: string
+	visibility?: string
+	role?: string
 }
 
 export type Bucket = {
