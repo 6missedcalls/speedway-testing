@@ -166,7 +166,14 @@ const SchemaField = ({ field, onChange }: Props) => {
 					onChange={(event) => onChange(event.target.value)}
 				/>
 			)
-
+		case 3:
+			return (
+				<input
+					type="number"
+					className="border border-default-border rounded-md w-full p-2"
+					onChange={(event) => onChange(event.target.value)}
+				/>
+			)
 		case 4:
 			return (
 				<input
