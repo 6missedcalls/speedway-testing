@@ -69,7 +69,7 @@ npm run build
 task server:start:release
 ```
 
-### Open your Browser to [localhost:4040](localhost:4040)
+### Open your Browser to [localhost:4040](http://localhost:4040)
 
 </br>
 
