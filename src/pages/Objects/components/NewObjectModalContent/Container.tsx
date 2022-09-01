@@ -31,6 +31,7 @@ function NewObjectModalContentContainer({
 	const { closeModal } = useContext(AppModalContext)
 	const dispatch = useDispatch<AppDispatch>()
 	const buckets = useSelector(selectBuckets)
+	const [error, setError] = useState('')
 	const [selectedBucket, setSelectedBucket] = useState(buckets[0].did)
 	const [properties, setProperties] = useState(initialSchemaFields)
 	const address = useSelector(selectAddress)
@@ -60,6 +61,8 @@ function NewObjectModalContentContainer({
 	}
 
 	function handlePropertiesChange({ value, index }: IobjectPropertyChange) {
+		setError('')
+
 		const newProperties = [...properties]
 
 		newProperties.splice(index, 1, {
@@ -75,8 +78,6 @@ function NewObjectModalContentContainer({
 	}
 
 	async function save() {
-		closeModal()
-
 		const selectedSchemaData = schemas.find(
 			(item) => item.schema.did === selectedSchemaDid
 		)
@@ -92,6 +93,13 @@ function NewObjectModalContentContainer({
 				}
 			}, {}),
 		}
+		
+		if(!Object.keys(objectPayload.object).every(key => !!objectPayload.object[key])){
+			setError('Properties are required.')
+			return
+		}
+
+		closeModal()
 
 		const object = await dispatch(userCreateObject({ ...objectPayload }))
 
@@ -119,6 +127,7 @@ function NewObjectModalContentContainer({
 			onChangeBucket={handleChangeBucket}
 			onChangeProperty={handlePropertiesChange}
 			schemas={schemas}
+			error={error}
 			buckets={buckets}
 			properties={properties}
 			selectedSchemaDid={selectedSchemaDid}

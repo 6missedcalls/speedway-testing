@@ -13,6 +13,7 @@ type Props = {
 	data: Bucket[]
 	loading: boolean
 }
+
 const BucketsPageComponent = ({ data, loading }: Props) => {
 	const { setModalContent, openModal } =
 		useContext<IappModalContextState>(AppModalContext)

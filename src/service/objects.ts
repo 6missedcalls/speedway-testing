@@ -81,11 +81,14 @@ export const getAllBucketContent = async ({
 		const objectsWithDid = bucketObjectsList
 			.filter((item) => !!item)
 			.map((item) => {
-				return item.reduce((acc: any, { content, schemaDid }: any) => {
+				return item.reduce((acc: any, { content, schemaDid, uri }: any) => {
 					return [
 						...acc,
 						{
-							objects: parseJsonFromBase64String(content.item),
+							objects: {
+								CID: uri,
+								...parseJsonFromBase64String(content.item)
+							},
 							schemaDid,
 						},
 					]

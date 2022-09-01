@@ -18,6 +18,7 @@ interface NewSchemaModalContentComponentProps {
 	properties: Array<Record<string, any>>
 	selectedSchemaDid: string
 	selectedBucket: string
+	error: string
 }
 
 function NewObjectModalContentComponent({
@@ -31,6 +32,7 @@ function NewObjectModalContentComponent({
 	buckets,
 	selectedSchemaDid,
 	selectedBucket,
+	error
 }: NewSchemaModalContentComponentProps) {
 	return (
 		<div className="flex flex-col max-h-[90vh]">
@@ -122,7 +124,11 @@ function NewObjectModalContentComponent({
 						))}
 				</div>
 			</div>
-
+			{error && (
+				<div className="ml-8">
+					<span className="text-tertiary-red block text-xs">{error}</span>
+				</div>
+			)}
 			<div className="bg-black w-full rounded-b-2xl justify-end flex relative">
 				<div className="absolute rounded-b-2xl w-full h-6 bg-white -top-px" />
 				<Button

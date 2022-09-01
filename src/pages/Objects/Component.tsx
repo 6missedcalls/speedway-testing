@@ -34,23 +34,26 @@ const ObjectsPageComponent = ({
 						Objects
 					</h1>
 					{schemaCount > 0 && (
-						<div className="relative pointer-events-none select-none border border-default-border rounded-md w-3/12 ml-2 cursor-pointer flex justify-between">
-							<select
-								className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
-								onChange={(event) => setSelectedSchema(event.target.value)}
-								value={selectedSchemaDid}
-							>
-								{schemas.map((item) => (
-									<option key={item.schema.did} value={item.schema.did}>
-										{item.schema.label}
-									</option>
-								))}
-							</select>
-							<NebulaIcon
-								iconName="ArrowSquareDown"
-								iconType="duotone"
-								className="w-8 h-8 pointer-events-none select-none absolute right-0 top-1"
-							/>
+						<div className="flex w-3/12 flex-col items-start justify-center">
+							<div className="mb-2">Schemas</div>
+							<div className="relative pointer-events-none select-none border border-default-border rounded-md w-full cursor-pointer flex justify-between">
+								<select
+									className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
+									onChange={(event) => setSelectedSchema(event.target.value)}
+									value={selectedSchemaDid}
+								>
+									{schemas.map((item) => (
+										<option key={item.schema.did} value={item.schema.did}>
+											{item.schema.label}
+										</option>
+									))}
+								</select>
+								<NebulaIcon
+									iconName="ArrowSquareDown"
+									iconType="duotone"
+									className="w-8 h-8 pointer-events-none select-none absolute right-0 top-1"
+								/>
+							</div>
 						</div>
 					)}
 				</div>

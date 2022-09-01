@@ -60,7 +60,7 @@ function SearchableListComponent({
 					</button>
 				)}
 			</div>
-			<div className="overflow-auto">
+			<div className={`${type === listTypes.schema ? '' : 'overflow-auto'}`}>
 				<table className="text-left w-full">
 					<thead>
 						<tr className="h-10 bg-button-subtle items-center px-4 py-5 text-button-subtle text-custom-xs">
