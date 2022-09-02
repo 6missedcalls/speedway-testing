@@ -3,7 +3,7 @@ import { formatApiError } from "../utils/errors"
 import { IgetSchemaFields, InewSchema } from "../utils/types"
 
 export const getAllSchemas = async () => {
-	const url = `http://localhost:8080/proxy/schemas?pagination.limit=50000`
+	const url = `http://localhost:4040/proxy/schemas?pagination.limit=50000`
 
 	const options = {
 		method: "GET",
@@ -58,7 +58,7 @@ export const getSchema = async (schema: IgetSchemaFields) => {
 		const response: Response = await fetch(url, options)
 		if (!response.ok) throw new Error(response.statusText)
 		const data = await response.json()
-		return data
+		return data.definition
 	} catch (error) {
 		const errorMessage = formatApiError({ error, url, options })
 		throw new Error(errorMessage)

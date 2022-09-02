@@ -181,38 +181,6 @@ func (b *SpeedwayBinding) GetSchema(ctx context.Context, creator string, schemaD
 }
 
 /*
-Get the bucket and return the Response
-*/
-func (b *SpeedwayBinding) GetBucket(ctx context.Context, bucketDid string, contentId string) ([]*btv1.BucketItem, error) {
-	if b.instance == nil {
-		return nil, ErrMotorNotInitialized
-	}
-	if !b.loggedIn {
-		return nil, ErrNotAuthenticated
-	}
-
-	res, err := b.instance.GetBucket(bucketDid)
-	if err != nil {
-		fmt.Println(status.Error("Error"), err)
-		return nil, err
-	}
-
-	content := res.GetBucketItems()
-	if content == nil {
-		return nil, nil
-	}
-
-	cById, err := res.GetContentById(contentId)
-	if err != nil {
-		fmt.Println(status.Error("Error"), err)
-		return nil, err
-	}
-	fmt.Println(status.Info, "Content by ID", cById)
-
-	return content, nil
-}
-
-/*
 Get a list of BucketItems from the bucket and return the list
 */
 func (b *SpeedwayBinding) GetBuckets(ctx context.Context, bucketDid string) ([]*btv1.BucketItem, error) {
@@ -408,6 +376,32 @@ func (b *SpeedwayBinding) UpdateBucketVisibility(ctx context.Context, bucketDid 
 	}
 
 	return whereIs, nil
+}
+
+/*
+GetContentById and return the content
+*/
+func (b *SpeedwayBinding) GetContentById(ctx context.Context, bucketDid string, contentId string) (*btv1.BucketContent, error) {
+	if b.instance == nil {
+		return &btv1.BucketContent{}, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return &btv1.BucketContent{}, ErrNotAuthenticated
+	}
+
+	bucket, err := b.instance.GetBucket(bucketDid)
+	if err != nil {
+		fmt.Println(status.Error("GetBucket Error:"), err)
+		return &btv1.BucketContent{}, err
+	}
+
+	content, err := bucket.GetContentById(contentId)
+	if err != nil {
+		fmt.Println(status.Error("GetContent Error:"), err)
+		return &btv1.BucketContent{}, err
+	}
+
+	return content, nil
 }
 
 /*

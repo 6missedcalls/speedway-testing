@@ -18,7 +18,7 @@ const Component: FC<Props> = ({ children }) => {
 	return (
 		<div className="flex">
 			<SideMenu />
-			<div className="w-full relative" ref={modalParentRef}>
+			<div className="w-full relative pl-[320px]" ref={modalParentRef}>
 				{children}
 			</div>
 			<AppModal getModalParent={getModalParent} />

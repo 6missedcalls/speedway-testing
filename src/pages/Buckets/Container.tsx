@@ -18,6 +18,7 @@ function BucketsPageContainer() {
 		dispatch(getAllBuckets(address))
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
+
 	return <BucketsPageComponent data={buckets} loading={loading} />
 }
 

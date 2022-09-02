@@ -21,7 +21,8 @@ type GetBucketBySchemaBody struct {
 // @Summary GetBucketBySchema
 // @Schemes
 // @Description Get a bucket on Sonr using a Schema.
-// @Tags bucket
+// @Tags Bucket
+// @Accept json
 // @Produce json
 // @Param 		 Creator body string true "Creator" example("snr172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
 // @Param 		 BucketDid body string true "bucketDid" example("did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
@@ -52,7 +53,7 @@ func (ns *NebulaServer) GetBucketBySchema(c *gin.Context) {
 	bucket, err := b.GetBucketFromSchema(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: "Failed to get bucket",
+			Error: err.Error(),
 		})
 		return
 	}

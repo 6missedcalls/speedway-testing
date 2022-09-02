@@ -1,16 +1,22 @@
 import { useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import RefreshSvg from "../../../../assets/svgs/Refresh"
 import { AppModalContext } from "../../../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../../../redux/slices/authenticationSlice"
 import {
 	selectBuckets,
+	selectBucketsLoading,
 	updateBucket,
 } from "../../../../redux/slices/bucketSlice"
 import {
+	selectObjectsLoading,
 	userCreateObject,
-	userGetBucketObjects,
+	userGetAllBucketObjects,
 } from "../../../../redux/slices/objectsSlice"
-import { userGetSchema } from "../../../../redux/slices/schemasSlice"
+import {
+	selectSchemasLoading,
+	userGetSchema,
+} from "../../../../redux/slices/schemasSlice"
 import { AppDispatch } from "../../../../redux/store"
 import { IobjectPropertyChange, Ischema } from "../../../../utils/types"
 import NewObjectModalContentComponent from "./Component"
@@ -29,11 +35,16 @@ function NewObjectModalContentContainer({
 	schemas,
 }: NewObjectModalContentContainerProps) {
 	const { closeModal } = useContext(AppModalContext)
-	const dispatch = useDispatch<AppDispatch>()
+	const dispatch: Function = useDispatch()
 	const buckets = useSelector(selectBuckets)
+	const [error, setError] = useState("")
 	const [selectedBucket, setSelectedBucket] = useState(buckets[0].did)
 	const [properties, setProperties] = useState(initialSchemaFields)
 	const address = useSelector(selectAddress)
+	const schemasLoading = useSelector(selectSchemasLoading)
+	const bucketsLoading = useSelector(selectBucketsLoading)
+	const objectsLoading = useSelector(selectObjectsLoading)
+	const loading = schemasLoading || objectsLoading || bucketsLoading
 
 	useEffect(() => {
 		if (selectedSchemaDid) {
@@ -60,6 +71,8 @@ function NewObjectModalContentContainer({
 	}
 
 	function handlePropertiesChange({ value, index }: IobjectPropertyChange) {
+		setError("")
+
 		const newProperties = [...properties]
 
 		newProperties.splice(index, 1, {
@@ -79,45 +92,108 @@ function NewObjectModalContentContainer({
 			(item) => item.schema.did === selectedSchemaDid
 		)
 
+		const castValue = (type: Number, value: string) => {
+			switch (type) {
+				case 1:
+					if (value === "true") return true
+					if (value === "false") return false
+					return null
+				case 2:
+					return isNaN(parseInt(value)) ? null : parseInt(value)
+				case 3:
+					return isNaN(parseFloat(value)) ? null : parseFloat(value)
+				default:
+					return !value ? null : value
+			}
+		}
+
 		const objectPayload = {
 			bucketDid: selectedBucket,
 			schemaDid: selectedSchemaDid,
 			label: selectedSchemaData?.schema.label,
-			object: properties.reduce((acc, item) => {
-				return {
+			object: properties.reduce(
+				(acc, item) => ({
 					...acc,
-					[item.name]: item.value,
-				}
-			}, {}),
+					[item.name]: castValue(item.field, item.value),
+				}),
+				{}
+			),
 		}
 
+		if (
+			!Object.keys(objectPayload.object).every(
+				(key) => objectPayload.object[key] !== null
+			)
+		) {
+			setError("Properties are required.")
+			return
+		}
+
+		let floatError = false
+		properties.forEach((item) => {
+			if (item.field === 3) {
+				const splitValue = item.value.split(".")
+				if (
+					splitValue.length &&
+					(splitValue.length < 2 || parseFloat(splitValue[1]) === 0)
+				) {
+					setError("Float numbers can't have zero as decimal part.")
+					floatError = true
+				}
+			}
+		})
+
+		if (floatError) return
+
 		const object = await dispatch(userCreateObject({ ...objectPayload }))
+		if (object?.error) {
+			setError("Could not create object or update bucket.")
+			console.error(error)
+			return
+		}
 
 		const bucketUpdatePayload = {
 			bucketDid: selectedBucket,
-			objectCid: object.payload.reference.Cid,
+			objectCid: object.payload?.cid || object.payload?.Cid,
+			objectName: object.payload?.label || object.payload?.Label,
+			schemaDid: selectedSchemaDid,
 		}
 
 		await dispatch(updateBucket({ ...bucketUpdatePayload }))
 
-		dispatch(userGetBucketObjects({ bucket: selectedBucket }))
+		dispatch(
+			userGetAllBucketObjects({
+				buckets: buckets.map((item) => item.did),
+			})
+		)
 
 		closeModal()
 	}
 
 	return (
-		<NewObjectModalContentComponent
-			onClose={closeModal}
-			onSave={save}
-			onChangeSchema={setSelectedSchema}
-			onChangeBucket={handleChangeBucket}
-			onChangeProperty={handlePropertiesChange}
-			schemas={schemas}
-			buckets={buckets}
-			properties={properties}
-			selectedSchemaDid={selectedSchemaDid}
-			selectedBucket={selectedBucket}
-		/>
+		<>
+			{loading ? (
+				<div className="flex flex-col items-center">
+					<div className="w-28 m-20 animate-reverse-spin">
+						<RefreshSvg />
+					</div>
+				</div>
+			) : (
+				<NewObjectModalContentComponent
+					onClose={closeModal}
+					onSave={save}
+					onChangeSchema={setSelectedSchema}
+					onChangeBucket={handleChangeBucket}
+					onChangeProperty={handlePropertiesChange}
+					schemas={schemas}
+					error={error}
+					buckets={buckets}
+					properties={properties}
+					selectedSchemaDid={selectedSchemaDid}
+					selectedBucket={selectedBucket}
+				/>
+			)}
+		</>
 	)
 }
 

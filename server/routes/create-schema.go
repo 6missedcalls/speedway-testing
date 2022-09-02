@@ -27,7 +27,8 @@ type CreateSchemaResponse struct {
 // @Summary CreateSchema
 // @Schemes
 // @Description Create a schema utilizing motor client. Returns the WhatIs of the schema created.
-// @Tags schema
+// @Tags Schema
+// @Accept json
 // @Produce json
 // @Param label query string true "Label of the schema"
 // @Param fields query string true "Fields of the schema"
@@ -59,7 +60,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Create Schema Error: ", err)
 		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: "Create Schema Error",
+			Error: err.Error(),
 		})
 		return
 	}

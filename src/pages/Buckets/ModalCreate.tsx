@@ -14,9 +14,22 @@ const ModalCreateBucket = () => {
 	const [label, setLabel] = useState("")
 	const { closeModal } = useContext(AppModalContext)
 	const dispatch = useDispatch<AppDispatch>()
+	const [error, setError] = useState("")
 	const address = useSelector(selectAddress)
+
 	const save = async () => {
-		await dispatch(createBucket({ label, creator: address }))
+		if (!label) {
+			setError("Bucket Name is required")
+			return
+		}
+		await dispatch(
+			createBucket({
+				label,
+				role: "application",
+				visibility: "public",
+				creator: address,
+			})
+		)
 		dispatch(getAllBuckets(address))
 		closeModal()
 	}
@@ -44,10 +57,17 @@ const ModalCreateBucket = () => {
 							type="text"
 							placeholder="Bucket Name"
 							value={label}
-							onChange={({ target }) => setLabel(target.value)}
+							onChange={({ target }) => {
+								setError("")
+								setLabel(target.value)
+							}}
 						/>
 					</div>
-
+					{error && (
+						<div className="ml-8 mb-4">
+							<span className="text-tertiary-red block text-xs">{error}</span>
+						</div>
+					)}
 					<div className="dark bg-surface-default py-6 px-8 text-right rounded-b-2xl">
 						<button
 							onClick={save}
