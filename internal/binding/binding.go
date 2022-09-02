@@ -213,8 +213,6 @@ func (b *SpeedwayBinding) GetBucket(ctx context.Context, bucketDid string, conte
 }
 
 /*
-=======
->>>>>>> 15cd0f951330d90d644577e1902b9c9367561b50
 Get a list of BucketItems from the bucket and return the list
 */
 func (b *SpeedwayBinding) GetBuckets(ctx context.Context, bucketDid string) ([]*btv1.BucketItem, error) {
