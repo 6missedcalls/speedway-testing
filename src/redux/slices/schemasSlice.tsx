@@ -101,12 +101,12 @@ export const schemasSlice = createSlice({
 			const { payload } = action
 			state.loading = false
 			state.list.push({
-				did: payload.whatIs.did,
+				did: payload.did,
 				schema: {
-					did: payload.whatIs.did,
-					label: payload.definition.label,
+					did: payload.did,
+					label: payload.label,
 				},
-				creator: payload.whatIs.creator,
+				creator: "",
 				is_active: true,
 			})
 		})
