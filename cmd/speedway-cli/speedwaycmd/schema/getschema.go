@@ -2,6 +2,7 @@ package schema
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/kataras/golog"
@@ -16,8 +17,9 @@ import (
 
 func bootstrapQuerySchemaCommand(ctx context.Context, logger *golog.Logger) (querySchemaCmd *cobra.Command) {
 	querySchemaCmd = &cobra.Command{
-		Use:   "query",
-		Short: "Use: speedway schema query",
+		Use:   "get [did]",
+		Short: "Use: Returns a schema by the provided did",
+		Long:  "Returns a schema matching the did, if not provided the cli will prompt",
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
@@ -33,28 +35,24 @@ func bootstrapQuerySchemaCommand(ctx context.Context, logger *golog.Logger) (que
 			} else {
 				logger.Fatalf(status.Error("Login failed"))
 			}
-
+			var did string = ""
+			if len(args) > 0 {
+				did = args[0]
+			}
 			// get schema
-			creatorPrompt := promptui.Prompt{
-				Label: "Enter Creator DID",
+			if did == "" {
+				didPrompt := promptui.Prompt{
+					Label: "Enter Schema DID",
+				}
+				did, err = didPrompt.Run()
+				if err != nil {
+					fmt.Printf("Command failed %v\n", err)
+					return
+				}
 			}
-			creator, err := creatorPrompt.Run()
-			if err != nil {
-				fmt.Printf("Command Failed %v\n", err)
-				return
-			}
-			didPrompt := promptui.Prompt{
-				Label: "Enter Schema DID",
-			}
-			schemaDid, err := didPrompt.Run()
-			if err != nil {
-				fmt.Printf("Command failed %v\n", err)
-				return
-			}
-
 			querySchemaReq := rtmv1.QueryWhatIsRequest{
-				Creator: creator,
-				Did:     schemaDid,
+				Creator: m.GetDID().String(),
+				Did:     did,
 			}
 
 			// query schema
@@ -65,16 +63,57 @@ func bootstrapQuerySchemaCommand(ctx context.Context, logger *golog.Logger) (que
 			}
 
 			cid := querySchemaRes.WhatIs.Schema.Cid
-			fmt.Println(cid)
-
 			definition, err := utils.ResolveIPFS(cid)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			logger.Info(status.Debug, "Schema:", definition)
 
+			defStr, _ := utils.MarshalJsonFmt(definition)
+			logger.Info(status.Debug, "Schema:", defStr)
 		},
 	}
+
+	querySchemaCmd.AddCommand(bootstrapQuerySchemabyCreatorCommand(ctx, logger))
+	return
+}
+
+func bootstrapQuerySchemabyCreatorCommand(ctx context.Context, logger *golog.Logger) (querySchemaByCreatorCmd *cobra.Command) {
+	querySchemaByCreatorCmd = &cobra.Command{
+		Use:   "all",
+		Short: "Use: retrieves all Schemas for user",
+		Run: func(cmd *cobra.Command, args []string) {
+			loginRequest := prompts.LoginPrompt()
+
+			m := binding.InitMotor()
+
+			loginResult, err := utils.Login(m, loginRequest)
+			if err != nil {
+				logger.Fatalf("Login Error: ", err)
+				return
+			}
+			if loginResult.Success {
+				logger.Info(status.Success("Login Successful"))
+			} else {
+				logger.Fatal(status.Error("Login Failed"))
+				return
+			}
+
+			logger.Infof("Querying Schemas for creator %s", m.GetAddress())
+			res, err := m.QueryWhatIsByCreator(rtmv1.QueryWhatIsByCreatorRequest{
+				Creator: m.GetDID().String(),
+			})
+
+			if err != nil {
+				logger.Fatalf("error while querying where is by creator %s: %s", m.GetAddress(), err)
+			}
+
+			for _, wi := range res.WhatIs {
+				b, _ := json.MarshalIndent(wi, "", "\t")
+				fmt.Println(string(b))
+			}
+		},
+	}
+
 	return
 }
