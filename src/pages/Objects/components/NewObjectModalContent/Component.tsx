@@ -50,8 +50,8 @@ function NewObjectModalContentComponent({
 				</div>
 			</div>
 
-			<div className="flex px-8 mb-8">
-				<div className="w-full flex flex-col justify-start">
+			<div className="flex px-8 mb-8 -mr-4">
+				<div className="w-full flex flex-col justify-start pr-4">
 					<div className="text-default text-custom-sm mb-2 font-extrabold">
 						Schema
 					</div>
@@ -75,9 +75,7 @@ function NewObjectModalContentComponent({
 					</div>
 				</div>
 
-				<div className="w-6" />
-
-				<div className="w-full flex flex-col justify-start">
+				<div className="w-full flex flex-col justify-start  pr-4">
 					<div className="text-default text-custom-sm mb-2 font-extrabold">
 						Bucket
 					</div>
@@ -108,24 +106,21 @@ function NewObjectModalContentComponent({
 					Properties
 				</div>
 
-				<div className="overflow-auto flex flex-wrap box-border">
+				<div className="overflow-auto flex flex-wrap box-border -mr-4">
 					{properties?.length &&
 						properties.map((item, index) => (
-							<>
-								<div
-									key={`${item.name}-${index}`}
-									className="box-border mb-4 flex-[48%]"
-								>
-									<div className="text-custom-xs text-subdued pb-1">
-										{item.name}
-									</div>
-									<SchemaField
-										field={{ name: item.name, field: item.field }}
-										onChange={(value) => onChangeProperty({ value, index })}
-									/>
+							<div
+								key={`${item.name}-${index}`}
+								className="box-border flex-[50%] pr-4 mb-4"
+							>
+								<div className="text-custom-xs text-subdued pb-1">
+									{item.name}
 								</div>
-								<div className="w-4 flex-[2%]" />
-							</>
+								<SchemaField
+									field={{ name: item.name, field: item.field }}
+									onChange={(value) => onChangeProperty({ value, index })}
+								/>
+							</div>
 						))}
 				</div>
 			</div>
@@ -156,7 +151,7 @@ const SchemaField = ({ field, onChange }: Props) => {
 		case 1:
 			return (
 				<select
-					className="w-full border border-default-border rounded w-40 p-2"
+					className="border border-default-border rounded w-full p-2"
 					onChange={(event) => onChange(event.target.value)}
 				>
 					<option></option>
