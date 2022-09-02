@@ -89,8 +89,10 @@ go build -o speedway cmd/speedway-cli/main.go
 
 # Known Issues
 <details>
-    <summary>Cannot use types other than string in objects or it casues issues with validation</summary>
-    Workaround: Use strings for all datatypes
+    <summary>Speedway UI: Cannot use types other than string in objects or it casues issues with validation</summary>
+Workaround: Use strings for all datatypes</br>  
+Workaround: Use the cli</br>
+Workaround: Use the <code>--file  &lt;file&gt;</code> flag on the CLI commands
 </details>
 <details>
     <summary>The server sometimes fails due to `Concurrent Map Writes`</summary>
