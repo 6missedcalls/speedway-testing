@@ -46,7 +46,7 @@ function ViewPropertiesComponent({
 									{property.name}
 								</div>
 								<div className="text-custom-xxs font-extrabold text-subdued tracking-custom-tighter ml-4 whitespace-nowrap">
-									{typeSchemaMap[property.field as keyof ItypeSchemaMap]}
+									{typeSchemaMap[property.type as keyof ItypeSchemaMap]}
 								</div>
 							</div>
 						))}

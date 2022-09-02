@@ -1,6 +1,5 @@
 import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
-import { IgetSchemaFields } from "../utils/types"
 
 export const getAllSchemas = async () => {
 	const url = `http://localhost:4040/proxy/schemas?pagination.limit=50000`
@@ -48,22 +47,31 @@ export const createSchema = async (
 	}
 }
 
-export const getSchema = async (schema: IgetSchemaFields) => {
+export type SchemaField = { name: string; type: number }
+type GetSchemaFieldsPayload = { did: string }
+export type GetSchemaFieldsResponse = { fields: SchemaField[] }
+export const getSchemaFields = async (
+	payload: GetSchemaFieldsPayload
+): Promise<GetSchemaFieldsResponse> => {
 	const url = `${BASE_API}/schema/get`
-
-	const payload = JSON.stringify(schema)
-
 	const options = {
 		method: "POST",
 		headers: { "content-type": "application/json" },
-		body: payload,
+		body: JSON.stringify({ schema: payload.did }),
 	}
 
 	try {
 		const response: Response = await fetch(url, options)
 		if (!response.ok) throw new Error(response.statusText)
 		const data = await response.json()
-		return data.definition
+		return {
+			fields: data.definition.fields.map(
+				(field: { name: string; field: string }) => ({
+					name: field.name,
+					type: field.field,
+				})
+			),
+		}
 	} catch (error) {
 		const errorMessage = formatApiError({ error, url, options })
 		throw new Error(errorMessage)

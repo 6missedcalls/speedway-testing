@@ -113,7 +113,7 @@ function NewObjectModalContentContainer({
 			object: properties.reduce(
 				(acc, item) => ({
 					...acc,
-					[item.name]: castValue(item.field, item.value),
+					[item.name]: castValue(item.type, item.value),
 				}),
 				{}
 			),
@@ -130,7 +130,7 @@ function NewObjectModalContentContainer({
 
 		let floatError = false
 		properties.forEach((item) => {
-			if (item.field === 3) {
+			if (item.type === 3) {
 				const splitValue = item.value.split(".")
 				if (
 					splitValue.length &&

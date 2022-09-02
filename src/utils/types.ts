@@ -23,7 +23,7 @@ export interface Iproperty {
 
 export interface IpropertyResponse {
 	name: string
-	field: number
+	type: number
 }
 
 export interface handlePropertyChangeProps {
@@ -33,7 +33,7 @@ export interface handlePropertyChangeProps {
 
 export interface IschemaField {
 	name: string
-	field: number
+	type: number
 }
 export interface Ischema {
 	did: string

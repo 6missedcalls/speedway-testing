@@ -117,7 +117,7 @@ function NewObjectModalContentComponent({
 									{item.name}
 								</div>
 								<SchemaField
-									field={{ name: item.name, field: item.field }}
+									field={{ name: item.name, type: item.type }}
 									onChange={(value) => onChangeProperty({ value, index })}
 								/>
 							</div>
@@ -147,7 +147,7 @@ type Props = {
 }
 
 const SchemaField = ({ field, onChange }: Props) => {
-	switch (field.field) {
+	switch (field.type) {
 		case 1:
 			return (
 				<select

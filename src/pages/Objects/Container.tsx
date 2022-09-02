@@ -18,15 +18,15 @@ import {
 	userGetAllSchemas,
 	userGetSchema,
 } from "../../redux/slices/schemasSlice"
-import { AppDispatch } from "../../redux/store"
+import { GetSchemaFieldsResponse, SchemaField } from "../../service/schemas"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
 import ObjectsPageComponent from "./Component"
 
 function ObjectsPageContainer() {
 	const { setModalContent, openModal } = useContext(AppModalContext)
-	const dispatch = useDispatch<AppDispatch>()
+	const dispatch: Function = useDispatch()
 	const [selectedSchemaDid, setSelectedSchema] = useState("")
-	const [schemaFields, setSchemaFields] = useState("")
+	const [schemaFields, setSchemaFields] = useState<SchemaField[]>([])
 	const objectsList = useSelector(selectObjectsList)
 	const schemasLoading = useSelector(selectSchemasLoading)
 	const bucketsLoading = useSelector(selectBucketsLoading)
@@ -78,11 +78,11 @@ function ObjectsPageContainer() {
 			schema: selectedSchemaData.did,
 		}
 
-		const getSchemaResponse = await dispatch(
+		const getSchemaResponse: GetSchemaFieldsResponse = await dispatch(
 			userGetSchema({ schema: getSchemaPayload })
 		)
 
-		setSchemaFields(getSchemaResponse.payload.fields)
+		setSchemaFields(getSchemaResponse.fields)
 	}
 
 	async function initialize() {
