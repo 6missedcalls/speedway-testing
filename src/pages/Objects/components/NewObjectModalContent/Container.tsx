@@ -13,7 +13,10 @@ import {
 	userCreateObject,
 	userGetAllBucketObjects,
 } from "../../../../redux/slices/objectsSlice"
-import { selectSchemasLoading, userGetSchema } from "../../../../redux/slices/schemasSlice"
+import {
+	selectSchemasLoading,
+	userGetSchema,
+} from "../../../../redux/slices/schemasSlice"
 import { AppDispatch } from "../../../../redux/store"
 import { IobjectPropertyChange, Ischema } from "../../../../utils/types"
 import NewObjectModalContentComponent from "./Component"
@@ -32,7 +35,7 @@ function NewObjectModalContentContainer({
 	schemas,
 }: NewObjectModalContentContainerProps) {
 	const { closeModal } = useContext(AppModalContext)
-	const dispatch = useDispatch<AppDispatch>()
+	const dispatch: Function = useDispatch()
 	const buckets = useSelector(selectBuckets)
 	const [error, setError] = useState("")
 	const [selectedBucket, setSelectedBucket] = useState(buckets[0].did)
@@ -103,7 +106,7 @@ function NewObjectModalContentContainer({
 					return !value ? null : value
 			}
 		}
-		
+
 		const objectPayload = {
 			bucketDid: selectedBucket,
 			schemaDid: selectedSchemaDid,
@@ -128,20 +131,23 @@ function NewObjectModalContentContainer({
 
 		let floatError = false
 		properties.forEach((item) => {
-			if(item.field === 3){
-				const splitValue = item.value.split('.')
-				if(splitValue.length && (splitValue.length < 2 || parseFloat(splitValue[1]) === 0)){
+			if (item.field === 3) {
+				const splitValue = item.value.split(".")
+				if (
+					splitValue.length &&
+					(splitValue.length < 2 || parseFloat(splitValue[1]) === 0)
+				) {
 					setError("Float numbers can't have zero as decimal part.")
 					floatError = true
 				}
 			}
 		})
 
-		if(floatError) return
-		
-		const object = await dispatch(userCreateObject({ ...objectPayload })) as any
-		if(object?.error) {
-			setError('Could not create object or update bucket.')
+		if (floatError) return
+
+		const object = await dispatch(userCreateObject({ ...objectPayload }))
+		if (object?.error) {
+			setError("Could not create object or update bucket.")
 			console.error(error)
 			return
 		}
@@ -166,26 +172,27 @@ function NewObjectModalContentContainer({
 
 	return (
 		<>
-			{loading ? (	
+			{loading ? (
 				<div className="flex flex-col items-center">
 					<div className="w-28 m-20 animate-reverse-spin">
 						<RefreshSvg />
 					</div>
 				</div>
 			) : (
-			<NewObjectModalContentComponent
-				onClose={closeModal}
-				onSave={save}
-				onChangeSchema={setSelectedSchema}
-				onChangeBucket={handleChangeBucket}
-				onChangeProperty={handlePropertiesChange}
-				schemas={schemas}
-				error={error}
-				buckets={buckets}
-				properties={properties}
-				selectedSchemaDid={selectedSchemaDid}
-				selectedBucket={selectedBucket}
-			/>)}
+				<NewObjectModalContentComponent
+					onClose={closeModal}
+					onSave={save}
+					onChangeSchema={setSelectedSchema}
+					onChangeBucket={handleChangeBucket}
+					onChangeProperty={handlePropertiesChange}
+					schemas={schemas}
+					error={error}
+					buckets={buckets}
+					properties={properties}
+					selectedSchemaDid={selectedSchemaDid}
+					selectedBucket={selectedBucket}
+				/>
+			)}
 		</>
 	)
 }
