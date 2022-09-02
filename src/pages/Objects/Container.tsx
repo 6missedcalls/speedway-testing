@@ -70,11 +70,11 @@ function ObjectsPageContainer() {
 
 	async function getSchema() {
 		const selectedSchemaData = schemaMetadata.find(
-			(item) => item.schema.did === selectedSchemaDid
+			(item) => item.did === selectedSchemaDid
 		)!
 		const getSchemaPayload = {
 			address,
-			creator: selectedSchemaData.creator,
+			creator: "",
 			schema: selectedSchemaData.did,
 		}
 
@@ -91,7 +91,7 @@ function ObjectsPageContainer() {
 			dispatch(getAllBuckets(address)),
 		])
 		if (schemaMetadata.length > 0) {
-			setSelectedSchema(schemaMetadata[0].schema.did)
+			setSelectedSchema(schemaMetadata[0].did)
 		}
 	}
 

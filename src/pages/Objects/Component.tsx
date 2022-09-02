@@ -2,11 +2,12 @@ import LayoutMenu from "../../components/LayoutMenu"
 import SearchableList from "../../components/SearchableList"
 import { NebulaIcon } from "@sonr-io/nebula-react"
 import EmptyList from "./components/EmptyList"
-import { Ischema, listTypes, IsearchableListItem } from "../../utils/types"
+import { listTypes, IsearchableListItem } from "../../utils/types"
 import LoadingCircleSvg from "../../assets/svgs/LoadingCircle"
+import { SchemaMeta } from "../../service/schemas"
 
 interface ObjectsPageComponentProps {
-	schemas: Array<Ischema>
+	schemas: Array<SchemaMeta>
 	selectedSchemaDid: string
 	setSelectedSchema: React.Dispatch<React.SetStateAction<string>>
 	openNewObjectModal: () => void
@@ -43,8 +44,8 @@ const ObjectsPageComponent = ({
 									value={selectedSchemaDid}
 								>
 									{schemas.map((item) => (
-										<option key={item.schema.did} value={item.schema.did}>
-											{item.schema.label}
+										<option key={item.did} value={item.did}>
+											{item.label}
 										</option>
 									))}
 								</select>
