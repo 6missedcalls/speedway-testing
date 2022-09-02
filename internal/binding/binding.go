@@ -213,7 +213,8 @@ func (b *SpeedwayBinding) GetBucket(ctx context.Context, bucketDid string, conte
 }
 
 /*
->>>>>>> 2b56c06 (object get no longer enforces schema)
+=======
+>>>>>>> 15cd0f951330d90d644577e1902b9c9367561b50
 Get a list of BucketItems from the bucket and return the list
 */
 func (b *SpeedwayBinding) GetBuckets(ctx context.Context, bucketDid string) ([]*btv1.BucketItem, error) {
@@ -415,14 +416,14 @@ func (b *SpeedwayBinding) UpdateBucketVisibility(ctx context.Context, bucketDid 
 GetContentById and return the content
 */
 func (b *SpeedwayBinding) GetContentById(ctx context.Context, bucketDid string, contentId string) (*btv1.BucketContent, error) {
-	if b.instance == nil {
+	if b.Instance == nil {
 		return &btv1.BucketContent{}, ErrMotorNotInitialized
 	}
 	if !b.loggedIn {
 		return &btv1.BucketContent{}, ErrNotAuthenticated
 	}
 
-	bucket, err := b.instance.GetBucket(bucketDid)
+	bucket, err := b.Instance.GetBucket(bucketDid)
 	if err != nil {
 		fmt.Println(status.Error("GetBucket Error:"), err)
 		return &btv1.BucketContent{}, err
