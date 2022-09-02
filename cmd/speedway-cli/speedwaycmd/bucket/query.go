@@ -2,8 +2,11 @@ package bucket
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"github.com/kataras/golog"
+	"github.com/sonr-io/sonr/pkg/did"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/status"
@@ -11,20 +14,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func bootstrapQueryCommand(ctx context.Context, logger *golog.Logger) (queryBucketByCreatorCmd *cobra.Command) {
-	queryBucketByCreatorCmd = &cobra.Command{
-		Use:   "get",
+func bootstrapSearchCommand(ctx context.Context, logger *golog.Logger) (searchBucketByCreatorCmd *cobra.Command) {
+	searchBucketByCreatorCmd = &cobra.Command{
+		Use:   "search",
 		Short: "Use: get",
 		Run:   func(cmd *cobra.Command, args []string) {},
 	}
-	queryBucketByCreatorCmd.AddCommand(bootstrapQueryBucketbyCreatorCommand(ctx, logger))
+	searchBucketByCreatorCmd.AddCommand(bootstrapSearchBySchemaIdCommand(ctx, logger))
 	return
 }
 
-func bootstrapQueryBucketbyCreatorCommand(ctx context.Context, logger *golog.Logger) (queryBucketByCreatorCmd *cobra.Command) {
-	queryBucketByCreatorCmd = &cobra.Command{
-		Use:   "all",
+func bootstrapSearchBySchemaIdCommand(ctx context.Context, logger *golog.Logger) (searchBucketBySchemaIdCmd *cobra.Command) {
+	searchBucketBySchemaIdCmd = &cobra.Command{
+		Use:   "schema",
 		Short: "Use: retrieves all buckets for user",
+		Long:  "Queries contents of a bucket by a schema returns all content matching by schema did",
+		Args:  cobra.ExactArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
@@ -42,12 +47,37 @@ func bootstrapQueryBucketbyCreatorCommand(ctx context.Context, logger *golog.Log
 				return
 			}
 
-			logger.Infof("Querying buckets for creator")
-			res, err := m.GetBuckets(ctx)
+			bucketDidStr := args[0]
+			_, err = did.ParseDID(bucketDidStr)
 			if err != nil {
-				logger.Fatalf("Error while querying buckets for creator %s %s", m.GetAddress(), err)
+				logger.Fatal("invalid did")
 			}
-			logger.Debug("Bucket count for user: %d", len(res))
+
+			schemaDidStr := args[1]
+			_, err = did.ParseDID(schemaDidStr)
+			if err != nil {
+				logger.Fatal("invalid did")
+			}
+
+			b, err := m.GetBucket(bucketDidStr)
+			if err != nil {
+				logger.Fatalf("Error while getting bucket: %s", err)
+				return
+			}
+			cnt, err := b.ResolveContentBySchema(schemaDidStr)
+			for _, c := range cnt {
+				itemBytes, _ := json.MarshalIndent(c, "", "\t")
+				fmt.Println(string(itemBytes))
+				itemCnt := make(map[string]interface{})
+				err = json.Unmarshal(c.Item, &itemCnt)
+				if err != nil {
+					logger.Errorf("error while deserializing item resolved from search: %s", err)
+					continue
+				}
+
+				fmt.Printf("content: %v", itemCnt)
+			}
+
 		},
 	}
 
