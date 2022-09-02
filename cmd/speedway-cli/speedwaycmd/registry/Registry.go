@@ -9,7 +9,7 @@ import (
 
 func BootstrapRegistryCommand(ctx context.Context, logger *golog.Logger) (registryCmd *cobra.Command) {
 	registryCmd = &cobra.Command{
-		Use:   "registry",
+		Use:   "account",
 		Short: "Provides commands for managing your account on the Sonr Network",
 		Run:   func(cmd *cobra.Command, args []string) {},
 	}
