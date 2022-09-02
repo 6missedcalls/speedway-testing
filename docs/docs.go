@@ -83,13 +83,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.uResponse"
+                            "$ref": "#/definitions/server_routes.uResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -134,13 +134,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.SuccessfulLogin"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.SuccessfulLogin"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedLogin"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedLogin"
                         }
                     }
                 }
@@ -266,13 +266,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.GetBucketResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.GetBucketResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
                         }
                     }
                 }
@@ -333,7 +333,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -427,7 +427,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
                         }
                     }
                 }
@@ -528,13 +528,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/object.ObjectReference"
+                            "$ref": "#/definitions/motor.UploadObjectResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -579,13 +579,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.GetObjectResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.GetObjectResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
                         }
                     }
                 }
@@ -624,13 +624,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.CreateSchemaResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.CreateSchemaResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
                         }
                     }
                 }
@@ -673,13 +673,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.QuerySchemaResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.QuerySchemaResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
                         }
                     }
                 }
@@ -699,13 +699,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.SchemaResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.SchemaResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
                         }
                     }
                 }
@@ -742,7 +742,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "content": {
-                    "$ref": "#/definitions/motor.BucketContent"
+                    "$ref": "#/definitions/types.BucketContent"
                 },
                 "name": {
                     "type": "string"
@@ -897,23 +897,17 @@ const docTemplate = `{
                 "didDocument": {}
             }
         },
-        "motor.BucketContent": {
+        "motor.ObjectReference": {
             "type": "object",
             "properties": {
-                "content_type": {
-                    "description": "Type of the resource",
-                    "type": "integer"
-                },
-                "id": {
-                    "description": "Content id a CID, DID, or unspecified",
+                "cid": {
                     "type": "string"
                 },
-                "item": {
-                    "description": "Raw content serialized to bytes",
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                "did": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
                 }
             }
         },
@@ -940,23 +934,23 @@ const docTemplate = `{
                 }
             }
         },
+        "motor.UploadObjectResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "reference": {
+                    "$ref": "#/definitions/motor.ObjectReference"
+                }
+            }
+        },
         "object.Object": {
             "type": "object",
             "additionalProperties": true
-        },
-        "object.ObjectReference": {
-            "type": "object",
-            "properties": {
-                "cid": {
-                    "type": "string"
-                },
-                "did": {
-                    "type": "string"
-                },
-                "label": {
-                    "type": "string"
-                }
-            }
         },
         "server_routes.CAResponseBody": {
             "type": "object",
@@ -970,7 +964,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "content": {
-                    "$ref": "#/definitions/motor.BucketContent"
+                    "$ref": "#/definitions/types.BucketContent"
                 },
                 "name": {
                     "type": "string"
@@ -1169,6 +1163,26 @@ const docTemplate = `{
                 }
             }
         },
+        "types.BucketContent": {
+            "type": "object",
+            "properties": {
+                "content_type": {
+                    "description": "Type of the resource",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "Content id a CID, DID, or unspecified",
+                    "type": "string"
+                },
+                "item": {
+                    "description": "Raw content serialized to bytes",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
         "types.BucketItem": {
             "type": "object",
             "properties": {
@@ -1198,6 +1212,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "creator": {
+                    "type": "string"
+                },
+                "did": {
                     "description": "Represents the types of fields a schema can have\nthe DID for this schema",
                     "type": "string"
                 },

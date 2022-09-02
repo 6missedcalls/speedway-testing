@@ -381,27 +381,27 @@ func (b *SpeedwayBinding) UpdateBucketVisibility(ctx context.Context, bucketDid 
 /*
 GetContentById and return the content
 */
-func (b *SpeedwayBinding) GetContentById(ctx context.Context, bucketDid string, contentId string) (rtmv1.BucketContent, error) {
+func (b *SpeedwayBinding) GetContentById(ctx context.Context, bucketDid string, contentId string) (*btv1.BucketContent, error) {
 	if b.instance == nil {
-		return rtmv1.BucketContent{}, ErrMotorNotInitialized
+		return &btv1.BucketContent{}, ErrMotorNotInitialized
 	}
 	if !b.loggedIn {
-		return rtmv1.BucketContent{}, ErrNotAuthenticated
+		return &btv1.BucketContent{}, ErrNotAuthenticated
 	}
 
 	bucket, err := b.instance.GetBucket(bucketDid)
 	if err != nil {
 		fmt.Println(status.Error("GetBucket Error:"), err)
-		return rtmv1.BucketContent{}, err
+		return &btv1.BucketContent{}, err
 	}
 
 	content, err := bucket.GetContentById(contentId)
 	if err != nil {
 		fmt.Println(status.Error("GetContent Error:"), err)
-		return rtmv1.BucketContent{}, err
+		return &btv1.BucketContent{}, err
 	}
 
-	return *content, nil
+	return content, nil
 }
 
 /*

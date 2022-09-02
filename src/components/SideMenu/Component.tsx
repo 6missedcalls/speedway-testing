@@ -65,7 +65,7 @@ function SideMenuComponent({ navigate, currentPath }: SideMenuComponentProps) {
 
 				<a
 					className="flex px-2 h-10 font-extrabold"
-					href="https://github.com/sonr-io/speedway/blob/dev/docs/swagger.yaml"
+					href="http://localhost:4040/docs/index.html"
 					target="_blank"
 					rel="noreferrer"
 				>

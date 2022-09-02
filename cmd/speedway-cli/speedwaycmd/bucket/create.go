@@ -2,6 +2,7 @@ package bucket
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/kataras/golog"
@@ -79,20 +80,29 @@ func bootstrapCreateBucketCommand(ctx context.Context, logger *golog.Logger) (cr
 			}
 
 			req.Role, err = utils.ConvertBucketRole(role)
+
 			if err != nil {
-				return
+				logger.Fatalf("Error while assinging bucket role: %s", err)
 			}
+
+			items := prompts.BucketContentPrompt(logger)
+			req.Content = items
+
 			logger.Info("Creating bucket with label: ", bucketLabel)
-
-			res, err := m.CreateBucket(ctx, req)
+			logger.Info("Creating bucket with role: ", role)
+			logger.Info("Creating bucket with visibility: ", visibility)
+			resp, err := m.CreateBucket(ctx, req)
 			if err != nil {
-				logger.Fatal("create bucket error: ", err)
+				logger.Fatal("error while creating bucket: ", err)
 				return
 			}
-
-			serv := res.CreateBucketServiceEndpoint()
-
-			logger.Info("Bucket created: uri: ", serv.ID)
+			logger.Info("Bucket created")
+			wiResp, err := m.QueryWhereIs(rtmv1.QueryWhereIsRequest{
+				Creator: m.GetAddress(),
+				Did:     resp.GetDID(),
+			})
+			b, err := json.MarshalIndent(wiResp, "", "\t")
+			fmt.Print(status.Success(string(b)))
 		},
 	}
 
