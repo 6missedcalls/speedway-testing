@@ -19,7 +19,7 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 	buildObjCmd = &cobra.Command{
 		Use:   "build",
 		Short: "Use: build",
-		Long:  "Use: build",
+		Long:  "Use: builds an object verified against a schema, if no flags are provided data will be prompted for",
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 

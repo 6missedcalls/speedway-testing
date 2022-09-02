@@ -19,7 +19,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 	createSchemaCmd = &cobra.Command{
 		Use:   "create",
 		Short: "Use: create",
-
+		Long:  "Creates a Schema definition with either a provided file path. If no flags are provided data will be prompted for",
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
@@ -115,6 +115,6 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 		},
 	}
 
-	createSchemaCmd.PersistentFlags().String("file", "", "path to an object definition matching a provided schema")
+	createSchemaCmd.PersistentFlags().String("file", "", "an absolute path to an object definition matching a provided schema")
 	return
 }
