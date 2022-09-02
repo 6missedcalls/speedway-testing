@@ -84,9 +84,9 @@ function ObjectsPageContainer() {
 
 		setSchemaFields(getSchemaResponse.payload.fields)
 	}
-
+	
 	async function initialize() {
-		await Promise.all([dispatch(userGetAllSchemas), dispatch(getAllBuckets)])
+		await Promise.all([dispatch(userGetAllSchemas), dispatch(getAllBuckets(address))])
 		if (schemaMetadata.length > 0) {
 			setSelectedSchema(schemaMetadata[0].schema.did)
 		}
