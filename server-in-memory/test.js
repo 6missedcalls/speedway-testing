@@ -29,8 +29,8 @@ it("logs an account in", async () => {
 	})
 
 	const { body: result } = await app.post("/api/v1/account/login").send({
-		Address: responseAuth.body.address,
-		Password: "123",
+		address: responseAuth.body.address,
+		password: "123",
 	})
 	expect(result.address).toBeAddress()
 })
@@ -43,8 +43,8 @@ it("checks for logged in account", async () => {
 		password: "123",
 	})
 	await app.post("/api/v1/account/login").send({
-		Address: responseAuth.body.address,
-		Password: "123",
+		address: responseAuth.body.address,
+		password: "123",
 	})
 
 	const { body: result } = await app.get("/api/v1/account/info")

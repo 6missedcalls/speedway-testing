@@ -64,10 +64,10 @@ app.post("/api/v1/account/create", async ({ body }, res) => {
 
 app.post("/api/v1/account/login", async ({ body }, res) => {
 	const account = await storage.getItem(
-		accountStoreKey(body.Address.toLowerCase())
+		accountStoreKey(body.address.toLowerCase())
 	)
 
-	if (!account || account.password !== body.Password) {
+	if (!account || account.password !== body.password) {
 		res.status(500).send()
 		return
 	}

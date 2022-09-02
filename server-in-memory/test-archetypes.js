@@ -6,8 +6,8 @@ export const accountLoggedIn = async (app) => {
 	})
 
 	await app.post("/api/v1/account/login").send({
-		Address: address,
-		Password: "123",
+		address,
+		password: "123",
 	})
 
 	return address

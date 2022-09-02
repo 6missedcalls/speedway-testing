@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../store"
-import { createAccount, login } from "../../service/authentication"
+import { createAccount, login } from "../../service/account"
 
 interface loginProps {
 	walletAddress: string
@@ -29,7 +29,7 @@ export const userLogin = createAsyncThunk(
 	"authentication/login",
 	async ({ walletAddress, password }: loginProps, thunkAPI) => {
 		try {
-			const data = await login(walletAddress, password)
+			const data = await login({address: walletAddress, password})
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
@@ -41,7 +41,7 @@ export const userCreateAccount = createAsyncThunk(
 	"authentication/createAccount",
 	async ({ password }: createAccountProps, thunkAPI) => {
 		try {
-			const data = await createAccount(password)
+			const data = await createAccount({ password })
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
