@@ -81,10 +81,7 @@ function SearchableListComponent({
 											props,
 										} = row[key] as IsearchableListItemData
 										return (
-											<td
-												className="px-4 py-5"
-												key={`${key}-${itemIndex}`}
-											>
+											<td className="px-4 py-5" key={`${key}-${itemIndex}`}>
 												{text}
 												{Component && <Component {...props} />}
 											</td>

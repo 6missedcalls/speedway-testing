@@ -29,7 +29,7 @@ export const userLogin = createAsyncThunk(
 	"authentication/login",
 	async ({ walletAddress, password }: loginProps, thunkAPI) => {
 		try {
-			const data = await login({address: walletAddress, password})
+			const data = await login({ address: walletAddress, password })
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
