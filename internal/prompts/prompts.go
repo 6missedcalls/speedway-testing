@@ -32,8 +32,6 @@ func fallbackLoginPrompt() (string, error) {
 }
 
 func LoginPrompt() rtmv1.LoginRequest {
-	fmt.Println(status.Info, "Attempting Auto Login", status.Reset)
-
 	// Load the address from address.snr if it exists
 	address, err := storage.LoadInfo("address.snr")
 	// if error or address is empty, prompt for address with fallback prompt
