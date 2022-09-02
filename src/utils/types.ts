@@ -3,11 +3,6 @@ export enum listTypes {
 	object,
 }
 
-export type loginPayload = {
-	Address: string
-	Password: string
-}
-
 export interface IlistItem {
 	name: string
 	did: string
@@ -78,6 +73,8 @@ export interface IobjectPropertyChange {
 export type NewBucketPayload = {
 	label: string
 	creator: string
+	visibility?: string
+	role?: string
 }
 
 export type Bucket = {
@@ -101,4 +98,8 @@ export interface IsearchableListItem {
 	[key: string]: {
 		[key: string]: IsearchableListItemData
 	}
+}
+
+export interface loginPayload {
+	address: string
 }

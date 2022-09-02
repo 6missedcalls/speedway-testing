@@ -5,7 +5,7 @@ import SearchableListComponent from "./Component"
 interface SearchableListContainerProps {
 	initialList: Array<IsearchableListItem>
 	type: listTypes
-	searchableAndSortableFieldKey: string
+	searchableAndSortableFieldKey?: string
 	paginationSize?: number
 	handleOpenModal?: () => void
 	loading: boolean
@@ -50,6 +50,8 @@ function SearchableListContainer({
 	}
 
 	function getOrderedList(previousList: Array<IsearchableListItem>) {
+		if (!searchableAndSortableFieldKey) return previousList
+
 		let orderedList
 		if (orderAsc) {
 			orderedList = [...previousList].sort(

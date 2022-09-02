@@ -54,7 +54,7 @@ func (ns *NebulaServer) UpdateBucketLabel(c *gin.Context) {
 	updateContent, err := b.UpdateBucketLabel(context.Background(), r.BucketDid, r.Label)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: "Update Bucket Error",
+			Error: err.Error(),
 		})
 		return
 	}

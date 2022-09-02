@@ -10,8 +10,8 @@ COPY . .
 
 ENV RPDisplayName = "Sonr - Speedway"
 ENV RPID = "localhost"
-ENV RPOrigin = "http://0.0.0.0:8080"
-ENV Adress = "0.0.0.0:8080"
+ENV RPOrigin = "http://0.0.0.0:4040"
+ENV Adress = "0.0.0.0:4040"
 ENV StaticDir = "./build"
 ENV SONR_RPC_ADDR_PUBLIC = "137.184.190.146:9090"
 

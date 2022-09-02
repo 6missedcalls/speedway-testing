@@ -8,7 +8,8 @@ interface NewSchemaModalContentComponentProps {
 	handlePropertyChange: ({ index, data }: handlePropertyChangeProps) => void
 	addProperty: () => void
 	schemaName: string
-	setSchemaName: React.Dispatch<React.SetStateAction<string>>
+	error: string
+	onChangeSchemaName: (value: string) => void
 	saveSchema: () => void
 }
 
@@ -18,7 +19,8 @@ function NewSchemaModalContentComponent({
 	handlePropertyChange,
 	addProperty,
 	schemaName,
-	setSchemaName,
+	error,
+	onChangeSchemaName,
 	saveSchema,
 }: NewSchemaModalContentComponentProps) {
 	return (
@@ -43,7 +45,7 @@ function NewSchemaModalContentComponent({
 						type="text"
 						placeholder="Schema Name"
 						value={schemaName}
-						onChange={(event) => setSchemaName(event.target.value)}
+						onChange={(event) => onChangeSchemaName(event.target.value)}
 					/>
 				</div>
 				<div className="flex justify-between mb-4 text-default text-custom-sm font-extrabold">
@@ -74,6 +76,11 @@ function NewSchemaModalContentComponent({
 					skin="transparent"
 				/>
 			</div>
+			{error && (
+				<div className="pl-8">
+					<span className="text-tertiary-red block text-xs">{error}</span>
+				</div>
+			)}
 			<div className="dark bg-surface-default w-full rounded-b-2xl justify-end flex relative">
 				<div className="absolute rounded-b-2xl w-full h-6 bg-white -top-px" />
 				<Button

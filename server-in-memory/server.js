@@ -59,11 +59,13 @@ app.post("/api/v1/account/create", async ({ body }, res) => {
 		password,
 	})
 
-	res.json({ Address: address })
+	res.json({ address })
 })
 
 app.post("/api/v1/account/login", async ({ body }, res) => {
-	const account = await storage.getItem(accountStoreKey(body.Address))
+	const account = await storage.getItem(
+		accountStoreKey(body.Address.toLowerCase())
+	)
 
 	if (!account || account.password !== body.Password) {
 		res.status(500).send()
@@ -71,7 +73,7 @@ app.post("/api/v1/account/login", async ({ body }, res) => {
 	}
 
 	sessionAddress = account.address
-	res.json({ Address: account.address })
+	res.json({ address: account.address })
 })
 
 app.get("/api/v1/account/info", async (_, res) => {
@@ -133,7 +135,7 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 
 app.post("/api/v1/schema/get", async ({ body }, res) => {
 	const schema = await storage.getItem(schemaStoreKey(body.schema))
-	res.json(schema)
+	res.json({ definition: schema })
 })
 
 /// BUCKETS
@@ -144,7 +146,7 @@ app.post("/api/v1/bucket/create", async ({ body }, res) => {
 		did,
 		label: body.label,
 		creator: body.creator,
-		content: [{}],
+		content: [],
 	}
 
 	const allBuckets = (await storage.getItem("buckets")) || []
@@ -152,27 +154,24 @@ app.post("/api/v1/bucket/create", async ({ body }, res) => {
 	await storage.setItem("buckets", allBuckets)
 
 	res.json({
-		"service-information": { serviceEndpoint: { did } },
+		service: { serviceEndpoint: { did } },
 	})
 })
 
-app.post("/api/v1/bucket/update", async ({ body }, res) => {
+app.post("/api/v1/bucket/update-items", async ({ body }, res) => {
 	const allBuckets = await storage.getItem("buckets")
-	const bucket = _.find(allBuckets, { did: body.did })
-	bucket.content.push(body.content)
+	const bucket = _.find(allBuckets, { did: body.bucketDid })
+	bucket.content = _.map(body.content, (c) => ({
+		uri: c.uri,
+		schema_did: c.schemaDid,
+	}))
 	await storage.setItem("buckets", allBuckets)
 	res.json({})
 })
 
 app.post("/api/v1/bucket/get", async ({ body }, res) => {
 	const allBuckets = await storage.getItem("buckets")
-	const bucket = _.find(allBuckets, { did: body.did })
-	res.json(bucket.content)
-})
-
-app.post("/api/v1/bucket/content-compatible", async ({ body }, res) => {
-	const allBuckets = await storage.getItem("buckets")
-	const bucket = _.find(allBuckets, { did: body.bucket })
+	const bucket = _.find(allBuckets, { did: body.bucketDid })
 	const objects = await Promise.all(
 		_.chain(bucket.content)
 			.filter("uri")
@@ -181,7 +180,23 @@ app.post("/api/v1/bucket/content-compatible", async ({ body }, res) => {
 			.map(storage.getItem)
 			.valueOf()
 	)
-	res.json(objects)
+	const objectItems = _.reduce(
+		objects,
+		(acc, object) => {
+			acc[object.cid] = btoa(JSON.stringify(_.omit(object, ["cid", "schema"])))
+			return acc
+		},
+		{}
+	)
+
+	const contents = _.map(bucket.content, (content) => ({
+		uri: content.uri,
+		schemaDid: content.schema_did,
+		content: {
+			item: objectItems[content.uri],
+		},
+	}))
+	res.json({ bucket: contents })
 })
 
 /// OBJECTS
@@ -205,16 +220,18 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 	await storage.setItem(objectStoreKey(cid), object)
 
 	res.json({
-		reference: {
-			Label: body.Label,
-			Cid: cid,
+		objectUpload: {
+			Reference: {
+				Label: body.Label,
+				Cid: cid,
+			},
 		},
 	})
 })
 
 app.post("/api/v1/object/get", async ({ body }, res) => {
 	const object = await storage.getItem(objectStoreKey(body.ObjectCid))
-	res.json(object)
+	res.json({ object: object })
 })
 
 /// CHAIN PROXY

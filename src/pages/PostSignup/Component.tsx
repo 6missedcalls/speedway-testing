@@ -12,7 +12,7 @@ const PostSignupComponent = ({
 	return (
 		<div className="flex items-center dark text-default bg-surface-default h-screen">
 			<div className="ml-32 w-[480px]">
-				<h1 className="uppercase text-4xl font-extrabold mb-10 break-words leading-tight">
+				<h1 className="text-4xl font-extrabold mb-10 break-words leading-tight">
 					{address}
 				</h1>
 
