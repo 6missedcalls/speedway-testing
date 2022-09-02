@@ -17,7 +17,6 @@ import {
 	selectSchemasLoading,
 	userGetSchema,
 } from "../../../../redux/slices/schemasSlice"
-import { AppDispatch } from "../../../../redux/store"
 import { IobjectPropertyChange, Ischema } from "../../../../utils/types"
 import NewObjectModalContentComponent from "./Component"
 

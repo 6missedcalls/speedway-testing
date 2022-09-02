@@ -17,7 +17,6 @@ import {
 } from "@sonr-io/validation/dist/validation"
 import validate from "@sonr-io/validation/dist/validator"
 import Signup from "./Component"
-import { AppDispatch } from "../../redux/store"
 import { loginPayload } from "../../utils/types"
 
 const passwordRules = [
