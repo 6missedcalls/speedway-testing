@@ -15,34 +15,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func convertSchemaKind(kind string) types.SchemaKind {
-
-	schemaKind := types.SchemaKind_STRING
-	switch kind {
-	case "LIST":
-		schemaKind = types.SchemaKind_LIST
-	case "BOOL":
-		schemaKind = types.SchemaKind_BOOL
-	case "INT":
-		schemaKind = types.SchemaKind_INT
-	case "FLOAT":
-		schemaKind = types.SchemaKind_FLOAT
-	case "STRING":
-		schemaKind = types.SchemaKind_STRING
-	case "BYTES":
-		schemaKind = types.SchemaKind_BYTES
-	case "LINK":
-		schemaKind = types.SchemaKind_LINK
-	}
-
-	return schemaKind
-}
-
 func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (createSchemaCmd *cobra.Command) {
 	createSchemaCmd = &cobra.Command{
 		Use:   "create",
 		Short: "Use: create",
-
+		Long:  "Creates a Schema definition with either a provided file path. If no flags are provided data will be prompted for",
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
@@ -60,59 +37,72 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 				return
 			}
 
-			logger.Info(status.Info, "Creating schema...")
-			schemaPrompt := promptui.Prompt{
-				Label: "Enter the Schema Label",
-			}
-			schemaLabel, err := schemaPrompt.Run()
-			if err != nil {
-				fmt.Printf("Command failed %v\n", err)
-				return
-			}
-			fields := make(map[string]types.SchemaKind)
-
-			prompt := promptui.Prompt{
-				Label: "Enter your Schema Fields",
-			}
-
-			var repeat bool
-			for !repeat {
-				// make schemaFields []string
-				schemaField, err := prompt.Run()
+			logger.Info("Creating schema...")
+			var label string = ""
+			var createSchemaRequest rtmv1.CreateSchemaRequest
+			if label, err = cmd.Flags().GetString("label"); err == nil && label == "" {
+				schemaPrompt := promptui.Prompt{
+					Label: "Enter the Schema Label",
+				}
+				label, err = schemaPrompt.Run()
 				if err != nil {
 					fmt.Printf("Command failed %v\n", err)
 					return
 				}
-				// for every schemaFields, prompt for the type of the field
-				selectSchemaKind := promptui.Select{
-					Label: "Select a Schema Field",
-					Items: []string{
-						"LIST",
-						"BOOL",
-						"INT",
-						"FLOAT",
-						"STRING",
-						"BYTES",
-						"LINK",
-					},
-				}
-				_, result, err := selectSchemaKind.Run()
-				if err != nil {
-					fmt.Printf("Prompt failed %v\n", err)
-					return
-				}
-				sk := convertSchemaKind(result)
-				fields[schemaField] = sk
-				repeat = prompts.QuitSelector("Create another Schema Field?")
 			}
 
-			createSchemaRequest := rtmv1.CreateSchemaRequest{
-				Label:  schemaLabel,
-				Fields: fields,
+			fields := make(map[string]types.SchemaKind)
+			if path, err := cmd.Flags().GetString("file"); err == nil && path == "" {
+				prompt := promptui.Prompt{
+					Label: "Enter your Schema Fields",
+				}
+
+				var repeat bool
+				for !repeat {
+					// make schemaFields []string
+					schemaField, err := prompt.Run()
+					if err != nil {
+						fmt.Printf("Command failed %v\n", err)
+						return
+					}
+					// for every schemaFields, prompt for the type of the field
+					selectSchemaKind := promptui.Select{
+						Label: "Select a Schema Field",
+						Items: []string{
+							"LIST",
+							"BOOL",
+							"INT",
+							"FLOAT",
+							"STRING",
+							"BYTES",
+							"LINK",
+						},
+					}
+					_, result, err := selectSchemaKind.Run()
+					if err != nil {
+						fmt.Printf("Prompt failed %v\n", err)
+						return
+					}
+					sk := utils.ConvertSchemaKind(result)
+					fields[schemaField] = sk
+					repeat = prompts.QuitSelector("Create another Schema Field?")
+
+					createSchemaRequest = rtmv1.CreateSchemaRequest{
+						Label:  label,
+						Fields: fields,
+					}
+				}
+			} else {
+				createSchemaRequest, err = utils.LoadSchemaFieldDefinitionFromDisk(path)
+				if err != nil {
+					logger.Fatalf("Error while loading schema fields from disk %s", err)
+				}
 			}
 
 			// create schema
-			logger.Info(status.Debug, "Schema request: ", createSchemaRequest)
+			reqStr, _ := utils.MarshalJsonFmt(createSchemaRequest)
+			logger.Debugf("Schema request: \n%s", reqStr)
+
 			createSchemaResult, err := m.CreateSchema(createSchemaRequest)
 			if err != nil {
 				logger.Fatalf(status.Error("CreateSchema Error: "), err)
@@ -120,8 +110,11 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 			}
 			logger.Info(status.Success("Create Schema Successful"))
 			// desearialize the scehma result to get the schema did
-			logger.Info(status.Debug, "Schema WhatIs: ", createSchemaResult.WhatIs.Schema)
+			fmtRes, _ := utils.MarshalJsonFmt(createSchemaResult)
+			fmt.Printf("Schema WhatIs: \n %s", fmtRes)
 		},
 	}
+
+	createSchemaCmd.PersistentFlags().String("file", "", "an absolute path to an object definition matching a provided schema")
 	return
 }
