@@ -44,10 +44,23 @@ func bootstrapCreateBucketCommand(ctx context.Context, logger *golog.Logger) (cr
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			req := rtmv1.CreateBucketRequest{
-				Label: bucketLabel,
+
+			// prompt for an owner (this can overwrite the Creator address)
+			// TODO: This is a short term solution until logging in from other devices works
+			creatorPrompt := promptui.Prompt{
+				Label:   "Enter an Owner address",
+				Default: loginRequest.Did,
 			}
-			req.Creator = loginRequest.Did
+			creator, err := creatorPrompt.Run()
+			if err != nil {
+				fmt.Printf("Command failed %v\n", err)
+				return
+			}
+
+			req := rtmv1.CreateBucketRequest{
+				Creator: creator,
+				Label:   bucketLabel,
+			}
 			visibilityPrompt := promptui.Select{
 				Label: "Bucket Visibility",
 				Items: []string{
