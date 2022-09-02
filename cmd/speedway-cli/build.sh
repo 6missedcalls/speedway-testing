@@ -6,6 +6,6 @@ go build -o bin/speedway
 echo "Done!"
 
 echo "Speedway CLI 🏎  Installing..."
-mv bin/speedway /usr/local/bin/speedway
+mv bin/speedway ~/go/bin/speedway
 rm -rf bin
 echo "Done!"
