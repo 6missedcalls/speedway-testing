@@ -1,0 +1,9 @@
+{
+    "cSpell.words": [
+        "IPLD",
+        "promptui"
+    ],
+    "cSpell.enableFiletypes": [
+        "!go"
+    ]
+}

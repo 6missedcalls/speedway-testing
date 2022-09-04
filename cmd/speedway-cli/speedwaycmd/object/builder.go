@@ -4,10 +4,13 @@ import (
 	"context"
 	"fmt"
 	"math"
+	"strconv"
 
 	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
+	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
+	"github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/status"
@@ -108,7 +111,7 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 						fmt.Printf("Command failed %v\n", err)
 						return
 					}
-					err = objBuilder.Set(field.Name, value)
+					err = setNormalizedValueFromPrompt(objBuilder, field, value)
 					if err != nil {
 						fmt.Printf("Command failed %v\n", err)
 						return
@@ -172,4 +175,31 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 	buildObjCmd.PersistentFlags().String("file", "", "path to an object definition matching a provided schema")
 	buildObjCmd.PersistentFlags().String("label", "", "given label for the object being built")
 	return
+}
+
+func setNormalizedValueFromPrompt(builder *object.ObjectBuilder, field *types.SchemaKindDefinition, value string) error {
+	switch field.GetKind() {
+	case types.SchemaKind_STRING:
+		return builder.Set(field.Name, value)
+	case types.SchemaKind_INT:
+		intValue, err := strconv.Atoi(value)
+		if err != nil {
+			return err
+		}
+		return builder.Set(field.Name, intValue)
+	case types.SchemaKind_FLOAT:
+		floatValue, err := strconv.ParseFloat(value, 64)
+		if err != nil {
+			return err
+		}
+		return builder.Set(field.Name, floatValue)
+	case types.SchemaKind_BOOL:
+		boolValue, err := strconv.ParseBool(value)
+		if err != nil {
+			return err
+		}
+		return builder.Set(field.Name, boolValue)
+	default:
+		return fmt.Errorf("Parsing the %s IPLD type has not been implemented yet in speedway.", field.GetKind())
+	}
 }
