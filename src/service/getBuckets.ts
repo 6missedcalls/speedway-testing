@@ -7,7 +7,7 @@ type GetBucketsResponse = { buckets: Bucket[] }
 const getBuckets = async ({
 	address,
 }: GetBucketsPayload): Promise<GetBucketsResponse> => {
-	const url = `http://localhost:4040/proxy/buckets?pagination.limit=50000`
+	const url = `http://localhost:4040/proxy/buckets`
 	const options = {
 		method: "GET",
 		headers: { "content-type": "application/json" },
