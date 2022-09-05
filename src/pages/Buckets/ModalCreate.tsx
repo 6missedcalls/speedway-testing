@@ -23,12 +23,7 @@ const ModalCreateBucket = () => {
 			return
 		}
 		await dispatch(
-			userCreateBucket({
-				label,
-				role: "application",
-				visibility: "public",
-				creator: address,
-			})
+			userCreateBucket({label, address})
 		)
 		dispatch(userGetAllBuckets(address))
 		closeModal()

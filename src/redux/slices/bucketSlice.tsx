@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import addObjectToBucket from "../../service/addObjectToBucket"
+import createBucket from "../../service/createBucket"
 import getBuckets from "../../service/getBuckets"
-import { BASE_API } from "../../utils/constants"
-import { Bucket, NewBucketPayload } from "../../utils/types"
+import { Bucket } from "../../utils/types"
 import { RootState } from "../store"
 
 export const selectBuckets = (state: RootState) => {
@@ -50,12 +50,12 @@ export const updateBucket = createAsyncThunk(
 
 export const userCreateBucket = createAsyncThunk(
 	"bucket/create",
-	async (bucket: NewBucketPayload) => {
-		return await fetch(`${BASE_API}/bucket/create`, {
-			method: "POST",
-			headers: { "content-type": "application/json" },
-			body: JSON.stringify(bucket),
-		}).then((response) => response.json())
+	async ({ label, address }: { label: string; address: string }, thunkAPI) => {
+		try {
+			await createBucket({ label, address })
+		} catch (err) {
+			return thunkAPI.rejectWithValue(err)
+		}
 	}
 )
 
