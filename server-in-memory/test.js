@@ -309,3 +309,19 @@ it("gets a bucket content", async () => {
 	expect(result.bucket[0].content).toHaveProperty("item")
 	expect(result.bucket[0].content.item).toBe("eyJmaXJzdE5hbWUiOiJNYXJjZWwifQ==")
 })
+
+it('responds with null when bucket is empty', async () => {
+	const address = await accountLoggedIn(app)
+
+	const responseBucket = await app.post("/api/v1/bucket/create").send({
+		label: "Mars colony",
+		creator: address,
+	})
+	const bucketDid = responseBucket.body.service.serviceEndpoint.did
+
+	const { body: result } = await app.post("/api/v1/bucket/get").send({
+		bucketDid: bucketDid,
+	})
+
+	expect(result.bucket).toBe(null)
+})

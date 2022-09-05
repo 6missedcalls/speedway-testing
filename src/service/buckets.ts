@@ -62,17 +62,17 @@ type GetBucketResponse = { objects: ObjectData[] }
 export const getBucket = async ({
 	did,
 }: GetBucketPayload): Promise<GetBucketResponse> => {
-	const url = `${BASE_API}/bucket/get`
-	const options = {
-		method: "POST",
-		headers: { "content-type": "application/json" },
-		body: JSON.stringify({ bucketDid: did }),
-	}
-
 	try {
-		const response: Response = await fetch(url, options)
+		const response: Response = await fetch(`${BASE_API}/bucket/get`, {
+			method: "POST",
+			headers: { "content-type": "application/json" },
+			body: JSON.stringify({ bucketDid: did }),
+		})
 		if (!response.ok) throw new Error(response.statusText)
 		const data = await response.json()
+
+		if (data.bucket === null) return { objects: [] }
+
 		return {
 			objects: data.bucket.map((object: any) => ({
 				cid: object.uri,
