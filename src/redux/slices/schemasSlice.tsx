@@ -3,7 +3,7 @@ import { RootState } from "../store"
 import { IgetSchemaFields, InewSchema } from "../../utils/types"
 import {
 	createSchema,
-	getAllSchemas,
+	getSchemaMetadata,
 	getSchemaFields,
 	SchemaMeta,
 } from "../../service/schemas"
@@ -20,7 +20,7 @@ export const userGetAllSchemas = createAsyncThunk(
 	"schemas/getAll",
 	async (address: string, thunkAPI) => {
 		try {
-			const data = await getAllSchemas({ address })
+			const data = await getSchemaMetadata({ address })
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)

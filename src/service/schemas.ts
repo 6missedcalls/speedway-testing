@@ -5,7 +5,7 @@ import { formatApiError } from "../utils/errors"
 export type SchemaMeta = { did: string; label: string }
 type GetAllSchemasPayload = { address: string }
 type GetAllSchemasResponse = { schemas: SchemaMeta[] }
-export const getAllSchemas = async ({
+export const getSchemaMetadata = async ({
 	address,
 }: GetAllSchemasPayload): Promise<GetAllSchemasResponse> => {
 	const url = `http://localhost:4040/proxy/schemas?pagination.limit=50000`
