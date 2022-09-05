@@ -208,10 +208,10 @@ app.post("/api/v1/bucket/get", async ({ body }, res) => {
 /// OBJECTS
 
 app.post("/api/v1/object/build", async ({ body }, res) => {
-	const schema = await storage.getItem(schemaStoreKey(body.SchemaDid))
+	const schema = await storage.getItem(schemaStoreKey(body.schemaDid))
 
 	const fieldsExpected = _.map(schema.fields, "name")
-	const fieldsReceived = _.keys(body.Object)
+	const fieldsReceived = _.keys(body.object)
 	if (_.difference(fieldsExpected, fieldsReceived).length > 0) {
 		res.status(500).json({ error: "Object Upload Failed" })
 		return
@@ -220,15 +220,15 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 	const cid = generateCid()
 	const object = {
 		cid,
-		schema: body.SchemaDid,
-		...body.Object,
+		schema: body.schemaDid,
+		...body.object,
 	}
 	await storage.setItem(objectStoreKey(cid), object)
 
 	res.json({
 		objectUpload: {
 			reference: {
-				Label: body.Label,
+				Label: body.label,
 				Cid: cid,
 			},
 		},
@@ -236,7 +236,7 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 })
 
 app.post("/api/v1/object/get", async ({ body }, res) => {
-	const object = await storage.getItem(objectStoreKey(body.ObjectCid))
+	const object = await storage.getItem(objectStoreKey(body.objectCid))
 	res.json({ object: object })
 })
 

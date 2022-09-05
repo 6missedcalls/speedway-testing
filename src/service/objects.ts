@@ -1,18 +1,20 @@
 import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
-import { InewObject } from "../utils/types"
 
+type CreateObjectPayload = {
+	schemaDid: string
+	objectData: { [key: string]: any }
+}
 export const createObject = async ({
 	schemaDid,
-	label,
-	object,
-}: InewObject) => {
+	objectData,
+}: CreateObjectPayload) => {
 	const url = `${BASE_API}/object/build`
 
 	const payload = JSON.stringify({
-		SchemaDid: schemaDid,
-		Label: label,
-		Object: object,
+		label: "",
+		schemaDid: schemaDid,
+		object: objectData,
 	})
 
 	const options = {
