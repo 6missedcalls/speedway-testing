@@ -22,9 +22,7 @@ const ModalCreateBucket = () => {
 			setError("Bucket Name is required")
 			return
 		}
-		await dispatch(
-			userCreateBucket({label, address})
-		)
+		await dispatch(userCreateBucket({ label, address }))
 		dispatch(userGetAllBuckets(address))
 		closeModal()
 	}

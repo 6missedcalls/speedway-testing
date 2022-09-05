@@ -1,5 +1,5 @@
-import { BASE_API } from "../utils/constants";
-import { formatApiError } from "../utils/errors";
+import { BASE_API } from "../utils/constants"
+import { formatApiError } from "../utils/errors"
 
 type LoginPayload = { address: string; password: string }
 type LoginResponse = { address: string }

@@ -1,5 +1,5 @@
-import { BASE_API } from "../utils/constants";
-import { formatApiError } from "../utils/errors";
+import { BASE_API } from "../utils/constants"
+import { formatApiError } from "../utils/errors"
 
 type SchemaFieldsPayload = Record<string, number>
 type CreateSchemaPayload = { label: string; fields: SchemaFieldsPayload }

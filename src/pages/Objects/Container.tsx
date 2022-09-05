@@ -20,7 +20,12 @@ import {
 } from "../../redux/slices/schemasSlice"
 import { GetSchemaFieldsResponse } from "../../service/getSchemaFields"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
-import { IsearchableList, IsearchableListItem, ObjectData, SchemaField } from "../../utils/types"
+import {
+	IsearchableList,
+	IsearchableListItem,
+	ObjectData,
+	SchemaField,
+} from "../../utils/types"
 import ObjectsPageComponent from "./Component"
 
 function ObjectsPageContainer() {
