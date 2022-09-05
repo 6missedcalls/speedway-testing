@@ -10,7 +10,7 @@ import {
 import {
 	selectObjectsList,
 	selectObjectsLoading,
-	userGetAllBucketObjects,
+	userGetAllObjects,
 } from "../../redux/slices/objectsSlice"
 import {
 	selectSchemasLoading,
@@ -46,8 +46,8 @@ function ObjectsPageContainer() {
 	useEffect(() => {
 		if (buckets.length > 0) {
 			dispatch(
-				userGetAllBucketObjects({
-					buckets: buckets.map((item) => item.did),
+				userGetAllObjects({
+					bucketDids: buckets.map((item) => item.did),
 				})
 			)
 		}

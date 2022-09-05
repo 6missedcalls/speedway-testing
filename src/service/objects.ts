@@ -1,7 +1,6 @@
 import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
 import { InewObject } from "../utils/types"
-import { getBucket } from "./buckets"
 
 export const createObject = async ({
 	schemaDid,
@@ -53,15 +52,4 @@ export const getBucketContent = async ({ bucket }: { bucket: string }) => {
 		const errorMessage = formatApiError({ error, url, options })
 		throw new Error(errorMessage)
 	}
-}
-
-export const getAllBucketContent = async ({
-	buckets,
-}: {
-	buckets: Array<string>
-}) => {
-	const bucketContents = await Promise.all(
-		buckets.map((did) => getBucket({ did }))
-	)
-	return bucketContents.map((bucketContent) => bucketContent.objects).flat()
 }

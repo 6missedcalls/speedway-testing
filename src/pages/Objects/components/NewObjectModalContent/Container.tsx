@@ -10,7 +10,7 @@ import {
 import {
 	selectObjectsLoading,
 	userCreateObject,
-	userGetAllBucketObjects,
+	userGetAllObjects,
 } from "../../../../redux/slices/objectsSlice"
 import {
 	selectSchemasLoading,
@@ -158,8 +158,8 @@ function NewObjectModalContentContainer({
 		await dispatch(updateBucket({ ...bucketUpdatePayload }))
 
 		dispatch(
-			userGetAllBucketObjects({
-				buckets: buckets.map((item) => item.did),
+			userGetAllObjects({
+				bucketDids: buckets.map((item) => item.did),
 			})
 		)
 
