@@ -18,8 +18,10 @@ import {
 	userGetAllSchemas,
 	userGetSchema,
 } from "../../redux/slices/schemasSlice"
+import { ObjectData } from "../../service/buckets"
 import { GetSchemaFieldsResponse, SchemaField } from "../../service/schemas"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
+import { IsearchableList, IsearchableListItem } from "../../utils/types"
 import ObjectsPageComponent from "./Component"
 
 function ObjectsPageContainer() {
@@ -108,21 +110,16 @@ function ObjectsPageContainer() {
 		openModal()
 	}
 
-	function mapToListFormat() {
+	function mapToListFormat(): IsearchableList {
 		return objectsList
-			.reduce((acc: any, item: any) => [...acc, ...item], [])
-			.filter((item: any) => item.schemaDid === selectedSchemaDid)
-			.map(({ objects }: any) => {
-				return Object.keys(objects).reduce((acc, key) => {
-					if (key === "schema") return acc
-
-					return {
-						...acc,
-						[key]: {
-							text: objects[key].toString(),
-						},
-					}
-				}, {})
+			.filter((item: ObjectData) => item.schemaDid === selectedSchemaDid)
+			.map(({ cid, data }: ObjectData): IsearchableListItem => {
+				const listItem: IsearchableListItem = {}
+				listItem.cid = { text: cid }
+				Object.keys(data).forEach((key) => {
+					listItem[key] = { text: data[key].toString() }
+				})
+				return listItem
 			})
 	}
 

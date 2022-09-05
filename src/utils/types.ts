@@ -1,3 +1,5 @@
+import React from "react"
+
 export enum listTypes {
 	schema,
 	object,
@@ -88,15 +90,15 @@ export type BucketContent = {
 
 export interface IsearchableListItemData {
 	text?: string
-	Component?: React.FC
+	Component?: React.FC<any>
 	props?: Record<string, any>
 }
 
 export interface IsearchableListItem {
-	[key: string]: {
-		[key: string]: IsearchableListItemData
-	}
+	[key: string]: IsearchableListItemData
 }
+
+export type IsearchableList = IsearchableListItem[]
 
 export interface loginPayload {
 	address: string

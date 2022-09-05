@@ -10,7 +10,7 @@ import {
 import { AppDispatch } from "../../redux/store"
 import { SchemaMeta } from "../../service/schemas"
 import { MODAL_CONTENT_NEW_SCHEMA } from "../../utils/constants"
-import { IsearchableListItem } from "../../utils/types"
+import { IsearchableList, IsearchableListItem } from "../../utils/types"
 import SchemasPageComponent from "./Component"
 import EmptyList from "./components/EmptyList"
 import ViewProperties from "./components/ViewProperties"
@@ -32,8 +32,8 @@ function SchemasPageContainer() {
 		openModal()
 	}
 
-	function mapToListFormat(list: Array<SchemaMeta>) {
-		return list.map((item: SchemaMeta) => {
+	function mapToListFormat(list: Array<SchemaMeta>): IsearchableList {
+		return list.map((item: SchemaMeta): IsearchableListItem => {
 			const getSchemaPayload = {
 				address,
 				creator: "",
@@ -63,7 +63,7 @@ function SchemasPageContainer() {
 			{schemaMetadata && schemaMetadata.length > 0 ? (
 				<SchemasPageComponent
 					openNewSchemaModal={openNewSchemaModal}
-					list={mapToListFormat(schemaMetadata) as Array<IsearchableListItem>}
+					list={mapToListFormat(schemaMetadata)}
 					searchableAndSortableFieldKey="Schema name"
 					loading={loading}
 				/>

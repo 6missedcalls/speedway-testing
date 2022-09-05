@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { ObjectData } from "../../service/buckets"
 import { createObject, getAllBucketContent } from "../../service/objects"
 import { InewObject } from "../../utils/types"
 import { RootState } from "../store"
 
 export interface ObjectsState {
-	list: Array<Record<string, any>>
+	list: Array<ObjectData>
 	loading: boolean
 	error: boolean
 }
