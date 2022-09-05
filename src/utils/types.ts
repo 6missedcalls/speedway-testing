@@ -49,8 +49,6 @@ export interface Ischema {
 }
 
 export interface IgetSchemaFields {
-	address: string
-	creator: string
 	schema: string
 }
 export interface InewSchema {

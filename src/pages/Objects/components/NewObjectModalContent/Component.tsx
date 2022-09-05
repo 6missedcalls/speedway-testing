@@ -1,9 +1,9 @@
 import { Button, NebulaIcon } from "@sonr-io/nebula-react"
 import { Dispatch, SetStateAction } from "react"
+import { SchemaMeta } from "../../../../service/schemas"
 import {
 	Bucket,
 	IobjectPropertyChange,
-	Ischema,
 	IschemaField,
 } from "../../../../utils/types"
 
@@ -13,7 +13,7 @@ interface NewSchemaModalContentComponentProps {
 	onChangeSchema: Dispatch<SetStateAction<string>>
 	onChangeBucket: (value: string) => void
 	onChangeProperty: ({ value, index }: IobjectPropertyChange) => void
-	schemas: Array<Ischema>
+	schemas: Array<SchemaMeta>
 	buckets: Array<Bucket>
 	properties: Array<Record<string, any>>
 	selectedSchemaDid: string
@@ -61,9 +61,9 @@ function NewObjectModalContentComponent({
 							onChange={(event) => onChangeSchema(event.target.value)}
 							value={selectedSchemaDid}
 						>
-							{schemas.map((item: Ischema) => (
-								<option key={item.schema.did} value={item.schema.did}>
-									{item.schema.label}
+							{schemas.map((item: SchemaMeta) => (
+								<option key={item.did} value={item.did}>
+									{item.label}
 								</option>
 							))}
 						</select>
