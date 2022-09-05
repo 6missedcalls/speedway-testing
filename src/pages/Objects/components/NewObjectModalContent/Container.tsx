@@ -141,17 +141,10 @@ function NewObjectModalContentContainer({
 
 		if (floatError) return
 
-		const object = await dispatch(userCreateObject({ ...objectPayload }))
-		if (object?.error) {
-			setError("Could not create object or update bucket.")
-			console.error(error)
-			return
-		}
-
+		const { payload } = await dispatch(userCreateObject({ ...objectPayload }))
 		const bucketUpdatePayload = {
 			bucketDid: selectedBucket,
-			objectCid: object.payload?.cid || object.payload?.Cid,
-			objectName: object.payload?.label || object.payload?.Label,
+			objectCid: payload.cid,
 			schemaDid: selectedSchemaDid,
 		}
 

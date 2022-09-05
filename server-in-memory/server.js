@@ -186,6 +186,7 @@ app.post("/api/v1/bucket/get", async ({ body }, res) => {
 			.map(storage.getItem)
 			.valueOf()
 	)
+
 	const objectItems = _.reduce(
 		objects,
 		(acc, object) => {

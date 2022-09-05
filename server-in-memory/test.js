@@ -310,7 +310,7 @@ it("gets a bucket content", async () => {
 	expect(result.bucket[0].content.item).toBe("eyJmaXJzdE5hbWUiOiJNYXJjZWwifQ==")
 })
 
-it('responds with null when bucket is empty', async () => {
+it("responds with null when bucket is empty", async () => {
 	const address = await accountLoggedIn(app)
 
 	const responseBucket = await app.post("/api/v1/bucket/create").send({

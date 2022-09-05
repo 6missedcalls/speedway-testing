@@ -5,10 +5,13 @@ type CreateObjectPayload = {
 	schemaDid: string
 	objectData: { [key: string]: any }
 }
+type CreateObjectResponse = {
+	cid: string
+}
 export const createObject = async ({
 	schemaDid,
 	objectData,
-}: CreateObjectPayload) => {
+}: CreateObjectPayload): Promise<CreateObjectResponse> => {
 	const url = `${BASE_API}/object/build`
 
 	const payload = JSON.stringify({
@@ -27,7 +30,7 @@ export const createObject = async ({
 		const response: Response = await fetch(url, options)
 		if (!response.ok) throw new Error(response.statusText)
 		const data = await response.json()
-		return data.objectUpload.reference
+		return { cid: data.objectUpload.reference.Cid }
 	} catch (error) {
 		const errorMessage = formatApiError({ error, url, options })
 		throw new Error(errorMessage)
