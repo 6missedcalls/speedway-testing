@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { updateBucketService } from "../../service/buckets"
+import { addObjectToBucket } from "../../service/buckets"
 import { BASE_API } from "../../utils/constants"
 import { Bucket, NewBucketPayload } from "../../utils/types"
 import { RootState } from "../store"
@@ -42,15 +42,13 @@ export const getAllBuckets = createAsyncThunk(
 
 export const updateBucket = createAsyncThunk(
 	"bucket/update-items",
-	async ({ bucketDid, objectCid, objectName, schemaDid }: any, thunkAPI) => {
+	async ({ bucketDid, objectCid, schemaDid }: any, thunkAPI) => {
 		try {
-			const data = await updateBucketService({
+			await addObjectToBucket({
 				bucketDid,
 				objectCid,
-				objectName,
 				schemaDid,
 			})
-			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
 		}

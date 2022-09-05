@@ -1,19 +1,16 @@
 import { BASE_API } from "../utils/constants"
 import { parseJsonFromBase64String } from "../utils/object"
 
-interface updateBucketServiceProps {
+type AddObjectToBucketPayload = {
 	bucketDid: string
-	objectCid: string
-	objectName: string
 	schemaDid: string
+	objectCid: string
 }
-
-export const updateBucketService = async ({
+export const addObjectToBucket = async ({
 	bucketDid,
 	objectCid,
-	objectName,
 	schemaDid,
-}: updateBucketServiceProps) => {
+}: AddObjectToBucketPayload) => {
 	const url = `${BASE_API}/bucket/update-items`
 
 	const newObject = {
@@ -44,8 +41,6 @@ export const updateBucketService = async ({
 
 		const response: Response = await fetch(url, options)
 		if (!response.ok) throw new Error(response.statusText)
-		const data = await response.json()
-		return data
 	} catch (error) {
 		console.error(error)
 		throw error
