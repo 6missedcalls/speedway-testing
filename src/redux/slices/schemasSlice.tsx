@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { RootState } from "../store"
-import { IgetSchemaFields, InewSchema, SchemaMeta } from "../../utils/types"
+import { InewSchema, SchemaMeta } from "../../utils/types"
 import getSchemaMetadata from "../../service/getSchemaMetadata"
 import createSchema from "../../service/createSchema"
 import getSchemaFields from "../../service/getSchemaFields"
@@ -10,7 +10,7 @@ interface userCreateSchemaProp {
 }
 
 interface userGetSchemaProp {
-	schema: IgetSchemaFields
+	schema: { schema: string }
 }
 
 export const userGetAllSchemas = createAsyncThunk(

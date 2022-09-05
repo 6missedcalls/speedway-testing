@@ -1,15 +1,15 @@
 import { NebulaIcon } from "@sonr-io/nebula-react"
 import React from "react"
 import {
-	listTypes,
-	IsearchableListItemData,
-	IsearchableListItem,
+	ListTypes,
+	SearchableListItemData,
+	SearchableListItem,
 } from "../../utils/types"
 import Headers from "./components/Headers"
 
 interface SearchableListComponentProps {
-	type: listTypes
-	list: Array<IsearchableListItem>
+	type: ListTypes
+	list: Array<SearchableListItem>
 	paginationSize?: number
 	paginationCurrentPage: number
 	toggleOrder: () => void
@@ -58,7 +58,7 @@ function SearchableListComponent({
 					</button>
 				)}
 			</div>
-			<div className={`${type === listTypes.schema ? "" : "overflow-auto"}`}>
+			<div className={`${type === ListTypes.schema ? "" : "overflow-auto"}`}>
 				<table className="text-left w-full">
 					<thead>
 						<tr className="h-10 bg-button-subtle items-center px-4 py-5 text-button-subtle text-custom-xs">
@@ -66,7 +66,7 @@ function SearchableListComponent({
 						</tr>
 					</thead>
 					<tbody className="text-custom-sm font-normal">
-						{list.map((row: IsearchableListItem, rowIndex: number) => {
+						{list.map((row: SearchableListItem, rowIndex: number) => {
 							const rowKeys = Object.keys(row)
 							return (
 								<tr
@@ -79,7 +79,7 @@ function SearchableListComponent({
 											text = "",
 											Component,
 											props,
-										} = row[key] as IsearchableListItemData
+										} = row[key] as SearchableListItemData
 										return (
 											<td className="px-4 py-5" key={`${key}-${itemIndex}`}>
 												{text}

@@ -10,8 +10,8 @@ import {
 import { AppDispatch } from "../../redux/store"
 import { MODAL_CONTENT_NEW_SCHEMA } from "../../utils/constants"
 import {
-	IsearchableList,
-	IsearchableListItem,
+	SearchableList,
+	SearchableListItem,
 	SchemaMeta,
 } from "../../utils/types"
 import SchemasPageComponent from "./Component"
@@ -35,8 +35,8 @@ function SchemasPageContainer() {
 		openModal()
 	}
 
-	function mapToListFormat(list: Array<SchemaMeta>): IsearchableList {
-		return list.map((item: SchemaMeta): IsearchableListItem => {
+	function mapToListFormat(list: Array<SchemaMeta>): SearchableList {
+		return list.map((item: SchemaMeta): SearchableListItem => {
 			const getSchemaPayload = {
 				address,
 				creator: "",

@@ -21,8 +21,8 @@ import {
 import { GetSchemaFieldsResponse } from "../../service/getSchemaFields"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
 import {
-	IsearchableList,
-	IsearchableListItem,
+	SearchableList,
+	SearchableListItem,
 	ObjectData,
 	SchemaField,
 } from "../../utils/types"
@@ -114,11 +114,11 @@ function ObjectsPageContainer() {
 		openModal()
 	}
 
-	function mapToListFormat(): IsearchableList {
+	function mapToListFormat(): SearchableList {
 		return objectsList
 			.filter((item: ObjectData) => item.schemaDid === selectedSchemaDid)
-			.map(({ cid, data }: ObjectData): IsearchableListItem => {
-				const listItem: IsearchableListItem = {}
+			.map(({ cid, data }: ObjectData): SearchableListItem => {
+				const listItem: SearchableListItem = {}
 				listItem.cid = { text: cid }
 				Object.keys(data).forEach((key) => {
 					listItem[key] = { text: data[key].toString() }

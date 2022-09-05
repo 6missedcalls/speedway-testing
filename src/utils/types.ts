@@ -1,21 +1,18 @@
-import React from "react"
+import { FC } from "react"
 
-export enum listTypes {
+export enum ListTypes {
 	schema,
 	object,
-}
-
-export interface IlistItem {
-	name: string
-	did: string
-	version: number
-	objects: number
-	fieldCount: number
 }
 
 export interface IchangedProperty {
 	name?: string
 	type?: string
+}
+
+export interface handlePropertyChangeProps {
+	index: number
+	data: IchangedProperty
 }
 
 export interface Iproperty {
@@ -28,31 +25,6 @@ export interface IpropertyResponse {
 	type: number
 }
 
-export interface handlePropertyChangeProps {
-	index: number
-	data: IchangedProperty
-}
-
-export interface IschemaField {
-	name: string
-	type: number
-}
-export interface Ischema {
-	did: string
-	schema: {
-		did: string
-		label: string
-		cid?: string
-		fields?: Record<string, any>
-	}
-	creator: string
-	timestamp?: number
-	is_active: boolean
-}
-
-export interface IgetSchemaFields {
-	schema: string
-}
 export interface InewSchema {
 	address: string
 	label: string
@@ -97,18 +69,14 @@ export type ObjectData = {
 	data: { [key: string]: any }
 }
 
-export interface IsearchableListItemData {
+export type SearchableListItemData = {
 	text?: string
-	Component?: React.FC<any>
+	Component?: FC<any>
 	props?: Record<string, any>
 }
 
-export interface IsearchableListItem {
-	[key: string]: IsearchableListItemData
+export type SearchableListItem = {
+	[key: string]: SearchableListItemData
 }
 
-export type IsearchableList = IsearchableListItem[]
-
-export interface loginPayload {
-	address: string
-}
+export type SearchableList = SearchableListItem[]
