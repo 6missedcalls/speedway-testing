@@ -41,11 +41,12 @@ function NewSchemaModalContentComponent({
 				</div>
 				<div>
 					<input
-						className="text-custom-xl font-extrabold outline-0 mt-2 mb-8"
+						className="text-custom-xl text-default font-extrabold outline-0 w-full mt-2 mb-8"
 						type="text"
 						placeholder="Schema Name"
 						value={schemaName}
 						onChange={(event) => onChangeSchemaName(event.target.value)}
+						autoFocus
 					/>
 				</div>
 				<div className="flex justify-between mb-4 text-default text-custom-sm font-extrabold">

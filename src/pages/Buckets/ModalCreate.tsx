@@ -53,7 +53,7 @@ const ModalCreateBucket = () => {
 						</div>
 
 						<input
-							className="text-custom-xl text-default font-extrabold"
+							className="text-custom-xl text-default font-extrabold outline-0 w-full"
 							type="text"
 							placeholder="Bucket Name"
 							value={label}
@@ -61,6 +61,7 @@ const ModalCreateBucket = () => {
 								setError("")
 								setLabel(target.value)
 							}}
+							autoFocus
 						/>
 					</div>
 					{error && (
