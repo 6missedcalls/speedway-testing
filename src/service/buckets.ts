@@ -7,10 +7,6 @@ interface updateBucketServiceProps {
 	schemaDid: string
 }
 
-interface getBucketProps {
-	bucketDid: string
-}
-
 export const updateBucketService = async ({
 	bucketDid,
 	objectCid,
@@ -27,7 +23,7 @@ export const updateBucketService = async ({
 	}
 
 	try {
-		const getBucketResponse = await getBucket({ bucketDid })
+		const getBucketResponse = await getBucket({ did: bucketDid })
 
 		const payload = JSON.stringify({
 			bucketDid: bucketDid,
@@ -59,17 +55,13 @@ export const updateBucketService = async ({
 	}
 }
 
-export const getBucket = async ({ bucketDid }: getBucketProps) => {
+type GetBucketPayload = { did: string }
+export const getBucket = async ({ did }: GetBucketPayload) => {
 	const url = `${BASE_API}/bucket/get`
-
-	const payload = JSON.stringify({
-		bucketDid,
-	})
-
 	const options = {
 		method: "POST",
 		headers: { "content-type": "application/json" },
-		body: payload,
+		body: JSON.stringify({ bucketDid: did }),
 	}
 
 	try {
