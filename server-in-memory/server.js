@@ -64,10 +64,10 @@ app.post("/api/v1/account/create", async ({ body }, res) => {
 
 app.post("/api/v1/account/login", async ({ body }, res) => {
 	const account = await storage.getItem(
-		accountStoreKey(body.Address.toLowerCase())
+		accountStoreKey(body.address.toLowerCase())
 	)
 
-	if (!account || account.password !== body.Password) {
+	if (!account || account.password !== body.password) {
 		res.status(500).send()
 		return
 	}
@@ -172,6 +172,12 @@ app.post("/api/v1/bucket/update-items", async ({ body }, res) => {
 app.post("/api/v1/bucket/get", async ({ body }, res) => {
 	const allBuckets = await storage.getItem("buckets")
 	const bucket = _.find(allBuckets, { did: body.bucketDid })
+
+	if (bucket.content.length === 0) {
+		res.json({ bucket: null })
+		return
+	}
+
 	const objects = await Promise.all(
 		_.chain(bucket.content)
 			.filter("uri")

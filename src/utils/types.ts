@@ -1,3 +1,5 @@
+import React from "react"
+
 export enum listTypes {
 	schema,
 	object,
@@ -23,7 +25,7 @@ export interface Iproperty {
 
 export interface IpropertyResponse {
 	name: string
-	field: number
+	type: number
 }
 
 export interface handlePropertyChangeProps {
@@ -33,7 +35,7 @@ export interface handlePropertyChangeProps {
 
 export interface IschemaField {
 	name: string
-	field: number
+	type: number
 }
 export interface Ischema {
 	did: string
@@ -49,8 +51,6 @@ export interface Ischema {
 }
 
 export interface IgetSchemaFields {
-	address: string
-	creator: string
 	schema: string
 }
 export interface InewSchema {
@@ -90,15 +90,15 @@ export type BucketContent = {
 
 export interface IsearchableListItemData {
 	text?: string
-	Component?: React.FC
+	Component?: React.FC<any>
 	props?: Record<string, any>
 }
 
 export interface IsearchableListItem {
-	[key: string]: {
-		[key: string]: IsearchableListItemData
-	}
+	[key: string]: IsearchableListItemData
 }
+
+export type IsearchableList = IsearchableListItem[]
 
 export interface loginPayload {
 	address: string

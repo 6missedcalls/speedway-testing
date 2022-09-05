@@ -113,7 +113,6 @@ function SearchableListContainer({
 	return (
 		<SearchableListComponent
 			list={list}
-			fullListLength={initialList.length}
 			type={type}
 			paginationSize={paginationSize}
 			paginationCurrentPage={paginationCurrentPage}

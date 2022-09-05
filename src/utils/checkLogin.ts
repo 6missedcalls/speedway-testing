@@ -1,11 +1,11 @@
-import { getAccountInfo } from "../service/authentication"
+import { getAccountInfo } from "../service/account"
 import { getAppStateFromLocalCache } from "./localStorage"
 
 export async function isLoggedInServer() {
 	try {
 		const cachedAddress = getAppStateFromLocalCache().authentication.Address
 		const data = await getAccountInfo()
-		if (data.Address === cachedAddress) {
+		if (data.address === cachedAddress) {
 			return true
 		} else {
 			return false

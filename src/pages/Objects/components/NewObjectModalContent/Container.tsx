@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import RefreshSvg from "../../../../assets/svgs/Refresh"
 import { AppModalContext } from "../../../../contexts/appModalContext/appModalContext"
-import { selectAddress } from "../../../../redux/slices/authenticationSlice"
 import {
 	selectBuckets,
 	selectBucketsLoading,
@@ -17,14 +16,15 @@ import {
 	selectSchemasLoading,
 	userGetSchema,
 } from "../../../../redux/slices/schemasSlice"
-import { IobjectPropertyChange, Ischema } from "../../../../utils/types"
+import { SchemaMeta } from "../../../../service/schemas"
+import { IobjectPropertyChange } from "../../../../utils/types"
 import NewObjectModalContentComponent from "./Component"
 
 export interface NewObjectModalContentContainerProps {
 	selectedSchemaDid: string
 	setSelectedSchema: React.Dispatch<React.SetStateAction<string>>
 	initialSchemaFields: Array<Record<string, any>>
-	schemas: Array<Ischema>
+	schemas: Array<SchemaMeta>
 }
 
 function NewObjectModalContentContainer({
@@ -39,7 +39,6 @@ function NewObjectModalContentContainer({
 	const [error, setError] = useState("")
 	const [selectedBucket, setSelectedBucket] = useState(buckets[0].did)
 	const [properties, setProperties] = useState(initialSchemaFields)
-	const address = useSelector(selectAddress)
 	const schemasLoading = useSelector(selectSchemasLoading)
 	const bucketsLoading = useSelector(selectBucketsLoading)
 	const objectsLoading = useSelector(selectObjectsLoading)
@@ -54,11 +53,9 @@ function NewObjectModalContentContainer({
 
 	async function getSchema() {
 		const selectedSchemaData = schemas.find(
-			(item) => item.schema.did === selectedSchemaDid
+			(item) => item.did === selectedSchemaDid
 		)!
 		const getSchemaPayload = {
-			address,
-			creator: selectedSchemaData.creator,
 			schema: selectedSchemaData.did,
 		}
 
@@ -88,7 +85,7 @@ function NewObjectModalContentContainer({
 
 	async function save() {
 		const selectedSchemaData = schemas.find(
-			(item) => item.schema.did === selectedSchemaDid
+			(item) => item.did === selectedSchemaDid
 		)
 
 		const castValue = (type: Number, value: string) => {
@@ -109,11 +106,11 @@ function NewObjectModalContentContainer({
 		const objectPayload = {
 			bucketDid: selectedBucket,
 			schemaDid: selectedSchemaDid,
-			label: selectedSchemaData?.schema.label,
+			label: selectedSchemaData?.label,
 			object: properties.reduce(
 				(acc, item) => ({
 					...acc,
-					[item.name]: castValue(item.field, item.value),
+					[item.name]: castValue(item.type, item.value),
 				}),
 				{}
 			),
@@ -130,7 +127,7 @@ function NewObjectModalContentContainer({
 
 		let floatError = false
 		properties.forEach((item) => {
-			if (item.field === 3) {
+			if (item.type === 3) {
 				const splitValue = item.value.split(".")
 				if (
 					splitValue.length &&

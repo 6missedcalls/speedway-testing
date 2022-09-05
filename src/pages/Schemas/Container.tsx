@@ -8,8 +8,9 @@ import {
 	userGetAllSchemas,
 } from "../../redux/slices/schemasSlice"
 import { AppDispatch } from "../../redux/store"
+import { SchemaMeta } from "../../service/schemas"
 import { MODAL_CONTENT_NEW_SCHEMA } from "../../utils/constants"
-import { Ischema, IsearchableListItem } from "../../utils/types"
+import { IsearchableList, IsearchableListItem } from "../../utils/types"
 import SchemasPageComponent from "./Component"
 import EmptyList from "./components/EmptyList"
 import ViewProperties from "./components/ViewProperties"
@@ -31,17 +32,17 @@ function SchemasPageContainer() {
 		openModal()
 	}
 
-	function mapToListFormat(list: Array<Ischema>) {
-		return list.map((item: Ischema) => {
+	function mapToListFormat(list: Array<SchemaMeta>): IsearchableList {
+		return list.map((item: SchemaMeta): IsearchableListItem => {
 			const getSchemaPayload = {
 				address,
-				creator: item.creator,
+				creator: "",
 				schema: item.did,
 			}
 
 			return {
 				"Schema name": {
-					text: item.schema.label,
+					text: item.label,
 				},
 				DID: {
 					text: item.did,
@@ -62,7 +63,7 @@ function SchemasPageContainer() {
 			{schemaMetadata && schemaMetadata.length > 0 ? (
 				<SchemasPageComponent
 					openNewSchemaModal={openNewSchemaModal}
-					list={mapToListFormat(schemaMetadata) as Array<IsearchableListItem>}
+					list={mapToListFormat(schemaMetadata)}
 					searchableAndSortableFieldKey="Schema name"
 					loading={loading}
 				/>

@@ -1,10 +1,10 @@
 import LoadingCircleSvg from "../../assets/svgs/LoadingCircle"
 import LayoutMenu from "../../components/LayoutMenu"
 import SearchableList from "../../components/SearchableList"
-import { IsearchableListItem, listTypes } from "../../utils/types"
+import { IsearchableList, listTypes } from "../../utils/types"
 
 interface SchemasPageComponentProps {
-	list: Array<IsearchableListItem>
+	list: IsearchableList
 	searchableAndSortableFieldKey: string
 	openNewSchemaModal: () => void
 	loading: boolean

@@ -4,7 +4,6 @@ import LayoutBase from "../LayoutBase"
 
 interface ErrorBoundaryProps {
 	children: React.ReactNode
-	navigate: any
 }
 
 interface ErrorBoundaryState {

@@ -1,14 +1,11 @@
 import { BASE_API } from "../utils/constants"
+import { parseJsonFromBase64String } from "../utils/object"
 
 interface updateBucketServiceProps {
 	bucketDid: string
 	objectCid: string
 	objectName: string
 	schemaDid: string
-}
-
-interface getBucketProps {
-	bucketDid: string
 }
 
 export const updateBucketService = async ({
@@ -22,25 +19,21 @@ export const updateBucketService = async ({
 	const newObject = {
 		schemaDid: schemaDid,
 		type: "cid",
-		name: objectName,
 		uri: objectCid,
 	}
 
 	try {
-		const getBucketResponse = await getBucket({ bucketDid })
+		const { objects } = await getBucket({ did: bucketDid })
 
 		const payload = JSON.stringify({
 			bucketDid: bucketDid,
-			content: getBucketResponse?.bucket
-				? getBucketResponse.bucket
-						.map((item: any) => ({
-							schemaDid: item.schemaDid,
-							type: "cid",
-							name: item.name,
-							uri: item.uri,
-						}))
-						.concat([newObject])
-				: [newObject],
+			content: objects
+				.map((item: ObjectData) => ({
+					schemaDid: item.schemaDid,
+					type: "cid",
+					uri: item.cid,
+				}))
+				.concat([newObject]),
 		})
 
 		const options = {
@@ -59,24 +52,34 @@ export const updateBucketService = async ({
 	}
 }
 
-export const getBucket = async ({ bucketDid }: getBucketProps) => {
-	const url = `${BASE_API}/bucket/get`
-
-	const payload = JSON.stringify({
-		bucketDid,
-	})
-
-	const options = {
-		method: "POST",
-		headers: { "content-type": "application/json" },
-		body: payload,
-	}
-
+export type ObjectData = {
+	cid: string
+	schemaDid: string
+	data: { [key: string]: any }
+}
+type GetBucketPayload = { did: string }
+type GetBucketResponse = { objects: ObjectData[] }
+export const getBucket = async ({
+	did,
+}: GetBucketPayload): Promise<GetBucketResponse> => {
 	try {
-		const response: Response = await fetch(url, options)
+		const response: Response = await fetch(`${BASE_API}/bucket/get`, {
+			method: "POST",
+			headers: { "content-type": "application/json" },
+			body: JSON.stringify({ bucketDid: did }),
+		})
 		if (!response.ok) throw new Error(response.statusText)
 		const data = await response.json()
-		return data
+
+		if (data.bucket === null) return { objects: [] }
+
+		return {
+			objects: data.bucket.map((object: any) => ({
+				cid: object.uri,
+				schemaDid: object.schemaDid,
+				data: parseJsonFromBase64String(object.content.item),
+			})),
+		}
 	} catch (error) {
 		throw error
 	}

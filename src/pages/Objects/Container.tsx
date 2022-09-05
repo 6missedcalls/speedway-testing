@@ -18,15 +18,17 @@ import {
 	userGetAllSchemas,
 	userGetSchema,
 } from "../../redux/slices/schemasSlice"
-import { AppDispatch } from "../../redux/store"
+import { ObjectData } from "../../service/buckets"
+import { GetSchemaFieldsResponse, SchemaField } from "../../service/schemas"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
+import { IsearchableList, IsearchableListItem } from "../../utils/types"
 import ObjectsPageComponent from "./Component"
 
 function ObjectsPageContainer() {
 	const { setModalContent, openModal } = useContext(AppModalContext)
-	const dispatch = useDispatch<AppDispatch>()
+	const dispatch: Function = useDispatch()
 	const [selectedSchemaDid, setSelectedSchema] = useState("")
-	const [schemaFields, setSchemaFields] = useState("")
+	const [schemaFields, setSchemaFields] = useState<SchemaField[]>([])
 	const objectsList = useSelector(selectObjectsList)
 	const schemasLoading = useSelector(selectSchemasLoading)
 	const bucketsLoading = useSelector(selectBucketsLoading)
@@ -70,19 +72,19 @@ function ObjectsPageContainer() {
 
 	async function getSchema() {
 		const selectedSchemaData = schemaMetadata.find(
-			(item) => item.schema.did === selectedSchemaDid
+			(item) => item.did === selectedSchemaDid
 		)!
 		const getSchemaPayload = {
 			address,
-			creator: selectedSchemaData.creator,
+			creator: "",
 			schema: selectedSchemaData.did,
 		}
 
-		const getSchemaResponse = await dispatch(
+		const getSchemaResponse: GetSchemaFieldsResponse = await dispatch(
 			userGetSchema({ schema: getSchemaPayload })
 		)
 
-		setSchemaFields(getSchemaResponse.payload.fields)
+		setSchemaFields(getSchemaResponse.fields)
 	}
 
 	async function initialize() {
@@ -91,7 +93,7 @@ function ObjectsPageContainer() {
 			dispatch(getAllBuckets(address)),
 		])
 		if (schemaMetadata.length > 0) {
-			setSelectedSchema(schemaMetadata[0].schema.did)
+			setSelectedSchema(schemaMetadata[0].did)
 		}
 	}
 
@@ -108,21 +110,16 @@ function ObjectsPageContainer() {
 		openModal()
 	}
 
-	function mapToListFormat() {
+	function mapToListFormat(): IsearchableList {
 		return objectsList
-			.reduce((acc: any, item: any) => [...acc, ...item], [])
-			.filter((item: any) => item.schemaDid === selectedSchemaDid)
-			.map(({ objects }: any) => {
-				return Object.keys(objects).reduce((acc, key) => {
-					if (key === "schema") return acc
-
-					return {
-						...acc,
-						[key]: {
-							text: objects[key].toString(),
-						},
-					}
-				}, {})
+			.filter((item: ObjectData) => item.schemaDid === selectedSchemaDid)
+			.map(({ cid, data }: ObjectData): IsearchableListItem => {
+				const listItem: IsearchableListItem = {}
+				listItem.cid = { text: cid }
+				Object.keys(data).forEach((key) => {
+					listItem[key] = { text: data[key].toString() }
+				})
+				return listItem
 			})
 	}
 

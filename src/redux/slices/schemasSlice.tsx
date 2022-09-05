@@ -1,8 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { RootState } from "../store"
-import { IgetSchemaFields, InewSchema, Ischema } from "../../utils/types"
-import { createSchema, getAllSchemas, getSchema } from "../../service/schemas"
-import { addressToDid } from "../../utils/did"
+import { IgetSchemaFields, InewSchema } from "../../utils/types"
+import {
+	createSchema,
+	getAllSchemas,
+	getSchemaFields,
+	SchemaMeta,
+} from "../../service/schemas"
 
 interface userCreateSchemaProp {
 	schema: InewSchema
@@ -16,10 +20,8 @@ export const userGetAllSchemas = createAsyncThunk(
 	"schemas/getAll",
 	async (address: string, thunkAPI) => {
 		try {
-			const data = await getAllSchemas()
-			return data.what_is.filter(
-				(schema: any) => schema.creator === addressToDid(address)
-			)
+			const data = await getAllSchemas({ address })
+			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
 		}
@@ -42,7 +44,7 @@ export const userGetSchema = createAsyncThunk(
 	"schemas/get",
 	async ({ schema }: userGetSchemaProp, thunkAPI) => {
 		try {
-			const data = await getSchema(schema)
+			const data = await getSchemaFields({ did: schema.schema })
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
@@ -51,7 +53,7 @@ export const userGetSchema = createAsyncThunk(
 )
 
 export interface SchemasState {
-	list: Array<Ischema>
+	list: Array<SchemaMeta>
 	loading: boolean
 	getSchemaLoading: boolean
 	error: boolean
@@ -74,7 +76,7 @@ export const schemasSlice = createSlice({
 		builder.addCase(userGetAllSchemas.fulfilled, (state, action) => {
 			const { payload } = action
 			state.loading = false
-			state.list = payload
+			state.list = payload.schemas
 		})
 
 		builder.addCase(userGetAllSchemas.rejected, (state) => {
@@ -101,13 +103,8 @@ export const schemasSlice = createSlice({
 			const { payload } = action
 			state.loading = false
 			state.list.push({
-				did: payload.whatIs.did,
-				schema: {
-					did: payload.whatIs.did,
-					label: payload.definition.label,
-				},
-				creator: payload.whatIs.creator,
-				is_active: true,
+				did: payload.did,
+				label: payload.label,
 			})
 		})
 		builder.addCase(userCreateSchema.rejected, (state) => {

@@ -1,6 +1,5 @@
 import { NebulaIcon } from "@sonr-io/nebula-react"
 import React from "react"
-import { obfuscateDidOrCid } from "../../utils/string"
 import {
 	listTypes,
 	IsearchableListItemData,
@@ -10,7 +9,6 @@ import Headers from "./components/Headers"
 
 interface SearchableListComponentProps {
 	type: listTypes
-	fullListLength: number
 	list: Array<IsearchableListItem>
 	paginationSize?: number
 	paginationCurrentPage: number
@@ -83,14 +81,8 @@ function SearchableListComponent({
 											props,
 										} = row[key] as IsearchableListItemData
 										return (
-											<td
-												className="px-4 py-5"
-												key={`${key}-${itemIndex}`}
-												title={text}
-											>
-												{key.toLowerCase() === "did"
-													? obfuscateDidOrCid(text)
-													: text}
+											<td className="px-4 py-5" key={`${key}-${itemIndex}`}>
+												{text}
 												{Component && <Component {...props} />}
 											</td>
 										)

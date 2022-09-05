@@ -1,20 +1,16 @@
 import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
 
-type CreateAccountResponse = {
-	address: string
-}
+type CreateAccountPayload = { password: string }
+type CreateAccountResponse = { address: string }
 export const createAccount = async (
-	password: string
+	payload: CreateAccountPayload
 ): Promise<CreateAccountResponse> => {
 	const url = `${BASE_API}/account/create`
-
-	const payload = JSON.stringify({ password })
-
 	const options = {
 		method: "POST",
 		headers: { "content-type": "application/json" },
-		body: payload,
+		body: JSON.stringify(payload),
 	}
 
 	try {
@@ -28,22 +24,15 @@ export const createAccount = async (
 	}
 }
 
-type LoginResponse = {
-	address: string
-}
-
-export const login = async (
-	walletAddress: string,
-	password: string
-): Promise<LoginResponse> => {
+type LoginPayload = { address: string; password: string }
+type LoginResponse = { address: string }
+export const login = async (payload: LoginPayload): Promise<LoginResponse> => {
 	const url = `${BASE_API}/account/login`
-
-	const payload = JSON.stringify({ Address: walletAddress, Password: password })
 
 	const options = {
 		method: "POST",
 		headers: { "content-type": "application/json" },
-		body: payload,
+		body: JSON.stringify(payload),
 	}
 
 	try {
@@ -57,12 +46,9 @@ export const login = async (
 	}
 }
 
-type AccountInfoResponse = {
-	Address: string
-}
+type AccountInfoResponse = { address: string }
 export const getAccountInfo = async (): Promise<AccountInfoResponse> => {
 	const url = `${BASE_API}/account/info`
-
 	const options = {
 		method: "GET",
 		headers: { "content-type": "application/json" },

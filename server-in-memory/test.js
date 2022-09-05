@@ -29,8 +29,8 @@ it("logs an account in", async () => {
 	})
 
 	const { body: result } = await app.post("/api/v1/account/login").send({
-		Address: responseAuth.body.address,
-		Password: "123",
+		address: responseAuth.body.address,
+		password: "123",
 	})
 	expect(result.address).toBeAddress()
 })
@@ -43,8 +43,8 @@ it("checks for logged in account", async () => {
 		password: "123",
 	})
 	await app.post("/api/v1/account/login").send({
-		Address: responseAuth.body.address,
-		Password: "123",
+		address: responseAuth.body.address,
+		password: "123",
 	})
 
 	const { body: result } = await app.get("/api/v1/account/info")
@@ -308,4 +308,20 @@ it("gets a bucket content", async () => {
 	expect(result.bucket[0].schemaDid).toBe(schemaDid)
 	expect(result.bucket[0].content).toHaveProperty("item")
 	expect(result.bucket[0].content.item).toBe("eyJmaXJzdE5hbWUiOiJNYXJjZWwifQ==")
+})
+
+it('responds with null when bucket is empty', async () => {
+	const address = await accountLoggedIn(app)
+
+	const responseBucket = await app.post("/api/v1/bucket/create").send({
+		label: "Mars colony",
+		creator: address,
+	})
+	const bucketDid = responseBucket.body.service.serviceEndpoint.did
+
+	const { body: result } = await app.post("/api/v1/bucket/get").send({
+		bucketDid: bucketDid,
+	})
+
+	expect(result.bucket).toBe(null)
 })
