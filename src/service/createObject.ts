@@ -5,25 +5,21 @@ type CreateObjectPayload = {
 	schemaDid: string
 	objectData: { [key: string]: any }
 }
-type CreateObjectResponse = {
-	cid: string
-}
-export const createObject = async ({
+type CreateObjectResponse = { cid: string }
+
+const createObject = async ({
 	schemaDid,
 	objectData,
 }: CreateObjectPayload): Promise<CreateObjectResponse> => {
 	const url = `${BASE_API}/object/build`
-
-	const payload = JSON.stringify({
-		label: "",
-		schemaDid: schemaDid,
-		object: objectData,
-	})
-
 	const options = {
 		method: "POST",
 		headers: { "content-type": "application/json" },
-		body: payload,
+		body: JSON.stringify({
+			label: "",
+			schemaDid: schemaDid,
+			object: objectData,
+		}),
 	}
 
 	try {
@@ -36,3 +32,5 @@ export const createObject = async ({
 		throw new Error(errorMessage)
 	}
 }
+
+export default createObject

@@ -1,10 +1,10 @@
 import { Button, NebulaIcon } from "@sonr-io/nebula-react"
 import { Dispatch, SetStateAction } from "react"
-import { SchemaMeta } from "../../../../service/schemas"
 import {
 	Bucket,
 	IobjectPropertyChange,
 	IschemaField,
+	SchemaMeta,
 } from "../../../../utils/types"
 
 interface NewSchemaModalContentComponentProps {

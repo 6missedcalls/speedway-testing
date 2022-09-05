@@ -77,6 +77,16 @@ export type NewBucketPayload = {
 	role?: string
 }
 
+export type SchemaMeta = {
+	did: string
+	label: string
+}
+
+export type SchemaField = {
+	name: string
+	type: number
+}
+
 export type Bucket = {
 	did: string
 	label: string
@@ -86,6 +96,12 @@ export type Bucket = {
 
 export type BucketContent = {
 	uri: string
+}
+
+export type ObjectData = {
+	cid: string
+	schemaDid: string
+	data: { [key: string]: any }
 }
 
 export interface IsearchableListItemData {

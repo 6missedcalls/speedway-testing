@@ -4,9 +4,9 @@ import RefreshSvg from "../../assets/svgs/Refresh"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 import {
-	createBucket,
-	getAllBuckets,
 	selectBucketCreationLoading,
+	userCreateBucket,
+	userGetAllBuckets,
 } from "../../redux/slices/bucketSlice"
 import { AppDispatch } from "../../redux/store"
 
@@ -23,14 +23,14 @@ const ModalCreateBucket = () => {
 			return
 		}
 		await dispatch(
-			createBucket({
+			userCreateBucket({
 				label,
 				role: "application",
 				visibility: "public",
 				creator: address,
 			})
 		)
-		dispatch(getAllBuckets(address))
+		dispatch(userGetAllBuckets(address))
 		closeModal()
 	}
 	const loading = useSelector(selectBucketCreationLoading)

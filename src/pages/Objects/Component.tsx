@@ -2,9 +2,8 @@ import LayoutMenu from "../../components/LayoutMenu"
 import SearchableList from "../../components/SearchableList"
 import { NebulaIcon } from "@sonr-io/nebula-react"
 import EmptyList from "./components/EmptyList"
-import { listTypes, IsearchableListItem } from "../../utils/types"
+import { listTypes, IsearchableListItem, SchemaMeta } from "../../utils/types"
 import LoadingCircleSvg from "../../assets/svgs/LoadingCircle"
-import { SchemaMeta } from "../../service/schemas"
 
 interface ObjectsPageComponentProps {
 	schemas: Array<SchemaMeta>

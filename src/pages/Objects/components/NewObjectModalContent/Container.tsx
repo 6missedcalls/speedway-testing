@@ -16,8 +16,7 @@ import {
 	selectSchemasLoading,
 	userGetSchema,
 } from "../../../../redux/slices/schemasSlice"
-import { SchemaMeta } from "../../../../service/schemas"
-import { IobjectPropertyChange } from "../../../../utils/types"
+import { IobjectPropertyChange, SchemaMeta } from "../../../../utils/types"
 import NewObjectModalContentComponent from "./Component"
 
 export interface NewObjectModalContentContainerProps {

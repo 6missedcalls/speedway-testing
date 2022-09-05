@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { addObjectToBucket } from "../../service/buckets"
+import addObjectToBucket from "../../service/addObjectToBucket"
+import getBuckets from "../../service/getBuckets"
 import { BASE_API } from "../../utils/constants"
 import { Bucket, NewBucketPayload } from "../../utils/types"
 import { RootState } from "../store"
@@ -20,23 +21,15 @@ export const selectBucketsError = (state: RootState) => {
 	return state.bucket.error
 }
 
-export const getAllBuckets = createAsyncThunk(
+export const userGetAllBuckets = createAsyncThunk(
 	"bucket/getAll",
-	async (address: string) => {
-		return await fetch("http://localhost:4040/proxy/buckets", {
-			method: "GET",
-			headers: { "content-type": "application/json" },
-		})
-			.then((response) => response.json())
-			.then((response) =>
-				response.where_is
-					.filter((bucket: Bucket) => bucket.creator === address)
-					.map((bucket: Bucket) => ({
-						did: bucket.did,
-						label: bucket.label,
-						content: bucket.content.filter((c) => c.uri),
-					}))
-			)
+	async (address: string, thunkAPI) => {
+		try {
+			const data = await getBuckets({ address })
+			return data
+		} catch (err) {
+			return thunkAPI.rejectWithValue(err)
+		}
 	}
 )
 
@@ -55,7 +48,7 @@ export const updateBucket = createAsyncThunk(
 	}
 )
 
-export const createBucket = createAsyncThunk(
+export const userCreateBucket = createAsyncThunk(
 	"bucket/create",
 	async (bucket: NewBucketPayload) => {
 		return await fetch(`${BASE_API}/bucket/create`, {
@@ -83,26 +76,26 @@ const bucketSlice = createSlice({
 	initialState,
 	reducers: {},
 	extraReducers: (builder) => {
-		builder.addCase(getAllBuckets.pending, (state) => {
+		builder.addCase(userGetAllBuckets.pending, (state) => {
 			state.loading = true
 		})
-		builder.addCase(getAllBuckets.rejected, (state) => {
+		builder.addCase(userGetAllBuckets.rejected, (state) => {
 			state.loading = false
 			state.error = true
 		})
-		builder.addCase(getAllBuckets.fulfilled, (state, action) => {
+		builder.addCase(userGetAllBuckets.fulfilled, (state, action) => {
 			state.loading = false
-			state.list = action.payload
+			state.list = action.payload.buckets
 		})
 
-		builder.addCase(createBucket.pending, (state) => {
+		builder.addCase(userCreateBucket.pending, (state) => {
 			state.creating = true
 		})
-		builder.addCase(createBucket.rejected, (state) => {
+		builder.addCase(userCreateBucket.rejected, (state) => {
 			state.creating = false
 			state.error = true
 		})
-		builder.addCase(createBucket.fulfilled, (state) => {
+		builder.addCase(userCreateBucket.fulfilled, (state) => {
 			state.creating = false
 		})
 

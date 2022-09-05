@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 import {
-	getAllBuckets,
 	selectBuckets,
 	selectBucketsLoading,
+	userGetAllBuckets,
 } from "../../redux/slices/bucketSlice"
 import {
 	selectObjectsList,
@@ -18,10 +18,9 @@ import {
 	userGetAllSchemas,
 	userGetSchema,
 } from "../../redux/slices/schemasSlice"
-import { ObjectData } from "../../service/buckets"
-import { GetSchemaFieldsResponse, SchemaField } from "../../service/schemas"
+import { GetSchemaFieldsResponse } from "../../service/getSchemaFields"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
-import { IsearchableList, IsearchableListItem } from "../../utils/types"
+import { IsearchableList, IsearchableListItem, ObjectData, SchemaField } from "../../utils/types"
 import ObjectsPageComponent from "./Component"
 
 function ObjectsPageContainer() {
@@ -90,7 +89,7 @@ function ObjectsPageContainer() {
 	async function initialize() {
 		await Promise.all([
 			dispatch(userGetAllSchemas),
-			dispatch(getAllBuckets(address)),
+			dispatch(userGetAllBuckets(address)),
 		])
 		if (schemaMetadata.length > 0) {
 			setSelectedSchema(schemaMetadata[0].did)
