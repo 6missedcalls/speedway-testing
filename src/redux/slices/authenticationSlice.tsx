@@ -42,8 +42,8 @@ export const userCreateAccount = createAsyncThunk(
 	"authentication/createAccount",
 	async ({ password }: createAccountProps, thunkAPI) => {
 		try {
-			const data = await createAccount({ password })
-			return data
+			const address = await createAccount(password)
+			return { address }
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
 		}

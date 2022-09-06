@@ -1,17 +1,12 @@
 import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
 
-type CreateAccountPayload = { password: string }
-type CreateAccountResponse = { address: string }
-
-const createAccount = async (
-	payload: CreateAccountPayload
-): Promise<CreateAccountResponse> => {
+const createAccount = async (password: string): Promise<string> => {
 	const url = `${BASE_API}/account/create`
 	const options = {
 		method: "POST",
 		headers: { "content-type": "application/json" },
-		body: JSON.stringify(payload),
+		body: JSON.stringify({ password }),
 	}
 
 	try {
