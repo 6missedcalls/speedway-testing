@@ -29,7 +29,7 @@ export const userCreateSchema = createAsyncThunk(
 	"schemas/create",
 	async ({ schema }: userCreateSchemaProp, thunkAPI) => {
 		try {
-			const data = await createSchema(schema)
+			const data = await createSchema(schema.label, schema.fields)
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)

@@ -1,18 +1,18 @@
 import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
+import { SchemaMeta } from "../utils/types"
 
 type SchemaFieldsPayload = Record<string, number>
-type CreateSchemaPayload = { label: string; fields: SchemaFieldsPayload }
-type CreateSchemaResponse = { did: string; label: string }
 
 const createSchema = async (
-	payload: CreateSchemaPayload
-): Promise<CreateSchemaResponse> => {
+	label: string,
+	fields: SchemaFieldsPayload
+): Promise<SchemaMeta> => {
 	const url = `${BASE_API}/schema/create`
 	const options = {
 		method: "POST",
 		headers: { "content-type": "application/json" },
-		body: JSON.stringify(payload),
+		body: JSON.stringify({ label, fields }),
 	}
 
 	try {
