@@ -37,11 +37,7 @@ export const updateBucket = createAsyncThunk(
 	"bucket/update-items",
 	async ({ bucketDid, objectCid, schemaDid }: any, thunkAPI) => {
 		try {
-			await addObjectToBucket({
-				bucketDid,
-				objectCid,
-				schemaDid,
-			})
+			await addObjectToBucket(bucketDid, objectCid, schemaDid)
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
 		}

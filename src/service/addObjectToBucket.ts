@@ -2,17 +2,11 @@ import { BASE_API } from "../utils/constants"
 import { ObjectData } from "../utils/types"
 import getObjectsFromBucket from "./getObjectsFromBucket"
 
-type AddObjectToBucketPayload = {
-	bucketDid: string
-	schemaDid: string
+const addObjectToBucket = async (
+	bucketDid: string,
+	schemaDid: string,
 	objectCid: string
-}
-
-const addObjectToBucket = async ({
-	bucketDid,
-	objectCid,
-	schemaDid,
-}: AddObjectToBucketPayload) => {
+) => {
 	try {
 		const { objects } = await getObjectsFromBucket({ did: bucketDid })
 
