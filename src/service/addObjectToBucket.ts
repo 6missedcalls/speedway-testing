@@ -8,7 +8,7 @@ const addObjectToBucket = async (
 	objectCid: string
 ) => {
 	try {
-		const { objects } = await getObjectsFromBucket({ did: bucketDid })
+		const objects = await getObjectsFromBucket(bucketDid)
 
 		const payload = JSON.stringify({
 			bucketDid: bucketDid,

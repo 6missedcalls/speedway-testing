@@ -20,7 +20,7 @@ export const userCreateObject = createAsyncThunk(
 	"objects/create",
 	async ({ schemaDid, object }: InewObject, thunkAPI) => {
 		try {
-			const data = await createObject(schemaDid, object )
+			const data = await createObject(schemaDid, object)
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
@@ -32,10 +32,10 @@ export const userGetAllObjects = createAsyncThunk(
 	"bucket/all/content",
 	async ({ bucketDids }: { bucketDids: Array<string> }, thunkAPI) => {
 		try {
-			const buckets = await Promise.all(
-				bucketDids.map((did) => getObjectsFromBucket({ did }))
+			const bucketObjects = await Promise.all(
+				bucketDids.map((did) => getObjectsFromBucket(did))
 			)
-			return buckets.map((bucket) => bucket.objects).flat()
+			return bucketObjects.flat()
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
 		}
