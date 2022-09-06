@@ -41,7 +41,7 @@ export const userGetSchema = createAsyncThunk(
 	"schemas/get",
 	async ({ schema }: userGetSchemaProp, thunkAPI) => {
 		try {
-			const data = await getSchemaFields({ did: schema.schema })
+			const data = await getSchemaFields(schema.schema)
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)

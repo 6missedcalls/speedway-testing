@@ -2,17 +2,16 @@ import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
 import { SchemaField } from "../utils/types"
 
-type GetSchemaFieldsPayload = { did: string }
 export type GetSchemaFieldsResponse = { fields: SchemaField[] }
 
 const getSchemaFields = async (
-	payload: GetSchemaFieldsPayload
+	did: string
 ): Promise<GetSchemaFieldsResponse> => {
 	const url = `${BASE_API}/schema/get`
 	const options = {
 		method: "POST",
 		headers: { "content-type": "application/json" },
-		body: JSON.stringify({ schema: payload.did }),
+		body: JSON.stringify({ schema: did }),
 	}
 
 	try {
