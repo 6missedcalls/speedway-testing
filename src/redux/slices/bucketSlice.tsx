@@ -25,7 +25,7 @@ export const userGetAllBuckets = createAsyncThunk(
 	"bucket/getAll",
 	async (address: string, thunkAPI) => {
 		try {
-			const data = await getBuckets({ address })
+			const data = await getBuckets(address)
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
@@ -81,7 +81,7 @@ const bucketSlice = createSlice({
 		})
 		builder.addCase(userGetAllBuckets.fulfilled, (state, action) => {
 			state.loading = false
-			state.list = action.payload.buckets
+			state.list = action.payload
 		})
 
 		builder.addCase(userCreateBucket.pending, (state) => {
