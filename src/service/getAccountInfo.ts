@@ -1,9 +1,7 @@
 import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
 
-type AccountInfoResponse = { address: string }
-
-const getAccountInfo = async (): Promise<AccountInfoResponse> => {
+const getAccountInfo = async (): Promise<string> => {
 	const url = `${BASE_API}/account/info`
 	const options = {
 		method: "GET",
@@ -14,7 +12,7 @@ const getAccountInfo = async (): Promise<AccountInfoResponse> => {
 		const response: Response = await fetch(url, options)
 		if (!response.ok) throw new Error(response.statusText)
 		const data = await response.json()
-		return { address: data.Address }
+		return data.Address
 	} catch (error) {
 		const errorMessage = formatApiError({ error, url, options })
 		throw new Error(errorMessage)
