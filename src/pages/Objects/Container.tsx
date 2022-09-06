@@ -18,7 +18,6 @@ import {
 	userGetAllSchemas,
 	userGetSchema,
 } from "../../redux/slices/schemasSlice"
-import { GetSchemaFieldsResponse } from "../../service/getSchemaFields"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
 import {
 	SearchableList,
@@ -84,11 +83,11 @@ function ObjectsPageContainer() {
 			schema: selectedSchemaData.did,
 		}
 
-		const getSchemaResponse: GetSchemaFieldsResponse = await dispatch(
+		const schemaFields: SchemaField[] = await dispatch(
 			userGetSchema({ schema: getSchemaPayload })
 		)
 
-		setSchemaFields(getSchemaResponse.fields)
+		setSchemaFields(schemaFields)
 	}
 
 	async function initialize() {
