@@ -63,11 +63,13 @@ export type BucketContent = {
 	uri: string
 }
 
-export type ObjectData = {
+export type SonrObject = {
 	cid: string
 	schemaDid: string
-	data: { [key: string]: any }
+	data: ObjectData
 }
+
+export type ObjectData = { [key: string]: any }
 
 export type SearchableListItemData = {
 	text?: string

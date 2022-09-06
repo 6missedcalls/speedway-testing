@@ -1,9 +1,9 @@
 import { BASE_API } from "../utils/constants"
 import { parseJsonFromBase64String } from "../utils/object"
-import { ObjectData } from "../utils/types"
+import { SonrObject } from "../utils/types"
 
 type GetBucketPayload = { did: string }
-type GetBucketResponse = { objects: ObjectData[] }
+type GetBucketResponse = { objects: SonrObject[] }
 
 const getObjectsFromBucket = async ({
 	did,

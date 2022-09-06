@@ -1,5 +1,5 @@
 import { BASE_API } from "../utils/constants"
-import { ObjectData } from "../utils/types"
+import { SonrObject } from "../utils/types"
 import getObjectsFromBucket from "./getObjectsFromBucket"
 
 const addObjectToBucket = async (
@@ -13,7 +13,7 @@ const addObjectToBucket = async (
 		const payload = JSON.stringify({
 			bucketDid: bucketDid,
 			content: objects
-				.map((item: ObjectData) => ({
+				.map((item: SonrObject) => ({
 					schemaDid: item.schemaDid,
 					type: "cid",
 					uri: item.cid,

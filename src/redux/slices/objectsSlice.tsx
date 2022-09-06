@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import createObject from "../../service/createObject"
 import getObjectsFromBucket from "../../service/getObjectsFromBucket"
-import { InewObject, ObjectData } from "../../utils/types"
+import { InewObject, SonrObject } from "../../utils/types"
 import { RootState } from "../store"
 
 export interface ObjectsState {
-	list: Array<ObjectData>
+	list: Array<SonrObject>
 	loading: boolean
 	error: boolean
 }
@@ -20,7 +20,7 @@ export const userCreateObject = createAsyncThunk(
 	"objects/create",
 	async ({ schemaDid, object }: InewObject, thunkAPI) => {
 		try {
-			const data = await createObject({ schemaDid, objectData: object })
+			const data = await createObject(schemaDid, object )
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)

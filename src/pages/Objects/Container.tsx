@@ -23,7 +23,7 @@ import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
 import {
 	SearchableList,
 	SearchableListItem,
-	ObjectData,
+	SonrObject,
 	SchemaField,
 } from "../../utils/types"
 import ObjectsPageComponent from "./Component"
@@ -116,8 +116,8 @@ function ObjectsPageContainer() {
 
 	function mapToListFormat(): SearchableList {
 		return objectsList
-			.filter((item: ObjectData) => item.schemaDid === selectedSchemaDid)
-			.map(({ cid, data }: ObjectData): SearchableListItem => {
+			.filter((item: SonrObject) => item.schemaDid === selectedSchemaDid)
+			.map(({ cid, data }: SonrObject): SearchableListItem => {
 				const listItem: SearchableListItem = {}
 				listItem.cid = { text: cid }
 				Object.keys(data).forEach((key) => {
