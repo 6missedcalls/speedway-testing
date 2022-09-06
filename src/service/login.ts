@@ -13,7 +13,7 @@ const login = async (address: string, password: string): Promise<string> => {
 		const response: Response = await fetch(url, options)
 		if (!response.ok) throw new Error(response.statusText)
 		const data = await response.json()
-		return data
+		return data.address
 	} catch (error) {
 		const errorMessage = formatApiError({ error, url, options })
 		throw new Error(errorMessage)

@@ -20,8 +20,8 @@ export const userCreateObject = createAsyncThunk(
 	"objects/create",
 	async ({ schemaDid, object }: InewObject, thunkAPI) => {
 		try {
-			const data = await createObject(schemaDid, object)
-			return data
+			const cid = await createObject(schemaDid, object)
+			return cid
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
 		}

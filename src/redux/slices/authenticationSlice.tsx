@@ -43,7 +43,7 @@ export const userCreateAccount = createAsyncThunk(
 	async ({ password }: createAccountProps, thunkAPI) => {
 		try {
 			const address = await createAccount(password)
-			return { address }
+			return address
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
 		}
@@ -78,9 +78,8 @@ export const authenticationSlice = createSlice({
 		})
 
 		builder.addCase(userCreateAccount.fulfilled, (state, action) => {
-			const { payload } = action
 			state.loading = false
-			state.Address = payload.address
+			state.Address = action.payload
 		})
 
 		builder.addCase(userCreateAccount.rejected, (state) => {

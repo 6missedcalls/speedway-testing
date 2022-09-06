@@ -62,7 +62,7 @@ function NewObjectModalContentContainer({
 			userGetSchema({ schema: getSchemaPayload })
 		)
 
-		setProperties(getSchemaResponse.payload.fields)
+		setProperties(getSchemaResponse.payload)
 	}
 
 	function handlePropertiesChange({ value, index }: IobjectPropertyChange) {
@@ -143,7 +143,7 @@ function NewObjectModalContentContainer({
 		const { payload } = await dispatch(userCreateObject({ ...objectPayload }))
 		const bucketUpdatePayload = {
 			bucketDid: selectedBucket,
-			objectCid: payload.cid,
+			objectCid: payload,
 			schemaDid: selectedSchemaDid,
 		}
 

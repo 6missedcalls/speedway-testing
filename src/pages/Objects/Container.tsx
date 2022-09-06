@@ -83,11 +83,11 @@ function ObjectsPageContainer() {
 			schema: selectedSchemaData.did,
 		}
 
-		const schemaFields: SchemaField[] = await dispatch(
+		const schemaFields = await dispatch(
 			userGetSchema({ schema: getSchemaPayload })
 		)
 
-		setSchemaFields(schemaFields)
+		setSchemaFields(schemaFields.payload)
 	}
 
 	async function initialize() {
