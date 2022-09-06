@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
-import { IsearchableListItem, listTypes } from "../../utils/types"
+import { SearchableListItem, ListTypes } from "../../utils/types"
 import SearchableListComponent from "./Component"
 
 interface SearchableListContainerProps {
-	initialList: Array<IsearchableListItem>
-	type: listTypes
+	initialList: Array<SearchableListItem>
+	type: ListTypes
 	searchableAndSortableFieldKey?: string
 	paginationSize?: number
 	handleOpenModal?: () => void
@@ -21,7 +21,7 @@ function SearchableListContainer({
 	const [orderAsc, setOrderAsc] = useState(true)
 	const [searchTerm, setSearchTerm] = useState("")
 	const [paginationCurrentPage, setPaginationCurrentPage] = useState(1)
-	const [list, setList] = useState<Array<IsearchableListItem>>(initialList)
+	const [list, setList] = useState<Array<SearchableListItem>>(initialList)
 	const [totalPages, setTotalPages] = useState(1)
 
 	useEffect(() => {
@@ -49,13 +49,13 @@ function SearchableListContainer({
 		return getPaginatedList(getFilteredList(getOrderedList(initialList)))
 	}
 
-	function getOrderedList(previousList: Array<IsearchableListItem>) {
+	function getOrderedList(previousList: Array<SearchableListItem>) {
 		if (!searchableAndSortableFieldKey) return previousList
 
 		let orderedList
 		if (orderAsc) {
 			orderedList = [...previousList].sort(
-				(a: IsearchableListItem, b: IsearchableListItem) =>
+				(a: SearchableListItem, b: SearchableListItem) =>
 					(a[searchableAndSortableFieldKey].text as string).toLowerCase() >
 					(b[searchableAndSortableFieldKey].text as string).toLowerCase()
 						? 1
@@ -64,7 +64,7 @@ function SearchableListContainer({
 			return orderedList
 		} else {
 			orderedList = [...previousList].sort(
-				(a: IsearchableListItem, b: IsearchableListItem) =>
+				(a: SearchableListItem, b: SearchableListItem) =>
 					(a[searchableAndSortableFieldKey].text as string).toLowerCase() <
 					(b[searchableAndSortableFieldKey].text as string).toLowerCase()
 						? 1
@@ -74,7 +74,7 @@ function SearchableListContainer({
 		}
 	}
 
-	function getPaginatedList(previousList: Array<IsearchableListItem>) {
+	function getPaginatedList(previousList: Array<SearchableListItem>) {
 		const paginated = [...previousList].filter((_, index: number) => {
 			return (
 				index < paginationSize * paginationCurrentPage &&
@@ -84,7 +84,7 @@ function SearchableListContainer({
 		return paginated
 	}
 
-	function getFilteredList(previousList: Array<IsearchableListItem>) {
+	function getFilteredList(previousList: Array<SearchableListItem>) {
 		if (!searchTerm) return previousList
 
 		return [...previousList].filter((item) => {

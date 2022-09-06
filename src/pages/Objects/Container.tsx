@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 import {
-	getAllBuckets,
 	selectBuckets,
 	selectBucketsLoading,
+	userGetAllBuckets,
 } from "../../redux/slices/bucketSlice"
 import {
 	selectObjectsList,
 	selectObjectsLoading,
-	userGetAllBucketObjects,
+	userGetAllObjects,
 } from "../../redux/slices/objectsSlice"
 import {
 	selectSchemasLoading,
@@ -18,10 +18,14 @@ import {
 	userGetAllSchemas,
 	userGetSchema,
 } from "../../redux/slices/schemasSlice"
-import { ObjectData } from "../../service/buckets"
-import { GetSchemaFieldsResponse, SchemaField } from "../../service/schemas"
+import { GetSchemaFieldsResponse } from "../../service/getSchemaFields"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
-import { IsearchableList, IsearchableListItem } from "../../utils/types"
+import {
+	SearchableList,
+	SearchableListItem,
+	ObjectData,
+	SchemaField,
+} from "../../utils/types"
 import ObjectsPageComponent from "./Component"
 
 function ObjectsPageContainer() {
@@ -46,8 +50,8 @@ function ObjectsPageContainer() {
 	useEffect(() => {
 		if (buckets.length > 0) {
 			dispatch(
-				userGetAllBucketObjects({
-					buckets: buckets.map((item) => item.did),
+				userGetAllObjects({
+					bucketDids: buckets.map((item) => item.did),
 				})
 			)
 		}
@@ -90,7 +94,7 @@ function ObjectsPageContainer() {
 	async function initialize() {
 		await Promise.all([
 			dispatch(userGetAllSchemas),
-			dispatch(getAllBuckets(address)),
+			dispatch(userGetAllBuckets(address)),
 		])
 		if (schemaMetadata.length > 0) {
 			setSelectedSchema(schemaMetadata[0].did)
@@ -110,11 +114,11 @@ function ObjectsPageContainer() {
 		openModal()
 	}
 
-	function mapToListFormat(): IsearchableList {
+	function mapToListFormat(): SearchableList {
 		return objectsList
 			.filter((item: ObjectData) => item.schemaDid === selectedSchemaDid)
-			.map(({ cid, data }: ObjectData): IsearchableListItem => {
-				const listItem: IsearchableListItem = {}
+			.map(({ cid, data }: ObjectData): SearchableListItem => {
+				const listItem: SearchableListItem = {}
 				listItem.cid = { text: cid }
 				Object.keys(data).forEach((key) => {
 					listItem[key] = { text: data[key].toString() }

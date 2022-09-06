@@ -8,9 +8,12 @@ import {
 	userGetAllSchemas,
 } from "../../redux/slices/schemasSlice"
 import { AppDispatch } from "../../redux/store"
-import { SchemaMeta } from "../../service/schemas"
 import { MODAL_CONTENT_NEW_SCHEMA } from "../../utils/constants"
-import { IsearchableList, IsearchableListItem } from "../../utils/types"
+import {
+	SearchableList,
+	SearchableListItem,
+	SchemaMeta,
+} from "../../utils/types"
 import SchemasPageComponent from "./Component"
 import EmptyList from "./components/EmptyList"
 import ViewProperties from "./components/ViewProperties"
@@ -32,8 +35,8 @@ function SchemasPageContainer() {
 		openModal()
 	}
 
-	function mapToListFormat(list: Array<SchemaMeta>): IsearchableList {
-		return list.map((item: SchemaMeta): IsearchableListItem => {
+	function mapToListFormat(list: Array<SchemaMeta>): SearchableList {
+		return list.map((item: SchemaMeta): SearchableListItem => {
 			const getSchemaPayload = {
 				address,
 				creator: "",

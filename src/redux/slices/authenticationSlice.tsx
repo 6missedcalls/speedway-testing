@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../store"
-import { createAccount, login } from "../../service/account"
+import login from "../../service/login"
+import createAccount from "../../service/createAccount"
 
 interface loginProps {
 	walletAddress: string

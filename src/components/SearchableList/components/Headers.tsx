@@ -1,19 +1,19 @@
-import { listTypes, IsearchableListItem } from "../../../utils/types"
+import { ListTypes, SearchableListItem } from "../../../utils/types"
 import ObjectHeaders from "./ObjectsHeader"
 import SchemaHeaders from "./SchemaHeaders"
 
 interface HeadersProps {
-	type: listTypes
-	list: Array<IsearchableListItem>
+	type: ListTypes
+	list: Array<SearchableListItem>
 	orderAsc: boolean
 	toggleOrder: () => void
 }
 
 function Headers({ type, list, toggleOrder, orderAsc }: HeadersProps) {
 	switch (type) {
-		case listTypes.schema:
+		case ListTypes.schema:
 			return SchemaHeaders({ toggleOrder, orderAsc })
-		case listTypes.object:
+		case ListTypes.object:
 			return ObjectHeaders({ list })
 		default:
 			return null

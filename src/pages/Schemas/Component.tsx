@@ -1,10 +1,10 @@
 import LoadingCircleSvg from "../../assets/svgs/LoadingCircle"
 import LayoutMenu from "../../components/LayoutMenu"
 import SearchableList from "../../components/SearchableList"
-import { IsearchableList, listTypes } from "../../utils/types"
+import { SearchableList as SearchableListType, ListTypes } from "../../utils/types"
 
 interface SchemasPageComponentProps {
-	list: IsearchableList
+	list: SearchableListType
 	searchableAndSortableFieldKey: string
 	openNewSchemaModal: () => void
 	loading: boolean
@@ -34,7 +34,7 @@ function SchemasPageComponent({
 						searchableAndSortableFieldKey={searchableAndSortableFieldKey}
 						handleOpenModal={openNewSchemaModal}
 						initialList={list}
-						type={listTypes.schema}
+						type={ListTypes.schema}
 						loading={loading}
 					/>
 				</div>

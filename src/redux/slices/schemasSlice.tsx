@@ -1,26 +1,23 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { RootState } from "../store"
-import { IgetSchemaFields, InewSchema } from "../../utils/types"
-import {
-	createSchema,
-	getAllSchemas,
-	getSchemaFields,
-	SchemaMeta,
-} from "../../service/schemas"
+import { InewSchema, SchemaMeta } from "../../utils/types"
+import getSchemaMetadata from "../../service/getSchemaMetadata"
+import createSchema from "../../service/createSchema"
+import getSchemaFields from "../../service/getSchemaFields"
 
 interface userCreateSchemaProp {
 	schema: InewSchema
 }
 
 interface userGetSchemaProp {
-	schema: IgetSchemaFields
+	schema: { schema: string }
 }
 
 export const userGetAllSchemas = createAsyncThunk(
 	"schemas/getAll",
 	async (address: string, thunkAPI) => {
 		try {
-			const data = await getAllSchemas({ address })
+			const data = await getSchemaMetadata({ address })
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)

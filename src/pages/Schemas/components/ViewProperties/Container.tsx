@@ -2,12 +2,12 @@ import { useState } from "react"
 import { useDispatch } from "react-redux"
 import LoadingCircleSvg from "../../../../assets/svgs/LoadingCircle"
 import { userGetSchema } from "../../../../redux/slices/schemasSlice"
-import { IgetSchemaFields, IpropertyResponse } from "../../../../utils/types"
+import { IpropertyResponse } from "../../../../utils/types"
 import ViewPropertiesComponent from "./Component"
 
 interface ViewPropertiesContainerProps {
 	onClick: () => void
-	getSchemaPayload: IgetSchemaFields
+	getSchemaPayload: { schema: string }
 }
 
 function ViewPropertiesContainer({

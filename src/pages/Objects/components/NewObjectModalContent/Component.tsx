@@ -1,10 +1,10 @@
 import { Button, NebulaIcon } from "@sonr-io/nebula-react"
 import { Dispatch, SetStateAction } from "react"
-import { SchemaMeta } from "../../../../service/schemas"
 import {
 	Bucket,
 	IobjectPropertyChange,
-	IschemaField,
+	SchemaField,
+	SchemaMeta,
 } from "../../../../utils/types"
 
 interface NewSchemaModalContentComponentProps {
@@ -116,7 +116,7 @@ function NewObjectModalContentComponent({
 								<div className="text-custom-xs text-subdued pb-1">
 									{item.name}
 								</div>
-								<SchemaField
+								<SchemaFieldInput
 									field={{ name: item.name, type: item.type }}
 									onChange={(value) => onChangeProperty({ value, index })}
 								/>
@@ -142,11 +142,11 @@ function NewObjectModalContentComponent({
 }
 
 type Props = {
-	field: IschemaField
+	field: SchemaField
 	onChange: (value: string) => void
 }
 
-const SchemaField = ({ field, onChange }: Props) => {
+const SchemaFieldInput = ({ field, onChange }: Props) => {
 	switch (field.type) {
 		case 1:
 			return (

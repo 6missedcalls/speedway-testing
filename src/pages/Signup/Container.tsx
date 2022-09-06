@@ -17,7 +17,6 @@ import {
 } from "@sonr-io/validation/dist/validation"
 import validate from "@sonr-io/validation/dist/validator"
 import Signup from "./Component"
-import { loginPayload } from "../../utils/types"
 
 const passwordRules = [
 	{
@@ -76,8 +75,8 @@ const Container = () => {
 		const createAccountResponse = await dispatch(
 			userCreateAccount({ password })
 		)
-		const payload: loginPayload = createAccountResponse.payload
-		await dispatch(userLogin({ walletAddress: payload.address, password }))
+		const { address } = createAccountResponse.payload
+		await dispatch(userLogin({ walletAddress: address, password }))
 		navigate(ROUTE_POST_SIGNUP)
 	}
 

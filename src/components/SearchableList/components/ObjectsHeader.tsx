@@ -1,7 +1,7 @@
-import { IsearchableListItem } from "../../../utils/types"
+import { SearchableListItem } from "../../../utils/types"
 
 interface ObjectHeadersProps {
-	list: Array<IsearchableListItem>
+	list: Array<SearchableListItem>
 }
 
 function ObjectHeaders({ list }: ObjectHeadersProps) {

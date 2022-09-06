@@ -10,14 +10,13 @@ import {
 import {
 	selectObjectsLoading,
 	userCreateObject,
-	userGetAllBucketObjects,
+	userGetAllObjects,
 } from "../../../../redux/slices/objectsSlice"
 import {
 	selectSchemasLoading,
 	userGetSchema,
 } from "../../../../redux/slices/schemasSlice"
-import { SchemaMeta } from "../../../../service/schemas"
-import { IobjectPropertyChange } from "../../../../utils/types"
+import { IobjectPropertyChange, SchemaMeta } from "../../../../utils/types"
 import NewObjectModalContentComponent from "./Component"
 
 export interface NewObjectModalContentContainerProps {
@@ -141,25 +140,18 @@ function NewObjectModalContentContainer({
 
 		if (floatError) return
 
-		const object = await dispatch(userCreateObject({ ...objectPayload }))
-		if (object?.error) {
-			setError("Could not create object or update bucket.")
-			console.error(error)
-			return
-		}
-
+		const { payload } = await dispatch(userCreateObject({ ...objectPayload }))
 		const bucketUpdatePayload = {
 			bucketDid: selectedBucket,
-			objectCid: object.payload?.cid || object.payload?.Cid,
-			objectName: object.payload?.label || object.payload?.Label,
+			objectCid: payload.cid,
 			schemaDid: selectedSchemaDid,
 		}
 
 		await dispatch(updateBucket({ ...bucketUpdatePayload }))
 
 		dispatch(
-			userGetAllBucketObjects({
-				buckets: buckets.map((item) => item.did),
+			userGetAllObjects({
+				bucketDids: buckets.map((item) => item.did),
 			})
 		)
 

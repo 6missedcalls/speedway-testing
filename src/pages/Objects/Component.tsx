@@ -2,9 +2,8 @@ import LayoutMenu from "../../components/LayoutMenu"
 import SearchableList from "../../components/SearchableList"
 import { NebulaIcon } from "@sonr-io/nebula-react"
 import EmptyList from "./components/EmptyList"
-import { listTypes, IsearchableListItem } from "../../utils/types"
+import { ListTypes, SearchableListItem, SchemaMeta } from "../../utils/types"
 import LoadingCircleSvg from "../../assets/svgs/LoadingCircle"
-import { SchemaMeta } from "../../service/schemas"
 
 interface ObjectsPageComponentProps {
 	schemas: Array<SchemaMeta>
@@ -14,7 +13,7 @@ interface ObjectsPageComponentProps {
 	loading: boolean
 	schemaCount: number
 	bucketCount: number
-	list: Array<IsearchableListItem>
+	list: Array<SearchableListItem>
 }
 
 const ObjectsPageComponent = ({
@@ -70,7 +69,7 @@ const ObjectsPageComponent = ({
 						<SearchableList
 							handleOpenModal={openNewObjectModal}
 							initialList={list}
-							type={listTypes.object}
+							type={ListTypes.object}
 							loading={loading}
 						/>
 					) : (

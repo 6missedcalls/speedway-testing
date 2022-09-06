@@ -128,9 +128,9 @@ it("builds an object", async () => {
 	})
 
 	const { body: result } = await app.post("/api/v1/object/build").send({
-		SchemaDid: responseSchema.body.whatIs.did,
-		Label: "Sonrsaur",
-		Object: { firstName: "Rex" },
+		schemaDid: responseSchema.body.whatIs.did,
+		label: "Sonrsaur",
+		object: { firstName: "Rex" },
 	})
 
 	expect(result).toHaveProperty("objectUpload")
@@ -148,9 +148,9 @@ it("when building object, checks schema properties", async () => {
 	})
 
 	const result = await app.post("/api/v1/object/build").send({
-		SchemaDid: responseSchema.body.whatIs.did,
-		Label: "Sonrsaur",
-		Object: { lastName: "Smith" },
+		schemaDid: responseSchema.body.whatIs.did,
+		label: "Sonrsaur",
+		object: { lastName: "Smith" },
 	})
 
 	expect(result.status).toBe(500)
@@ -166,14 +166,14 @@ it("gets an object", async () => {
 	})
 
 	const responseObject = await app.post("/api/v1/object/build").send({
-		SchemaDid: responseSchema.body.whatIs.did,
-		Label: "Sonrsaur",
-		Object: { firstName: "Rex" },
+		schemaDid: responseSchema.body.whatIs.did,
+		label: "Sonrsaur",
+		object: { firstName: "Rex" },
 	})
 
 	const { body: result } = await app.post("/api/v1/object/get").send({
-		SchemaDid: responseSchema.body.whatIs.did,
-		ObjectCid: responseObject.body.objectUpload.reference.Cid,
+		schemaDid: responseSchema.body.whatIs.did,
+		objectCid: responseObject.body.objectUpload.reference.Cid,
 	})
 
 	expect(result).toHaveProperty("object")
@@ -234,9 +234,9 @@ it("can add objects to buckets", async () => {
 	const bucketDid = responseBucket.body.service.serviceEndpoint.did
 
 	const responseObject = await app.post("/api/v1/object/build").send({
-		SchemaDid: schemaDid,
-		Label: "Sonrsaur",
-		Object: { firstName: "Rex" },
+		schemaDid: schemaDid,
+		label: "Sonrsaur",
+		object: { firstName: "Rex" },
 	})
 	const objectCid = responseObject.body.objectUpload.reference.Cid
 
@@ -276,16 +276,16 @@ it("gets a bucket content", async () => {
 	const bucketDid = responseBucket.body.service.serviceEndpoint.did
 
 	const responseObject = await app.post("/api/v1/object/build").send({
-		SchemaDid: schemaDid,
-		Label: "Sonrsaur",
-		Object: { firstName: "Marcel" },
+		schemaDid: schemaDid,
+		label: "Sonrsaur",
+		object: { firstName: "Marcel" },
 	})
 	const objectCid = responseObject.body.objectUpload.reference.Cid
 
 	await app.post("/api/v1/object/build").send({
-		SchemaDid: schemaDid,
-		Label: "Not on bucket",
-		Object: { firstName: "Jane" },
+		schemaDid: schemaDid,
+		label: "Not on bucket",
+		object: { firstName: "Jane" },
 	})
 
 	await app.post("/api/v1/bucket/update-items").send({
@@ -310,7 +310,7 @@ it("gets a bucket content", async () => {
 	expect(result.bucket[0].content.item).toBe("eyJmaXJzdE5hbWUiOiJNYXJjZWwifQ==")
 })
 
-it('responds with null when bucket is empty', async () => {
+it("responds with null when bucket is empty", async () => {
 	const address = await accountLoggedIn(app)
 
 	const responseBucket = await app.post("/api/v1/bucket/create").send({
