@@ -18,9 +18,9 @@ export const initialState: ObjectsState = {
 
 export const userCreateObject = createAsyncThunk(
 	"objects/create",
-	async ({ schemaDid, object }: InewObject, thunkAPI) => {
+	async ({ schemaDid, object, label }: InewObject, thunkAPI) => {
 		try {
-			const cid = await createObject(schemaDid, object)
+			const cid = await createObject(schemaDid, object, label)
 			return cid
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)

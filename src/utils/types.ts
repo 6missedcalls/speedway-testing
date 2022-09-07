@@ -33,7 +33,7 @@ export interface InewSchema {
 
 export interface InewObject {
 	schemaDid: string
-	label?: string
+	label: string
 	object: Record<string, any>
 }
 
@@ -82,3 +82,9 @@ export type SearchableListItem = {
 }
 
 export type SearchableList = SearchableListItem[]
+
+export interface updateBucketProps{
+	bucketDid: string 
+	objectCid: string 
+	schemaDid: string
+}

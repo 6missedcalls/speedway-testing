@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import addObjectToBucket from "../../service/addObjectToBucket"
 import createBucket from "../../service/createBucket"
 import getBuckets from "../../service/getBuckets"
-import { Bucket } from "../../utils/types"
+import { Bucket, updateBucketProps } from "../../utils/types"
 import { RootState } from "../store"
 
 export const selectBuckets = (state: RootState) => {
@@ -35,7 +35,7 @@ export const userGetAllBuckets = createAsyncThunk(
 
 export const updateBucket = createAsyncThunk(
 	"bucket/update-items",
-	async ({ bucketDid, objectCid, schemaDid }: any, thunkAPI) => {
+	async ({ bucketDid, objectCid, schemaDid }: updateBucketProps, thunkAPI) => {
 		try {
 			await addObjectToBucket(bucketDid, schemaDid, objectCid)
 		} catch (err) {

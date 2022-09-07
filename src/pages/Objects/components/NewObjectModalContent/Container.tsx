@@ -105,7 +105,7 @@ function NewObjectModalContentContainer({
 		const objectPayload = {
 			bucketDid: selectedBucket,
 			schemaDid: selectedSchemaDid,
-			label: selectedSchemaData?.label,
+			label: selectedSchemaData?.label || '',
 			object: properties.reduce(
 				(acc, item) => ({
 					...acc,
@@ -140,10 +140,17 @@ function NewObjectModalContentContainer({
 
 		if (floatError) return
 
-		const { payload } = await dispatch(userCreateObject({ ...objectPayload }))
+		const response = await dispatch(userCreateObject({ ...objectPayload }))
+		
+		if (response.error) {
+			setError("Could not create object.")
+			console.error(error)
+			return
+		}
+		
 		const bucketUpdatePayload = {
 			bucketDid: selectedBucket,
-			objectCid: payload,
+			objectCid: response.payload,
 			schemaDid: selectedSchemaDid,
 		}
 
