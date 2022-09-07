@@ -3,7 +3,7 @@
 # dependencies
 /node_modules
 /.pnp
-.pnp.jstask 
+.pnp.jstask
 
 # testing
 /coverage
@@ -25,3 +25,5 @@ yarn-debug.log*
 yarn-error.log*
 
 *.key
+
+build/
