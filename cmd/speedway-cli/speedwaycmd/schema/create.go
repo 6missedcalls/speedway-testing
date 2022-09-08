@@ -18,8 +18,8 @@ import (
 func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (createSchemaCmd *cobra.Command) {
 	createSchemaCmd = &cobra.Command{
 		Use:   "create",
-		Short: "Use: create",
-		Long:  "Creates a Schema definition with either a provided file path. If no flags are provided data will be prompted for",
+		Short: "Create a new schema on the Sonr Network.",
+		Long:  "Creates a Schema definition with either a provided file path with the --file flag. If no flags are provided data will be prompted for via the cli prompt.",
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 

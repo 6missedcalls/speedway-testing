@@ -18,7 +18,8 @@ import (
 func bootstrapCreateBucketCommand(ctx context.Context, logger *golog.Logger) (createBucketCmd *cobra.Command) {
 	createBucketCmd = &cobra.Command{
 		Use:   "create",
-		Short: "Use: create",
+		Short: "Create a new bucket on the Sonr Network.",
+		Long:  `Create a new bucket on the Sonr Network.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 

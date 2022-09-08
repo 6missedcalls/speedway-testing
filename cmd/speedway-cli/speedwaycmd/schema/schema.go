@@ -9,9 +9,12 @@ import (
 
 func BootstrapSchemaCommand(ctx context.Context, logger *golog.Logger) (schemaCmd *cobra.Command) {
 	schemaCmd = &cobra.Command{
-		Use:   "schema",
+		Use:   "schema [subcommand]",
 		Short: "Provides commands for managing schemas on the Sonr Network",
-		Run:   func(cmd *cobra.Command, args []string) {},
+		Long: `Provides commands for managing schemas on the Sonr Network.
+		You can create a new schema with the 'build' subcommand.
+		You can query an existing schema with the 'query' subcommand.`,
+		Run: func(cmd *cobra.Command, args []string) {},
 	}
 	logger = logger.Child("[Schemas] ")
 	schemaCmd.AddCommand(bootstrapCreateSchemaCommand(ctx, logger))

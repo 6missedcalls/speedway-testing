@@ -9,7 +9,7 @@ import (
 
 func BootstrapBucketCommand(ctx context.Context, logger *golog.Logger) (bucketCmd *cobra.Command) {
 	bucketCmd = &cobra.Command{
-		Use:   "bucket",
+		Use:   "bucket [subcommand]",
 		Short: "Commands for managing and querying buckets",
 		Long:  "Create and query buckets created by your user.",
 		Run:   func(cmd *cobra.Command, args []string) {},
