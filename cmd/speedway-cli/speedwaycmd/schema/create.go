@@ -3,6 +3,7 @@ package schema
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
@@ -38,65 +39,51 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 			}
 
 			logger.Info("Creating schema...")
-			var label string = ""
-			var createSchemaRequest rtmv1.CreateSchemaRequest
-			if label, err = cmd.Flags().GetString("label"); err == nil && label == "" {
-				schemaPrompt := promptui.Prompt{
-					Label: "Enter the Schema Label",
-				}
-				label, err = schemaPrompt.Run()
-				if err != nil {
-					fmt.Printf("Command failed %v\n", err)
-					return
-				}
+
+			// prompt for label of schema
+			labelPrompt := promptui.Prompt{
+				Label: "Enter a Label for the schema",
+			}
+			label, err := labelPrompt.Run()
+			if err != nil {
+				fmt.Printf("Command failed %v\n", err)
+				return
 			}
 
+			// Prompt the user for a list of label:field to create a schema
+			// each label:field is a new line
+			// label:field is a comma separated string
+			// label is a string
+			// fields is a types.SchemaKind
+			// e.g. "name:string,age:int"
+			// TODO: add better label below
+			fieldsPrompt := promptui.Prompt{
+				Label: "Enter a list (sperated by commas) of label:kind for the schema",
+			}
+
+			result, err := fieldsPrompt.Run()
+			if err != nil {
+				logger.Fatalf(status.Error("Command failed"), err)
+				return
+			}
+
+			// Parse the result into a types.Schema
 			fields := make(map[string]types.SchemaKind)
-			if path, err := cmd.Flags().GetString("file"); err == nil && path == "" {
-				prompt := promptui.Prompt{
-					Label: "Enter your Schema Fields",
+			for _, field := range strings.Split(result, ",") {
+				fieldSplit := strings.Split(field, ":")
+				if len(fieldSplit) != 2 {
+					logger.Fatalf(status.Error("Invalid field format"), err)
+					return
 				}
+				// take the second element of the split and convert it to a types.SchemaKind
+				kind := utils.ConvertSchemaKind(fieldSplit[1])
+				fields[fieldSplit[0]] = kind
+				fmt.Println(fieldSplit[0], kind)
+			}
 
-				var repeat bool
-				for !repeat {
-					// make schemaFields []string
-					schemaField, err := prompt.Run()
-					if err != nil {
-						fmt.Printf("Command failed %v\n", err)
-						return
-					}
-					// for every schemaFields, prompt for the type of the field
-					selectSchemaKind := promptui.Select{
-						Label: "Select a Schema Field",
-						Items: []string{
-							"LIST",
-							"BOOL",
-							"INT",
-							"FLOAT",
-							"STRING",
-							"BYTES",
-							"LINK",
-						},
-					}
-					_, result, err := selectSchemaKind.Run()
-					if err != nil {
-						fmt.Printf("Prompt failed %v\n", err)
-						return
-					}
-					sk := utils.ConvertSchemaKind(result)
-					fields[schemaField] = sk
-					repeat = prompts.QuitSelector("Create another Schema Field?")
-
-					createSchemaRequest = rtmv1.CreateSchemaRequest{
-						Label:  label,
-						Fields: fields,
-					}
-				}
-			} else {
-				createSchemaRequest, err = utils.LoadSchemaFieldDefinitionFromDisk(path)
-				if err != nil {
-					logger.Fatalf("Error while loading schema fields from disk %s", err)
-				}
+			createSchemaRequest := rtmv1.CreateSchemaRequest{
+				Label:  label,
+				Fields: fields,
 			}
 
 			// create schema
