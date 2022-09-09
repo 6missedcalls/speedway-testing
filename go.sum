@@ -2611,8 +2611,8 @@ github.com/sonr-io/go-keychain v0.0.0-20220701165513-84cc180cb501/go.mod h1:ot4H
 github.com/sonr-io/keyring v1.2.2-0.20220701165800-b4428a8aad16/go.mod h1:dwyQStd/Ds1kIAABy34eceeYk0lvEmjeDneq0C377yc=
 github.com/sonr-io/multi-party-sig v0.7.0 h1:cRpctyTdbgeOm+JBdY/HcHv3dD7lX3JWtw+P77xmvOw=
 github.com/sonr-io/multi-party-sig v0.7.0/go.mod h1:Bl4/pohbzwlfiHpYaf9sM/hkV71u1SUPQHDEaHOamfo=
-github.com/sonr-io/sonr v0.3.10 h1:qP455tgYAwQrMAEjFhMGOJEu4tb90ceY/n/C0kex0p8=
-github.com/sonr-io/sonr v0.3.10/go.mod h1:momN2/I/m+Ssa0+hGJ/EWE8EFrA5CxryDAMAhNTmL5Q=
+github.com/sonr-io/sonr v0.3.11 h1:3n0YbSMNL767PMSI8FEvyHxCgx6ghbE2JhCVF7RIJwU=
+github.com/sonr-io/sonr v0.3.11/go.mod h1:momN2/I/m+Ssa0+hGJ/EWE8EFrA5CxryDAMAhNTmL5Q=
 github.com/sony/gobreaker v0.4.1/go.mod h1:ZKptC7FHNvhBz7dN2LGjPVBz2sZJmc0/PkyDJOjmxWY=
 github.com/sourcegraph/annotate v0.0.0-20160123013949-f4cad6c6324d/go.mod h1:UdhH50NIW0fCiwBSr0co2m7BnFLdv4fQTgdqdJTHFeE=
 github.com/sourcegraph/go-diff v0.5.1/go.mod h1:j2dHj3m8aZgQO8lMTcTnBcXkRRRqi34cd2MNlA9u1mE=
