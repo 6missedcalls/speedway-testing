@@ -17,7 +17,7 @@ export const userGetAllSchemas = createAsyncThunk(
 	"schemas/getAll",
 	async (address: string, thunkAPI) => {
 		try {
-			const data = await getSchemaMetadata({ address })
+			const data = await getSchemaMetadata(address)
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
@@ -29,7 +29,7 @@ export const userCreateSchema = createAsyncThunk(
 	"schemas/create",
 	async ({ schema }: userCreateSchemaProp, thunkAPI) => {
 		try {
-			const data = await createSchema(schema)
+			const data = await createSchema(schema.label, schema.fields)
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
@@ -41,7 +41,7 @@ export const userGetSchema = createAsyncThunk(
 	"schemas/get",
 	async ({ schema }: userGetSchemaProp, thunkAPI) => {
 		try {
-			const data = await getSchemaFields({ did: schema.schema })
+			const data = await getSchemaFields(schema.schema)
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
@@ -71,9 +71,8 @@ export const schemasSlice = createSlice({
 		})
 
 		builder.addCase(userGetAllSchemas.fulfilled, (state, action) => {
-			const { payload } = action
 			state.loading = false
-			state.list = payload.schemas
+			state.list = action.payload
 		})
 
 		builder.addCase(userGetAllSchemas.rejected, (state) => {

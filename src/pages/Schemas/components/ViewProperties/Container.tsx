@@ -24,7 +24,7 @@ function ViewPropertiesContainer({
 			const getSchemaResponse = await dispatch(
 				userGetSchema({ schema: getSchemaPayload })
 			)
-			setProperties(getSchemaResponse.payload.fields)
+			setProperties(getSchemaResponse.payload)
 			setLoading(false)
 		}
 

@@ -30,7 +30,7 @@ export const userLogin = createAsyncThunk(
 	"authentication/login",
 	async ({ walletAddress, password }: loginProps, thunkAPI) => {
 		try {
-			const data = await login({ address: walletAddress, password })
+			const data = await login(walletAddress, password)
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
@@ -42,8 +42,8 @@ export const userCreateAccount = createAsyncThunk(
 	"authentication/createAccount",
 	async ({ password }: createAccountProps, thunkAPI) => {
 		try {
-			const data = await createAccount({ password })
-			return data
+			const address = await createAccount(password)
+			return address
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
 		}
@@ -64,10 +64,9 @@ export const authenticationSlice = createSlice({
 		})
 
 		builder.addCase(userLogin.fulfilled, (state, action) => {
-			const { payload } = action
 			state.loading = false
 			state.isLogged = true
-			state.Address = payload.address
+			state.Address = action.payload
 		})
 
 		builder.addCase(userLogin.rejected, (state) => {
@@ -79,9 +78,8 @@ export const authenticationSlice = createSlice({
 		})
 
 		builder.addCase(userCreateAccount.fulfilled, (state, action) => {
-			const { payload } = action
 			state.loading = false
-			state.Address = payload.address
+			state.Address = action.payload
 		})
 
 		builder.addCase(userCreateAccount.rejected, (state) => {

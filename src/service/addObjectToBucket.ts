@@ -1,25 +1,19 @@
 import { BASE_API } from "../utils/constants"
-import { ObjectData } from "../utils/types"
+import { SonrObject } from "../utils/types"
 import getObjectsFromBucket from "./getObjectsFromBucket"
 
-type AddObjectToBucketPayload = {
-	bucketDid: string
-	schemaDid: string
+const addObjectToBucket = async (
+	bucketDid: string,
+	schemaDid: string,
 	objectCid: string
-}
-
-const addObjectToBucket = async ({
-	bucketDid,
-	objectCid,
-	schemaDid,
-}: AddObjectToBucketPayload) => {
+) => {
 	try {
-		const { objects } = await getObjectsFromBucket({ did: bucketDid })
+		const objects = await getObjectsFromBucket(bucketDid)
 
 		const payload = JSON.stringify({
 			bucketDid: bucketDid,
 			content: objects
-				.map((item: ObjectData) => ({
+				.map((item: SonrObject) => ({
 					schemaDid: item.schemaDid,
 					type: "cid",
 					uri: item.cid,
