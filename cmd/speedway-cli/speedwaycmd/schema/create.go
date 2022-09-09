@@ -110,8 +110,12 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 			}
 			logger.Info(status.Success("Create Schema Successful"))
 			// desearialize the scehma result to get the schema did
-			fmtRes, _ := utils.MarshalJsonFmt(createSchemaResult)
-			fmt.Printf("Schema WhatIs: \n %s", fmtRes)
+			fmt.Printf(`
+			🚀 WhatIs for Schema Broadcasted
+			├── Creator: %s
+			├── Cid: %s
+			└── Did: %s
+			`, createSchemaResult.WhatIs.Creator, createSchemaResult.WhatIs.Schema.Cid, createSchemaResult.WhatIs.Did)
 		},
 	}
 
