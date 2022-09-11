@@ -92,23 +92,24 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 				}
 			}
 
-			// create schema
-			reqStr, _ := utils.MarshalJsonFmt(createSchemaRequest)
-			logger.Debugf("Schema request: \n%s", reqStr)
+			// print each createSchemaRequest.Fields as a tree
+			fmt.Printf("Creating schema with the following fields: \n")
+			for field, kind := range createSchemaRequest.Fields {
+				fmt.Printf("└── %s: %s \n", field, kind)
+			}
 
+			// create the schema
 			createSchemaResult, err := m.CreateSchema(createSchemaRequest)
 			if err != nil {
 				logger.Fatalf(status.Error("CreateSchema Error: "), err)
 				return
 			}
 			logger.Info(status.Success("Create Schema Successful"))
-			// desearialize the scehma result to get the schema did
-			fmt.Printf(`
-			🚀 WhatIs for Schema Broadcasted
-			├── Creator: %s
-			├── Cid: %s
-			└── Did: %s
-			`, createSchemaResult.WhatIs.Creator, createSchemaResult.WhatIs.Schema.Cid, createSchemaResult.WhatIs.Did)
+
+			fmt.Printf("🚀 WhatIs for Schema Broadcasted \n")
+			fmt.Printf("├── Creator: %s \n", createSchemaResult.WhatIs.Creator)
+			fmt.Printf("├── Cid: %s \n", createSchemaResult.WhatIs.Schema.Cid)
+			fmt.Printf("└── Did: %s \n", createSchemaResult.WhatIs.Did)
 		},
 	}
 
