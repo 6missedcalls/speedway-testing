@@ -16,11 +16,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Method to create a new account
+// Command Example: speedway account create
 func bootstrapCreateAccountCommand(ctx context.Context, logger *golog.Logger) (createCmd *cobra.Command) {
 	createCmd = &cobra.Command{
 		Use:   "create",
-		Short: "Use: registry create",
-
+		Short: "Creates a new account on the Sonr Network.",
+		Long: `Creates a new account on the Sonr Network.
+		Use: speedway account create
+		There is a prompt to enter a password to encrypt your vault.
+		There is a prompt to enter your computer password to allow Speedway to create a new keypair for you. (Please do not delete this keypair from your keychain.)`,
 		Run: func(cmd *cobra.Command, args []string) {
 			validate := func(input string) error {
 				if len(input) < 8 {

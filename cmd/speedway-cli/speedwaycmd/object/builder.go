@@ -18,11 +18,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Method to build an object
+// Command Example: speedway object build
 func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (buildObjCmd *cobra.Command) {
 	buildObjCmd = &cobra.Command{
 		Use:   "build",
-		Short: "Use: build",
-		Long:  "Use: builds an object verified against a schema, if no flags are provided data will be prompted for",
+		Short: "Build a new object on the Sonr Network.",
+		Long: `Build a new object on the Sonr Network.
+		You can create a new object via the command line prompts or by passing in the corresponding values to the --did, --file, and --label flags.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
