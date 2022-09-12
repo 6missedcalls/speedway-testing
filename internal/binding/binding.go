@@ -9,7 +9,7 @@ import (
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	"github.com/sonr-io/sonr/third_party/types/common"
-	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	btv1 "github.com/sonr-io/sonr/x/bucket/types"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
@@ -28,8 +28,21 @@ type SpeedwayBinding struct {
 	Instance mtr.MotorNode
 }
 
+type MotorCallback struct {
+	common.MotorCallback
+}
+
+func (cb *MotorCallback) OnDiscover(data []byte) {
+	fmt.Println("ERROR: MotorCallback not implemented.")
+}
+func (cb *MotorCallback) OnMotorEvent(msg common.MotorCallbackMessage, isDone bool) {
+	fmt.Printf("MotorCallback: %v, isDone: %v\n", msg, isDone)
+}
+
 var binding *SpeedwayBinding
 var once sync.Once
+
+// use MotorCallback for creating an empty motor
 
 /*
 Initialize the speedway binding to the motor
@@ -38,7 +51,7 @@ func InitMotor() mtr.MotorNode {
 	initreq := &rtmv1.InitializeRequest{
 		DeviceId: utils.GetHwid(),
 	}
-	m, err := mtr.EmptyMotor(initreq, common.DefaultCallback())
+	m, err := mtr.EmptyMotor(initreq, &MotorCallback{})
 	if err != nil {
 		fmt.Println(status.Error("Motor failed to initialize"), err)
 		return nil
