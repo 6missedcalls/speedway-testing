@@ -18,3 +18,4 @@ export const MODAL_CONTENT_NEW_OBJECT = "MODAL_CONTENT_NEW_OBJECT"
 export const ROOT_INITIALIZE_FROM_CACHE = "root/initializeFromCache"
 export const ROOT_RESET = "root/reset"
 
+export const BASE_API = `${process.env.REACT_APP_ORIGIN || ''}${process.env.REACT_APP_API_PATH}`

@@ -1,7 +1,8 @@
+import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
 
 const getAccountInfo = async (): Promise<string> => {
-	const url = `${process.env.REACT_APP_BASE_API}/account/info`
+	const url = `${BASE_API}/account/info`
 	const options = {
 		method: "GET",
 		headers: { "content-type": "application/json" },

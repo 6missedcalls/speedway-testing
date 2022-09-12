@@ -1,7 +1,10 @@
 import app from "./server.js"
 import storage from "node-persist"
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 await storage.init()
-app.listen(4040, () => {
-	console.log("server-in-memory listening on port 4040")
+const port = process.env.PORT || 4040
+app.listen(port, () => {
+	console.log(`server-in-memory listening on port ${port}`)
 })

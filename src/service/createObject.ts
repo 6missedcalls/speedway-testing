@@ -1,3 +1,4 @@
+import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
 import { ObjectData } from "../utils/types"
 
@@ -6,7 +7,7 @@ const createObject = async (
 	objectData: ObjectData,
 	label: string
 ): Promise<string> => {
-	const url = `${process.env.REACT_APP_BASE_API}/object/build`
+	const url = `${BASE_API}/object/build`
 	const options = {
 		method: "POST",
 		headers: { "content-type": "application/json" },

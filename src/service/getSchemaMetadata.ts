@@ -3,7 +3,7 @@ import { formatApiError } from "../utils/errors"
 import { SchemaMeta } from "../utils/types"
 
 const getSchemaMetadata = async (address: string): Promise<SchemaMeta[]> => {
-	const url = `http://localhost:4040/proxy/schemas?pagination.limit=50000`
+	const url = `${process.env.REACT_APP_ORIGIN}/proxy/schemas?pagination.limit=50000`
 	const options = {
 		method: "GET",
 		headers: { "content-type": "application/json" },

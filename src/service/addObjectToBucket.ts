@@ -1,3 +1,4 @@
+import { BASE_API } from "../utils/constants"
 import { SonrObject } from "../utils/types"
 import getObjectsFromBucket from "./getObjectsFromBucket"
 
@@ -26,7 +27,7 @@ const addObjectToBucket = async (
 				]),
 		})
 
-		const response: Response = await fetch(`${process.env.REACT_APP_BASE_API}/bucket/update-items`, {
+		const response: Response = await fetch(`${BASE_API}/bucket/update-items`, {
 			method: "POST",
 			headers: { "content-type": "application/json" },
 			body: payload,

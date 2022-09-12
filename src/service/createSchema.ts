@@ -1,3 +1,4 @@
+import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
 import { SchemaMeta } from "../utils/types"
 
@@ -7,7 +8,7 @@ const createSchema = async (
 	label: string,
 	fields: SchemaFieldsPayload
 ): Promise<SchemaMeta> => {
-	const url = `${process.env.REACT_APP_BASE_API}/schema/create`
+	const url = `${BASE_API}/schema/create`
 	const options = {
 		method: "POST",
 		headers: { "content-type": "application/json" },
