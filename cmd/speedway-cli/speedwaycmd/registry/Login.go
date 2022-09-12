@@ -13,6 +13,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Method to login to an existing account
+// Command Example: speedway account login
 func bootstrapLoginCommand(ctx context.Context, logger *golog.Logger) (loginCmd *cobra.Command) {
 	loginCmd = &cobra.Command{
 		Use:   "login",

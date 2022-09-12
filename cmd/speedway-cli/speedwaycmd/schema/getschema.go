@@ -15,6 +15,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Method to get a schema
+// Command Example: speedway schema get
 func bootstrapQuerySchemaCommand(ctx context.Context, logger *golog.Logger) (querySchemaCmd *cobra.Command) {
 	querySchemaCmd = &cobra.Command{
 		Use:   "get [did]",

@@ -14,6 +14,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Method to query an object
+// Command Example: speedway object get
 func BootstrapGetObjectCommand(ctx context.Context, logger *golog.Logger) (getObjectCmd *cobra.Command) {
 	getObjectCmd = &cobra.Command{
 		Use:   "query",
