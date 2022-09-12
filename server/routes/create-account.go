@@ -10,7 +10,7 @@ import (
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/storage"
 
-	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 )
 
 type CARequestBody struct {

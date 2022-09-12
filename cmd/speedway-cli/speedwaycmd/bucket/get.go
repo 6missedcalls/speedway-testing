@@ -7,7 +7,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/sonr/pkg/did"
-	mtv1 "github.com/sonr-io/sonr/third_party/types/motor"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/status"
@@ -48,7 +48,7 @@ func bootstrapQueryBucketbyCreatorCommand(ctx context.Context, logger *golog.Log
 			}
 
 			logger.Infof("Querying buckets for creator %s", m.GetAddress())
-			res, err := m.QueryWhereIsByCreator(mtv1.QueryWhereIsByCreatorRequest{
+			res, err := m.QueryWhereIsByCreator(rtmv1.QueryWhereIsByCreatorRequest{
 				Creator: m.GetAddress(),
 			})
 
@@ -101,7 +101,7 @@ func bootstrapQueryBucketByIdCommand(ctx context.Context, logger *golog.Logger) 
 			}
 
 			logger.Info("Attempting to resolve bucket with did: %s", didStr)
-			res, err := m.QueryWhereIs(mtv1.QueryWhereIsRequest{
+			res, err := m.QueryWhereIs(rtmv1.QueryWhereIsRequest{
 				Creator: m.GetAddress(),
 				Did:     didStr,
 			})
