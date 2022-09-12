@@ -18,12 +18,11 @@ import {
 	userGetAllSchemas,
 	userGetSchema,
 } from "../../redux/slices/schemasSlice"
-import { GetSchemaFieldsResponse } from "../../service/getSchemaFields"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
 import {
 	SearchableList,
 	SearchableListItem,
-	ObjectData,
+	SonrObject,
 	SchemaField,
 } from "../../utils/types"
 import ObjectsPageComponent from "./Component"
@@ -84,11 +83,11 @@ function ObjectsPageContainer() {
 			schema: selectedSchemaData.did,
 		}
 
-		const getSchemaResponse: GetSchemaFieldsResponse = await dispatch(
+		const schemaFields = await dispatch(
 			userGetSchema({ schema: getSchemaPayload })
 		)
 
-		setSchemaFields(getSchemaResponse.fields)
+		setSchemaFields(schemaFields.payload)
 	}
 
 	async function initialize() {
@@ -116,8 +115,8 @@ function ObjectsPageContainer() {
 
 	function mapToListFormat(): SearchableList {
 		return objectsList
-			.filter((item: ObjectData) => item.schemaDid === selectedSchemaDid)
-			.map(({ cid, data }: ObjectData): SearchableListItem => {
+			.filter((item: SonrObject) => item.schemaDid === selectedSchemaDid)
+			.map(({ cid, data }: SonrObject): SearchableListItem => {
 				const listItem: SearchableListItem = {}
 				listItem.cid = { text: cid }
 				Object.keys(data).forEach((key) => {

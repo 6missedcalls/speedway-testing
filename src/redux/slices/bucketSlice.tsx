@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import addObjectToBucket from "../../service/addObjectToBucket"
 import createBucket from "../../service/createBucket"
 import getBuckets from "../../service/getBuckets"
-import { Bucket } from "../../utils/types"
+import { Bucket, updateBucketProps } from "../../utils/types"
 import { RootState } from "../store"
 
 export const selectBuckets = (state: RootState) => {
@@ -25,7 +25,7 @@ export const userGetAllBuckets = createAsyncThunk(
 	"bucket/getAll",
 	async (address: string, thunkAPI) => {
 		try {
-			const data = await getBuckets({ address })
+			const data = await getBuckets(address)
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
@@ -35,13 +35,9 @@ export const userGetAllBuckets = createAsyncThunk(
 
 export const updateBucket = createAsyncThunk(
 	"bucket/update-items",
-	async ({ bucketDid, objectCid, schemaDid }: any, thunkAPI) => {
+	async ({ bucketDid, objectCid, schemaDid }: updateBucketProps, thunkAPI) => {
 		try {
-			await addObjectToBucket({
-				bucketDid,
-				objectCid,
-				schemaDid,
-			})
+			await addObjectToBucket(bucketDid, schemaDid, objectCid)
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
 		}
@@ -52,7 +48,7 @@ export const userCreateBucket = createAsyncThunk(
 	"bucket/create",
 	async ({ label, address }: { label: string; address: string }, thunkAPI) => {
 		try {
-			await createBucket({ label, address })
+			await createBucket(label, address)
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
 		}
@@ -85,7 +81,7 @@ const bucketSlice = createSlice({
 		})
 		builder.addCase(userGetAllBuckets.fulfilled, (state, action) => {
 			state.loading = false
-			state.list = action.payload.buckets
+			state.list = action.payload
 		})
 
 		builder.addCase(userCreateBucket.pending, (state) => {

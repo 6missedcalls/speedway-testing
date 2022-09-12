@@ -1,11 +1,7 @@
 import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
 
-type CreateBucketPayload = {
-	address: string
-	label: string
-}
-const createBucket = async ({ label, address }: CreateBucketPayload) => {
+const createBucket = async (label: string, address: string) => {
 	const url = `${BASE_API}/bucket/create`
 	const options = {
 		method: "POST",

@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import createObject from "../../service/createObject"
 import getObjectsFromBucket from "../../service/getObjectsFromBucket"
-import { InewObject, ObjectData } from "../../utils/types"
+import { InewObject, SonrObject } from "../../utils/types"
 import { RootState } from "../store"
 
 export interface ObjectsState {
-	list: Array<ObjectData>
+	list: Array<SonrObject>
 	loading: boolean
 	error: boolean
 }
@@ -18,10 +18,10 @@ export const initialState: ObjectsState = {
 
 export const userCreateObject = createAsyncThunk(
 	"objects/create",
-	async ({ schemaDid, object }: InewObject, thunkAPI) => {
+	async ({ schemaDid, object, label }: InewObject, thunkAPI) => {
 		try {
-			const data = await createObject({ schemaDid, objectData: object })
-			return data
+			const cid = await createObject(schemaDid, object, label)
+			return cid
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
 		}
@@ -32,10 +32,10 @@ export const userGetAllObjects = createAsyncThunk(
 	"bucket/all/content",
 	async ({ bucketDids }: { bucketDids: Array<string> }, thunkAPI) => {
 		try {
-			const buckets = await Promise.all(
-				bucketDids.map((did) => getObjectsFromBucket({ did }))
+			const bucketObjects = await Promise.all(
+				bucketDids.map((did) => getObjectsFromBucket(did))
 			)
-			return buckets.map((bucket) => bucket.objects).flat()
+			return bucketObjects.flat()
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
 		}

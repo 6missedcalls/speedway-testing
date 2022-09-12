@@ -33,7 +33,7 @@ export interface InewSchema {
 
 export interface InewObject {
 	schemaDid: string
-	label?: string
+	label: string
 	object: Record<string, any>
 }
 
@@ -63,11 +63,13 @@ export type BucketContent = {
 	uri: string
 }
 
-export type ObjectData = {
+export type SonrObject = {
 	cid: string
 	schemaDid: string
-	data: { [key: string]: any }
+	data: ObjectData
 }
+
+export type ObjectData = { [key: string]: any }
 
 export type SearchableListItemData = {
 	text?: string
@@ -80,3 +82,9 @@ export type SearchableListItem = {
 }
 
 export type SearchableList = SearchableListItem[]
+
+export interface updateBucketProps{
+	bucketDid: string 
+	objectCid: string 
+	schemaDid: string
+}
