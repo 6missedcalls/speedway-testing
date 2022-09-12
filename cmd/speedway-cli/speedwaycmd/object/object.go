@@ -7,14 +7,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Base command for the object subcommands
+// Command Example: speedway object [subcommand]
 func BootstrapObjectCommand(ctx context.Context, logger *golog.Logger) (objectCmd *cobra.Command) {
 	objectCmd = &cobra.Command{
-		Use:   "object",
-		Short: "Provides commands for managing objects on the Sonr Network",
-		Long: `Build and Get objects on the Sonr Network. 
-		Build an object for an existing schema and upload it to the network.
-		Get an existing object from the network.
-		For more information, visit https://docs.sonr.io/.`,
+		Use:   "object [subcommand]",
+		Short: "Build and query objects on the Sonr Network.",
+		Long: `Build and query objects on the Sonr Network.
+		Create a new object with the 'build' subcommand.
+		Query an existing object with the 'query' subcommand.`,
 		Run: func(cmd *cobra.Command, args []string) {},
 	}
 	logger = logger.Child("[Objects] ")

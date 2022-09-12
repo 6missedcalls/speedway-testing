@@ -14,11 +14,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Method to query an object
+// Command Example: speedway object get
 func BootstrapGetObjectCommand(ctx context.Context, logger *golog.Logger) (getObjectCmd *cobra.Command) {
 	getObjectCmd = &cobra.Command{
-		Use:   "get",
-		Short: "Use: retrieves and object from storage referenced by it's content identifier",
-		Long:  "Use: retrieves and object from storage referenced by it's content identifier",
+		Use:   "query",
+		Short: "Query an object on the Sonr Network.",
+		Long: `Query an object on the Sonr Network.
+		You can utilize the -cid flag to query an object by its CID (built for scripting) or you can simply follow allong the prompts to query an object by its CID.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 

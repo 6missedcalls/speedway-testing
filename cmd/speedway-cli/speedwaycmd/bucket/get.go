@@ -29,7 +29,7 @@ func bootstrapQueryCommand(ctx context.Context, logger *golog.Logger) (queryBuck
 func bootstrapQueryBucketbyCreatorCommand(ctx context.Context, logger *golog.Logger) (queryBucketByCreatorCmd *cobra.Command) {
 	queryBucketByCreatorCmd = &cobra.Command{
 		Use:   "all",
-		Short: "Use: retrieves all buckets for user",
+		Short: "Retrieves all buckets for user",
 		Run: func(cmd *cobra.Command, args []string) {
 			loginRequest := prompts.LoginPrompt()
 
@@ -69,7 +69,7 @@ func bootstrapQueryBucketbyCreatorCommand(ctx context.Context, logger *golog.Log
 func bootstrapQueryBucketByIdCommand(ctx context.Context, logger *golog.Logger) (queryBucketByCreatorCmd *cobra.Command) {
 	queryBucketByCreatorCmd = &cobra.Command{
 		Use:   "id",
-		Short: "Use: retrieves a bucket based on its id (did)",
+		Short: "Retrieves a bucket based on its id (did)",
 		Long:  "",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
