@@ -1,10 +1,9 @@
-import { BASE_API } from "../utils/constants"
 import { parseJsonFromBase64String } from "../utils/object"
 import { SonrObject } from "../utils/types"
 
 const getObjectsFromBucket = async (did: string): Promise<SonrObject[]> => {
 	try {
-		const response = await fetch(`${BASE_API}/bucket/get`, {
+		const response = await fetch(`${process.env.REACT_APP_BASE_API}/bucket/get`, {
 			method: "POST",
 			headers: { "content-type": "application/json" },
 			body: JSON.stringify({ bucketDid: did }),

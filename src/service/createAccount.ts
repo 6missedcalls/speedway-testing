@@ -1,8 +1,8 @@
-import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
 
 const createAccount = async (password: string): Promise<string> => {
-	const url = `${BASE_API}/account/create`
+	const url = `${process.env.REACT_APP_BASE_API}/account/create`
+	
 	const options = {
 		method: "POST",
 		headers: { "content-type": "application/json" },
