@@ -18,6 +18,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Method to build an object
+// Command Example: speedway object build
 func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (buildObjCmd *cobra.Command) {
 	buildObjCmd = &cobra.Command{
 		Use:   "build",

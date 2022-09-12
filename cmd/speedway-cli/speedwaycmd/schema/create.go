@@ -15,6 +15,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Method to create a new schema
+// Command Example: speedway schema create
 func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (createSchemaCmd *cobra.Command) {
 	createSchemaCmd = &cobra.Command{
 		Use:   "create",

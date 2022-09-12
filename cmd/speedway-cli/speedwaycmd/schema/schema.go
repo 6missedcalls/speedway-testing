@@ -7,13 +7,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Base command for the schema subcommands
+// Command Example: speedway schema [subcommand]
 func BootstrapSchemaCommand(ctx context.Context, logger *golog.Logger) (schemaCmd *cobra.Command) {
 	schemaCmd = &cobra.Command{
 		Use:   "schema [subcommand]",
 		Short: "Provides commands for managing schemas on the Sonr Network",
 		Long: `Provides commands for managing schemas on the Sonr Network.
-		You can create a new schema with the 'build' subcommand.
-		You can query an existing schema with the 'query' subcommand.`,
+		Create a new schema with the 'build' subcommand.
+		Get an existing schema with the 'get' subcommand.`,
 		Run: func(cmd *cobra.Command, args []string) {},
 	}
 	logger = logger.Child("[Schemas] ")
