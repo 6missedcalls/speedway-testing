@@ -65,7 +65,7 @@ function SideMenuComponent({ navigate, currentPath }: SideMenuComponentProps) {
 
 				<a
 					className="flex px-2 h-10 font-extrabold"
-					href='/docs/index.html'
+					href="/docs/index.html"
 					target="_blank"
 					rel="noreferrer"
 				>
