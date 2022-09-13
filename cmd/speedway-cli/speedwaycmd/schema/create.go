@@ -56,7 +56,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 			}
 
 			fields := make(map[string]types.SchemaKind)
-			if path, err := cmd.Flags().GetString("file"); err == nil && path == "" {
+			if field, err := cmd.Flags().GetString("field"); err == nil && field == "" {
 				// Prompt the user for a list of label:field to create a schema
 				// label:field is a comma separated string
 				// e.g. "name:string,age:int"
@@ -92,9 +92,25 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 					Fields: fields,
 				}
 			} else {
-				createSchemaRequest, err = utils.LoadSchemaFieldDefinitionFromDisk(path)
-				if err != nil {
-					logger.Fatalf("Error while loading schema fields from disk %s", err)
+				// Parse the field flag into a types.Schema
+				for _, field := range strings.Split(field, ",") {
+					fieldSplit := strings.Split(field, ":")
+					if len(fieldSplit) != 2 {
+						logger.Fatalf(status.Error("Invalid field format"), err)
+						return
+					}
+					// take the second element of the split and convert it to a types.SchemaKind
+					kind, err := utils.ConvertSchemaKind(fieldSplit[1])
+					if err != nil {
+						logger.Fatalf(status.Error("Invalid field format"), err)
+						return
+					}
+					fields[fieldSplit[0]] = kind
+					fmt.Println(fieldSplit[0], kind)
+				}
+				createSchemaRequest = rtmv1.CreateSchemaRequest{
+					Label:  label,
+					Fields: fields,
 				}
 			}
 
@@ -118,6 +134,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 			logger.Infof("└── Did: %s", createSchemaResult.WhatIs.Did)
 		},
 	}
-	createSchemaCmd.PersistentFlags().String("file", "", "an absolute path to an object definition matching a provided schema")
+	createSchemaCmd.Flags().StringP("label", "l", "", "The label for the schema")
+	createSchemaCmd.Flags().StringP("field", "f", "", "Field definition in the format of label:kind")
 	return
 }
