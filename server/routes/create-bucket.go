@@ -9,7 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/sonr/pkg/did"
-	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/bucket/types"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/utils"

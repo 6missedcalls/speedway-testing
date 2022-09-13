@@ -6,7 +6,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
-	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	btv1 "github.com/sonr-io/sonr/x/bucket/types"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"

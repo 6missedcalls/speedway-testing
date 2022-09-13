@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/utils"

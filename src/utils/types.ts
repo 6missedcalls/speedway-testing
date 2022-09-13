@@ -83,8 +83,8 @@ export type SearchableListItem = {
 
 export type SearchableList = SearchableListItem[]
 
-export interface updateBucketProps{
-	bucketDid: string 
-	objectCid: string 
+export interface updateBucketProps {
+	bucketDid: string
+	objectCid: string
 	schemaDid: string
 }

@@ -9,7 +9,7 @@ import (
 
 	"github.com/denisbrodbeck/machineid"
 	"github.com/sonr-io/sonr/pkg/motor"
-	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/bucket/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/status"
