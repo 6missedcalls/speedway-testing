@@ -193,7 +193,7 @@ func LoadSchemaFieldDefinitionFromDisk(path string) (rtmv1.CreateSchemaRequest, 
 	return req, nil
 }
 
-func ConvertSchemaKind(kind string) st.SchemaKind {
+func ConvertSchemaKind(kind string) (st.SchemaKind, error) {
 
 	schemaKind := st.SchemaKind_STRING
 	switch kind {
@@ -213,7 +213,7 @@ func ConvertSchemaKind(kind string) st.SchemaKind {
 		schemaKind = st.SchemaKind_LINK
 	}
 
-	return schemaKind
+	return schemaKind, nil
 }
 
 func MarshalJsonFmt(data interface{}) (string, error) {

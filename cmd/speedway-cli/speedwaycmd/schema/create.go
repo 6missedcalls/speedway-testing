@@ -50,7 +50,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 				}
 				label, err = schemaPrompt.Run()
 				if err != nil {
-					fmt.Printf("Command failed %v\n", err)
+					logger.Info("Command failed %v\n", err)
 					return
 				}
 			}
@@ -78,7 +78,11 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 						return
 					}
 					// take the second element of the split and convert it to a types.SchemaKind
-					kind := utils.ConvertSchemaKind(fieldSplit[1])
+					kind, err := utils.ConvertSchemaKind(fieldSplit[1])
+					if err != nil {
+						logger.Fatalf(status.Error("Invalid field format"), err)
+						return
+					}
 					fields[fieldSplit[0]] = kind
 					fmt.Println(fieldSplit[0], kind)
 				}
@@ -95,9 +99,9 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 			}
 
 			// print each createSchemaRequest.Fields as a tree
-			fmt.Printf("Creating schema with the following fields: \n")
+			logger.Infof("Creating schema with the following fields:")
 			for field, kind := range createSchemaRequest.Fields {
-				fmt.Printf("└── %s: %s \n", field, kind)
+				logger.Infof("└── %s: %s", field, kind)
 			}
 
 			// create the schema
@@ -108,13 +112,12 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 			}
 			logger.Info(status.Success("Create Schema Successful"))
 
-			fmt.Printf("🚀 WhatIs for Schema Broadcasted \n")
-			fmt.Printf("├── Creator: %s \n", createSchemaResult.WhatIs.Creator)
-			fmt.Printf("├── Cid: %s \n", createSchemaResult.WhatIs.Schema.Cid)
-			fmt.Printf("└── Did: %s \n", createSchemaResult.WhatIs.Did)
+			logger.Infof("🚀 WhatIs for Schema Broadcasted")
+			logger.Infof("├── Creator: %s", createSchemaResult.WhatIs.Creator)
+			logger.Infof("├── Cid: %s", createSchemaResult.WhatIs.Schema.Cid)
+			logger.Infof("└── Did: %s", createSchemaResult.WhatIs.Did)
 		},
 	}
-
 	createSchemaCmd.PersistentFlags().String("file", "", "an absolute path to an object definition matching a provided schema")
 	return
 }
