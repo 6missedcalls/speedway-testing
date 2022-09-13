@@ -8,7 +8,7 @@ const createSchema = async (
 	label: string,
 	fields: SchemaFieldsPayload
 ): Promise<SchemaMeta> => {
-	const url = `${BASE_API}/schema/create`
+	const url = `${BASE_API}/api/v1/schema/create`
 	const options = {
 		method: "POST",
 		headers: { "content-type": "application/json" },

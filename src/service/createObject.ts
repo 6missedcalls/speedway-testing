@@ -7,7 +7,7 @@ const createObject = async (
 	objectData: ObjectData,
 	label: string
 ): Promise<string> => {
-	const url = `${BASE_API}/object/build`
+	const url = `${BASE_API}/api/v1/object/build`
 	const options = {
 		method: "POST",
 		headers: { "content-type": "application/json" },
