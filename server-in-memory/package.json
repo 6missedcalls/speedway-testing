@@ -3,8 +3,8 @@
 	"type": "module",
 	"scripts": {
 		"start": "nodemon node .",
-		"test": "jest",
-		"test:watch": "jest --watch"
+		"test": "jest js.test.js --watch",
+		"smoke-detector": "jest go.test.js"
 	},
 	"devDependencies": {
 		"@babel/plugin-transform-modules-commonjs": "^7.18.6",
