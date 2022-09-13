@@ -37,8 +37,10 @@ export const userGetAllObjects = createAsyncThunk(
 				bucketDids.map((did) => getObjectsFromBucket(did))
 			)
 			promiseAllSettledLogErrors(results)
-			
-			const bucketObjects = results.filter(isFulfilled).map((item) => item.value)
+
+			const bucketObjects = results
+				.filter(isFulfilled)
+				.map((item) => item.value)
 
 			return bucketObjects.flat()
 		} catch (err) {
