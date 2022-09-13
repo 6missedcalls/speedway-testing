@@ -134,7 +134,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 			logger.Infof("└── Did: %s", createSchemaResult.WhatIs.Did)
 		},
 	}
-	createSchemaCmd.Flags().StringP("label", "l", "", "The label for the schema")
-	createSchemaCmd.Flags().StringP("field", "f", "", "Field definition in the format of label:kind")
+	createSchemaCmd.PersistentFlags().String("label", "", "The label for the schema")
+	createSchemaCmd.PersistentFlags().String("field", "", "Field definition in the format of label:kind")
 	return
 }
