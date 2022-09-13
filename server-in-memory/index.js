@@ -4,7 +4,7 @@ import * as dotenv from "dotenv"
 dotenv.config()
 
 await storage.init()
-const port = process.env.PORT || 4040
+const port = process.env.PORT || 3001
 app.listen(port, () => {
 	console.log(`server-in-memory listening on port ${port}`)
 })

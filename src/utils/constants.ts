@@ -20,6 +20,6 @@ export const ROOT_RESET = "root/reset"
 
 export const BASE_API = `${
 	process.env.REACT_APP_DEV_MODE === "true"
-		? `http://localhost:${process.env.REACT_APP_SERVER_PORT || 4040}`
+		? `http://localhost:${process.env.REACT_APP_SERVER_PORT || 3001}`
 		: ""
 }`
