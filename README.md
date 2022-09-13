@@ -90,7 +90,7 @@ go build -o speedway cmd/speedway-cli/main.go
 # Known Issues
 <details>
     <summary>Speedway UI: Cannot use types other than string in objects or it casues issues with validation</summary>
-Workaround: Use strings for all datatypes</br>  
+Workaround: Use strings for all datatypes</br>
 Workaround: Use the cli</br>
 Workaround: Use the <code>--file  &lt;file&gt;</code> flag on the CLI commands
 </details>
@@ -132,6 +132,6 @@ The UI should open automatically on your browser, but if that's not the case, it
 
 **to reset the local data, go to:**
 ```
-localhost:4040/reset
+localhost:3001/reset
 ```
 </details>
