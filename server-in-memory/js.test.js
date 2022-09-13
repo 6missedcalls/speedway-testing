@@ -19,7 +19,7 @@ beforeEach(async () => {
 })
 
 it("creates an account", async () => {
-	const { body } = await app.post("/api/v1/account/create")
+	const { body } = await app.post("/api/v1/account/create").send()
 	expect(body.address).toBeAddress()
 })
 
