@@ -14,9 +14,12 @@ export const MODAL_CONTENT_NEW_SCHEMA = "MODAL_CONTENT_NEW_SCHEMA"
 export const MODAL_CONTENT_NEW_BUCKET = "MODAL_CONTENT_NEW_BUCKET"
 export const MODAL_CONTENT_NEW_OBJECT = "MODAL_CONTENT_NEW_OBJECT"
 
-// custom redxu actions
+// custom redux actions
 export const ROOT_INITIALIZE_FROM_CACHE = "root/initializeFromCache"
 export const ROOT_RESET = "root/reset"
 
-// APIs
-export const BASE_API = "http://localhost:4040/api/v1"
+export const BASE_API = `${
+	process.env.REACT_APP_DEV_MODE === "true"
+		? `http://localhost:${process.env.REACT_APP_SERVER_PORT || 3001}`
+		: ""
+}`
