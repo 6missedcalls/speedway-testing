@@ -21,5 +21,8 @@ func BootstrapRegistryCommand(ctx context.Context, logger *golog.Logger) (regist
 	logger = logger.Child("[Registry] ")
 	registryCmd.AddCommand(bootstrapCreateAccountCommand(ctx, logger))
 	registryCmd.AddCommand(bootstrapLoginCommand(ctx, logger))
+	registryCmd.AddCommand(bootstrapBuyAlias(ctx, logger))
+	registryCmd.AddCommand(bootstrapSellAlias(ctx, logger))
+	registryCmd.AddCommand(bootstrapTransferAlias(ctx, logger))
 	return
 }

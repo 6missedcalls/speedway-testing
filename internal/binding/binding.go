@@ -35,7 +35,7 @@ type MotorCallback struct {
 func (cb *MotorCallback) OnDiscover(data []byte) {
 	fmt.Println("ERROR: MotorCallback not implemented.")
 }
-func (cb *MotorCallback) OnMotorEvent(msg common.MotorCallbackMessage, isDone bool) {
+func (cb *MotorCallback) OnMotorEvent(msg string, isDone bool) {
 	fmt.Printf("MotorCallback: %v, isDone: %v\n", msg, isDone)
 }
 
@@ -51,6 +51,7 @@ func InitMotor() mtr.MotorNode {
 	initreq := &rtmv1.InitializeRequest{
 		DeviceId: utils.GetHwid(),
 	}
+	// add MotorCallback with onMotorEvent
 	m, err := mtr.EmptyMotor(initreq, &MotorCallback{})
 	if err != nil {
 		fmt.Println(status.Error("Motor failed to initialize"), err)
