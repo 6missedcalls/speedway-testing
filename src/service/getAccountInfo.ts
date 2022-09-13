@@ -2,7 +2,7 @@ import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
 
 const getAccountInfo = async (): Promise<string> => {
-	const url = `${BASE_API}/account/info`
+	const url = `${BASE_API}/api/v1/account/info`
 	const options = {
 		method: "GET",
 		headers: { "content-type": "application/json" },
