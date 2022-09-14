@@ -68,7 +68,7 @@ app.post("/api/v1/account/login", async ({ body }, res) => {
 	)
 
 	if (!account || account.password !== body.password) {
-		res.status(500).send()
+		res.status(401).send()
 		return
 	}
 
