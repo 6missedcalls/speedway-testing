@@ -69,6 +69,11 @@ func bootstrapBuyAlias(ctx context.Context, logger *golog.Logger) (buyAliasCmd *
 				}
 			}
 
+			if err = validateAlias(name); err != nil {
+				logger.Info("Command failed %v\n", err)
+				return
+			}
+
 			msg = rt.MsgBuyAlias{
 				Creator: loginRequest.Did,
 				Name:    name,
@@ -155,6 +160,11 @@ func bootstrapSellAlias(ctx context.Context, logger *golog.Logger) (sellAliasCmd
 					logger.Info("Price must be greater than 0")
 					return
 				}
+			}
+
+			if err = validateAlias(name); err != nil {
+				logger.Info("Command failed %v\n", err)
+				return
 			}
 
 			msg = rt.MsgSellAlias{
@@ -248,6 +258,11 @@ func bootstrapTransferAlias(ctx context.Context, logger *golog.Logger) (transfer
 					logger.Info("Command failed %v\n", err)
 					return
 				}
+			}
+
+			if err = validateAlias(name); err != nil {
+				logger.Info("Command failed %v\n", err)
+				return
 			}
 
 			msg = rt.MsgTransferAlias{
