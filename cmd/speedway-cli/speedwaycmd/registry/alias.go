@@ -274,6 +274,6 @@ func bootstrapTransferAlias(ctx context.Context, logger *golog.Logger) (transfer
 	}
 	transferAliasCmd.PersistentFlags().String("alias", "", "The alias to transfer")
 	transferAliasCmd.PersistentFlags().String("recipient", "", "The recipient of the transfer")
-	transferAliasCmd.PersistentFlags().Int("amount", 0, "The price to sell the alias for")
+	transferAliasCmd.PersistentFlags().Int("amount", 0, "The amount of the alias to be transferred")
 	return
 }
