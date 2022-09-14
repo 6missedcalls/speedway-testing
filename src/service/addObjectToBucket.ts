@@ -27,11 +27,14 @@ const addObjectToBucket = async (
 				]),
 		})
 
-		const response: Response = await fetch(`${BASE_API}/bucket/update-items`, {
-			method: "POST",
-			headers: { "content-type": "application/json" },
-			body: payload,
-		})
+		const response: Response = await fetch(
+			`${BASE_API}/api/v1/bucket/update-items`,
+			{
+				method: "POST",
+				headers: { "content-type": "application/json" },
+				body: payload,
+			}
+		)
 		if (!response.ok) throw new Error(response.statusText)
 	} catch (error) {
 		console.error(error)

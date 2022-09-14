@@ -3,7 +3,7 @@ import { formatApiError } from "../utils/errors"
 import { SchemaField } from "../utils/types"
 
 const getSchemaFields = async (did: string): Promise<SchemaField[]> => {
-	const url = `${BASE_API}/schema/get`
+	const url = `${BASE_API}/api/v1/schema/get`
 	const options = {
 		method: "POST",
 		headers: { "content-type": "application/json" },

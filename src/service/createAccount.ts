@@ -2,7 +2,8 @@ import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
 
 const createAccount = async (password: string): Promise<string> => {
-	const url = `${BASE_API}/account/create`
+	const url = `${BASE_API}/api/v1/account/create`
+
 	const options = {
 		method: "POST",
 		headers: { "content-type": "application/json" },

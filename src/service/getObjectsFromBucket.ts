@@ -4,7 +4,7 @@ import { SonrObject } from "../utils/types"
 
 const getObjectsFromBucket = async (did: string): Promise<SonrObject[]> => {
 	try {
-		const response = await fetch(`${BASE_API}/bucket/get`, {
+		const response = await fetch(`${BASE_API}/api/v1/bucket/get`, {
 			method: "POST",
 			headers: { "content-type": "application/json" },
 			body: JSON.stringify({ bucketDid: did }),

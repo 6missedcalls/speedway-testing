@@ -1,8 +1,9 @@
+import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
 import { Bucket } from "../utils/types"
 
 const getBuckets = async (address: string): Promise<Bucket[]> => {
-	const url = `http://localhost:4040/proxy/buckets`
+	const url = `${BASE_API}/proxy/buckets`
 	const options = {
 		method: "GET",
 		headers: { "content-type": "application/json" },
