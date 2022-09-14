@@ -55,7 +55,7 @@ func bootstrapBuyAlias(ctx context.Context, logger *golog.Logger) (buyAliasCmd *
 				return
 			}
 
-			var name string = ""
+			var name string
 			msg := rt.MsgBuyAlias{}
 			if name, err = cmd.Flags().GetString("alias"); err == nil && name == "" {
 				aliasPrompt := promptui.Prompt{
@@ -123,7 +123,7 @@ func bootstrapSellAlias(ctx context.Context, logger *golog.Logger) (sellAliasCmd
 				return
 			}
 
-			var name string = ""
+			var name string
 			msg := rt.MsgSellAlias{}
 			if name, err = cmd.Flags().GetString("alias"); err == nil && name == "" {
 				aliasName := promptui.Prompt{
@@ -140,7 +140,7 @@ func bootstrapSellAlias(ctx context.Context, logger *golog.Logger) (sellAliasCmd
 			// If price flag is not set, prompt for price
 			// prompt needs to be int32
 			// price needs to be greater than 0
-			var price int = 0
+			var price int
 			if price, err = cmd.Flags().GetInt("price"); err == nil && price <= 0 {
 				pricePrompt := promptui.Prompt{
 					Label: "Enter the price",
@@ -217,7 +217,7 @@ func bootstrapTransferAlias(ctx context.Context, logger *golog.Logger) (transfer
 				return
 			}
 
-			var name string = ""
+			var name string
 			msg := rt.MsgTransferAlias{}
 			if name, err = cmd.Flags().GetString("alias"); err == nil && name == "" {
 				aliasName := promptui.Prompt{
@@ -231,7 +231,7 @@ func bootstrapTransferAlias(ctx context.Context, logger *golog.Logger) (transfer
 				}
 			}
 
-			var recipient string = ""
+			var recipient string
 			if recipient, err = cmd.Flags().GetString("recipient"); err == nil && recipient == "" {
 				recipientPrompt := promptui.Prompt{
 					Label: "Enter the recipient DID",
@@ -243,7 +243,7 @@ func bootstrapTransferAlias(ctx context.Context, logger *golog.Logger) (transfer
 				}
 			}
 
-			var amount int = 0
+			var amount int
 			if amount, err = cmd.Flags().GetInt("amount"); err == nil && amount == 0 {
 				amountPrompt := promptui.Prompt{
 					Label: "Enter the price",
