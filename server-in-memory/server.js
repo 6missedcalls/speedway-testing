@@ -229,8 +229,8 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 	res.json({
 		objectUpload: {
 			reference: {
+				cid,
 				Label: body.label,
-				Cid: cid,
 			},
 		},
 	})

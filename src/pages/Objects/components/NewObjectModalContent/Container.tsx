@@ -103,7 +103,6 @@ function NewObjectModalContentContainer({
 		}
 
 		const objectPayload = {
-			bucketDid: selectedBucket,
 			schemaDid: selectedSchemaDid,
 			label: selectedSchemaData?.label || "",
 			object: properties.reduce(
