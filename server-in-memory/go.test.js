@@ -1,4 +1,5 @@
 import "isomorphic-fetch"
+import _ from "lodash"
 
 expect.extend({
 	toBeAddress: (str) => ({ pass: str.slice(0, 3) === "snr" }),
@@ -75,7 +76,8 @@ it(
 		expect(resSchemaList.body).toHaveProperty("what_is.length")
 		expect(resSchemaList.body.what_is.length).toBeGreaterThan(0)
 
-		const userSchemas = resSchemaList.body.what_is.filter(
+		const userSchemas = _.filter(
+			resSchemaList.body.what_is,
 			(schema) => schema.creator === addressToDid(address)
 		)
 		expect(userSchemas.length).toBe(1)
@@ -90,7 +92,8 @@ it(
 		expect(resBucketList.body).toHaveProperty("where_is.length")
 		expect(resBucketList.body.where_is.length).toBeGreaterThan(0)
 
-		const userBuckets = resBucketList.body.where_is.filter(
+		const userBuckets = _.filter(
+			resBucketList.body.where_is,
 			(bucket) => bucket.creator === address
 		)
 		expect(userBuckets.length).toBe(1)
