@@ -150,6 +150,11 @@ func bootstrapSellAlias(ctx context.Context, logger *golog.Logger) (sellAliasCmd
 					logger.Info("Command failed %v\n", err)
 					return
 				}
+
+				if price <= 0 {
+					logger.Info("Price must be greater than 0")
+					return
+				}
 			}
 
 			msg = rt.MsgSellAlias{
