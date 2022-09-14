@@ -134,8 +134,9 @@ func bootstrapSellAlias(ctx context.Context, logger *golog.Logger) (sellAliasCmd
 
 			// If price flag is not set, prompt for price
 			// prompt needs to be int32
+			// price needs to be greater than 0
 			var price int = 0
-			if price, err = cmd.Flags().GetInt("price"); err == nil && price == 0 {
+			if price, err = cmd.Flags().GetInt("price"); err == nil && price <= 0 {
 				pricePrompt := promptui.Prompt{
 					Label: "Enter the price",
 				}
@@ -157,7 +158,7 @@ func bootstrapSellAlias(ctx context.Context, logger *golog.Logger) (sellAliasCmd
 				Amount:  int32(price),
 			}
 
-			logger.Info(status.Info, "Selling Alias")
+			logger.Info(status.Info, "Attempting to put Alias up for sale")
 
 			sellAliasMsg, err := m.SellAlias(msg)
 			if err != nil {
@@ -165,15 +166,15 @@ func bootstrapSellAlias(ctx context.Context, logger *golog.Logger) (sellAliasCmd
 				return
 			}
 			if sellAliasMsg.Success {
-				logger.Info(status.Success("Alias Sold"))
+				logger.Info(status.Success("Alias Listed for Sale"))
 			} else {
-				logger.Fatal(status.Error("Alias Sell Failed"))
+				logger.Fatal(status.Error("Alias Sale Listing Failed"))
 				return
 			}
 		},
 	}
 	sellAliasCmd.PersistentFlags().String("alias", "", "The alias to sell")
-	sellAliasCmd.PersistentFlags().Int("price", 0, "The price to sell the alias for")
+	sellAliasCmd.PersistentFlags().Int("price", 0, "The price to list the alias for sale")
 	return
 }
 
