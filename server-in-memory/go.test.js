@@ -86,6 +86,8 @@ it(
 		expect(userSchemas[0]).toHaveProperty("schema.label")
 		expect(userSchemas[0].schema.label).toBe("dinosaurs")
 
+		const schemaDid = userSchemas[0].schema.did
+
 		// GET A LIST OF BUCKETS
 		const resBucketList = await app.get(proxy("buckets"))
 		expect(resBucketList.status).toBe(200)
@@ -103,6 +105,40 @@ it(
 		expect(userBuckets[0].label).toBe("great philosophers")
 		expect(userBuckets[0]).toHaveProperty("content.length")
 		expect(userBuckets[0].content.length).toBe(0)
+
+		const bucketDid = userBuckets[0].did
+
+		// CHECK SCHEMA FIELDS
+		const resFields = await app.post(api("/schema/get"), { schema: schemaDid })
+		expect(resFields.status).toBe(200)
+		expect(resFields.body).toHaveProperty("definition.fields.length")
+		expect(resFields.body.definition.fields.length).toBe(4)
+		const sortedFields = _.sortBy(resFields.body.definition.fields, "name")
+		expect(sortedFields[0].name).toBe("extinct")
+		expect(sortedFields[0].field).toBe(1)
+		expect(sortedFields[1].name).toBe("firstname")
+		expect(sortedFields[1].field).toBe(4)
+		expect(sortedFields[2].name).toBe("interest")
+		expect(sortedFields[2].field).toBe(3)
+		expect(sortedFields[3].name).toBe("strength")
+		expect(sortedFields[3].field).toBe(2)
+
+		// CREATE AN OBJECT
+		const resObject = await app.post(api("/object/build"), {
+			label: "dinosaurs",
+			schemaDid: schemaDid,
+			object: {
+				extinct: true,
+				firstname: "steve",
+				interest: 2.5,
+				strength: 10,
+			},
+		})
+		expect(resObject.status).toBe(200)
+		expect(resObject.body).toHaveProperty("objectUpload.reference.cid")
+		expect(typeof resObject.body.objectUpload.reference.cid).toBe("string")
+
+		const objectCid = resObject.body.objectUpload.reference.cid
 	},
 	10 * 60 * 1000 // 10 minutes timeout
 )
