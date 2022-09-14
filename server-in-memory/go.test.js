@@ -139,6 +139,35 @@ it(
 		expect(typeof resObject.body.objectUpload.reference.cid).toBe("string")
 
 		const objectCid = resObject.body.objectUpload.reference.cid
+
+		// ADD OBJECT TO BUCKET
+		const resAddToBucket = await app.post(api("/bucket/update-items"), {
+			bucketDid: bucketDid,
+			content: [
+				{
+					schemaDid: schemaDid,
+					type: "cid",
+					uri: objectCid,
+				},
+			],
+		})
+		expect(resAddToBucket.status).toBe(200)
+
+		// GET BUCKET CONTENTS
+		const resBucketContents = await app.post(api("/bucket/get"), {
+			bucketDid: bucketDid,
+		})
+		expect(resBucketContents.status).toBe(200)
+		expect(resBucketContents.body).toHaveProperty("bucket.length")
+		expect(resBucketContents.body.bucket.length).toBe(1)
+		expect(resBucketContents.body.bucket[0]).toHaveProperty("schemaDid")
+		expect(resBucketContents.body.bucket[0].schemaDid).toBe(schemaDid)
+		expect(resBucketContents.body.bucket[0]).toHaveProperty("uri")
+		expect(resBucketContents.body.bucket[0].uri).toBe(objectCid)
+		expect(resBucketContents.body.bucket[0]).toHaveProperty("content.item")
+		expect(resBucketContents.body.bucket[0].content.item).toBe(
+			"eyJleHRpbmN0Ijp0cnVlLCJmaXJzdG5hbWUiOiJzdGV2ZSIsImludGVyZXN0IjoyLjUsInN0cmVuZ3RoIjoxMH0="
+		)
 	},
 	10 * 60 * 1000 // 10 minutes timeout
 )
