@@ -250,21 +250,6 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 	})
 })
 
-app.post("/api/v1/object/edit", async (req, res) => {
-	const object = await storage.getItem(objectStoreKey(req.body.cid))
-	const cid = generateCid()
-	object.cid = cid
-	await storage.setItem(objectStoreKey(cid), object)
-	await storage.removeItem(objectStoreKey(req.body.cid))
-	res.json({
-		objectUpload: {
-			reference: {
-				cid,
-			},
-		},
-	})
-})
-
 app.post("/api/v1/object/get", async ({ body }, res) => {
 	const object = await storage.getItem(objectStoreKey(body.objectCid))
 	res.json({ object: object })
