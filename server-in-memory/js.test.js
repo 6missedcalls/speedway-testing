@@ -19,7 +19,7 @@ beforeEach(async () => {
 })
 
 it("creates an account", async () => {
-	const { body } = await app.post("/api/v1/account/create")
+	const { body } = await app.post("/api/v1/account/create").send()
 	expect(body.address).toBeAddress()
 })
 
@@ -136,7 +136,7 @@ it("builds an object", async () => {
 	expect(result).toHaveProperty("objectUpload")
 	expect(result.objectUpload).toHaveProperty("reference")
 	expect(result.objectUpload.reference.Label).toBe("Sonrsaur")
-	expect(typeof result.objectUpload.reference.Cid).toBe("string")
+	expect(typeof result.objectUpload.reference.cid).toBe("string")
 })
 
 it("when building object, checks schema properties", async () => {
@@ -173,7 +173,7 @@ it("gets an object", async () => {
 
 	const { body: result } = await app.post("/api/v1/object/get").send({
 		schemaDid: responseSchema.body.whatIs.did,
-		objectCid: responseObject.body.objectUpload.reference.Cid,
+		objectCid: responseObject.body.objectUpload.reference.cid,
 	})
 
 	expect(result).toHaveProperty("object")
@@ -238,7 +238,7 @@ it("can add objects to buckets", async () => {
 		label: "Sonrsaur",
 		object: { firstName: "Rex" },
 	})
-	const objectCid = responseObject.body.objectUpload.reference.Cid
+	const objectCid = responseObject.body.objectUpload.reference.cid
 
 	await app.post("/api/v1/bucket/update-items").send({
 		bucketDid: bucketDid,
@@ -280,7 +280,7 @@ it("gets a bucket content", async () => {
 		label: "Sonrsaur",
 		object: { firstName: "Marcel" },
 	})
-	const objectCid = responseObject.body.objectUpload.reference.Cid
+	const objectCid = responseObject.body.objectUpload.reference.cid
 
 	await app.post("/api/v1/object/build").send({
 		schemaDid: schemaDid,
