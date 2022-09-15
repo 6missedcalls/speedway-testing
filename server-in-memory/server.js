@@ -68,7 +68,7 @@ app.post("/api/v1/account/login", async ({ body }, res) => {
 	)
 
 	if (!account || account.password !== body.password) {
-		res.status(500).send()
+		res.status(401).send()
 		return
 	}
 
@@ -229,8 +229,8 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 	res.json({
 		objectUpload: {
 			reference: {
+				cid,
 				Label: body.label,
-				Cid: cid,
 			},
 		},
 	})

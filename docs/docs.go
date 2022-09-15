@@ -54,13 +54,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.CAResponseBody"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.CAResponseBody"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
                         }
                     }
                 }
@@ -83,13 +83,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.uResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.uResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
                         }
                     }
                 }
@@ -134,13 +134,187 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.SuccessfulLogin"
+                            "$ref": "#/definitions/server_routes.SuccessfulLogin"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedLogin"
+                            "$ref": "#/definitions/server_routes.FailedLogin"
+                        }
+                    }
+                }
+            }
+        },
+        "/alias/buy": {
+            "post": {
+                "description": "Buy an alias",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Alias"
+                ],
+                "summary": "BuyAlias",
+                "parameters": [
+                    {
+                        "description": "Creator",
+                        "name": "creator",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Alias",
+                        "name": "alias",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgBuyAliasResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server_routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/alias/sell": {
+            "post": {
+                "description": "Sell an alias",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Alias"
+                ],
+                "summary": "SellAlias",
+                "parameters": [
+                    {
+                        "description": "Creator",
+                        "name": "creator",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Alias",
+                        "name": "alias",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Amount",
+                        "name": "amount",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgSellAliasResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server_routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/alias/transfer": {
+            "post": {
+                "description": "Transfer an alias",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Alias"
+                ],
+                "summary": "TransferAlias",
+                "parameters": [
+                    {
+                        "description": "Creator",
+                        "name": "creator",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Alias",
+                        "name": "alias",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Recipient",
+                        "name": "recipient",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Amount",
+                        "name": "amount",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.MsgTransferAliasResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -266,13 +440,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.GetBucketResponse"
+                            "$ref": "#/definitions/server_routes.GetBucketResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -327,7 +501,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/motor.SearchBucketContentBySchemaResponse"
+                            "$ref": "#/definitions/v1.SearchBucketContentBySchemaResponse"
                         }
                     },
                     "500": {
@@ -381,7 +555,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -528,13 +702,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/motor.UploadObjectResponse"
+                            "$ref": "#/definitions/v1.UploadObjectResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/server_routes.FailedResponse"
+                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
                         }
                     }
                 }
@@ -624,13 +798,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.CreateSchemaResponse"
+                            "$ref": "#/definitions/server_routes.CreateSchemaResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -673,13 +847,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.QuerySchemaResponse"
+                            "$ref": "#/definitions/server_routes.QuerySchemaResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -699,13 +873,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.SchemaResponse"
+                            "$ref": "#/definitions/server_routes.SchemaResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse"
+                            "$ref": "#/definitions/server_routes.FailedResponse"
                         }
                     }
                 }
@@ -895,57 +1069,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "didDocument": {}
-            }
-        },
-        "motor.ObjectReference": {
-            "type": "object",
-            "properties": {
-                "cid": {
-                    "type": "string"
-                },
-                "did": {
-                    "type": "string"
-                },
-                "label": {
-                    "type": "string"
-                }
-            }
-        },
-        "motor.SearchBucketContentBySchemaResponse": {
-            "type": "object",
-            "properties": {
-                "bucket_did": {
-                    "type": "string"
-                },
-                "content": {
-                    "type": "array",
-                    "items": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
-                    }
-                },
-                "schema_did": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                }
-            }
-        },
-        "motor.UploadObjectResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "reference": {
-                    "$ref": "#/definitions/motor.ObjectReference"
-                }
             }
         },
         "object.Object": {
@@ -1163,6 +1286,23 @@ const docTemplate = `{
                 }
             }
         },
+        "types.Alias": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "description": "Amount is the amount listed for purchasing the Alias from the User/Application",
+                    "type": "integer"
+                },
+                "is_for_sale": {
+                    "description": "IsForSale is the boolean value indicating if the Alias is for sale",
+                    "type": "boolean"
+                },
+                "name": {
+                    "description": "Name is the string name of an Alias",
+                    "type": "string"
+                }
+            }
+        },
         "types.BucketContent": {
             "type": "object",
             "properties": {
@@ -1205,6 +1345,124 @@ const docTemplate = `{
                 "uri": {
                     "description": "DID of the item. If applicable // optional",
                     "type": "string"
+                }
+            }
+        },
+        "types.DIDDocument": {
+            "type": "object",
+            "properties": {
+                "also_known_as": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "assertion_method": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "authentication": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "capability_delegation": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "capability_invocation": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "context": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "controller": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "key_agreement": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "service": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.Service"
+                    }
+                },
+                "verification_method": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.VerificationMethod"
+                    }
+                }
+            }
+        },
+        "types.KeyValuePair": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.MsgBuyAliasResponse": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "description": "Did is the top level DID of the WhoIs.",
+                    "type": "boolean"
+                },
+                "who_is": {
+                    "description": "WhoIs is the updated WhoIs, contains the DID document and associated metadata.",
+                    "$ref": "#/definitions/types.WhoIs"
+                }
+            }
+        },
+        "types.MsgSellAliasResponse": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "description": "Success is true if the Alias was successfully transferred.",
+                    "type": "boolean"
+                },
+                "who_is": {
+                    "description": "WhoIs is the updated WhoIs, contains the DID document and associated metadata.",
+                    "$ref": "#/definitions/types.WhoIs"
+                }
+            }
+        },
+        "types.MsgTransferAliasResponse": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "description": "Success is true if the Alias was successfully transferred.",
+                    "type": "boolean"
+                },
+                "who_is": {
+                    "description": "WhoIs is the updated WhoIs, contains the DID document and associated metadata.",
+                    "$ref": "#/definitions/types.WhoIs"
                 }
             }
         },
@@ -1267,6 +1525,52 @@ const docTemplate = `{
                 }
             }
         },
+        "types.Service": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "service_endpoint": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.KeyValuePair"
+                    }
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.VerificationMethod": {
+            "type": "object",
+            "properties": {
+                "controller": {
+                    "type": "string"
+                },
+                "credential_json": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "public_key_base58": {
+                    "type": "string"
+                },
+                "public_key_jwk": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.KeyValuePair"
+                    }
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
         "types.WhatIs": {
             "type": "object",
             "properties": {
@@ -1299,8 +1603,105 @@ const docTemplate = `{
                 }
             }
         },
+        "types.WhoIs": {
+            "type": "object",
+            "properties": {
+                "alias": {
+                    "description": "Alias is the list of registered ` + "`" + `alsoKnownAs` + "`" + ` identifiers of the User or Application",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.Alias"
+                    }
+                },
+                "controllers": {
+                    "description": "Credentials are the biometric info of the registered name and account encoded with public key",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "did_document": {
+                    "description": "DIDDocument is the bytes representation of DIDDocument within the WhoIs. Initially marshalled as JSON.",
+                    "$ref": "#/definitions/types.DIDDocument"
+                },
+                "is_active": {
+                    "description": "IsActive is the status of the DID Document",
+                    "type": "boolean"
+                },
+                "metadata": {
+                    "description": "Metadata is a map of key-value pairs that can be used to store additional information about the DID Document",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "owner": {
+                    "description": "Owner is the top level DID of the User or Application derived from the multisignature wallet.",
+                    "type": "string"
+                },
+                "timestamp": {
+                    "description": "Timestamp is the time of the last update of the DID Document",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "Type is the kind of the entity. Possible values are: \"user\", \"application\"",
+                    "type": "integer"
+                }
+            }
+        },
         "url.Userinfo": {
             "type": "object"
+        },
+        "v1.ObjectReference": {
+            "type": "object",
+            "properties": {
+                "cid": {
+                    "type": "string"
+                },
+                "did": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.SearchBucketContentBySchemaResponse": {
+            "type": "object",
+            "properties": {
+                "bucket_did": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "schema_did": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.UploadObjectResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "reference": {
+                    "$ref": "#/definitions/v1.ObjectReference"
+                }
+            }
         }
     }
 }`
