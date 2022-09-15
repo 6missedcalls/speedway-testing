@@ -47,7 +47,7 @@ app.get("/logout", (_, res) => {
 	res.status(200).send()
 })
 
-/// AUTHENTICATION
+/// ACCOUNT
 
 app.post("/api/v1/account/create", async ({ body }, res) => {
 	const address = generateAddress()
@@ -91,6 +91,10 @@ app.use((_, res, next) => {
 		return
 	}
 	next()
+})
+
+app.post("/api/v1/account/alias/buy", async (_, res) => {
+	res.json({})
 })
 
 /// SCHEMAS

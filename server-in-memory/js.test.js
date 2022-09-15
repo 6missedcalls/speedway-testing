@@ -51,6 +51,15 @@ it("checks for logged in account", async () => {
 	expect(result.Address).toBe(responseAuth.body.address)
 })
 
+it("purchase an alias", async () => {
+	await accountLoggedIn(app)
+
+	const {status} = await app.post("/api/v1/account/alias/buy").send({
+		alias: "tokyo",
+	})
+	expect(status).toBe(200)
+})
+
 it("creates a schema", async () => {
 	const address = await accountLoggedIn(app)
 
