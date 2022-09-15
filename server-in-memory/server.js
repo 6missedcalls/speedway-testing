@@ -93,15 +93,17 @@ app.use((_, res, next) => {
 	next()
 })
 
-app.post("/api/v1/account/alias/buy", async (req, res) => {
-	const aliases = (await storage.getItem("aliases")) || []
+/// ALIAS
 
-	if (_.includes(aliases, req.body.alias)) {
+app.post("/api/v1/alias/buy", async (req, res) => {
+	const aliases = (await storage.getItem("aliases")) || {}
+
+	if (_.has(aliases, req.body.alias)) {
 		res.status(400).send()
 		return
 	}
 
-	aliases.push(req.body.alias)
+	aliases[req.body.alias] = { owner: sessionAddress }
 	await storage.setItem("aliases", aliases)
 
 	res.status(200).send()
@@ -265,6 +267,17 @@ app.get("/proxy/schemas", async (_, res) => {
 app.get("/proxy/buckets", async (_, res) => {
 	const buckets = (await storage.getItem("buckets")) || []
 	res.json({ where_is: buckets })
+})
+
+app.get("/proxy/alias/:alias", async (req, res) => {
+	const aliases = await storage.getItem("aliases")
+
+	if (!_.has(aliases, req.params.alias)) {
+		res.status(404).send()
+		return
+	}
+
+	res.json({ WhoIs: aliases[req.params.alias] })
 })
 
 export default app

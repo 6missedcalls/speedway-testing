@@ -52,26 +52,39 @@ it("checks for logged in account", async () => {
 })
 
 it("purchase an alias", async () => {
-	await accountLoggedIn(app)
+	const address = await accountLoggedIn(app)
 
-	const { status } = await app
-		.post("/api/v1/account/alias/buy")
-		.send({ alias: "tokyo" })
-	expect(status).toBe(200)
+	const { status: result } = await app.post("/api/v1/alias/buy").send({
+		alias: "tokyo",
+		creator: address,
+	})
+	expect(result).toBe(200)
 })
 
 it("can't buy alias that is already taken", async () => {
-	await accountLoggedIn(app)
+	const address = await accountLoggedIn(app)
 
-	await app.post("/api/v1/account/alias/buy").send({ alias: "tokyo" })
+	await app.post("/api/v1/alias/buy").send({ alias: "tokyo" })
 
-	const { status } = await app
-		.post("/api/v1/account/alias/buy")
-		.send({ alias: "tokyo" })
+	const { status } = await app.post("/api/v1/alias/buy").send({
+		alias: "tokyo",
+		creator: address,
+	})
 	expect(status).toBe(400)
 })
 
-it.skip("logs in with alias and password", async () => {})
+it("queries an alias whois", async () => {
+	const address = await accountLoggedIn(app)
+
+	const { status: statusNotFound } = await app.get("/proxy/alias/tokyo")
+	expect(statusNotFound).toBe(404)
+
+	await app.post("/api/v1/alias/buy").send({ alias: "tokyo" })
+
+	const { status, body } = await app.get("/proxy/alias/tokyo")
+	expect(status).toBe(200)
+	expect(body.WhoIs.owner).toBe(address)
+})
 
 it("creates a schema", async () => {
 	const address = await accountLoggedIn(app)
