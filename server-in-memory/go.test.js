@@ -44,6 +44,29 @@ it(
 		expect(resInfoLoggedIn.body).toHaveProperty("Address")
 		expect(resInfoLoggedIn.body.Address).toBe(address)
 
+		// BUY AN ALIAS
+		const alias = `steve${Date.now()}`
+		const resAlias = await app.post(api("/alias/buy"), {
+			creator: address,
+			alias: alias,
+		})
+		expect(resAlias.status).toBe(200)
+
+		// ATTEMPT TO BUY EXISTING ALIAS
+		const resAliasDup = await app.post(api("/alias/buy"), {
+			creator: address,
+			alias: alias,
+		})
+		expect(resAliasDup.status).toBe(500)
+
+		// QUERY ALIAS WHOIS
+
+		// TODO: implement proxy
+
+		// QUERY ALIAS WHOIS THAT DOESN'T EXIST
+
+		// TODO: implement proxy
+
 		// CREATE A SCHEMA
 		const resSchemaCreate = await app.post(api("/schema/create"), {
 			label: "dinosaurs",
