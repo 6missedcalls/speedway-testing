@@ -71,6 +71,8 @@ it("can't buy alias that is already taken", async () => {
 	expect(status).toBe(400)
 })
 
+it.skip("logs in with alias and password", async () => {})
+
 it("creates a schema", async () => {
 	const address = await accountLoggedIn(app)
 
@@ -139,6 +141,43 @@ it("fetches a list of schemas", async () => {
 	)
 })
 
+it("creates a bucket", async () => {
+	const address = await accountLoggedIn(app)
+
+	const { body: result } = await app.post("/api/v1/bucket/create").send({
+		label: "Lunar base",
+		creator: address,
+	})
+
+	expect(result).toHaveProperty("service")
+	expect(result.service).toHaveProperty("serviceEndpoint")
+	expect(result.service.serviceEndpoint).toHaveProperty("did")
+	expect(result.service.serviceEndpoint.did).toBeDid()
+})
+
+it("fetches a list of buckets", async () => {
+	const address = await accountLoggedIn(app)
+
+	await app.post("/api/v1/bucket/create").send({
+		label: "Dragons",
+		content: address,
+	})
+	await app.post("/api/v1/bucket/create").send({
+		label: "Furniture",
+		content: address,
+	})
+
+	const { body: result } = await app.get("/proxy/buckets")
+	expect(result).toHaveProperty("where_is")
+	expect(result.where_is.length).toBe(2)
+	expect(result.where_is[0].did).toBeDid()
+	expect(result.where_is[0].label).toBe("Dragons")
+	expect(result.where_is[0].content.length).toBe(0)
+	expect(result.where_is[1].did).toBeDid()
+	expect(result.where_is[1].label).toBe("Furniture")
+	expect(result.where_is[1].content.length).toBe(0)
+})
+
 it("builds an object", async () => {
 	await accountLoggedIn(app)
 
@@ -199,43 +238,6 @@ it("gets an object", async () => {
 	expect(result).toHaveProperty("object")
 	expect(result.object).toHaveProperty("firstName")
 	expect(result.object.firstName).toBe("Rex")
-})
-
-it("creates a bucket", async () => {
-	const address = await accountLoggedIn(app)
-
-	const { body: result } = await app.post("/api/v1/bucket/create").send({
-		label: "Lunar base",
-		creator: address,
-	})
-
-	expect(result).toHaveProperty("service")
-	expect(result.service).toHaveProperty("serviceEndpoint")
-	expect(result.service.serviceEndpoint).toHaveProperty("did")
-	expect(result.service.serviceEndpoint.did).toBeDid()
-})
-
-it("fetches a list of buckets", async () => {
-	const address = await accountLoggedIn(app)
-
-	await app.post("/api/v1/bucket/create").send({
-		label: "Dragons",
-		content: address,
-	})
-	await app.post("/api/v1/bucket/create").send({
-		label: "Furniture",
-		content: address,
-	})
-
-	const { body: result } = await app.get("/proxy/buckets")
-	expect(result).toHaveProperty("where_is")
-	expect(result.where_is.length).toBe(2)
-	expect(result.where_is[0].did).toBeDid()
-	expect(result.where_is[0].label).toBe("Dragons")
-	expect(result.where_is[0].content.length).toBe(0)
-	expect(result.where_is[1].did).toBeDid()
-	expect(result.where_is[1].label).toBe("Furniture")
-	expect(result.where_is[1].content.length).toBe(0)
 })
 
 it("can add objects to buckets", async () => {
