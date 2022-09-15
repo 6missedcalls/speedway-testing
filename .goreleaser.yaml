@@ -34,4 +34,4 @@ brews:
   - name: speedway
     tap:
       owner: sonr-io
-      name: speedway
+      name: tap
