@@ -2,10 +2,8 @@ package object
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
-	shell "github.com/ipfs/go-ipfs-api"
 	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/binding"
@@ -39,31 +37,42 @@ func BootstrapGetObjectCommand(ctx context.Context, logger *golog.Logger) (getOb
 				return
 			}
 
-			var id string
-			if cid, err := cmd.Flags().GetString("cid"); err == nil && cid == "" {
-				// Prompt for the object CID
+			var cid string
+			if cid, err = cmd.Flags().GetString("cid"); err == nil && cid == "" {
+				// prompt for cid
 				cidPrompt := promptui.Prompt{
-					Label: "Enter the CID of the object to get",
+					Label: "Enter Object CID",
 				}
-				id, err = cidPrompt.Run()
+				cid, err = cidPrompt.Run()
 				if err != nil {
 					fmt.Printf("Command failed %v\n", err)
 					return
 				}
 			}
-			sh := shell.NewShell(m.Instance.GetClient().GetIPFSApiAddress())
-			// Retrieve the object
-			object := make(map[string]interface{})
-			err = sh.DagGet(id, &object)
+
+			var did string
+			if did, err = cmd.Flags().GetString("did"); err == nil && did == "" {
+				// prompt for did
+				didPrompt := promptui.Prompt{
+					Label: "Enter Schema DID",
+				}
+				did, err = didPrompt.Run()
+				if err != nil {
+					fmt.Printf("Command failed %v\n", err)
+					return
+				}
+			}
+
+			object, err := m.GetObject(ctx, did, cid)
 			if err != nil {
-				fmt.Printf("Command failed %v\n", err)
+				fmt.Printf("GetObject failed %v\n", err)
 				return
 			}
-			b, _ := json.MarshalIndent(object, "", "\t")
-			fmt.Print(string(b))
+
+			logger.Infof("Object: %v", object)
 		},
 	}
-
-	getObjectCmd.PersistentFlags().String("cid", "", "CID  of the object to resolve")
+	getObjectCmd.PersistentFlags().String("did", "", "DID of the schema to resolve")
+	getObjectCmd.PersistentFlags().String("cid", "", "CID of the object to resolve")
 	return
 }

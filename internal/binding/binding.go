@@ -93,11 +93,11 @@ func (b *SpeedwayBinding) CreateAccount(req rtmv1.CreateAccountRequest) (rtmv1.C
 		fmt.Println(status.Error("Create Account Error"), err)
 	}
 
-	psk, err := storage.Store("psk", res.AesPsk)
-	if err != nil {
-		fmt.Println(status.Error("Error"), err)
-	}
-	fmt.Println(status.Info, "PSK stored in keyring", psk)
+	// psk, err := storage.Store("psk", res.AesPsk)
+	// if err != nil {
+	// 	fmt.Println(status.Error("Error"), err)
+	// }
+	// fmt.Println(status.Info, "PSK stored in keyring", psk)
 
 	if storage.StoreInfo("address.snr", b.Instance) != nil {
 		fmt.Println(status.Error("Storage Error: "), err)

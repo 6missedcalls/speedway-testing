@@ -42,7 +42,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 
 			logger.Info("Creating schema...")
 
-			var label string = ""
+			var label string
 			var createSchemaRequest rtmv1.CreateSchemaRequest
 			if label, err = cmd.Flags().GetString("label"); err == nil && label == "" {
 				schemaPrompt := promptui.Prompt{
@@ -114,7 +114,6 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 
 			logger.Infof("🚀 WhatIs for Schema Broadcasted")
 			logger.Infof("├── Creator: %s", createSchemaResult.WhatIs.Creator)
-			logger.Infof("├── Cid: %s", createSchemaResult.WhatIs.Schema.Cid)
 			logger.Infof("└── Did: %s", createSchemaResult.WhatIs.Did)
 		},
 	}

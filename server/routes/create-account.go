@@ -62,8 +62,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	fmt.Println("Store", store)
 
 	req := rtmv1.CreateAccountRequest{
-		Password:  body.Password,
-		AesDscKey: aesKey,
+		Password: body.Password,
 	}
 	b := binding.CreateInstance()
 

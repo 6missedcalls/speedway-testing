@@ -9,7 +9,6 @@ import (
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/binding"
-	"github.com/sonr-io/speedway/internal/utils"
 )
 
 type CreateSchemaRequest struct {
@@ -65,15 +64,8 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 		return
 	}
 
-	schemaDefinition, err := utils.ResolveIPFS(res.WhatIs.Schema.Cid)
-	if err != nil {
-		fmt.Println("err", err)
-		return
-	}
-
 	c.JSON(http.StatusOK,
 		CreateSchemaResponse{
-			WhatIs:     res.WhatIs,
-			Definition: &schemaDefinition,
+			WhatIs: res.WhatIs,
 		})
 }
