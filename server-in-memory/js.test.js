@@ -54,10 +54,21 @@ it("checks for logged in account", async () => {
 it("purchase an alias", async () => {
 	await accountLoggedIn(app)
 
-	const {status} = await app.post("/api/v1/account/alias/buy").send({
-		alias: "tokyo",
-	})
+	const { status } = await app
+		.post("/api/v1/account/alias/buy")
+		.send({ alias: "tokyo" })
 	expect(status).toBe(200)
+})
+
+it("can't buy alias that is already taken", async () => {
+	await accountLoggedIn(app)
+
+	await app.post("/api/v1/account/alias/buy").send({ alias: "tokyo" })
+
+	const { status } = await app
+		.post("/api/v1/account/alias/buy")
+		.send({ alias: "tokyo" })
+	expect(status).toBe(400)
 })
 
 it("creates a schema", async () => {

@@ -93,8 +93,18 @@ app.use((_, res, next) => {
 	next()
 })
 
-app.post("/api/v1/account/alias/buy", async (_, res) => {
-	res.json({})
+app.post("/api/v1/account/alias/buy", async (req, res) => {
+	const aliases = (await storage.getItem("aliases")) || []
+
+	if (_.includes(aliases, req.body.alias)) {
+		res.status(400).send()
+		return
+	}
+
+	aliases.push(req.body.alias)
+	await storage.setItem("aliases", aliases)
+
+	res.status(200).send()
 })
 
 /// SCHEMAS
