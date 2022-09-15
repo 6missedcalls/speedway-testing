@@ -332,6 +332,69 @@ it("gets a bucket content", async () => {
 	expect(result.bucket[0].content.item).toBe("eyJmaXJzdE5hbWUiOiJNYXJjZWwifQ==")
 })
 
+it("edit an object", async () => {
+	const address = await accountLoggedIn(app)
+
+	const responseSchema = await app.post("/api/v1/schema/create").send({
+		label: "Dinosaurs",
+		fields: { firstName: 4 },
+	})
+	const schemaDid = responseSchema.body.whatIs.did
+
+	const responseBucket = await app.post("/api/v1/bucket/create").send({
+		label: "Mars colony",
+		creator: address,
+	})
+	const bucketDid = responseBucket.body.service.serviceEndpoint.did
+
+	const responseOriginalObject = await app.post("/api/v1/object/build").send({
+		schemaDid: schemaDid,
+		label: "Dino",
+		object: { firstName: "Lilly" },
+	})
+	const originalCid = responseOriginalObject.body.objectUpload.reference.cid
+
+	await app.post("/api/v1/bucket/update-items").send({
+		bucketDid: bucketDid,
+		content: [
+			{
+				schemaDid,
+				type: "cid",
+				uri: originalCid,
+			},
+		],
+	})
+
+	const responseObject = await app.post("/api/v1/object/edit").send({
+		cid: originalCid,
+		schemaDid: schemaDid,
+		label: "Dino",
+		object: { firstName: "Ted" },
+	})
+	const newCid = responseObject.body.objectUpload.reference.cid
+
+	await app.post("/api/v1/bucket/update-items").send({
+		bucketDid: bucketDid,
+		content: [
+			{
+				schemaDid,
+				type: "cid",
+				uri: newCid,
+			},
+		],
+	})
+
+	const { body: result } = await app.post("/api/v1/bucket/get").send({
+		bucketDid: bucketDid,
+	})
+	expect(result).toHaveProperty("bucket")
+	expect(result.bucket.length).toBe(1)
+	expect(result.bucket[0].uri).toBe(newCid)
+	expect(result.bucket[0].schemaDid).toBe(schemaDid)
+	expect(result.bucket[0].content).toHaveProperty("item")
+	expect(result.bucket[0].content.item).toBe("eyJmaXJzdE5hbWUiOiJMaWxseSJ9")
+})
+
 it("responds with null when bucket is empty", async () => {
 	const address = await accountLoggedIn(app)
 
