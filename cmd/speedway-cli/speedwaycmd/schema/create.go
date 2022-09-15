@@ -85,7 +85,11 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 						fmt.Printf("Prompt failed %v\n", err)
 						return
 					}
-					sk := utils.ConvertSchemaKind(result)
+					sk, err := utils.ConvertSchemaKind(result)
+					if err != nil {
+						fmt.Printf("Command failed %v\n", err)
+						return
+					}
 					fields[schemaField] = sk
 					repeat = prompts.QuitSelector("Create another Schema Field?")
 

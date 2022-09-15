@@ -2613,6 +2613,8 @@ github.com/sonr-io/multi-party-sig v0.7.0 h1:cRpctyTdbgeOm+JBdY/HcHv3dD7lX3JWtw+
 github.com/sonr-io/multi-party-sig v0.7.0/go.mod h1:Bl4/pohbzwlfiHpYaf9sM/hkV71u1SUPQHDEaHOamfo=
 github.com/sonr-io/sonr v0.3.12 h1:z4tuGjR/vgXf7rhh06UOMR5q9gNqUdpvULgMsUvjyMI=
 github.com/sonr-io/sonr v0.3.12/go.mod h1:momN2/I/m+Ssa0+hGJ/EWE8EFrA5CxryDAMAhNTmL5Q=
+github.com/sonr-io/sonr v0.3.13 h1:keBjtkR+uRQ+vBU6+1mbvkNMpAatsUqYvNJbSLEM56k=
+github.com/sonr-io/sonr v0.3.13/go.mod h1:momN2/I/m+Ssa0+hGJ/EWE8EFrA5CxryDAMAhNTmL5Q=
 github.com/sony/gobreaker v0.4.1/go.mod h1:ZKptC7FHNvhBz7dN2LGjPVBz2sZJmc0/PkyDJOjmxWY=
 github.com/sourcegraph/annotate v0.0.0-20160123013949-f4cad6c6324d/go.mod h1:UdhH50NIW0fCiwBSr0co2m7BnFLdv4fQTgdqdJTHFeE=
 github.com/sourcegraph/go-diff v0.5.1/go.mod h1:j2dHj3m8aZgQO8lMTcTnBcXkRRRqi34cd2MNlA9u1mE=
