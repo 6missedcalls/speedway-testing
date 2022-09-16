@@ -21,7 +21,7 @@ const createSchema = async (
 		const data = await response.json()
 		return {
 			did: data.whatIs.did,
-			label: data.definition.label,
+			label: data.whatIs.schema.label,
 		}
 	} catch (error) {
 		const errorMessage = formatApiError({ error, url, options })
