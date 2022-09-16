@@ -44,18 +44,8 @@ func LoginPrompt() rtmv1.LoginRequest {
 		address = fallbackAddr
 	}
 
-	passPrompt := promptui.Prompt{
-		Label: "Password",
-		Mask:  '*',
-	}
-	password, err := passPrompt.Run()
-	if err != nil {
-		fmt.Printf("Prompt failed %v\n", err)
-	}
-
 	loginRequest := rtmv1.LoginRequest{
-		Did:      address,
-		Password: password,
+		Did: address,
 	}
 	return loginRequest
 }

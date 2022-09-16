@@ -33,6 +33,7 @@ func bootstrapCreateAccountCommand(ctx context.Context, logger *golog.Logger) (c
 			}
 			prompt := promptui.Prompt{
 				Label:    "Password",
+				Mask:     '*',
 				Validate: validate,
 			}
 			password, err := prompt.Run()
