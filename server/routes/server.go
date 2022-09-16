@@ -112,6 +112,7 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	// * Proxy Routes
 	ns.Router.GET("/proxy/schemas", ns.ProxyQuerySchemas)
 	ns.Router.GET("/proxy/buckets", ns.ProxyQueryBuckets)
+	ns.Router.GET("/proxy/alias/:alias", ns.ProxyQueryAlias)
 
 	// * Serve Static Route
 	ns.Router.Use(static.Serve("/", static.LocalFile(ns.Config.StaticDir, true)))

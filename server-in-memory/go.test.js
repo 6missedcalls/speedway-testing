@@ -60,12 +60,14 @@ it(
 		expect(resAliasDup.status).toBe(500)
 
 		// QUERY ALIAS WHOIS
-
-		// TODO: implement proxy
+		const resAliasQuery = await app.get(proxy(`alias/${alias}`))
+		expect(resAliasQuery.status).toBe(200)
+		expect(resAliasQuery.body).toHaveProperty("WhoIs.owner")
+		expect(resAliasQuery.body.WhoIs.owner).toBe(address)
 
 		// QUERY ALIAS WHOIS THAT DOESN'T EXIST
-
-		// TODO: implement proxy
+		const resAliasQueryWrong = await app.get(proxy(`alias/wrong${Date.now()}`))
+		expect(resAliasQueryWrong.status).toBe(404)
 
 		// CREATE A SCHEMA
 		const resSchemaCreate = await app.post(api("/schema/create"), {
