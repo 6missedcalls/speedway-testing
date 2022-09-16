@@ -7,10 +7,11 @@ import (
 	"github.com/kataras/golog"
 	"github.com/sonr-io/sonr/pkg/did"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	st "github.com/sonr-io/sonr/x/schema/types"
+	"github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/status"
+	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -52,43 +53,32 @@ func bootstrapBuildSchemaDocumentCommand(ctx context.Context, logger *golog.Logg
 				logger.Fatalf(status.Error("Login Error: "), err)
 				return
 			}
+
+			var fields []*types.SchemaDocumentValue
+			if file, err := cmd.Flags().GetString("file"); err == nil && file != "" {
+				fields, err = utils.LoadDocumentFieldsFromDisk(file)
+				if err != nil {
+					logger.Fatalf("Error while loading document fields: %s", err)
+					return
+				}
+			}
+
 			uploadRes, err := m.Instance.UploadDocument(mt.UploadDocumentRequest{
 				Creator:    m.Instance.GetAddress(),
 				Label:      "test",
 				Definition: res.Schema,
-				Fields: []*st.SchemaDocumentValue{
-					{
-						Name:  "age",
-						Field: st.SchemaKind_INT,
-						IntValue: &st.IntValue{
-							Value: 27,
-						},
-					},
-					{
-						Name:  "firstName",
-						Field: st.SchemaKind_STRING,
-						StringValue: &st.StringValue{
-							Value: "josh",
-						},
-					},
-					{
-						Name:  "email",
-						Field: st.SchemaKind_STRING,
-						StringValue: &st.StringValue{
-							Value: "josh@test.com",
-						},
-					},
-				},
+				Fields:     fields,
 			})
 
 			if err != nil {
 				fmt.Printf("Error while uploading document: %s", err)
+				return
 			}
 
 			fmt.Printf("Upload Successful")
 			fmt.Printf("Document CID: %s", uploadRes.Cid)
 		},
 	}
-
+	buildDocCmd.PersistentFlags().String("file", "", "File Path to  Document Fields")
 	return
 }
