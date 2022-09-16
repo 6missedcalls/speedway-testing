@@ -100,13 +100,11 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 	const creator = addressToDid(sessionAddress)
 
 	const schemaMetadata = {
-		did,
+		creator,
 		schema: {
 			did,
 			label: body.label,
-			cid: generateCid(),
 		},
-		creator,
 	}
 
 	const fields = _.map(_.keys(body.fields), (name) => ({
@@ -127,10 +125,7 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 		storage.setItem(schemaStoreKey(did), schema),
 	])
 
-	res.json({
-		definition: schema,
-		whatIs: schemaMetadata,
-	})
+	res.json({ whatIs: schemaMetadata })
 })
 
 app.post("/api/v1/schema/get", async ({ body }, res) => {

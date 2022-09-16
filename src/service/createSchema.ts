@@ -20,7 +20,7 @@ const createSchema = async (
 		if (!response.ok) throw new Error(response.statusText)
 		const data = await response.json()
 		return {
-			did: data.whatIs.did,
+			did: data.whatIs.schema.did,
 			label: data.whatIs.schema.label,
 		}
 	} catch (error) {
