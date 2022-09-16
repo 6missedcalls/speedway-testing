@@ -1,36 +1,10 @@
 package storage
 
 import (
-	"fmt"
 	"os"
 
-	"github.com/99designs/keyring"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 )
-
-/*
-The Store function stores the specified key in the keyring
-*/
-func Store(name string, data []byte) (keyring.Item, error) {
-	ring, _ := keyring.Open(keyring.Config{
-		ServiceName: "Sonr Speedway",
-	})
-
-	_ = ring.Set(keyring.Item{
-		Key:  name,
-		Data: data,
-	})
-
-	key, err := ring.Get(name)
-	if err != nil {
-		return key, err
-	}
-	if key.Data == nil {
-		return key, fmt.Errorf("no data found")
-	}
-
-	return key, nil
-}
 
 /*
 The StoreInfo function stores the specified key in the ~/.speedway/info directory

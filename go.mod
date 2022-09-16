@@ -11,7 +11,6 @@ replace (
 )
 
 require (
-	github.com/99designs/keyring v1.1.6
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/duo-labs/webauthn v0.0.0-20220330035159-03696f3d4499
 	github.com/duo-labs/webauthn.io v0.0.0-20200929144140-c031a3e0f95d
@@ -20,7 +19,7 @@ require (
 	github.com/kataras/golog v0.1.7
 	github.com/manifoldco/promptui v0.9.0
 	github.com/shengdoushi/base58 v1.0.0
-	github.com/sonr-io/sonr v0.3.13
+	github.com/sonr-io/sonr v0.4.2
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
@@ -29,5 +28,3 @@ require (
 	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31
 	google.golang.org/grpc v1.48.0
 )
-
-replace github.com/sonr-io/sonr => github.com/sonr-io/sonr v0.3.14-0.20220915201602-fcec2166f5a4

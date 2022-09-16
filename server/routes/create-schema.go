@@ -18,8 +18,7 @@ type CreateSchemaRequest struct {
 }
 
 type CreateSchemaResponse struct {
-	WhatIs     *types.WhatIs           `json:"whatIs"`
-	Definition *types.SchemaDefinition `json:"definition"`
+	WhatIs *types.WhatIs `json:"whatIs"`
 }
 
 // @BasePath /api/v1
