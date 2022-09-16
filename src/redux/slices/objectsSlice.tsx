@@ -49,6 +49,17 @@ export const userGetAllObjects = createAsyncThunk(
 	}
 )
 
+export const userGetBucketObjects = createAsyncThunk(
+	"bucket/content",
+	async ({ bucketDid }: { bucketDid: string }, thunkAPI) => {
+		try {
+			return await getObjectsFromBucket(bucketDid)
+		} catch (err) {
+			return thunkAPI.rejectWithValue(err)
+		}
+	}
+)
+
 export const objectsSlice = createSlice({
 	name: "objects",
 	initialState,
@@ -78,6 +89,21 @@ export const objectsSlice = createSlice({
 		})
 
 		builder.addCase(userGetAllObjects.rejected, (state) => {
+			state.error = true
+			state.loading = false
+		})
+
+		builder.addCase(userGetBucketObjects.pending, (state) => {
+			state.loading = true
+		})
+
+		builder.addCase(userGetBucketObjects.fulfilled, (state, action) => {
+			const { payload } = action
+			state.loading = false
+			state.list = payload
+		})
+
+		builder.addCase(userGetBucketObjects.rejected, (state) => {
 			state.error = true
 			state.loading = false
 		})

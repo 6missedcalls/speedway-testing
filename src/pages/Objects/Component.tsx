@@ -2,13 +2,16 @@ import LayoutMenu from "../../components/LayoutMenu"
 import SearchableList from "../../components/SearchableList"
 import { NebulaIcon } from "@sonr-io/nebula-react"
 import EmptyList from "./components/EmptyList"
-import { ListTypes, SearchableListItem, SchemaMeta } from "../../utils/types"
+import { ListTypes, SearchableListItem, SchemaMeta, Bucket } from "../../utils/types"
 import LoadingCircleSvg from "../../assets/svgs/LoadingCircle"
 
 interface ObjectsPageComponentProps {
 	schemas: Array<SchemaMeta>
+	buckets: Array<Bucket>
 	selectedSchemaDid: string
+	selectedBucket: string;
 	setSelectedSchema: React.Dispatch<React.SetStateAction<string>>
+	setSelectedBucket: React.Dispatch<React.SetStateAction<string>>
 	openNewObjectModal: () => void
 	loading: boolean
 	schemaCount: number
@@ -18,8 +21,11 @@ interface ObjectsPageComponentProps {
 
 const ObjectsPageComponent = ({
 	schemas,
+	buckets,
 	selectedSchemaDid,
+	selectedBucket,
 	setSelectedSchema,
+	setSelectedBucket,
 	openNewObjectModal,
 	loading,
 	list,
@@ -56,6 +62,27 @@ const ObjectsPageComponent = ({
 							</div>
 						</div>
 					)}
+					<div className="flex w-3/12 flex-col items-start justify-center">
+						<div className="mb-2">Buckets</div>
+						<div className="relative pointer-events-none select-none border border-default-border rounded-md w-full cursor-pointer flex justify-between">
+							<select
+								className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
+								onChange={(event) => setSelectedBucket(event.target.value)}
+								value={selectedBucket}
+							>
+								{buckets.map((item) => (
+									<option key={item.did} value={item.did}>
+										{item.label}
+									</option>
+								))}
+							</select>
+							<NebulaIcon
+								iconName="ArrowSquareDown"
+								iconType="duotone"
+								className="w-8 h-8 pointer-events-none select-none absolute right-0 top-1"
+							/>
+						</div>
+					</div>
 				</div>
 				{loading && (
 					<div className="w-full flex justify-center mt-20">

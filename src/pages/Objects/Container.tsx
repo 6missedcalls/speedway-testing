@@ -10,7 +10,7 @@ import {
 import {
 	selectObjectsList,
 	selectObjectsLoading,
-	userGetAllObjects,
+	userGetBucketObjects,
 } from "../../redux/slices/objectsSlice"
 import {
 	selectSchemasLoading,
@@ -31,6 +31,7 @@ function ObjectsPageContainer() {
 	const { setModalContent, openModal } = useContext(AppModalContext)
 	const dispatch: Function = useDispatch()
 	const [selectedSchemaDid, setSelectedSchema] = useState("")
+	const [selectedBucket, setSelectedBucket] = useState("")
 	const [schemaFields, setSchemaFields] = useState<SchemaField[]>([])
 	const objectsList = useSelector(selectObjectsList)
 	const schemasLoading = useSelector(selectSchemasLoading)
@@ -47,15 +48,15 @@ function ObjectsPageContainer() {
 	}, [])
 
 	useEffect(() => {
-		if (buckets.length > 0) {
+		if (selectedBucket) {
 			dispatch(
-				userGetAllObjects({
-					bucketDids: buckets.map((item) => item.did),
+				userGetBucketObjects({
+					bucketDid: selectedBucket,
 				})
 			)
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [buckets])
+	}, [selectedBucket])
 
 	useEffect(() => {
 		if (selectedSchemaDid) {
@@ -129,7 +130,10 @@ function ObjectsPageContainer() {
 	return (
 		<ObjectsPageComponent
 			schemas={schemaMetadata}
+			buckets={buckets}
 			selectedSchemaDid={selectedSchemaDid}
+			selectedBucket={selectedBucket}
+			setSelectedBucket={setSelectedBucket}
 			setSelectedSchema={setSelectedSchema}
 			openNewObjectModal={openNewObjectModal}
 			loading={loading}
