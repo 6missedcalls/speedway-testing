@@ -133,12 +133,12 @@ func CreateAccount(m motor.MotorNode, req rtmv1.CreateAccountRequest) (rtmv1.Cre
 		return res, err
 	}
 
-	psk, err := storage.Store("psk", res.AesPsk)
-	if err != nil {
-		fmt.Println("Store Key Error: ", err)
-		return res, err
-	}
-	fmt.Println("PSK: ", psk)
+	// psk, err := storage.Store("psk", res.AesPsk)
+	// if err != nil {
+	// 	fmt.Println("Store Key Error: ", err)
+	// 	return res, err
+	// }
+	// fmt.Println("PSK: ", psk)
 
 	if storage.StoreInfo("address.snr", m) != nil {
 		fmt.Println("Storage Error: ", err)
@@ -197,19 +197,19 @@ func ConvertSchemaKind(kind string) (st.SchemaKind, error) {
 
 	schemaKind := st.SchemaKind_STRING
 	switch kind {
-	case "LIST":
+	case "list":
 		schemaKind = st.SchemaKind_LIST
-	case "BOOL":
+	case "bool":
 		schemaKind = st.SchemaKind_BOOL
-	case "INT":
+	case "int":
 		schemaKind = st.SchemaKind_INT
-	case "FLOAT":
+	case "float":
 		schemaKind = st.SchemaKind_FLOAT
-	case "STRING":
+	case "string":
 		schemaKind = st.SchemaKind_STRING
-	case "BYTES":
+	case "bytes":
 		schemaKind = st.SchemaKind_BYTES
-	case "LINK":
+	case "link":
 		schemaKind = st.SchemaKind_LINK
 	}
 

@@ -74,14 +74,7 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-
-			definition, err := utils.ResolveIPFS(querySchema.WhatIs.Schema.Cid)
-			if err != nil {
-				fmt.Printf("Command failed %v\n", err)
-				return
-			}
-			defStr, _ := utils.MarshalJsonFmt(definition)
-			logger.Infof("Resolved Schema: %s", defStr)
+			logger.Infof("Schema: %s", querySchema)
 
 			// create new object builder
 			objBuilder, err := m.NewObjectBuilder(schemaDid)
@@ -105,7 +98,7 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 
 			if filePath, err := cmd.Flags().GetString("file"); err == nil && filePath == "" {
 
-				for _, field := range definition.Fields {
+				for _, field := range querySchema.Schema.Fields {
 					valuePrompt := promptui.Prompt{
 						Label: "Enter Value for " + field.Name,
 					}

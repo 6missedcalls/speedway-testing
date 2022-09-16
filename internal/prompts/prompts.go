@@ -44,16 +44,18 @@ func LoginPrompt() rtmv1.LoginRequest {
 		address = fallbackAddr
 	}
 
-	aesKey, pskKey, err := storage.AutoLoad()
-	if err != nil {
-		fmt.Println(status.Error("AutoLoad Error: %s"), err)
-		return rtmv1.LoginRequest{}
+	passPrompt := promptui.Prompt{
+		Label: "Password",
+		Mask:  '*',
 	}
-	// Login Request
+	password, err := passPrompt.Run()
+	if err != nil {
+		fmt.Printf("Prompt failed %v\n", err)
+	}
+
 	loginRequest := rtmv1.LoginRequest{
-		Did:       address,
-		AesDscKey: aesKey,
-		AesPskKey: pskKey,
+		Did:      address,
+		Password: password,
 	}
 	return loginRequest
 }

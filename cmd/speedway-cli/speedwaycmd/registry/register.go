@@ -54,8 +54,8 @@ func bootstrapCreateAccountCommand(ctx context.Context, logger *golog.Logger) (c
 			logger.Info("Store: ", store)
 
 			req := rtmv1.CreateAccountRequest{
-				Password:  result,
-				AesDscKey: aesKey,
+				Password: result,
+				// AesDscKey: aesKey,
 			}
 			logger.Info(status.Debug, "Create Account Request: ", req)
 			if err != nil {

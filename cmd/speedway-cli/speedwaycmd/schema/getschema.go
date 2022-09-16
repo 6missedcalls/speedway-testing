@@ -64,14 +64,7 @@ func bootstrapQuerySchemaCommand(ctx context.Context, logger *golog.Logger) (que
 				return
 			}
 
-			cid := querySchemaRes.WhatIs.Schema.Cid
-			definition, err := utils.ResolveIPFS(cid)
-			if err != nil {
-				fmt.Printf("Command failed %v\n", err)
-				return
-			}
-
-			defStr, _ := utils.MarshalJsonFmt(definition)
+			defStr, _ := utils.MarshalJsonFmt(querySchemaRes.WhatIs.Schema)
 			logger.Info(status.Debug, "Schema:", defStr)
 		},
 	}
