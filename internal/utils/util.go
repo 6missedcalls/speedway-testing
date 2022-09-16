@@ -186,6 +186,23 @@ func LoadSchemaFieldDefinitionFromDisk(path string) (rtmv1.CreateSchemaRequest, 
 	return req, nil
 }
 
+func LoadDocumentFieldsFromDisk(path string) ([]*st.SchemaDocumentValue, error) {
+	var fields []*st.SchemaDocumentValue = make([]*st.SchemaDocumentValue, 0)
+	file, err := ioutil.ReadFile(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(file, &fields)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return fields, nil
+}
+
 func ConvertSchemaKind(kind string) (st.SchemaKind, error) {
 
 	schemaKind := st.SchemaKind_STRING
