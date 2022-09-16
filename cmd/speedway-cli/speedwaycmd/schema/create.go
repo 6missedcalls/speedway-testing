@@ -117,6 +117,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 			logger.Infof("└── Did: %s", createSchemaResult.WhatIs.Did)
 		},
 	}
+	createSchemaCmd.PersistentFlags().String("label", "", "label of the schema")
 	createSchemaCmd.PersistentFlags().String("file", "", "an absolute path to an object definition matching a provided schema")
 	return
 }
