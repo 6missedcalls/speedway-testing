@@ -28,5 +28,3 @@ require (
 	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31
 	google.golang.org/grpc v1.48.0
 )
-
-replace github.com/sonr-io/sonr => github.com/sonr-io/sonr v0.3.14-0.20220915201602-fcec2166f5a4
