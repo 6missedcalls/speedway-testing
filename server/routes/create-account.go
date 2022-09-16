@@ -6,18 +6,16 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	"github.com/sonr-io/speedway/internal/binding"
-	"github.com/sonr-io/speedway/internal/storage"
 
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 )
 
-type CARequestBody struct {
+type CreateAccountBody struct {
 	Password string `json:"password"`
 }
 
-type CAResponseBody struct {
+type CreateAccountResponse struct {
 	Address string `json:"address"`
 }
 
@@ -33,12 +31,12 @@ type FailedResponse struct {
 // @Accept json
 // @Produce json
 // @Param 		 password body string true "password" example("Password")
-// @Success 	 200  {object}  CAResponseBody
+// @Success 	 200  {object}  CreateAccountResponse
 // @Failure      500  {object}  FailedResponse
 // @Router /account/create [post]
 func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	rBody := c.Request.Body
-	var body CARequestBody
+	var body CreateAccountBody
 	err := json.NewDecoder(rBody).Decode(&body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, FailedResponse{
@@ -46,20 +44,6 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 		})
 		return
 	}
-
-	aesKey, err := mpc.NewAesKey()
-	if err != nil {
-		fmt.Println("err", err)
-		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: "Failed to generate AES key",
-		})
-		return
-	}
-	store, err := storage.Store("dsc", aesKey)
-	if err != nil {
-		fmt.Println("Keyring Error", err)
-	}
-	fmt.Println("Store", store)
 
 	req := rtmv1.CreateAccountRequest{
 		Password: body.Password,
@@ -75,7 +59,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, CAResponseBody{
+	c.JSON(http.StatusOK, CreateAccountResponse{
 		Address: res.Address,
 	})
 }

@@ -11,7 +11,6 @@ replace (
 )
 
 require (
-	github.com/99designs/keyring v1.1.6
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/duo-labs/webauthn v0.0.0-20220330035159-03696f3d4499
 	github.com/duo-labs/webauthn.io v0.0.0-20200929144140-c031a3e0f95d
