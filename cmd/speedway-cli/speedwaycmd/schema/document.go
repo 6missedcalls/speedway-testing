@@ -17,7 +17,7 @@ import (
 
 func bootstrapBuildSchemaDocumentCommand(ctx context.Context, logger *golog.Logger) (buildDocCmd *cobra.Command) {
 	buildDocCmd = &cobra.Command{
-		Use:   "build [did]",
+		Use:   "document [did]",
 		Short: "Create a new Schema Document associated to a Schema",
 		Long:  "Creates a new Schema Document associated to a given schema",
 		Args:  cobra.ExactArgs(1),
