@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/kataras/golog"
+	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/sonr/pkg/did"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/schema/types"
@@ -63,9 +64,21 @@ func bootstrapBuildSchemaDocumentCommand(ctx context.Context, logger *golog.Logg
 				}
 			}
 
+			var label string
+			if label, err = cmd.Flags().GetString("label"); err == nil && label == "" {
+				schemaPrompt := promptui.Prompt{
+					Label: "Enter the Schema document Label",
+				}
+				label, err = schemaPrompt.Run()
+				if err != nil {
+					logger.Info("Command failed %v\n", err)
+					return
+				}
+			}
+
 			uploadRes, err := m.Instance.UploadDocument(mt.UploadDocumentRequest{
 				Creator:    m.Instance.GetAddress(),
-				Label:      "test",
+				Label:      label,
 				Definition: res.Schema,
 				Fields:     fields,
 			})
@@ -75,10 +88,11 @@ func bootstrapBuildSchemaDocumentCommand(ctx context.Context, logger *golog.Logg
 				return
 			}
 
-			fmt.Printf("Upload Successful")
+			fmt.Println("Upload Successful")
 			fmt.Printf("Document CID: %s", uploadRes.Cid)
 		},
 	}
+	buildDocCmd.PersistentFlags().String("label", "", "name to associate with the schema document")
 	buildDocCmd.PersistentFlags().String("file", "", "File Path to  Document Fields")
 	return
 }
