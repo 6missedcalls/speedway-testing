@@ -9,7 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/binding"
-	"github.com/sonr-io/speedway/internal/utils"
 )
 
 type QuerySchema struct {
@@ -57,17 +56,8 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 		return
 	}
 
-	definition, err := utils.ResolveIPFS(schema.WhatIs.Schema.Cid)
-	if err != nil {
-		fmt.Printf("ResolveIPFS failed %v\n", err)
-		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: "Resolve IPFS failed",
-		})
-		return
-	}
-
 	c.JSON(http.StatusOK,
 		QuerySchemaResponse{
-			Definition: &definition,
+			Definition: schema.WhatIs.Schema,
 		})
 }

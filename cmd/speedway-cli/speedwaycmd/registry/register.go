@@ -7,11 +7,9 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
-	"github.com/sonr-io/sonr/pkg/crypto/mpc"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/status"
-	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
 )
@@ -35,27 +33,17 @@ func bootstrapCreateAccountCommand(ctx context.Context, logger *golog.Logger) (c
 			}
 			prompt := promptui.Prompt{
 				Label:    "Password",
+				Mask:     '*',
 				Validate: validate,
 			}
-			result, err := prompt.Run()
+			password, err := prompt.Run()
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			aesKey, err := mpc.NewAesKey()
-			if err != nil {
-				logger.Fatalf(status.Error("Error: "), err)
-			}
-
-			store, err := storage.Store("dsc", aesKey)
-			if err != nil {
-				logger.Fatalf(status.Error("Storage Error: %s"), err)
-			}
-			logger.Info("Store: ", store)
 
 			req := rtmv1.CreateAccountRequest{
-				Password:  result,
-				AesDscKey: aesKey,
+				Password: password,
 			}
 			logger.Info(status.Debug, "Create Account Request: ", req)
 			if err != nil {

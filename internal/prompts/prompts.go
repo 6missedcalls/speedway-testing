@@ -44,16 +44,8 @@ func LoginPrompt() rtmv1.LoginRequest {
 		address = fallbackAddr
 	}
 
-	aesKey, pskKey, err := storage.AutoLoad()
-	if err != nil {
-		fmt.Println(status.Error("AutoLoad Error: %s"), err)
-		return rtmv1.LoginRequest{}
-	}
-	// Login Request
 	loginRequest := rtmv1.LoginRequest{
-		Did:       address,
-		AesDscKey: aesKey,
-		AesPskKey: pskKey,
+		Did: address,
 	}
 	return loginRequest
 }
