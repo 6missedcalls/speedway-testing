@@ -55,10 +55,12 @@ it(
 			},
 		})
 		expect(resSchemaCreate.status).toBe(200)
-		expect(resSchemaCreate.body).toHaveProperty("definition.label")
-		expect(resSchemaCreate.body.definition.label).toBe("dinosaurs")
-		expect(resSchemaCreate.body).toHaveProperty("whatIs.did")
-		expect(resSchemaCreate.body.whatIs.did).toBeDid()
+		expect(resSchemaCreate.body).toHaveProperty("whatIs.creator")
+		expect(resSchemaCreate.body.whatIs.creator).toBe(addressToDid(address))
+		expect(resSchemaCreate.body).toHaveProperty("whatIs.schema.label")
+		expect(resSchemaCreate.body.whatIs.schema.label).toBe("dinosaurs")
+		expect(resSchemaCreate.body).toHaveProperty("whatIs.schema.did")
+		expect(resSchemaCreate.body.whatIs.schema.did).toBeDid()
 
 		// CREATE A BUCKET
 		const resBucketCreate = await app.post(api("/bucket/create"), {
