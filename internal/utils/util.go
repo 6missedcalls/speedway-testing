@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/denisbrodbeck/machineid"
 	"github.com/sonr-io/sonr/pkg/motor"
@@ -204,7 +205,7 @@ func LoadDocumentFieldsFromDisk(path string) ([]*st.SchemaDocumentValue, error) 
 }
 
 func ConvertSchemaKind(kind string) (st.SchemaKind, error) {
-
+	kind = strings.ToLower(kind)
 	schemaKind := st.SchemaKind_STRING
 	switch kind {
 	case "list":
