@@ -6,7 +6,6 @@ go build -o bin/speedway
 echo "Done!"
 
 echo "Speedway CLI 🏎  Moving Build..."
-# do an OS check and move the binary to the correct location
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     mv bin/speedway /usr/local/bin/speedway
 elif [[ "$OSTYPE" == "darwin"* ]]; then
