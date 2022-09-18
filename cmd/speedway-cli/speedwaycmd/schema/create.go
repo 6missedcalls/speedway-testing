@@ -61,7 +61,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 				// label:field is a comma separated string
 				// e.g. "name:string,age:int"
 				fieldsPrompt := promptui.Prompt{
-					Label: "✔️ Enter a list (separated by commas - no spaces) of label:kind for the schema: ",
+					Label: "✔️ Enter a list (separated by commas - no spaces) of label:type for the schema",
 				}
 
 				result, err := fieldsPrompt.Run()
