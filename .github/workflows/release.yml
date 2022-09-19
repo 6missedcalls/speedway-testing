@@ -4,7 +4,7 @@ on:
   push:
     tags:
       - v*
-      
+
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
@@ -17,6 +17,11 @@ jobs:
       -
         name: Set up Go
         uses: actions/setup-go@v3
+      -
+        name: OSXCROSS
+        run: |
+          mkdir ../../osxcross
+          git clone https://github.com/plentico/osxcross-target.git ../../osxcross/target
       -
         name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v3
