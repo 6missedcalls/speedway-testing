@@ -1,5 +1,6 @@
-import { NoSpaces, HasNoSpecialCharacter } from "@sonr-io/validation"
+import { NoSpaces, HasNoSpecialCharacter } from "@sonr-io/validation/dist/validation"
 import validate from "@sonr-io/validation/dist/validator"
+
 import { useState } from "react"
 import ProfileCreationComponent from "./Component"
 
@@ -15,8 +16,8 @@ const profileRules = [
 	{
 		name: "charactersLimits",
 		validate: function (value: string) {
-			if (value.length >= 3 && value.length <= 12)
-				return new Error("Domain should have between 3 and 12 characters.")
+			if (value.length < 3 || value.length > 18)
+				return new Error("Domain should have between 3 and 18 characters.")
 			return true
 		},
 	},
@@ -25,7 +26,7 @@ const profileRules = [
 function ProfileCreationContainer(){
     const [domain, setDomain] = useState('')
     const [errors, setErrors] = useState<Record<string, any>>({
-		vaultPassword: {
+		profile: {
 			noSpaces: false,
 			hasNoSpecialCharacter: false,
 			charactersLimits: true,
@@ -55,7 +56,7 @@ function ProfileCreationContainer(){
 			},
 		}
         const { validationErrors } = validate({ fields })
-        
+        console.log(validationErrors)
         setErrors({ ...validationErrors })
         setDomain(value)
     }
