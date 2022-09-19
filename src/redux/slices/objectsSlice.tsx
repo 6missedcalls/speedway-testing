@@ -29,26 +29,6 @@ export const userCreateObject = createAsyncThunk(
 	}
 )
 
-export const userGetAllObjects = createAsyncThunk(
-	"bucket/all/content",
-	async ({ bucketDids }: { bucketDids: Array<string> }, thunkAPI) => {
-		try {
-			const results = await Promise.allSettled(
-				bucketDids.map((did) => getObjectsFromBucket(did))
-			)
-			promiseAllSettledLogErrors(results)
-
-			const bucketObjects = results
-				.filter(isFulfilled)
-				.map((item) => item.value)
-
-			return bucketObjects.flat()
-		} catch (err) {
-			return thunkAPI.rejectWithValue(err)
-		}
-	}
-)
-
 export const userGetBucketObjects = createAsyncThunk(
 	"bucket/content",
 	async ({ bucketDid }: { bucketDid: string }, thunkAPI) => {
@@ -74,21 +54,6 @@ export const objectsSlice = createSlice({
 		})
 
 		builder.addCase(userCreateObject.rejected, (state) => {
-			state.error = true
-			state.loading = false
-		})
-
-		builder.addCase(userGetAllObjects.pending, (state) => {
-			state.loading = true
-		})
-
-		builder.addCase(userGetAllObjects.fulfilled, (state, action) => {
-			const { payload } = action
-			state.loading = false
-			state.list = payload
-		})
-
-		builder.addCase(userGetAllObjects.rejected, (state) => {
 			state.error = true
 			state.loading = false
 		})
