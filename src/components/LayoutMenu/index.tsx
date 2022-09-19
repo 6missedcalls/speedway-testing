@@ -1,4 +1,4 @@
-import { FC, ReactNode, useContext, useRef, useState } from "react"
+import { FC, ReactNode, useContext, useRef } from "react"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import SideMenu from "../SideMenu"
 import useDetectOutsideClick from "../../hooks/useDetectOutsideClick"
