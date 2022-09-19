@@ -69,7 +69,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 					logger.Fatalf(status.Error("Command failed"), err)
 					return
 				}
-				result = strings.ReplaceAll(result, " ", "")
+
 				// Parse the result into a types.Schema
 				for _, field := range strings.Split(result, ",") {
 					fieldSplit := strings.Split(field, ":")
