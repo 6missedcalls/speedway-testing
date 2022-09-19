@@ -12,7 +12,9 @@ var (
 	handler *Daemon
 )
 
-type Daemon int
+type Daemon struct {
+	instance *binding.SpeedwayBinding
+}
 
 func NewHandler() (*Daemon, error) {
 	h := new(Daemon)
@@ -30,11 +32,11 @@ func Start(port int) error {
 		return fmt.Errorf("start RPC server: %s", err)
 	}
 
-	binding.InitMotor()
 	handler, err = NewHandler()
 	if err != nil {
 		return err
 	}
+	handler.instance = binding.CreateInstance()
 	kill = make(chan bool)
 
 	go func() {
