@@ -5,6 +5,7 @@ import (
 
 	"github.com/kataras/golog"
 	bucket "github.com/sonr-io/speedway/cmd/speedway-cli/speedwaycmd/bucket"
+	daemon "github.com/sonr-io/speedway/cmd/speedway-cli/speedwaycmd/daemon"
 	object "github.com/sonr-io/speedway/cmd/speedway-cli/speedwaycmd/object"
 	registry "github.com/sonr-io/speedway/cmd/speedway-cli/speedwaycmd/registry"
 	schema "github.com/sonr-io/speedway/cmd/speedway-cli/speedwaycmd/schema"
@@ -29,6 +30,7 @@ func bootstrapRootCommand(ctx context.Context, logger *golog.Logger) (rootCmd *c
 	rootCmd.AddCommand(schema.BootstrapSchemaCommand(ctx, logger))
 	rootCmd.AddCommand(object.BootstrapObjectCommand(ctx, logger))
 	rootCmd.AddCommand(bucket.BootstrapBucketCommand(ctx, logger))
+	rootCmd.AddCommand(daemon.BootstrapDaemonCommand(ctx, logger))
 	rootCmd.AddCommand(BootstrapServeCommand(ctx))
 
 	return
