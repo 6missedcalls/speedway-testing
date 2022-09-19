@@ -18,6 +18,10 @@ jobs:
         name: Set up Go
         uses: actions/setup-go@v3
       -
+        name: GCC multilib
+        run: |
+          sudo apt-get install gcc-multilib g++-multilib
+      -
         name: OSXCROSS
         run: |
           mkdir ../../osxcross
