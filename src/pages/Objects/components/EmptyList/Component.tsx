@@ -23,7 +23,7 @@ function ObjectsEmptyListComponent({
 		? "You need to create a Schema before you can create Objects"
 		: !hasBucket
 		? "You need to create a Bucket before you can create Objects"
-		: "No Objects using this Schema...Yet..."
+		: "No Objects using this Schema i this Bucket...Yet..."
 
 	const ctaLabel = !hasSchema
 		? "Go to Schemas Page"

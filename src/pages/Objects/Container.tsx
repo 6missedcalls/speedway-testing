@@ -30,14 +30,14 @@ import ObjectsPageComponent from "./Component"
 function ObjectsPageContainer() {
 	const { setModalContent, openModal } = useContext(AppModalContext)
 	const dispatch: Function = useDispatch()
+	const buckets = useSelector(selectBuckets)
 	const [selectedSchemaDid, setSelectedSchema] = useState("")
-	const [selectedBucket, setSelectedBucket] = useState("")
+	const [selectedBucket, setSelectedBucket] = useState(buckets[0].did)
 	const [schemaFields, setSchemaFields] = useState<SchemaField[]>([])
 	const objectsList = useSelector(selectObjectsList)
 	const schemasLoading = useSelector(selectSchemasLoading)
 	const bucketsLoading = useSelector(selectBucketsLoading)
 	const objectsLoading = useSelector(selectObjectsLoading)
-	const buckets = useSelector(selectBuckets)
 	const address = useSelector(selectAddress)
 	const schemaMetadata = useSelector(selectSchemasMetadataList)
 	const loading = schemasLoading || objectsLoading || bucketsLoading
@@ -59,20 +59,22 @@ function ObjectsPageContainer() {
 	}, [selectedBucket])
 
 	useEffect(() => {
-		if (selectedSchemaDid) {
+		if (selectedSchemaDid && selectedBucket) {
 			getSchema()
 			setModalContent({
 				content: MODAL_CONTENT_NEW_OBJECT,
 				props: {
 					selectedSchemaDid,
 					setSelectedSchema,
+					selectedBucket,
+					setSelectedBucket,
 					initialSchemaFields: schemaFields,
 					schemas: schemaMetadata,
 				},
 			})
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedSchemaDid])
+	}, [selectedSchemaDid, selectedBucket])
 
 	async function getSchema() {
 		const selectedSchemaData = schemaMetadata.find(
@@ -107,6 +109,8 @@ function ObjectsPageContainer() {
 			props: {
 				selectedSchemaDid,
 				setSelectedSchema,
+				selectedBucket,
+				setSelectedBucket,
 				initialSchemaFields: schemaFields,
 				schemas: schemaMetadata,
 			},
