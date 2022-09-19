@@ -1,5 +1,7 @@
 import { Button } from "@sonr-io/nebula-react"
+import { useContext } from "react"
 import { NavigateFunction } from "react-router-dom"
+import { AppSettingsContext } from "../../../contexts/appSettingsContext/appSettingsContext"
 
 interface Ibutton {
 	label?: string
@@ -22,10 +24,16 @@ function ButtonGroup({
 	currentPath,
 	className,
 }: ButtonGroupProps) {
+	const { menuIsCollapsed } = useContext(AppSettingsContext)
+	
 	return (
 		<div className={className}>
 			<div className="mb-6">
-				<span className="block text-custom-2xs uppercase font-semibold text-subdued">
+				<span className={`
+						${menuIsCollapsed ? 'text-center' : ''}
+						block text-custom-2xs uppercase font-semibold text-subdued
+					`}
+				>
 					{title}
 				</span>
 			</div>
@@ -33,9 +41,12 @@ function ButtonGroup({
 				return (
 					<Button
 						key={`${label}-${index}`}
-						styling="w-full font-extrabold"
+						styling={`
+							${menuIsCollapsed ? 'justify-center' : ''}
+							w-full font-extrabold
+						`}
 						skin={route === currentPath ? "primary" : ""}
-						label={label}
+						label={!menuIsCollapsed ? label : ''}
 						iconName={iconName}
 						iconType={route === currentPath ? "duotone" : "outline"}
 						onClick={() => navigate(route)}
