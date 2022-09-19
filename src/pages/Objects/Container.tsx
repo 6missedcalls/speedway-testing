@@ -32,7 +32,7 @@ function ObjectsPageContainer() {
 	const dispatch: Function = useDispatch()
 	const buckets = useSelector(selectBuckets)
 	const [selectedSchemaDid, setSelectedSchema] = useState("")
-	const [selectedBucket, setSelectedBucket] = useState(buckets[0].did)
+	const [selectedBucket, setSelectedBucket] = useState(buckets[0]?.did)
 	const [schemaFields, setSchemaFields] = useState<SchemaField[]>([])
 	const objectsList = useSelector(selectObjectsList)
 	const schemasLoading = useSelector(selectSchemasLoading)

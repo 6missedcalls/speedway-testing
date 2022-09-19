@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import createObject from "../../service/createObject"
 import getObjectsFromBucket from "../../service/getObjectsFromBucket"
-import { isFulfilled, promiseAllSettledLogErrors } from "../../utils/promise"
 import { InewObject, SonrObject } from "../../utils/types"
 import { RootState } from "../store"
 

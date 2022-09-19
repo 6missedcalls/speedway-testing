@@ -63,27 +63,29 @@ const ObjectsPageComponent = ({
 								</div>
 							</div>
 						)}
-						<div className="ml-4 flex w-3/12 flex-col items-start justify-center">
-							<div className="mb-2">Bucket</div>
-							<div className="relative pointer-events-none select-none border border-default-border rounded-md w-full cursor-pointer flex justify-between">
-								<select
-									className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
-									onChange={(event) => setSelectedBucket(event.target.value)}
-									value={selectedBucket}
-								>
-									{buckets.map((item) => (
-										<option key={item.did} value={item.did}>
-											{item.label}
-										</option>
-									))}
-								</select>
-								<NebulaIcon
-									iconName="ArrowSquareDown"
-									iconType="duotone"
-									className="w-8 h-8 pointer-events-none select-none absolute right-0 top-1"
-								/>
+						{bucketCount > 0 && (
+							<div className="ml-4 flex w-3/12 flex-col items-start justify-center">
+								<div className="mb-2">Bucket</div>
+								<div className="relative pointer-events-none select-none border border-default-border rounded-md w-full cursor-pointer flex justify-between">
+									<select
+										className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
+										onChange={(event) => setSelectedBucket(event.target.value)}
+										value={selectedBucket}
+									>
+										{buckets.map((item) => (
+											<option key={item.did} value={item.did}>
+												{item.label}
+											</option>
+										))}
+									</select>
+									<NebulaIcon
+										iconName="ArrowSquareDown"
+										iconType="duotone"
+										className="w-8 h-8 pointer-events-none select-none absolute right-0 top-1"
+									/>
+								</div>
 							</div>
-						</div>
+						)}
 					</div>
 				</div>
 				{loading && (
