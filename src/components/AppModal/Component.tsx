@@ -5,21 +5,18 @@ Modal.setAppElement("#root")
 interface AppModalComponentProps {
 	modalIsOpen: boolean
 	closeModal: () => void
-	getModalParent: () => HTMLElement
 	renderModalContent: () => JSX.Element | null
 }
 
 function AppModalComponent({
 	modalIsOpen,
 	closeModal,
-	getModalParent,
 	renderModalContent,
 }: AppModalComponentProps) {
 	return (
 		<div>
 			<Modal
 				onRequestClose={closeModal}
-				parentSelector={getModalParent}
 				isOpen={modalIsOpen}
 				contentLabel="Example Modal"
 				overlayClassName="absolute backdrop-blur-lg h-screen inset-0 bg-gray-900-transparent z-10"

@@ -1,9 +1,8 @@
 interface BaseLayoutComponentProps {
-	isLogged: boolean
 	children: React.ReactNode
 }
 
-function BaseLayoutComponent({ isLogged, children }: BaseLayoutComponentProps) {
+function BaseLayoutComponent({ children }: BaseLayoutComponentProps) {
 	return (
 		<div className="flex font-['Manrope']">
 			<div className="w-full relative">{children}</div>
