@@ -51,7 +51,7 @@ function ObjectsEmptyListComponent({
 						message={message}
 						cta={
 							<Button
-								styling="text-custom-md font-extrabold px-6 py-4"
+								styling="text-custom-md font-extrabold px-6 py-1.5 h-auto"
 								onClick={ctaOnClick}
 								label={ctaLabel}
 							/>
