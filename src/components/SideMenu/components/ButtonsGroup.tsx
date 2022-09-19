@@ -29,7 +29,11 @@ function ButtonGroup({
 	return (
 		<div className={className}>
 			<div className="mb-6">
-				<span className="block text-custom-2xs uppercase font-semibold text-subdued">
+				<span className={`
+						${menuIsCollapsed ? 'text-center' : ''}
+						block text-custom-2xs uppercase font-semibold text-subdued
+					`}
+				>
 					{title}
 				</span>
 			</div>

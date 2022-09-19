@@ -24,7 +24,7 @@ function MenuLink({
             target="_blank"
             rel="noreferrer"
         >
-            <span className="mr-2">
+            <span className={menuIsCollapsed ? '' : 'mr-2'}>
                 <Icon />
             </span>
             {!menuIsCollapsed && <span>{label}</span>}

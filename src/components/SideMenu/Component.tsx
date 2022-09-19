@@ -50,7 +50,7 @@ function SideMenuComponent({
 	return (
 		<div className={`
 			${!menuIsCollapsed ? 'w-80' : 'w-28'}
-			dark text-default flex flex-col bg-brand-tertiary h-full px-6 py-[42px] shrink-0 fixed z-10
+			dark text-default flex flex-col bg-brand-tertiary h-full px-4 py-[42px] shrink-0 fixed z-10
 		`}>
 			<div 
 				onClick={() => menuIsCollapsed && toggleMenuIsCollapsed()}
@@ -91,7 +91,11 @@ function SideMenuComponent({
 					className="mb-10"
 				/>
 
-				<div className="text-custom-2xs uppercase font-semibold text-subdued mb-6">
+				<div className={`
+						${menuIsCollapsed ? 'text-center' : ''}
+						text-custom-2xs uppercase font-semibold text-subdued mb-6
+					`}
+				>
 					Tools
 				</div>
 				<MenuLink 

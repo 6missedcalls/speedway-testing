@@ -6,11 +6,7 @@ import {
 import modalContentMap from "../../utils/modalContentMap"
 import AppModalComponent from "./Component"
 
-interface AppModalContainerProps {
-	getModalParent: () => HTMLElement
-}
-
-function AppModalContainer({ getModalParent }: AppModalContainerProps) {
+function AppModalContainer() {
 	const { modalIsOpen, closeModal, content, props } =
 		useContext<IappModalContextState>(AppModalContext)
 
@@ -28,7 +24,6 @@ function AppModalContainer({ getModalParent }: AppModalContainerProps) {
 			closeModal={closeModal}
 			renderModalContent={renderModalContent}
 			modalIsOpen={modalIsOpen}
-			getModalParent={getModalParent}
 		/>
 	)
 }
