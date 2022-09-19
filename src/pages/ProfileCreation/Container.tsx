@@ -56,7 +56,7 @@ function ProfileCreationContainer(){
 			},
 		}
         const { validationErrors } = validate({ fields })
-        console.log(validationErrors)
+
         setErrors({ ...validationErrors })
         setDomain(value)
     }
