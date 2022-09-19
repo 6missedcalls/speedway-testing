@@ -10,7 +10,7 @@ import {
 import {
 	selectObjectsLoading,
 	userCreateObject,
-	userGetAllObjects,
+	userGetBucketObjects,
 } from "../../../../redux/slices/objectsSlice"
 import {
 	selectSchemasLoading,
@@ -21,6 +21,8 @@ import NewObjectModalContentComponent from "./Component"
 
 export interface NewObjectModalContentContainerProps {
 	selectedSchemaDid: string
+	selectedBucket: string
+	setSelectedBucket: React.Dispatch<React.SetStateAction<string>>
 	setSelectedSchema: React.Dispatch<React.SetStateAction<string>>
 	initialSchemaFields: Array<Record<string, any>>
 	schemas: Array<SchemaMeta>
@@ -28,7 +30,9 @@ export interface NewObjectModalContentContainerProps {
 
 function NewObjectModalContentContainer({
 	selectedSchemaDid,
+	setSelectedBucket,
 	setSelectedSchema,
+	selectedBucket,
 	initialSchemaFields = [],
 	schemas,
 }: NewObjectModalContentContainerProps) {
@@ -36,7 +40,6 @@ function NewObjectModalContentContainer({
 	const dispatch: Function = useDispatch()
 	const buckets = useSelector(selectBuckets)
 	const [error, setError] = useState("")
-	const [selectedBucket, setSelectedBucket] = useState(buckets[0].did)
 	const [properties, setProperties] = useState(initialSchemaFields)
 	const schemasLoading = useSelector(selectSchemasLoading)
 	const bucketsLoading = useSelector(selectBucketsLoading)
@@ -154,13 +157,13 @@ function NewObjectModalContentContainer({
 		}
 
 		await dispatch(updateBucket({ ...bucketUpdatePayload }))
-
+		
 		dispatch(
-			userGetAllObjects({
-				bucketDids: buckets.map((item) => item.did),
+			userGetBucketObjects({
+				bucketDid: selectedBucket,
 			})
 		)
-
+		
 		closeModal()
 	}
 

@@ -23,7 +23,7 @@ function ObjectsEmptyListComponent({
 		? "You need to create a Schema before you can create Objects"
 		: !hasBucket
 		? "You need to create a Bucket before you can create Objects"
-		: "No Objects using this Schema...Yet..."
+		: "No Objects using this Schema in this Bucket...Yet..."
 
 	const ctaLabel = !hasSchema
 		? "Go to Schemas Page"
@@ -51,7 +51,7 @@ function ObjectsEmptyListComponent({
 						message={message}
 						cta={
 							<Button
-								styling="text-custom-md font-extrabold px-6 py-4"
+								styling="text-custom-md font-extrabold px-6 py-1.5 h-auto"
 								onClick={ctaOnClick}
 								label={ctaLabel}
 							/>

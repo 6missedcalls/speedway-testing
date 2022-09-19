@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import createObject from "../../service/createObject"
 import getObjectsFromBucket from "../../service/getObjectsFromBucket"
-import { isFulfilled, promiseAllSettledLogErrors } from "../../utils/promise"
 import { InewObject, SonrObject } from "../../utils/types"
 import { RootState } from "../store"
 
@@ -29,20 +28,11 @@ export const userCreateObject = createAsyncThunk(
 	}
 )
 
-export const userGetAllObjects = createAsyncThunk(
-	"bucket/all/content",
-	async ({ bucketDids }: { bucketDids: Array<string> }, thunkAPI) => {
+export const userGetBucketObjects = createAsyncThunk(
+	"bucket/content",
+	async ({ bucketDid }: { bucketDid: string }, thunkAPI) => {
 		try {
-			const results = await Promise.allSettled(
-				bucketDids.map((did) => getObjectsFromBucket(did))
-			)
-			promiseAllSettledLogErrors(results)
-
-			const bucketObjects = results
-				.filter(isFulfilled)
-				.map((item) => item.value)
-
-			return bucketObjects.flat()
+			return await getObjectsFromBucket(bucketDid)
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
 		}
@@ -67,17 +57,17 @@ export const objectsSlice = createSlice({
 			state.loading = false
 		})
 
-		builder.addCase(userGetAllObjects.pending, (state) => {
+		builder.addCase(userGetBucketObjects.pending, (state) => {
 			state.loading = true
 		})
 
-		builder.addCase(userGetAllObjects.fulfilled, (state, action) => {
+		builder.addCase(userGetBucketObjects.fulfilled, (state, action) => {
 			const { payload } = action
 			state.loading = false
 			state.list = payload
 		})
 
-		builder.addCase(userGetAllObjects.rejected, (state) => {
+		builder.addCase(userGetBucketObjects.rejected, (state) => {
 			state.error = true
 			state.loading = false
 		})
