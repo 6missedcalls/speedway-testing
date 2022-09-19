@@ -69,8 +69,6 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 					logger.Fatalf(status.Error("Command failed"), err)
 					return
 				}
-
-				// if there are any spaces in the result, remove them
 				result = strings.ReplaceAll(result, " ", "")
 				// Parse the result into a types.Schema
 				for _, field := range strings.Split(result, ",") {
