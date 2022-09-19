@@ -30,7 +30,5 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
-release:
-  disable: true
 universal_binaries:
   - replace: true
