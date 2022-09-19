@@ -30,8 +30,5 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
-brews:
-  - name: speedway
-    tap:
-      owner: sonr-io
-      name: tap
+release:
+  disable: true
