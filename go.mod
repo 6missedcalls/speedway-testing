@@ -19,7 +19,7 @@ require (
 	github.com/kataras/golog v0.1.7
 	github.com/manifoldco/promptui v0.9.0
 	github.com/shengdoushi/base58 v1.0.0
-	github.com/sonr-io/sonr v0.4.2
+	github.com/sonr-io/sonr v0.4.3
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
