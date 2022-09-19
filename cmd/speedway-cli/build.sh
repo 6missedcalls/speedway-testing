@@ -5,7 +5,14 @@ echo "Speedway CLI 🏎  Building..."
 go build -o bin/speedway
 echo "Done!"
 
-echo "Speedway CLI 🏎  Installing..."
-mv bin/speedway ~/go/bin/speedway
+echo "Speedway CLI 🏎  Moving Build..."
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    mv bin/speedway /usr/local/bin/speedway
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    mv bin/speedway /usr/local/bin/speedway
+else
+    echo "OS not supported"
+    exit 1
+fi
 rm -rf bin
 echo "Done!"

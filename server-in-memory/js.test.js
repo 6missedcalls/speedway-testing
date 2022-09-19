@@ -52,28 +52,20 @@ it("checks for logged in account", async () => {
 })
 
 it("creates a schema", async () => {
-	const address = await accountLoggedIn(app)
+	await accountLoggedIn(app)
 
 	const { body: result } = await app.post("/api/v1/schema/create").send({
 		label: "Dinosaurs",
 		fields: { name: 4 },
 	})
 
-	expect(result).toHaveProperty("whatIs")
-	expect(result.whatIs.did).toBeDid()
-	expect(result.whatIs.creator).toBeDid()
-	expect(result.whatIs.creator).toBe(addressToDid(address))
-
-	expect(result).toHaveProperty("definition")
-	expect(result.definition.creator).toBe(addressToDid(address))
-	expect(result.definition.label).toBe("Dinosaurs")
-	expect(result.definition.fields.length).toBe(1)
-	expect(result.definition.fields[0]).toEqual({
-		name: "name",
-		field: 4,
-	})
+	expect(result).toHaveProperty("whatIs.schema.did")
+	expect(result.whatIs.schema.did).toBeDid()
+	expect(result).toHaveProperty("whatIs.schema.label")
+	expect(result.whatIs.schema.label).toBe("Dinosaurs")
 })
 
+// we no longer need to get individual schemas because metadata now contains the field info
 it("gets an individual schema", async () => {
 	const address = await accountLoggedIn(app)
 
@@ -83,7 +75,7 @@ it("gets an individual schema", async () => {
 	})
 
 	const { body: result } = await app.post("/api/v1/schema/get").send({
-		schema: responseSchema.body.whatIs.did,
+		schema: responseSchema.body.whatIs.schema.did,
 	})
 
 	expect(result).toHaveProperty("definition")
@@ -111,12 +103,8 @@ it("fetches a list of schemas", async () => {
 	const { body: result } = await app.get("/proxy/schemas")
 	expect(result.what_is.length).toBe(1)
 	expect(result.what_is[0].creator).toBe(addressToDid(address))
-	expect(result.what_is[0].did).toBe(responseSchema.body.whatIs.did)
-	expect(result.what_is[0].schema.did).toBe(responseSchema.body.whatIs.did)
+	expect(result.what_is[0].schema.did).toBe(responseSchema.body.whatIs.schema.did)
 	expect(result.what_is[0].schema.label).toBe("Dinosaurs")
-	expect(result.what_is[0].schema.cid).toBe(
-		responseSchema.body.whatIs.schema.cid
-	)
 })
 
 it("builds an object", async () => {
@@ -128,7 +116,7 @@ it("builds an object", async () => {
 	})
 
 	const { body: result } = await app.post("/api/v1/object/build").send({
-		schemaDid: responseSchema.body.whatIs.did,
+		schemaDid: responseSchema.body.whatIs.schema.did,
 		label: "Sonrsaur",
 		object: { firstName: "Rex" },
 	})
@@ -148,7 +136,7 @@ it("when building object, checks schema properties", async () => {
 	})
 
 	const result = await app.post("/api/v1/object/build").send({
-		schemaDid: responseSchema.body.whatIs.did,
+		schemaDid: responseSchema.body.whatIs.schema.did,
 		label: "Sonrsaur",
 		object: { lastName: "Smith" },
 	})
@@ -166,13 +154,13 @@ it("gets an object", async () => {
 	})
 
 	const responseObject = await app.post("/api/v1/object/build").send({
-		schemaDid: responseSchema.body.whatIs.did,
+		schemaDid: responseSchema.body.whatIs.schema.did,
 		label: "Sonrsaur",
 		object: { firstName: "Rex" },
 	})
 
 	const { body: result } = await app.post("/api/v1/object/get").send({
-		schemaDid: responseSchema.body.whatIs.did,
+		schemaDid: responseSchema.body.whatIs.schema.did,
 		objectCid: responseObject.body.objectUpload.reference.cid,
 	})
 
@@ -225,7 +213,7 @@ it("can add objects to buckets", async () => {
 		label: "Dinosaurs",
 		fields: { firstName: 4 },
 	})
-	const schemaDid = responseSchema.body.whatIs.did
+	const schemaDid = responseSchema.body.whatIs.schema.did
 
 	const responseBucket = await app.post("/api/v1/bucket/create").send({
 		label: "Mars colony",
@@ -267,7 +255,7 @@ it("gets a bucket content", async () => {
 		label: "Dinosaurs",
 		fields: { firstName: 4 },
 	})
-	const schemaDid = responseSchema.body.whatIs.did
+	const schemaDid = responseSchema.body.whatIs.schema.did
 
 	const responseBucket = await app.post("/api/v1/bucket/create").send({
 		label: "Mars colony",

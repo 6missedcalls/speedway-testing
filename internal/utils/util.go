@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/denisbrodbeck/machineid"
 	"github.com/sonr-io/sonr/pkg/motor"
@@ -133,13 +134,6 @@ func CreateAccount(m motor.MotorNode, req rtmv1.CreateAccountRequest) (rtmv1.Cre
 		return res, err
 	}
 
-	psk, err := storage.Store("psk", res.AesPsk)
-	if err != nil {
-		fmt.Println("Store Key Error: ", err)
-		return res, err
-	}
-	fmt.Println("PSK: ", psk)
-
 	if storage.StoreInfo("address.snr", m) != nil {
 		fmt.Println("Storage Error: ", err)
 		return res, err
@@ -193,27 +187,44 @@ func LoadSchemaFieldDefinitionFromDisk(path string) (rtmv1.CreateSchemaRequest, 
 	return req, nil
 }
 
-func ConvertSchemaKind(kind string) st.SchemaKind {
+func LoadDocumentFieldsFromDisk(path string) ([]*st.SchemaDocumentValue, error) {
+	var fields []*st.SchemaDocumentValue = make([]*st.SchemaDocumentValue, 0)
+	file, err := ioutil.ReadFile(path)
 
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(file, &fields)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return fields, nil
+}
+
+func ConvertSchemaKind(kind string) (st.SchemaKind, error) {
+	kind = strings.ToLower(kind)
 	schemaKind := st.SchemaKind_STRING
 	switch kind {
-	case "LIST":
+	case "list":
 		schemaKind = st.SchemaKind_LIST
-	case "BOOL":
+	case "bool":
 		schemaKind = st.SchemaKind_BOOL
-	case "INT":
+	case "int":
 		schemaKind = st.SchemaKind_INT
-	case "FLOAT":
+	case "float":
 		schemaKind = st.SchemaKind_FLOAT
-	case "STRING":
+	case "string":
 		schemaKind = st.SchemaKind_STRING
-	case "BYTES":
+	case "bytes":
 		schemaKind = st.SchemaKind_BYTES
-	case "LINK":
+	case "link":
 		schemaKind = st.SchemaKind_LINK
 	}
 
-	return schemaKind
+	return schemaKind, nil
 }
 
 func MarshalJsonFmt(data interface{}) (string, error) {

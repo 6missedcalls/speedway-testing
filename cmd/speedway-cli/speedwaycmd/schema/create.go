@@ -3,6 +3,7 @@ package schema
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/kataras/golog"
 	"github.com/manifoldco/promptui"
@@ -40,7 +41,8 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 			}
 
 			logger.Info("Creating schema...")
-			var label string = ""
+
+			var label string
 			var createSchemaRequest rtmv1.CreateSchemaRequest
 			if label, err = cmd.Flags().GetString("label"); err == nil && label == "" {
 				schemaPrompt := promptui.Prompt{
@@ -48,51 +50,46 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 				}
 				label, err = schemaPrompt.Run()
 				if err != nil {
-					fmt.Printf("Command failed %v\n", err)
+					logger.Info("Command failed %v\n", err)
 					return
 				}
 			}
 
 			fields := make(map[string]types.SchemaKind)
 			if path, err := cmd.Flags().GetString("file"); err == nil && path == "" {
-				prompt := promptui.Prompt{
-					Label: "Enter your Schema Fields",
+				// Prompt the user for a list of label:IPLD_TYPE to create a schema
+				// IPLD_TYPE can be one of the following: list, bool, int, float, string, bytes & link
+				// e.g. "name:string,age:int"
+				fieldsPrompt := promptui.Prompt{
+					Label: "✔️ Enter a list (separated by commas - no spaces) of label:type for the schema",
 				}
 
-				var repeat bool
-				for !repeat {
-					// make schemaFields []string
-					schemaField, err := prompt.Run()
-					if err != nil {
-						fmt.Printf("Command failed %v\n", err)
-						return
-					}
-					// for every schemaFields, prompt for the type of the field
-					selectSchemaKind := promptui.Select{
-						Label: "Select a Schema Field",
-						Items: []string{
-							"LIST",
-							"BOOL",
-							"INT",
-							"FLOAT",
-							"STRING",
-							"BYTES",
-							"LINK",
-						},
-					}
-					_, result, err := selectSchemaKind.Run()
-					if err != nil {
-						fmt.Printf("Prompt failed %v\n", err)
-						return
-					}
-					sk := utils.ConvertSchemaKind(result)
-					fields[schemaField] = sk
-					repeat = prompts.QuitSelector("Create another Schema Field?")
+				result, err := fieldsPrompt.Run()
+				if err != nil {
+					logger.Fatalf(status.Error("Command failed"), err)
+					return
+				}
 
-					createSchemaRequest = rtmv1.CreateSchemaRequest{
-						Label:  label,
-						Fields: fields,
+				// Parse the result into a types.Schema
+				for _, field := range strings.Split(result, ",") {
+					fieldSplit := strings.Split(field, ":")
+					if len(fieldSplit) != 2 {
+						logger.Fatalf(status.Error("Invalid field format"), err)
+						return
 					}
+					// take the second element of the split and convert it to a types.SchemaKind
+					kind, err := utils.ConvertSchemaKind(fieldSplit[1])
+					if err != nil {
+						logger.Fatalf(status.Error("Invalid field format"), err)
+						return
+					}
+					fields[fieldSplit[0]] = kind
+					fmt.Println(fieldSplit[0], kind)
+				}
+
+				createSchemaRequest = rtmv1.CreateSchemaRequest{
+					Label:  label,
+					Fields: fields,
 				}
 			} else {
 				createSchemaRequest, err = utils.LoadSchemaFieldDefinitionFromDisk(path)
@@ -101,22 +98,26 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 				}
 			}
 
-			// create schema
-			reqStr, _ := utils.MarshalJsonFmt(createSchemaRequest)
-			logger.Debugf("Schema request: \n%s", reqStr)
+			// print each createSchemaRequest.Fields as a tree
+			logger.Infof("Creating schema with the following fields:")
+			for field, kind := range createSchemaRequest.Fields {
+				logger.Infof("└── %s: %s", field, kind)
+			}
 
+			// create the schema
 			createSchemaResult, err := m.CreateSchema(createSchemaRequest)
 			if err != nil {
 				logger.Fatalf(status.Error("CreateSchema Error: "), err)
 				return
 			}
 			logger.Info(status.Success("Create Schema Successful"))
-			// desearialize the scehma result to get the schema did
-			fmtRes, _ := utils.MarshalJsonFmt(createSchemaResult)
-			fmt.Printf("Schema WhatIs: \n %s", fmtRes)
+
+			logger.Infof("🚀 WhatIs for Schema Broadcasted")
+			logger.Infof("├── Creator: %s", createSchemaResult.WhatIs.Creator)
+			logger.Infof("└── Did: %s", createSchemaResult.WhatIs.Did)
 		},
 	}
-
+	createSchemaCmd.PersistentFlags().String("label", "", "label of the schema")
 	createSchemaCmd.PersistentFlags().String("file", "", "an absolute path to an object definition matching a provided schema")
 	return
 }

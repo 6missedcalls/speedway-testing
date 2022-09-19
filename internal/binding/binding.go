@@ -11,6 +11,7 @@ import (
 	"github.com/sonr-io/sonr/third_party/types/common"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	btv1 "github.com/sonr-io/sonr/x/bucket/types"
+	rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/sonr-io/speedway/internal/utils"
@@ -35,7 +36,7 @@ type MotorCallback struct {
 func (cb *MotorCallback) OnDiscover(data []byte) {
 	fmt.Println("ERROR: MotorCallback not implemented.")
 }
-func (cb *MotorCallback) OnMotorEvent(msg common.MotorCallbackMessage, isDone bool) {
+func (cb *MotorCallback) OnMotorEvent(msg string, isDone bool) {
 	fmt.Printf("MotorCallback: %v, isDone: %v\n", msg, isDone)
 }
 
@@ -51,6 +52,7 @@ func InitMotor() mtr.MotorNode {
 	initreq := &rtmv1.InitializeRequest{
 		DeviceId: utils.GetHwid(),
 	}
+	// add MotorCallback with onMotorEvent
 	m, err := mtr.EmptyMotor(initreq, &MotorCallback{})
 	if err != nil {
 		fmt.Println(status.Error("Motor failed to initialize"), err)
@@ -90,12 +92,6 @@ func (b *SpeedwayBinding) CreateAccount(req rtmv1.CreateAccountRequest) (rtmv1.C
 	if err != nil {
 		fmt.Println(status.Error("Create Account Error"), err)
 	}
-
-	psk, err := storage.Store("psk", res.AesPsk)
-	if err != nil {
-		fmt.Println(status.Error("Error"), err)
-	}
-	fmt.Println(status.Info, "PSK stored in keyring", psk)
 
 	if storage.StoreInfo("address.snr", b.Instance) != nil {
 		fmt.Println(status.Error("Storage Error: "), err)
@@ -421,6 +417,66 @@ func (b *SpeedwayBinding) UpdateBucketVisibility(ctx context.Context, bucketDid 
 	}
 
 	return whereIs, nil
+}
+
+/*
+Buy Alias and return the response
+*/
+func (b *SpeedwayBinding) BuyAlias(ctx context.Context, req rt.MsgBuyAlias) (rt.MsgBuyAliasResponse, error) {
+	if b.Instance == nil {
+		return rt.MsgBuyAliasResponse{}, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return rt.MsgBuyAliasResponse{}, ErrNotAuthenticated
+	}
+
+	res, err := b.Instance.BuyAlias(req)
+	if err != nil {
+		fmt.Println(status.Error("Error"), err)
+		return rt.MsgBuyAliasResponse{}, err
+	}
+
+	return res, nil
+}
+
+/*
+Sell Alias and return the response
+*/
+func (b *SpeedwayBinding) SellAlias(ctx context.Context, req rt.MsgSellAlias) (rt.MsgSellAliasResponse, error) {
+	if b.Instance == nil {
+		return rt.MsgSellAliasResponse{}, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return rt.MsgSellAliasResponse{}, ErrNotAuthenticated
+	}
+
+	res, err := b.Instance.SellAlias(req)
+	if err != nil {
+		fmt.Println(status.Error("Error"), err)
+		return rt.MsgSellAliasResponse{}, err
+	}
+
+	return res, nil
+}
+
+/*
+Transfer Alias and return the response
+*/
+func (b *SpeedwayBinding) TransferAlias(ctx context.Context, req rt.MsgTransferAlias) (rt.MsgTransferAliasResponse, error) {
+	if b.Instance == nil {
+		return rt.MsgTransferAliasResponse{}, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return rt.MsgTransferAliasResponse{}, ErrNotAuthenticated
+	}
+
+	res, err := b.Instance.TransferAlias(req)
+	if err != nil {
+		fmt.Println(status.Error("Error"), err)
+		return rt.MsgTransferAliasResponse{}, err
+	}
+
+	return res, nil
 }
 
 /*

@@ -11,17 +11,15 @@ replace (
 )
 
 require (
-	github.com/99designs/keyring v1.1.6
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/duo-labs/webauthn v0.0.0-20220330035159-03696f3d4499
 	github.com/duo-labs/webauthn.io v0.0.0-20200929144140-c031a3e0f95d
 	github.com/gin-gonic/contrib v0.0.0-20201101042839-6a891bf89f19
 	github.com/gin-gonic/gin v1.8.1
-	github.com/ipfs/go-ipfs-api v0.3.0
 	github.com/kataras/golog v0.1.7
 	github.com/manifoldco/promptui v0.9.0
 	github.com/shengdoushi/base58 v1.0.0
-	github.com/sonr-io/sonr v0.3.12
+	github.com/sonr-io/sonr v0.4.2
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
