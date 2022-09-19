@@ -9,6 +9,7 @@ import {
 	ROUTE_POST_SIGNUP,
 	ROOT_INITIALIZE_FROM_CACHE,
 	ROOT_RESET,
+	ROUTE_CREATE_PROFILE,
 } from "./utils/constants"
 import "./App.css"
 import "./index.css"
@@ -28,6 +29,7 @@ import { isLoggedInServer } from "./utils/checkLogin"
 import { selectSchemasError } from "./redux/slices/schemasSlice"
 import { selectObjectsError } from "./redux/slices/objectsSlice"
 import { selectBucketsError } from "./redux/slices/bucketSlice"
+import ProfileCreation from "./pages/ProfileCreation"
 
 function App() {
 	const schemasSliceError = useSelector(selectSchemasError)
@@ -61,6 +63,10 @@ function App() {
 					<Routes>
 						<Route path={ROUTE_SIGNUP} element={<Signup />} />
 						<Route path={ROUTE_LOGIN} element={<Login />} />
+						<Route 
+							path={ROUTE_CREATE_PROFILE} 
+							element={<PrivateRoute Component={ProfileCreation} />}
+						/>
 						<Route
 							path={ROUTE_POST_SIGNUP}
 							element={<PrivateRoute Component={PostSignup} />}

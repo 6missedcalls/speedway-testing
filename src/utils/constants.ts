@@ -1,5 +1,6 @@
 export const ROUTE_LOGIN = "/"
 export const ROUTE_SIGNUP = "/signup"
+export const ROUTE_CREATE_PROFILE = "/create-profile"
 export const ROUTE_SCHEMAS = "/schema"
 export const ROUTE_OBJECTS = "/objects"
 export const ROUTE_BUCKETS = "/buckets"
