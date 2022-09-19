@@ -17,7 +17,7 @@ const EmptyList = ({ message, cta }: Props) => {
 					/>
 				</div>
 
-				<h2 className="text-custom-lg font-extrabold text-subdued">
+				<h2 className="text-custom-lg text-center font-extrabold text-subdued">
 					{message}
 				</h2>
 
