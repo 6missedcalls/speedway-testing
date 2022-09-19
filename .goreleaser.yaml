@@ -32,3 +32,5 @@ changelog:
       - "^test:"
 release:
   disable: true
+universal_binaries:
+  - replace: true
