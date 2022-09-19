@@ -44,6 +44,32 @@ it(
 		expect(resInfoLoggedIn.body).toHaveProperty("Address")
 		expect(resInfoLoggedIn.body.Address).toBe(address)
 
+		// BUY AN ALIAS
+		const alias = `steve${Date.now()}`
+		const resAlias = await app.post(api("/alias/buy"), {
+			creator: address,
+			alias: alias,
+		})
+		expect(resAlias.status).toBe(200)
+
+		// ATTEMPT TO BUY EXISTING ALIAS
+		const resAliasDup = await app.post(api("/alias/buy"), {
+			creator: address,
+			alias: alias,
+		})
+		expect(resAliasDup.status).toBe(500)
+
+		// QUERY ALIAS WHOIS
+		const resAliasQuery = await app.get(api(`/alias/get/${alias}`))
+		expect(resAliasQuery.status).toBe(200)
+		expect(resAliasQuery.body).toHaveProperty("WhoIs.owner")
+		expect(resAliasQuery.body.WhoIs.owner).toBe(address)
+
+		// QUERY ALIAS WHOIS THAT DOESN'T EXIST
+		const wrongAlias = `wrong${Date.now()}`
+		const resAliasQueryWrong = await app.get(api(`/alias/get/${wrongAlias}`))
+		expect(resAliasQueryWrong.status).toBe(404)
+
 		// CREATE A SCHEMA
 		const resSchemaCreate = await app.post(api("/schema/create"), {
 			label: "dinosaurs",
