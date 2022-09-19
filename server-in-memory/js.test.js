@@ -70,7 +70,7 @@ it("can't buy alias that is already taken", async () => {
 		alias: "tokyo",
 		creator: address,
 	})
-	expect(status).toBe(400)
+	expect(status).toBe(500)
 })
 
 it("queries an alias whois", async () => {
@@ -81,7 +81,7 @@ it("queries an alias whois", async () => {
 
 	await app.post("/api/v1/alias/buy").send({ alias: "tokyo" })
 
-	const { status, body } = await app.get("/proxy/alias/tokyo")
+	const { status, body } = await app.get("/api/v1/alias/get/tokyo")
 	expect(status).toBe(200)
 	expect(body.WhoIs.owner).toBe(address)
 })

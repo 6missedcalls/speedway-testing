@@ -99,14 +99,14 @@ app.post("/api/v1/alias/buy", async (req, res) => {
 	const aliases = (await storage.getItem("aliases")) || {}
 
 	if (_.has(aliases, req.body.alias)) {
-		res.status(400).send()
+		res.status(500).send()
 		return
 	}
 
 	aliases[req.body.alias] = { owner: sessionAddress }
 	await storage.setItem("aliases", aliases)
 
-	res.status(200).send()
+	res.status(200).send({})
 })
 
 /// SCHEMAS
@@ -269,7 +269,7 @@ app.get("/proxy/buckets", async (_, res) => {
 	res.json({ where_is: buckets })
 })
 
-app.get("/proxy/alias/:alias", async (req, res) => {
+app.get("/api/v1/alias/get/:alias", async (req, res) => {
 	const aliases = await storage.getItem("aliases")
 
 	if (!_.has(aliases, req.params.alias)) {

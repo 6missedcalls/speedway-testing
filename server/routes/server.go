@@ -93,6 +93,8 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	ns.Router.POST("/api/v1/alias/sell", ns.SellAlias)
 	ns.Router.POST("/api/v1/alias/transfer", ns.TransferAlias)
 
+	ns.Router.GET("/api/v1/alias/get/:alias", ns.GetAlias)
+
 	// * Schema Routes
 	ns.Router.POST("/api/v1/schema/create", ns.CreateSchema)
 	ns.Router.POST("/api/v1/schema/get", ns.QuerySchema)
@@ -112,7 +114,6 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	// * Proxy Routes
 	ns.Router.GET("/proxy/schemas", ns.ProxyQuerySchemas)
 	ns.Router.GET("/proxy/buckets", ns.ProxyQueryBuckets)
-	ns.Router.GET("/proxy/alias/:alias", ns.ProxyQueryAlias)
 
 	// * Serve Static Route
 	ns.Router.Use(static.Serve("/", static.LocalFile(ns.Config.StaticDir, true)))

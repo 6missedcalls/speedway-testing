@@ -40,7 +40,7 @@ type AliasResponse struct {
 	} `json:"WhoIs"`
 }
 
-func (ns *NebulaServer) ProxyQueryAlias(c *gin.Context) {
+func (ns *NebulaServer) GetAlias(c *gin.Context) {
 	resp, err := http.Get("http://v1-beta.sonr.ws:1317/sonr-io/sonr/registry/who_is_alias/" + c.Param("alias"))
 	if err != nil {
 		fmt.Println(status.Error("Error: "), err)
