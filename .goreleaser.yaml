@@ -12,7 +12,7 @@ builds:
   - id: linux-build
     env:
     - CGO_ENABLED=0
-    main: ./cmd/speedway
+    main: ./cmd/speedway-cli
     binary: speedway
     goos:
     - linux
@@ -22,7 +22,7 @@ builds:
   - id: darwin-build
     env:
     - CGO_ENABLED=0
-    main: ./cmd/speedway
+    main: ./cmd/speedway-cli
     binary: speedway
     goos:
     - darwin
