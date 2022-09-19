@@ -61,7 +61,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 				// IPLD_TYPE can be one of the following: list, bool, int, float, string, bytes & link
 				// e.g. "name:string,age:int"
 				fieldsPrompt := promptui.Prompt{
-					Label: "✔️ Enter a list (separated by commas - no spaces) of label:type for the schema",
+					Label: "✔️ Enter a list (separated by commas) of label:type for the schema",
 				}
 
 				result, err := fieldsPrompt.Run()
@@ -70,6 +70,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 					return
 				}
 
+				result = strings.ReplaceAll(result, " ", "")
 				// Parse the result into a types.Schema
 				for _, field := range strings.Split(result, ",") {
 					fieldSplit := strings.Split(field, ":")
