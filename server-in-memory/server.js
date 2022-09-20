@@ -47,7 +47,7 @@ app.get("/logout", (_, res) => {
 	res.status(200).send()
 })
 
-/// AUTHENTICATION
+/// ACCOUNT
 
 app.post("/api/v1/account/create", async ({ body }, res) => {
 	const address = generateAddress()
@@ -91,6 +91,22 @@ app.use((_, res, next) => {
 		return
 	}
 	next()
+})
+
+/// ALIAS
+
+app.post("/api/v1/alias/buy", async (req, res) => {
+	const aliases = (await storage.getItem("aliases")) || {}
+
+	if (_.has(aliases, req.body.alias)) {
+		res.status(500).send()
+		return
+	}
+
+	aliases[req.body.alias] = { owner: sessionAddress }
+	await storage.setItem("aliases", aliases)
+
+	res.status(200).send({})
 })
 
 /// SCHEMAS
@@ -246,6 +262,17 @@ app.get("/proxy/schemas", async (_, res) => {
 app.get("/proxy/buckets", async (_, res) => {
 	const buckets = (await storage.getItem("buckets")) || []
 	res.json({ where_is: buckets })
+})
+
+app.get("/api/v1/alias/get/:alias", async (req, res) => {
+	const aliases = await storage.getItem("aliases")
+
+	if (!_.has(aliases, req.params.alias)) {
+		res.status(404).send()
+		return
+	}
+
+	res.json({ WhoIs: aliases[req.params.alias] })
 })
 
 export default app

@@ -32,7 +32,7 @@ function EmptyListComponent({
 						message="No Schemas to Display"
 						cta={
 							<Button
-								styling="text-custom-md font-extrabold tracking-custom-tight h-12 px-6"
+								styling="text-custom-md font-extrabold tracking-custom-tight px-6 py-1.5 h-auto"
 								onClick={openNewSchemaModal}
 								iconName="Add"
 								iconType="outline"
