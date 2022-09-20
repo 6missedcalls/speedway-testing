@@ -9,15 +9,24 @@ before:
     # you may remove this if you don't need go generate
     - go generate ./...
 builds:
-  - env:
-      - CGO_ENABLED=1
+  - id: linux-build
     main: ./cmd/speedway-cli
+    binary: speedway
     goos:
-      - linux
-      - darwin
+    - linux
     goarch:
-      - amd64
-      - arm64
+    - amd64
+    - arm64
+  - id: darwin-build
+    env:
+    - CGO_ENABLED=1
+    main: ./cmd/speedway-cli
+    binary: speedway
+    goos:
+    - darwin
+    goarch:
+    - amd64
+    - arm64
 archives:
   - name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 checksum:
