@@ -3,6 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../store"
 import login from "../../service/login"
 import createAccount from "../../service/createAccount"
+import buyAlias from "../../service/buyAlias"
 
 interface loginProps {
 	walletAddress: string
@@ -18,12 +19,15 @@ interface AuthenticationState {
 	loading: boolean
 	error: boolean
 	Address: string
+	alias: string
 }
+
 export const initialState: AuthenticationState = {
 	isLogged: false,
 	loading: false,
 	error: false,
-	Address: "",
+	Address: '',
+	alias: ''
 }
 
 export const userLogin = createAsyncThunk(
@@ -44,6 +48,18 @@ export const userCreateAccount = createAsyncThunk(
 		try {
 			const address = await createAccount(password)
 			return address
+		} catch (err) {
+			return thunkAPI.rejectWithValue(err)
+		}
+	}
+)
+
+export const userBuyAlias = createAsyncThunk(
+	"authentication/buyAlias",
+	async ({ password }: createAccountProps, thunkAPI) => {
+		try {
+			const data = await buyAlias(password)
+			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
 		}
@@ -86,6 +102,20 @@ export const authenticationSlice = createSlice({
 			state.error = true
 			state.loading = false
 		})
+
+		builder.addCase(userBuyAlias.pending, (state) => {
+			state.loading = true
+		})
+
+		builder.addCase(userBuyAlias.fulfilled, (state, action) => {
+			console.log("action", action)
+			state.loading = false
+		})
+
+		builder.addCase(userBuyAlias.rejected, (state) => {
+			state.error = true
+			state.loading = false
+		})
 	},
 })
 
@@ -105,6 +135,10 @@ export const selectAuthenticationIsLoading = (state: RootState) => {
 
 export const selectAddress = (state: RootState) => {
 	return state.authentication.Address
+}
+
+export const selectAlias = (state: RootState) => {
+	return state.authentication.alias
 }
 
 export default authenticationSlice.reducer
