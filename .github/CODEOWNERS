@@ -1,2 +1,2 @@
-*.go @sonr-io/core
-CODEOWNERS @ntindle @sonr-io/core/speedway
+*.go @sonr-io/speedway
+CODEOWNERS @ntindle @sonr-io/speedway
