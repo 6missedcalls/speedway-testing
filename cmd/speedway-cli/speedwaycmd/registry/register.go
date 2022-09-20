@@ -2,11 +2,10 @@ package registry
 
 import (
 	"context"
-	"errors"
-	"fmt"
+	"regexp"
 
+	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
-	"github.com/manifoldco/promptui"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/status"
@@ -25,30 +24,17 @@ func bootstrapCreateAccountCommand(ctx context.Context, logger *golog.Logger) (c
 		There is a prompt to enter a password to encrypt your vault.
 		There is a prompt to enter your computer password to allow Speedway to create a new keypair for you. (Please do not delete this keypair from your keychain.)`,
 		Run: func(cmd *cobra.Command, args []string) {
-			validate := func(input string) error {
-				if len(input) < 8 {
-					return errors.New("password must be at least 8 characters")
-				}
-				return nil
-			}
-			prompt := promptui.Prompt{
-				Label:    "Password",
-				Mask:     '*',
-				Validate: validate,
-			}
-			password, err := prompt.Run()
-			if err != nil {
-				fmt.Printf("Command failed %v\n", err)
-				return
-			}
+			password := (&prompter.Prompter{
+				Message: "Enter a password to encrypt your vault",
+				Regexp:  regexp.MustCompile(`.{8,}`),
+				NoEcho:  true,
+			}).Prompt()
 
 			req := rtmv1.CreateAccountRequest{
 				Password: password,
 			}
 			logger.Info(status.Debug, "Create Account Request: ", req)
-			if err != nil {
-				logger.Fatalf(status.Error("Error: %s"), err)
-			}
+
 			m := binding.InitMotor()
 			res, err := utils.CreateAccount(m, req)
 			if err != nil {

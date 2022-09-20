@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
-	"github.com/manifoldco/promptui"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/binding"
@@ -45,12 +45,11 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 			var label string
 			var createSchemaRequest rtmv1.CreateSchemaRequest
 			if label, err = cmd.Flags().GetString("label"); err == nil && label == "" {
-				schemaPrompt := promptui.Prompt{
-					Label: "Enter the Schema Label",
-				}
-				label, err = schemaPrompt.Run()
-				if err != nil {
-					logger.Info("Command failed %v\n", err)
+				label = (&prompter.Prompter{
+					Message: "Schema Label",
+				}).Prompt()
+				if label == "" {
+					logger.Fatalf(status.Error("Label cannot be empty"))
 					return
 				}
 			}
@@ -60,13 +59,11 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 				// Prompt the user for a list of label:IPLD_TYPE to create a schema
 				// IPLD_TYPE can be one of the following: list, bool, int, float, string, bytes & link
 				// e.g. "name:string,age:int"
-				fieldsPrompt := promptui.Prompt{
-					Label: "✔️ Enter a list (separated by commas) of label:type for the schema",
-				}
-
-				result, err := fieldsPrompt.Run()
-				if err != nil {
-					logger.Fatalf(status.Error("Command failed"), err)
+				result := (&prompter.Prompter{
+					Message: "✔️ Enter a list (separated by commas) of label:type for the schema",
+				}).Prompt()
+				if result == "" {
+					logger.Fatalf(status.Error("Schema fields cannot be empty"))
 					return
 				}
 
