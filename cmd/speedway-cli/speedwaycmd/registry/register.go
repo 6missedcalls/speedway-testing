@@ -25,7 +25,7 @@ func bootstrapCreateAccountCommand(ctx context.Context, logger *golog.Logger) (c
 		There is a prompt to enter your computer password to allow Speedway to create a new keypair for you. (Please do not delete this keypair from your keychain.)`,
 		Run: func(cmd *cobra.Command, args []string) {
 			password := (&prompter.Prompter{
-				Message: "Enter a password to encrypt your vault",
+				Message: "Enter a password: ",
 				Regexp:  regexp.MustCompile(`.{8,}`),
 				NoEcho:  true,
 			}).Prompt()

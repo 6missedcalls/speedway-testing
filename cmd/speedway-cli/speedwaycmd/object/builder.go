@@ -52,7 +52,7 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 			var schemaDid string
 			if schemaDid, err = cmd.Flags().GetString("did"); err == nil && schemaDid == "" {
 				schemaDid = (&prompter.Prompter{
-					Message: "Enter the DID of the schema you want to use to build the object",
+					Message: "Schema DID: ",
 				}).Prompt()
 				if schemaDid == "" {
 					logger.Fatalf(status.Error("Error: %s"), "Schema DID cannot be empty")
@@ -81,7 +81,7 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 			}
 			if label, err := cmd.Flags().GetString("label"); err == nil && label == "" {
 				label = (&prompter.Prompter{
-					Message: "Enter the label for the object",
+					Message: "Object Label:",
 				}).Prompt()
 				objBuilder.SetLabel(label)
 			} else {
@@ -92,7 +92,7 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 
 				for _, field := range querySchema.Schema.Fields {
 					value := (&prompter.Prompter{
-						Message: "Enter the value for the " + field.Name + " field",
+						Message: "Enter the value for the " + field.Name,
 					}).Prompt()
 					err = setNormalizedValueFromPrompt(objBuilder, field, value)
 					if err != nil {

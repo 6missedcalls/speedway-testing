@@ -16,19 +16,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Validate an Alias
-func validateAlias(input string) error {
-	if len(input) < 3 {
-		return errors.New("alias is too short")
+// Validate Alias and return bool if valid or err if invalid
+func validateAlias(alias string) (bool, error) {
+	if len(alias) < 3 {
+		return false, errors.New("alias is too short")
 	}
-	if len(input) > 12 {
-		return errors.New("alias is too long")
+	if len(alias) > 32 {
+		return false, errors.New("alias is too long")
 	}
 	var validAlias = regexp.MustCompile(`^[a-zA-Z0-9]+$`).MatchString
-	if !validAlias(input) {
-		return errors.New("alias is invalid")
+	if !validAlias(alias) {
+		return false, errors.New("alias is invalid")
 	}
-	return nil
+	return true, nil
+
 }
 
 // Method to buy an Alias
@@ -63,9 +64,13 @@ func bootstrapBuyAlias(ctx context.Context, logger *golog.Logger) (buyAliasCmd *
 					Regexp:  regexp.MustCompile(`.{3,}`),
 				}).Prompt()
 			}
+			if name == "" {
+				logger.Fatal(status.Error("Alias is required"))
+				return
+			}
 
-			if err = validateAlias(name); err != nil {
-				logger.Info("Command failed %v\n", err)
+			if valid, err := validateAlias(name); !valid {
+				logger.Fatal(status.Error(err.Error()))
 				return
 			}
 
@@ -147,8 +152,8 @@ func bootstrapSellAlias(ctx context.Context, logger *golog.Logger) (sellAliasCmd
 				}
 			}
 
-			if err = validateAlias(name); err != nil {
-				logger.Info("Command failed %v\n", err)
+			if valid, err := validateAlias(name); !valid {
+				logger.Fatal(status.Error(err.Error()))
 				return
 			}
 
@@ -230,8 +235,8 @@ func bootstrapTransferAlias(ctx context.Context, logger *golog.Logger) (transfer
 				}
 			}
 
-			if err = validateAlias(name); err != nil {
-				logger.Info("Command failed %v\n", err)
+			if valid, err := validateAlias(name); !valid {
+				logger.Fatal(status.Error(err.Error()))
 				return
 			}
 
