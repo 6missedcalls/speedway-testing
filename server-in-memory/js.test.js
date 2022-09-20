@@ -150,9 +150,7 @@ it("creates a bucket", async () => {
 		creator: address,
 	})
 
-	expect(result).toHaveProperty("service")
-	expect(result.service).toHaveProperty("serviceEndpoint")
-	expect(result.service.serviceEndpoint).toHaveProperty("did")
+	expect(result).toHaveProperty("service.serviceEndpoint.did")
 	expect(result.service.serviceEndpoint.did).toBeDid()
 })
 
@@ -197,9 +195,9 @@ it("builds an object", async () => {
 		object: { firstName: "Rex" },
 	})
 
-	expect(result).toHaveProperty("objectUpload")
-	expect(result.objectUpload).toHaveProperty("reference")
+	expect(result).toHaveProperty("objectUpload.reference.Label")
 	expect(result.objectUpload.reference.Label).toBe("Sonrsaur")
+	expect(result).toHaveProperty("objectUpload.reference.cid")
 	expect(typeof result.objectUpload.reference.cid).toBe("string")
 })
 
@@ -240,8 +238,7 @@ it("gets an object", async () => {
 		objectCid: responseObject.body.objectUpload.reference.cid,
 	})
 
-	expect(result).toHaveProperty("object")
-	expect(result.object).toHaveProperty("firstName")
+	expect(result).toHaveProperty("object.firstName")
 	expect(result.object.firstName).toBe("Rex")
 })
 
