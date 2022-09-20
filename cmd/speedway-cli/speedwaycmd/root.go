@@ -30,6 +30,7 @@ func bootstrapRootCommand(ctx context.Context, logger *golog.Logger) (rootCmd *c
 	rootCmd.AddCommand(object.BootstrapObjectCommand(ctx, logger))
 	rootCmd.AddCommand(bucket.BootstrapBucketCommand(ctx, logger))
 	rootCmd.AddCommand(BootstrapServeCommand(ctx))
+	rootCmd.AddCommand(BootstrapVersionCommand(ctx))
 
 	return
 }
