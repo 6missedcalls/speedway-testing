@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	bucketQueryUrl = "http://v1-beta.sonr.ws:1317/sonr-io/sonr/bucket/where_is?"
+	bucketQueryBaseUrl = "http://v1-beta.sonr.ws:1317/sonr-io/sonr/bucket/where_is/"
 )
 
 // @BasePath /api/v1
@@ -38,7 +38,7 @@ type BucketResponse struct {
 }
 
 func (ns *NebulaServer) ProxyQueryBuckets(c *gin.Context) {
-	resp, err := http.Get(bucketQueryUrl + c.Request.URL.RawQuery)
+	resp, err := http.Get(bucketQueryBaseUrl + c.Param("creator") + "?" + c.Request.URL.RawQuery)
 	if err != nil {
 		fmt.Println(status.Error("Error: "), err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrNotAuthorized})
