@@ -1,10 +1,6 @@
 import { Button, NebulaIcon } from "@sonr-io/nebula-react"
 import { Dispatch, SetStateAction } from "react"
-import {
-	Bucket,
-	SchemaField,
-	SchemaMeta,
-} from "../../../../utils/types"
+import { Bucket, SchemaField, SchemaMeta } from "../../../../utils/types"
 
 interface NewSchemaModalContentComponentProps {
 	onClose: () => void
