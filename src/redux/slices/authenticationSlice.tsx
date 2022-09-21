@@ -14,6 +14,10 @@ interface createAccountProps {
 	password: string
 }
 
+interface buyAliasProps {
+	alias: string
+}
+
 interface AuthenticationState {
 	isLogged: boolean
 	loading: boolean
@@ -56,9 +60,9 @@ export const userCreateAccount = createAsyncThunk(
 
 export const userBuyAlias = createAsyncThunk(
 	"authentication/buyAlias",
-	async ({ password }: createAccountProps, thunkAPI) => {
+	async ({ alias }: buyAliasProps, thunkAPI) => {
 		try {
-			const data = await buyAlias(password)
+			const data = await buyAlias(alias)
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
@@ -108,7 +112,8 @@ export const authenticationSlice = createSlice({
 		})
 
 		builder.addCase(userBuyAlias.fulfilled, (state, action) => {
-			console.log("action", action)
+			const { meta } = action
+			state.alias = meta?.arg?.alias
 			state.loading = false
 		})
 

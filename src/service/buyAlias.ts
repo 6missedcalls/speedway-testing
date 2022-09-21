@@ -2,7 +2,7 @@ import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
 
 const buyAlias = async (alias: string): Promise<string> => {
-	const url = `${BASE_API}/api/v1/account/buy-alias`
+	const url = `${BASE_API}/api/v1/alias/buy`
 
 	const options = {
 		method: "POST",

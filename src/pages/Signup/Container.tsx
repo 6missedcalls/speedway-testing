@@ -7,7 +7,7 @@ import {
 	userCreateAccount,
 	userLogin,
 } from "../../redux/slices/authenticationSlice"
-import { ROUTE_POST_SIGNUP, ROUTE_SIGNUP } from "../../utils/constants"
+import { ROUTE_BUY_ALIAS, ROUTE_SIGNUP } from "../../utils/constants"
 import {
 	HasAtLeastOneLowercaseCharacter,
 	HasAtLeastOneNumber,
@@ -77,7 +77,7 @@ const Container = () => {
 		)
 		const { address } = createAccountResponse.payload
 		await dispatch(userLogin({ walletAddress: address, password }))
-		navigate(ROUTE_POST_SIGNUP)
+		navigate(ROUTE_BUY_ALIAS)
 	}
 
 	function validateStatePassword() {

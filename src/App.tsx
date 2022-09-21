@@ -6,10 +6,9 @@ import {
 	ROUTE_LOGIN,
 	ROUTE_OBJECTS,
 	ROUTE_SCHEMAS,
-	ROUTE_POST_SIGNUP,
 	ROOT_INITIALIZE_FROM_CACHE,
 	ROOT_RESET,
-	ROUTE_CREATE_PROFILE,
+	ROUTE_BUY_ALIAS,
 } from "./utils/constants"
 import "./App.css"
 import "./index.css"
@@ -21,7 +20,6 @@ import NotFound from "./pages/NotFound"
 import Schemas from "./pages/Schemas"
 import Objects from "./pages/Objects"
 import Buckets from "./pages/Buckets"
-import PostSignup from "./pages/PostSignup"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import ErrorBoundary from "./components/ErrorBoundary"
@@ -29,7 +27,7 @@ import { isLoggedInServer } from "./utils/checkLogin"
 import { selectSchemasError } from "./redux/slices/schemasSlice"
 import { selectObjectsError } from "./redux/slices/objectsSlice"
 import { selectBucketsError } from "./redux/slices/bucketSlice"
-import ProfileCreation from "./pages/ProfileCreation"
+import ProfileCreation from "./pages/AliasCreation"
 
 function App() {
 	const schemasSliceError = useSelector(selectSchemasError)
@@ -64,12 +62,8 @@ function App() {
 						<Route path={ROUTE_SIGNUP} element={<Signup />} />
 						<Route path={ROUTE_LOGIN} element={<Login />} />
 						<Route 
-							path={ROUTE_CREATE_PROFILE} 
+							path={ROUTE_BUY_ALIAS} 
 							element={<PrivateRoute Component={ProfileCreation} />}
-						/>
-						<Route
-							path={ROUTE_POST_SIGNUP}
-							element={<PrivateRoute Component={PostSignup} />}
 						/>
 						<Route
 							path={ROUTE_SCHEMAS}

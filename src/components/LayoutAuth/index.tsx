@@ -1,6 +1,6 @@
 import { ReactNode } from "react"
 import SonrLogoSvg from "../../assets/svgs/SonrLogo"
-import { ROUTE_CREATE_PROFILE, ROUTE_LOGIN, ROUTE_SIGNUP } from "../../utils/constants"
+import { ROUTE_BUY_ALIAS, ROUTE_LOGIN, ROUTE_SIGNUP } from "../../utils/constants"
 import { useNavigate } from "react-router-dom"
 
 type Props = {
@@ -32,7 +32,7 @@ const Component = ({ content, sidebarContent, route }: Props) => {
 									<button
 										className={`
 											block h-6 w-full text-white font-extrabold rounded-3xl
-											${route === ROUTE_SIGNUP || route === ROUTE_CREATE_PROFILE ? "bg-primary-light" : "bg-transparent"}`}
+											${route === ROUTE_SIGNUP || route === ROUTE_BUY_ALIAS ? "bg-primary-light" : "bg-transparent"}`}
 										onClick={() => navigate(ROUTE_SIGNUP)}
 									>
 										Register

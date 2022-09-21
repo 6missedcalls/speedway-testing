@@ -2,24 +2,24 @@ import AlertSvg from "../../assets/svgs/Alert"
 import LayoutAuth from "../../components/LayoutAuth"
 import TextInput from "../../components/TextInput"
 import ValidationListItem from "../../components/ValidationListItem"
-import { ROUTE_CREATE_PROFILE } from "../../utils/constants"
+import { ROUTE_BUY_ALIAS } from "../../utils/constants"
 import { Button } from '@sonr-io/nebula-react'
 import { FormEvent } from "react"
 
-type ProfileCreationComponentProps = {
+type AliasCreationComponentProps = {
 	onSubmit: () => void
 	errors: Record<string, any>
-    domain: string
-    validateDomainOnChange: (value: string) => void
+    alias: string
+    validateAliasOnChange: (value: string) => void
 }
 
 
-function ProfileCreationComponent({
+function AliasCreationComponent({
     errors,
     onSubmit,
-    validateDomainOnChange,
-    domain
-}: ProfileCreationComponentProps){
+    validateAliasOnChange,
+    alias
+}: AliasCreationComponentProps){
     function _onSubmit(event: FormEvent) {
 		event.preventDefault()
 		onSubmit()
@@ -27,7 +27,7 @@ function ProfileCreationComponent({
 
     return (
     <LayoutAuth
-        route={ROUTE_CREATE_PROFILE}
+        route={ROUTE_BUY_ALIAS}
         sidebarContent={
             <div className=" max-w-[479px] flex flex-col mt-40 ml-14">
                 <div className="text-custom-3xl font-extrabold tracking-custom-x2tighter mb-6">
@@ -57,25 +57,26 @@ function ProfileCreationComponent({
 
                 <form onSubmit={_onSubmit} className="w-full">
                     <TextInput
+                        error={errors?.alias?.taken}
                         className="text-white mb-4"
                         label="Profile Domain"
                         ariaLabel="Profile Domain"
                         handleOnChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                            validateDomainOnChange(event.target.value)
+                            validateAliasOnChange(event.target.value)
                         }
-                        value={domain}
+                        value={alias}
                         type="text"
                     />
                     <div className="flex flex-col justify-start text-sm text-gray-600 mt-4">
                         <ValidationListItem
-                            error={errors?.profile?.charactersLimits}
+                            error={errors?.alias?.charactersLimits}
                             label="3 - 18 characters"
                         />
                         <div className="h-2" />
                         <ValidationListItem
                             error={
-                                errors?.profile?.noSpaces ||
-                                errors?.profile?.hasNoSpecialCharacter
+                                errors?.alias?.noSpaces ||
+                                errors?.alias?.hasNoSpecialCharacter
                             }
                             label="No spaces or special characters"
                         />
@@ -93,4 +94,4 @@ function ProfileCreationComponent({
     )
 }
 
-export default ProfileCreationComponent
+export default AliasCreationComponent
