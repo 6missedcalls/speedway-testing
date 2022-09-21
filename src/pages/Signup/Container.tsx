@@ -86,7 +86,7 @@ const Container = () => {
 			userCreateAccount({ password })
 		)
 		const { address } = createAccountResponse.payload
-		await dispatch(userLogin({ walletAddress: address, password }))
+		await dispatch(userLogin({ addressOrAlias: address, password }))
 		navigate(ROUTE_BUY_ALIAS)
 	}
 

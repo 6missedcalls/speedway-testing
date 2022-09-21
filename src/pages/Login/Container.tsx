@@ -7,6 +7,7 @@ import {
 	selectAuthenticationIsLoading,
 	selectIsLogged,
 	selectLoginError,
+	userGetAddressByAlias,
 	userLogin,
 } from "../../redux/slices/authenticationSlice"
 import { ROUTE_LOGIN, ROUTE_SCHEMAS } from "../../utils/constants"
@@ -14,8 +15,9 @@ import { IsRequired } from "@sonr-io/validation/dist/validation"
 import validate from "@sonr-io/validation/dist/validator"
 import { AppDispatch } from "../../redux/store"
 import LoginComponent from "./Component"
+import { isAddress } from "../../utils/string"
 
-const walletAddressRules = [
+const addressOrAliasRules = [
 	{
 		name: "isRequired",
 		validate: IsRequired,
@@ -30,7 +32,7 @@ const paswordRules = [
 ]
 
 const Container = () => {
-	const [walletAddress, setWalletAddress] = useState("")
+	const [addressOrAlias, setAddressOrAlias] = useState("")
 	const [password, setPassword] = useState("")
 	const [passwordVisible, setPasswordVisible] = useState(false)
 	const dispatch = useDispatch<AppDispatch>()
@@ -48,11 +50,11 @@ const Container = () => {
 		}
 	}, [isLogged, alias, navigate])
 
-	function login() {
+	async function login() {
 		const fields = {
-			walletAddress: {
-				rules: walletAddressRules,
-				value: walletAddress,
+			addressOrAlias: {
+				rules: addressOrAliasRules,
+				value: addressOrAlias,
 			},
 			vaultPassword: {
 				rules: paswordRules,
@@ -65,7 +67,15 @@ const Container = () => {
 
 		if (!isValid) return
 
-		dispatch(userLogin({ walletAddress, password }))
+		if(isAddress(addressOrAlias)){
+			dispatch(userLogin({ addressOrAlias, password }))
+		}else{
+			const response = await dispatch<Record<string,any>>(userGetAddressByAlias({ alias: addressOrAlias }))
+			if(!response?.error){
+				const address = response.payload
+				dispatch(userLogin({ addressOrAlias: address, password }))
+			}
+		}
 	}
 
 	function togglePasswordVisible() {
@@ -83,8 +93,8 @@ const Container = () => {
 			togglePasswordVisible={togglePasswordVisible}
 			setPassword={setPassword}
 			passwordVisible={passwordVisible}
-			walletAddress={walletAddress}
-			setWalletAddress={setWalletAddress}
+			addressOrAlias={addressOrAlias}
+			setAddressOrAlias={setAddressOrAlias}
 			password={password}
 			loginError={loginError ? "Invalid domain or password." : ""}
 		/>

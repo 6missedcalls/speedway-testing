@@ -4,9 +4,10 @@ import { RootState } from "../store"
 import login from "../../service/login"
 import createAccount from "../../service/createAccount"
 import buyAlias from "../../service/buyAlias"
+import getAddressByAlias from "../../service/getAddressByAlias"
 
 interface loginProps {
-	walletAddress: string
+	addressOrAlias: string
 	password: string
 }
 
@@ -37,9 +38,9 @@ export const initialState: AuthenticationState = {
 
 export const userLogin = createAsyncThunk(
 	"authentication/login",
-	async ({ walletAddress, password }: loginProps, thunkAPI) => {
+	async ({ addressOrAlias, password }: loginProps, thunkAPI) => {
 		try {
-			const data = await login(walletAddress, password)
+			const data = await login(addressOrAlias, password)
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
@@ -71,14 +72,22 @@ export const userBuyAlias = createAsyncThunk(
 	}
 )
 
+export const userGetAddressByAlias = createAsyncThunk(
+	"authentication/getAddressByAlias",
+	async ({ alias }: { alias: string }, thunkAPI) => {
+		try {
+			const data = await getAddressByAlias(alias)
+			return data
+		} catch (err) {
+			return thunkAPI.rejectWithValue(err)
+		}
+	}
+)
+
 export const authenticationSlice = createSlice({
 	name: "authentication",
 	initialState,
-	reducers: {
-		setIsLogged: (state, action: PayloadAction<boolean>) => {
-			state.isLogged = action.payload
-		},
-	},
+	reducers: {},
 	extraReducers: (builder) => {
 		builder.addCase(userLogin.pending, (state) => {
 			state.loading = true
@@ -88,6 +97,9 @@ export const authenticationSlice = createSlice({
 			state.loading = false
 			state.isLogged = true
 			state.Address = action.payload
+			if(!state.alias){
+				state.alias = action.payload
+			}
 		})
 
 		builder.addCase(userLogin.rejected, (state) => {
@@ -122,10 +134,23 @@ export const authenticationSlice = createSlice({
 			state.error = true
 			state.loading = false
 		})
+
+		builder.addCase(userGetAddressByAlias.pending, (state) => {
+			state.loading = true
+		})
+
+		builder.addCase(userGetAddressByAlias.fulfilled, (state, action) => {
+			const { meta } = action
+			state.alias = meta?.arg?.alias
+			state.loading = false
+		})
+
+		builder.addCase(userGetAddressByAlias.rejected, (state) => {
+			state.error = true
+			state.loading = false
+		})
 	},
 })
-
-export const { setIsLogged } = authenticationSlice.actions
 
 export const selectIsLogged = (state: RootState) => {
 	return state.authentication.isLogged

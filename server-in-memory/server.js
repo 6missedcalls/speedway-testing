@@ -85,6 +85,17 @@ app.get("/api/v1/account/info", async (_, res) => {
 	res.json({ Address: sessionAddress })
 })
 
+app.get("/api/v1/alias/get/:alias", async (req, res) => {
+	const aliases = await storage.getItem("aliases")
+
+	if (!_.has(aliases, req.params.alias)) {
+		res.status(404).send()
+		return
+	}
+
+	res.json({ WhoIs: aliases[req.params.alias] })
+})
+
 app.use((_, res, next) => {
 	if (!sessionAddress) {
 		res.status(500).json({ message: "Not logged in" })
@@ -262,17 +273,6 @@ app.get("/proxy/schemas", async (_, res) => {
 app.get("/proxy/buckets", async (_, res) => {
 	const buckets = (await storage.getItem("buckets")) || []
 	res.json({ where_is: buckets })
-})
-
-app.get("/api/v1/alias/get/:alias", async (req, res) => {
-	const aliases = await storage.getItem("aliases")
-
-	if (!_.has(aliases, req.params.alias)) {
-		res.status(404).send()
-		return
-	}
-
-	res.json({ WhoIs: aliases[req.params.alias] })
 })
 
 export default app
