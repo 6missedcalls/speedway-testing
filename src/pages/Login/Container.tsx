@@ -3,12 +3,13 @@ import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import AuthenticationLoading from "../../components/AuthenticationLoading"
 import {
+	selectAlias,
 	selectAuthenticationIsLoading,
 	selectIsLogged,
 	selectLoginError,
 	userLogin,
 } from "../../redux/slices/authenticationSlice"
-import { ROUTE_LOGIN } from "../../utils/constants"
+import { ROUTE_LOGIN, ROUTE_SCHEMAS } from "../../utils/constants"
 import { IsRequired } from "@sonr-io/validation/dist/validation"
 import validate from "@sonr-io/validation/dist/validator"
 import { AppDispatch } from "../../redux/store"
@@ -36,15 +37,16 @@ const Container = () => {
 
 	const navigate = useNavigate()
 	const isLogged = useSelector(selectIsLogged)
+	const alias = useSelector(selectAlias)
 	const loginError = useSelector(selectLoginError)
 	const loading = useSelector(selectAuthenticationIsLoading)
 	const [errors, setErrors] = useState<Record<string, any>>({})
 
 	useEffect(() => {
-		if (isLogged) {
-			navigate("/schema")
+		if (isLogged && alias) {
+			navigate(ROUTE_SCHEMAS)
 		}
-	}, [isLogged, navigate])
+	}, [isLogged, alias, navigate])
 
 	function login() {
 		const fields = {

@@ -1,8 +1,10 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router"
 import AuthenticationLoading from "../../components/AuthenticationLoading"
 import {
+	selectAddress,
+	selectAlias,
 	selectAuthenticationIsLoading,
 	userCreateAccount,
 	userLogin,
@@ -50,6 +52,8 @@ const passwordRules = [
 ]
 
 const Container = () => {
+	const address = useSelector(selectAddress)
+	const alias = useSelector(selectAlias)
 	const [password, setPassword] = useState("")
 	const [passwordConfirm, setPasswordConfirm] = useState("")
 	const [passwordVisible, setPasswordVisible] = useState(false)
@@ -68,6 +72,12 @@ const Container = () => {
 	const loading = useSelector(selectAuthenticationIsLoading)
 	const navigate = useNavigate()
 	const dispatch: Function = useDispatch()
+
+	useEffect(() => {
+		if (address && !alias) {
+			navigate(ROUTE_BUY_ALIAS)
+		}
+	}, [address, alias, navigate])
 
 	async function createAccountAndLogin() {
 		if (!validateStatePassword()) return

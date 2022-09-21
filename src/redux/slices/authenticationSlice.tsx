@@ -16,6 +16,7 @@ interface createAccountProps {
 
 interface buyAliasProps {
 	alias: string
+	creator: string
 }
 
 interface AuthenticationState {
@@ -60,9 +61,9 @@ export const userCreateAccount = createAsyncThunk(
 
 export const userBuyAlias = createAsyncThunk(
 	"authentication/buyAlias",
-	async ({ alias }: buyAliasProps, thunkAPI) => {
+	async ({ alias, creator }: buyAliasProps, thunkAPI) => {
 		try {
-			const data = await buyAlias(alias)
+			const data = await buyAlias(alias, creator)
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)

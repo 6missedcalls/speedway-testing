@@ -61,10 +61,7 @@ function App() {
 					<Routes>
 						<Route path={ROUTE_SIGNUP} element={<Signup />} />
 						<Route path={ROUTE_LOGIN} element={<Login />} />
-						<Route 
-							path={ROUTE_BUY_ALIAS} 
-							element={<PrivateRoute Component={ProfileCreation} />}
-						/>
+						<Route path={ROUTE_BUY_ALIAS} element={<ProfileCreation />} />
 						<Route
 							path={ROUTE_SCHEMAS}
 							element={<PrivateRoute Component={Schemas} />}

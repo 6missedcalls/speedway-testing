@@ -5,11 +5,13 @@ import ValidationListItem from "../../components/ValidationListItem"
 import { ROUTE_BUY_ALIAS } from "../../utils/constants"
 import { Button } from '@sonr-io/nebula-react'
 import { FormEvent } from "react"
+import LoadingCircleSvg from "../../assets/svgs/LoadingCircle"
 
 type AliasCreationComponentProps = {
 	onSubmit: () => void
 	errors: Record<string, any>
     alias: string
+    loading: boolean
     validateAliasOnChange: (value: string) => void
 }
 
@@ -18,11 +20,15 @@ function AliasCreationComponent({
     errors,
     onSubmit,
     validateAliasOnChange,
-    alias
+    alias,
+    loading
 }: AliasCreationComponentProps){
     function _onSubmit(event: FormEvent) {
 		event.preventDefault()
-		onSubmit()
+        
+        if(loading) return
+		
+        onSubmit()
 	}
 
     return (
@@ -82,11 +88,20 @@ function AliasCreationComponent({
                         />
                         <div className="h-2" />
                     </div>
-                    <Button
+                    {!loading ? (
+                        <Button
                         type="submit"
                         styling="border rounded block w-full mt-12 justify-center text-custom-md font-extrabold"
                         label="Submit"
                     />
+                    ) : (
+                        <div className="w-full flex justify-center mt-12">
+                            <div className="w-12 animate-spin flex justify-center items-center">
+                                <LoadingCircleSvg />
+                            </div>
+                        </div>
+                    )}
+                    
                 </form>
             </div>
         }

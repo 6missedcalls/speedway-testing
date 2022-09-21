@@ -1,13 +1,13 @@
 import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
 
-const buyAlias = async (alias: string): Promise<string> => {
+const buyAlias = async (alias: string, creator: string): Promise<string> => {
 	const url = `${BASE_API}/api/v1/alias/buy`
 
 	const options = {
 		method: "POST",
 		headers: { "content-type": "application/json" },
-		body: JSON.stringify({ alias }),
+		body: JSON.stringify({ creator, alias }),
 	}
 
 	try {
