@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
-	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/status"
@@ -39,28 +39,16 @@ func BootstrapGetObjectCommand(ctx context.Context, logger *golog.Logger) (getOb
 
 			var cid string
 			if cid, err = cmd.Flags().GetString("cid"); err == nil && cid == "" {
-				// prompt for cid
-				cidPrompt := promptui.Prompt{
-					Label: "Enter Object CID",
-				}
-				cid, err = cidPrompt.Run()
-				if err != nil {
-					fmt.Printf("Command failed %v\n", err)
-					return
-				}
+				cid = (&prompter.Prompter{
+					Message: "Object CID",
+				}).Prompt()
 			}
 
 			var did string
 			if did, err = cmd.Flags().GetString("did"); err == nil && did == "" {
-				// prompt for did
-				didPrompt := promptui.Prompt{
-					Label: "Enter Schema DID",
-				}
-				did, err = didPrompt.Run()
-				if err != nil {
-					fmt.Printf("Command failed %v\n", err)
-					return
-				}
+				did = (&prompter.Prompter{
+					Message: "Schema DID",
+				}).Prompt()
 			}
 
 			object, err := m.GetObject(ctx, did, cid)
