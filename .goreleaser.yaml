@@ -37,8 +37,8 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
-brews:
-  - name: speedway
-    tap:
-      owner: sonr-io
-      name: tap
+# brews:
+#   - name: speedway
+#     tap:
+#       owner: sonr-io
+#       name: tap
