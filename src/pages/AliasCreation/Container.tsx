@@ -4,7 +4,7 @@ import validate from "@sonr-io/validation/dist/validator"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router"
-import { selectAddress, selectAlias, selectAuthenticationIsLoading, userBuyAlias } from "../../redux/slices/authenticationSlice"
+import { selectAddress, selectAlias, selectAuthenticationIsLoading, selectIsLogged, userBuyAlias } from "../../redux/slices/authenticationSlice"
 import { AppDispatch } from "../../redux/store"
 import { ROUTE_SCHEMAS, ROUTE_SIGNUP } from "../../utils/constants"
 import AliasCreationComponent from "./Component"
@@ -48,14 +48,14 @@ function AliasCreationContainer(){
 			navigate(ROUTE_SIGNUP)
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	},[])
+	},[address])
 
 	useEffect(() => {
 		if(cachedAlias){
 			navigate(ROUTE_SCHEMAS)
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	},[])
+	},[cachedAlias])
 
     async function onSubmit(){
         const fields = {

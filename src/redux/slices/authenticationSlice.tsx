@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import type { PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../store"
 import login from "../../service/login"
 import createAccount from "../../service/createAccount"
 import buyAlias from "../../service/buyAlias"
 import getAddressByAlias from "../../service/getAddressByAlias"
+import { isAddress } from "../../utils/string"
 
 interface loginProps {
 	addressOrAlias: string
@@ -94,12 +94,10 @@ export const authenticationSlice = createSlice({
 		})
 
 		builder.addCase(userLogin.fulfilled, (state, action) => {
+			const { payload } = action
 			state.loading = false
 			state.isLogged = true
-			state.Address = action.payload
-			if(!state.alias){
-				state.alias = action.payload
-			}
+			state.Address = payload
 		})
 
 		builder.addCase(userLogin.rejected, (state) => {
@@ -126,7 +124,7 @@ export const authenticationSlice = createSlice({
 
 		builder.addCase(userBuyAlias.fulfilled, (state, action) => {
 			const { meta } = action
-			state.alias = meta?.arg?.alias
+			state.alias = meta.arg.alias
 			state.loading = false
 		})
 
@@ -141,8 +139,8 @@ export const authenticationSlice = createSlice({
 
 		builder.addCase(userGetAddressByAlias.fulfilled, (state, action) => {
 			const { meta } = action
-			state.alias = meta?.arg?.alias
 			state.loading = false
+			state.alias = meta.arg.alias
 		})
 
 		builder.addCase(userGetAddressByAlias.rejected, (state) => {

@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router"
 import AuthenticationLoading from "../../components/AuthenticationLoading"
 import {
-	selectAddress,
 	selectAlias,
 	selectAuthenticationIsLoading,
+	selectIsLogged,
 	userCreateAccount,
 	userLogin,
 } from "../../redux/slices/authenticationSlice"
-import { ROUTE_BUY_ALIAS, ROUTE_SIGNUP } from "../../utils/constants"
+import { ROUTE_BUY_ALIAS, ROUTE_SCHEMAS, ROUTE_SIGNUP } from "../../utils/constants"
 import {
 	HasAtLeastOneLowercaseCharacter,
 	HasAtLeastOneNumber,
@@ -52,8 +52,7 @@ const passwordRules = [
 ]
 
 const Container = () => {
-	const address = useSelector(selectAddress)
-	const alias = useSelector(selectAlias)
+	const isLogged = useSelector(selectIsLogged)
 	const [password, setPassword] = useState("")
 	const [passwordConfirm, setPasswordConfirm] = useState("")
 	const [passwordVisible, setPasswordVisible] = useState(false)
@@ -74,10 +73,10 @@ const Container = () => {
 	const dispatch: Function = useDispatch()
 
 	useEffect(() => {
-		if (address && !alias) {
-			navigate(ROUTE_BUY_ALIAS)
+		if (isLogged) {
+			navigate(ROUTE_SCHEMAS)
 		}
-	}, [address, alias, navigate])
+	}, [isLogged, navigate])
 
 	async function createAccountAndLogin() {
 		if (!validateStatePassword()) return

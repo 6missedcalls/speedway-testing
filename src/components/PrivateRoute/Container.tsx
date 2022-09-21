@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux"
 import { Navigate } from "react-router"
-import { selectAlias, selectIsLogged } from "../../redux/slices/authenticationSlice"
+import { selectIsLogged } from "../../redux/slices/authenticationSlice"
+import { ROUTE_LOGIN } from "../../utils/constants"
 
 interface PrivateRouteProps {
 	Component: React.FC
@@ -8,9 +9,8 @@ interface PrivateRouteProps {
 
 function PrivateRoute({ Component, ...props }: PrivateRouteProps) {
 	const isLogged = useSelector(selectIsLogged)
-	const alias = useSelector(selectAlias)
-	
-	return <>{isLogged && alias ? <Component {...props} /> : <Navigate to="/" />}</>
+
+	return <>{isLogged ? <Component {...props} /> : <Navigate to={ROUTE_LOGIN} />}</>
 }
 
 export default PrivateRoute

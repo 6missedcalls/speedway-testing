@@ -45,7 +45,7 @@ const Container = () => {
 	const [errors, setErrors] = useState<Record<string, any>>({})
 
 	useEffect(() => {
-		if (isLogged && alias) {
+		if (isLogged) {
 			navigate(ROUTE_SCHEMAS)
 		}
 	}, [isLogged, alias, navigate])
@@ -68,12 +68,14 @@ const Container = () => {
 		if (!isValid) return
 
 		if(isAddress(addressOrAlias)){
-			dispatch(userLogin({ addressOrAlias, password }))
+			const response = await dispatch<Record<string,any>>(userLogin({ addressOrAlias, password }))
+			if(!response?.error) navigate(ROUTE_SCHEMAS)
 		}else{
 			const response = await dispatch<Record<string,any>>(userGetAddressByAlias({ alias: addressOrAlias }))
 			if(!response?.error){
 				const address = response.payload
-				dispatch(userLogin({ addressOrAlias: address, password }))
+				await dispatch(userLogin({ addressOrAlias: address, password }))
+				navigate(ROUTE_SCHEMAS)
 			}
 		}
 	}
