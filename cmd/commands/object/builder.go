@@ -81,7 +81,7 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 			}
 			if label, err := cmd.Flags().GetString("label"); err == nil && label == "" {
 				label = (&prompter.Prompter{
-					Message: "Object Label:",
+					Message: "Object Label",
 				}).Prompt()
 				objBuilder.SetLabel(label)
 			} else {
