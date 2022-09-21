@@ -7,9 +7,8 @@ import (
 	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/speedway/internal/binding"
+	"github.com/sonr-io/speedway/internal/client"
 	"github.com/sonr-io/speedway/internal/status"
-	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -30,19 +29,18 @@ func bootstrapCreateAccountCommand(ctx context.Context, logger *golog.Logger) (c
 				NoEcho:  true,
 			}).Prompt()
 
-			req := rtmv1.CreateAccountRequest{
-				Password: password,
+			cli, err := client.New(ctx)
+			if err != nil {
+				logger.Fatalf(status.Error("RPC Client Error: "), err)
+				return
 			}
-			logger.Info(status.Debug, "Create Account Request: ", req)
 
-			m := binding.InitMotor()
-			res, err := utils.CreateAccount(m, req)
+			res, err := cli.CreateAccount(rtmv1.CreateAccountRequest{Password: password})
 			if err != nil {
 				logger.Fatalf(status.Error("CreateAccount Error: "), err)
 				return
 			}
 
-			logger.Info(status.Debug, "Create Account Response: ", res)
 			logger.Info(status.Info, "Account Address: ", res.Address)
 		},
 	}
