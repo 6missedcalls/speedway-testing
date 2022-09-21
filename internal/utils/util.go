@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/http"
 	"strings"
 
 	"github.com/denisbrodbeck/machineid"
@@ -13,7 +12,6 @@ import (
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/bucket/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
-	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/storage"
 )
 
@@ -21,6 +19,10 @@ type ObjectBuilder struct {
 	Label  string                 `json:"label"`
 	Object map[string]interface{} `json:"object"`
 }
+
+/*
+	Motor Utils
+*/
 
 // GetHWID returns the hardware ID of the machine.
 func GetHwid() string {
@@ -31,60 +33,10 @@ func GetHwid() string {
 	return hwid
 }
 
-// Unmarshal WhatIs and return a QueryWhatIsResponse
-func DeserializeWhatIs(whatis []byte) *st.WhatIs {
-	whatIs := &st.WhatIs{}
-	err := whatIs.Unmarshal(whatis)
-	if err != nil {
-		fmt.Printf("Command failed %v\n", err)
-		panic(err)
-	}
-	return whatIs
-}
-
-// ResolveIPFS returns the schema definition of the given CID.
-func ResolveIPFS(cid string) (st.SchemaDefinition, error) {
-	getReq, err := http.NewRequest("GET", "https://ipfs.sonr.ws/ipfs/"+cid, nil)
-	if err != nil {
-		fmt.Printf("Request to IPFS failed %v\n", err)
-	}
-	// get the file from ipfs.sonr.ws
-	resp, err := http.DefaultClient.Do(getReq)
-	if err != nil {
-		fmt.Printf("Do failed %v\n", err)
-	}
-	// read the file
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Printf("ReadAll failed %v\n", err)
-	}
-	definition := &st.SchemaDefinition{}
-	if err = definition.Unmarshal(body); err != nil {
-		fmt.Printf("error unmarshalling body: %s", err)
-	}
-	// print response
-	return *definition, err
-}
-
-// GetFile reads a file from a given path and return an object builder.
-func GetFile(path string) (*ObjectBuilder, error) {
-	file, err := ioutil.ReadFile(path)
-	if err != nil {
-		fmt.Println(status.Error("Error reading file: "), err)
-	}
-
-	var objectBuilder ObjectBuilder
-	err = json.Unmarshal(file, &objectBuilder)
-	if err != nil {
-		fmt.Println(status.Error("Error unmarshalling file: "), err)
-	}
-
-	return &objectBuilder, err
-}
-
 /*
 	Bucket Utils
 */
+
 // Convert the bucket visibility from a string to the BucketVisibility type.
 func ConvertBucketVisibility(visibility string) (types.BucketVisibility, error) {
 	var visibilityInt types.BucketVisibility
