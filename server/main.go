@@ -1,10 +1,16 @@
 package main
 
 import (
+	"embed"
 	"fmt"
 	"os"
 
 	nebula "github.com/sonr-io/speedway/server/routes"
+)
+
+var (
+	//go:embed build
+	res embed.FS
 )
 
 func main() {
@@ -20,6 +26,7 @@ func main() {
 		options.RPOrigin = RPOrigin
 		options.Address = Address
 		options.StaticDir = StaticDir
+		options.EmbedFs = &res
 	})
 
 	if err != nil {
@@ -31,5 +38,5 @@ func main() {
 		fmt.Printf("Error while standing up web server: %s ", err)
 	}
 
-	srvr.Serve()
+	srvr.Serve(false)
 }

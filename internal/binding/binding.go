@@ -101,6 +101,22 @@ func (b *SpeedwayBinding) CreateAccount(req rtmv1.CreateAccountRequest) (rtmv1.C
 }
 
 /*
+Create Account With Keys on Blockchain and return the response
+*/
+func (b *SpeedwayBinding) CreateAccountWithKeys(req rtmv1.CreateAccountWithKeysRequest) (rtmv1.CreateAccountWithKeysResponse, error) {
+	res, err := b.Instance.CreateAccountWithKeys(req)
+	if err != nil {
+		fmt.Println(status.Error("Create Account With Keys Error"), err)
+	}
+
+	if storage.StoreInfo("address.snr", b.Instance) != nil {
+		fmt.Println(status.Error("Storage Error: "), err)
+	}
+
+	return res, err
+}
+
+/*
 Login and return the response
 Set the logged in flag to true if successful
 */
@@ -123,7 +139,29 @@ func (b *SpeedwayBinding) Login(req rtmv1.LoginRequest) (rtmv1.LoginResponse, er
 }
 
 /*
-Get the object and return a map of the object
+Login With Keys and return the response
+Set the logged in flag to true if successful
+*/
+func (b *SpeedwayBinding) LoginWithKeys(req rtmv1.LoginWithKeysRequest) (rtmv1.LoginResponse, error) {
+	if b.Instance == nil {
+		return rtmv1.LoginResponse{}, ErrMotorNotInitialized
+	}
+	if b.loggedIn {
+		fmt.Println(status.Info, "You are already logged in")
+	}
+
+	res, err := b.Instance.LoginWithKeys(req)
+	if err != nil {
+		fmt.Println(status.Error("Login Error"), err)
+	}
+
+	b.loggedIn = true
+
+	return res, err
+}
+
+/*
+ [DEPRECATED] Get the object and return a map of the object
 */
 func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid string) (*object.Object, error) {
 	if b.Instance == nil {
@@ -161,6 +199,21 @@ func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid s
 	}
 
 	return &getObject, nil
+}
+
+/*
+Get a SchemaDocument from motor
+*/
+func (b *SpeedwayBinding) GetSchemaDocument(req rtmv1.GetDocumentRequest) (rtmv1.GetDocumentResponse, error) {
+	if b.Instance == nil {
+		return rtmv1.GetDocumentResponse{}, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return rtmv1.GetDocumentResponse{}, ErrNotAuthenticated
+	}
+
+	res, err := b.Instance.GetDocument(req)
+	return *res, err
 }
 
 /*
