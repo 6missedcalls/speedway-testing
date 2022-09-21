@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/sonr-io/speedway/internal/client"
 	"strings"
 
 	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/speedway/internal/binding"
+	"github.com/sonr-io/speedway/internal/client"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/utils"
@@ -54,13 +54,11 @@ func bootstrapQuerySchemaCommand(ctx context.Context, logger *golog.Logger) (que
 				return
 			}
 
-			querySchemaReq := rtmv1.QueryWhatIsRequest{
+			// query schema
+			querySchemaRes, err := cli.GetSchema(rtmv1.QueryWhatIsRequest{
 				Creator: session.Info.Address,
 				Did:     did,
-			}
-
-			// query schema
-			querySchemaRes, err := cli.GetSchema(querySchemaReq)
+			})
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
