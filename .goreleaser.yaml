@@ -10,7 +10,6 @@ before:
     - go generate ./...
 builds:
   - id: linux-build
-    main: ./cmd/speedway-cli
     binary: speedway
     goos:
     - linux
@@ -20,7 +19,6 @@ builds:
   - id: darwin-build
     env:
     - CGO_ENABLED=1
-    main: ./cmd/speedway-cli
     binary: speedway
     goos:
     - darwin
