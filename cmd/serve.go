@@ -22,7 +22,6 @@ func BootstrapServeCommand(ctx context.Context, buildDir embed.FS) (serveCmd *co
 		Run: func(cmd *cobra.Command, args []string) {
 			os.Setenv("SONR_RPC_ADDR_PUBLIC", "137.184.190.146:9090")
 			os.Setenv("GIN_MODE", "release")
-			cwd, _ := os.Getwd()
 
 			var port = PORT
 			if p, err := cmd.Flags().GetInt("port"); err != nil && p != -1 {
@@ -31,14 +30,15 @@ func BootstrapServeCommand(ctx context.Context, buildDir embed.FS) (serveCmd *co
 
 			server, err := sws.New(func(options *sws.ServerConfig) {
 				options.Address = fmt.Sprintf("127.0.0.1:%d", port)
-				options.StaticDir = fmt.Sprintf("%s/build", cwd)
+				options.EmbedFs = &buildDir
+				options.StaticDir = "out"
 			})
 			if err != nil {
 				fmt.Print(fmt.Errorf("Error while configuring speedway: %s", err))
 			}
 
 			server.ConfigureRoutes()
-			server.Serve(false)
+			server.Serve(true)
 		},
 	}
 

@@ -32,11 +32,11 @@
 		"analyze": "source-map-explorer 'build/static/js/*.js'",
 		"start": "REACT_APP_DEV_MODE=true react-scripts start",
 		"build": "BUILD_PATH=./out react-scripts build",
-		"build:prod": "BUILD_PATH=./cmd/speedway-cli/build react-scripts build",
+		"build:prod": "BUILD_PATH=./cmd/build react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
 		"clean-npm": "rm -rf node_modules && rm -rf package-lock.json",
-		"move-build": "rm -rf server/build && npm run build && mv build server/",
+		"build:embed": "rm -rf server/build && npm run build && mv build server/",
 		"lint": "prettier --check .",
 		"lint-fix": "prettier --write .",
 		"prepare": "husky install"

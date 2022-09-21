@@ -9,6 +9,7 @@ import (
 )
 
 var (
+	//go:embed build
 	res embed.FS
 )
 

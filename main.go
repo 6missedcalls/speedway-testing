@@ -11,6 +11,7 @@ import (
 )
 
 var (
+	//go:embed out
 	res embed.FS
 )
 
