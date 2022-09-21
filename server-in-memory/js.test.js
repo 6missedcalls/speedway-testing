@@ -150,9 +150,7 @@ it("creates a bucket", async () => {
 		creator: address,
 	})
 
-	expect(result).toHaveProperty("service")
-	expect(result.service).toHaveProperty("serviceEndpoint")
-	expect(result.service.serviceEndpoint).toHaveProperty("did")
+	expect(result).toHaveProperty("service.serviceEndpoint.did")
 	expect(result.service.serviceEndpoint.did).toBeDid()
 })
 
@@ -161,14 +159,18 @@ it("fetches a list of buckets", async () => {
 
 	await app.post("/api/v1/bucket/create").send({
 		label: "Dragons",
-		content: address,
+		creator: address,
+		visibility: "public",
+		role: "application",
 	})
 	await app.post("/api/v1/bucket/create").send({
 		label: "Furniture",
-		content: address,
+		creator: address,
+		visibility: "public",
+		role: "application",
 	})
 
-	const { body: result } = await app.get("/proxy/buckets")
+	const { body: result } = await app.get(`/proxy/buckets/${address}`)
 	expect(result).toHaveProperty("where_is")
 	expect(result.where_is.length).toBe(2)
 	expect(result.where_is[0].did).toBeDid()
@@ -193,9 +195,9 @@ it("builds an object", async () => {
 		object: { firstName: "Rex" },
 	})
 
-	expect(result).toHaveProperty("objectUpload")
-	expect(result.objectUpload).toHaveProperty("reference")
+	expect(result).toHaveProperty("objectUpload.reference.Label")
 	expect(result.objectUpload.reference.Label).toBe("Sonrsaur")
+	expect(result).toHaveProperty("objectUpload.reference.cid")
 	expect(typeof result.objectUpload.reference.cid).toBe("string")
 })
 
@@ -236,8 +238,7 @@ it("gets an object", async () => {
 		objectCid: responseObject.body.objectUpload.reference.cid,
 	})
 
-	expect(result).toHaveProperty("object")
-	expect(result.object).toHaveProperty("firstName")
+	expect(result).toHaveProperty("object.firstName")
 	expect(result.object.firstName).toBe("Rex")
 })
 
@@ -274,7 +275,7 @@ it("can add objects to buckets", async () => {
 		],
 	})
 
-	const { body: result } = await app.get("/proxy/buckets")
+	const { body: result } = await app.get(`/proxy/buckets/${address}`)
 	expect(result.where_is[0].did).toBe(bucketDid)
 	expect(result.where_is[0].creator).toBe(address)
 	expect(result.where_is[0].label).toBe("Mars colony")
