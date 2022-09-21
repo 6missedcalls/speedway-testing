@@ -142,6 +142,9 @@ it("fetches a list of schemas", async () => {
 		responseSchema.body.whatIs.schema.did
 	)
 	expect(result.what_is[0].schema.label).toBe("Dinosaurs")
+	expect(result.what_is[0].schema.fields.length).toBe(1)
+	expect(result.what_is[0].schema.fields[0].name).toBe("name")
+	expect(result.what_is[0].schema.fields[0].field).toBe("STRING")
 })
 
 it("creates a bucket", async () => {

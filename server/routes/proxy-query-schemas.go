@@ -23,9 +23,15 @@ type SchemaResponse struct {
 	WhatIs []struct {
 		Did    string `json:"did"`
 		Schema struct {
-			Did   string `json:"did"`
-			Label string `json:"label"`
-			Cid   string `json:"cid"`
+			Did    string `json:"did"`
+			Label  string `json:"label"`
+			Cid    string `json:"cid"`
+			Fields []struct {
+				Name     string `json:"name"`
+				Field    string `json:"field"`
+				LinkKind string `json:"link_kind"`
+				Link     string `json:"link"`
+			} `json:"fields"`
 		} `json:"schema"`
 		Creator   string `json:"creator"`
 		Timestamp string `json:"timestamp"`

@@ -14,6 +14,13 @@ const accountStoreKey = (address) => `account-${address}`
 const schemaStoreKey = (did) => `schema-${did}`
 const objectStoreKey = (cid) => `object-${cid}`
 
+const fieldTypeMap = {
+	1: "BOOL",
+	2: "INT",
+	3: "FLOAT",
+	4: "STRING",
+}
+
 const app = express()
 app.use(cors())
 app.use(bodyParser.json())
@@ -131,17 +138,20 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 		schema: {
 			did,
 			label: body.label,
+			fields: _.map(_.keys(body.fields), (name) => ({
+				name,
+				field: fieldTypeMap[body.fields[name]],
+			})),
 		},
 	}
 
-	const fields = _.map(_.keys(body.fields), (name) => ({
-		name,
-		field: body.fields[name],
-	}))
 	const schema = {
 		label: body.label,
 		creator,
-		fields,
+		fields: _.map(_.keys(body.fields), (name) => ({
+			name,
+			field: body.fields[name],
+		})),
 	}
 
 	const allMetadata = (await storage.getItem("schemaMetadata")) || []
