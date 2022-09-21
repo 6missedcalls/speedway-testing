@@ -1,3 +1,3 @@
-export function isAddress(str: string) { 
-    return /^snr/g.test(str)
+export function isAddress(str: string) {
+	return /^snr/g.test(str)
 }

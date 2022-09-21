@@ -39,23 +39,25 @@ const modulesButtons = [
 	},
 ]
 
-function SideMenuComponent({ 
-	navigate, 
-	currentPath, 
-	menuIsCollapsed, 
-	toggleMenuIsCollapsed 
+function SideMenuComponent({
+	navigate,
+	currentPath,
+	menuIsCollapsed,
+	toggleMenuIsCollapsed,
 }: SideMenuComponentProps) {
 	const Address = useSelector(selectAddress)
 
 	return (
-		<div className={`
-			${!menuIsCollapsed ? 'w-80' : 'w-28'}
+		<div
+			className={`
+			${!menuIsCollapsed ? "w-80" : "w-28"}
 			dark text-default flex flex-col bg-brand-tertiary h-full px-4 py-[42px] shrink-0 fixed z-10
-		`}>
-			<div 
+		`}
+		>
+			<div
 				onClick={() => menuIsCollapsed && toggleMenuIsCollapsed()}
 				className={`
-					${!menuIsCollapsed ? 'cursor-pointer justify-between' : 'justify-center'}
+					${!menuIsCollapsed ? "cursor-pointer justify-between" : "justify-center"}
 					flex  items-center w-full mb-10 cursor-pointer
 				`}
 			>
@@ -65,15 +67,15 @@ function SideMenuComponent({
 					</div>
 					{!menuIsCollapsed && (
 						<>
-							<div className="w-2.5"/>
+							<div className="w-2.5" />
 							<span className="font-extrabold tracking-custom-tighter text-custom-xl">
 								Speedway
 							</span>
 						</>
 					)}
 				</div>
-				{!menuIsCollapsed && ( 	
-					<div 
+				{!menuIsCollapsed && (
+					<div
 						onClick={() => toggleMenuIsCollapsed()}
 						className="cursor-pointer"
 					>
@@ -91,26 +93,27 @@ function SideMenuComponent({
 					className="mb-10"
 				/>
 
-				<div className={`
-						${menuIsCollapsed ? 'text-center' : ''}
+				<div
+					className={`
+						${menuIsCollapsed ? "text-center" : ""}
 						text-custom-2xs uppercase font-semibold text-subdued mb-6
 					`}
 				>
 					Tools
 				</div>
-				<MenuLink 
-					label='Access API'
-					href='/docs/index.html'
+				<MenuLink
+					label="Access API"
+					href="/docs/index.html"
 					Icon={IconLinkAccessApi}
 				/>
-				<MenuLink 
-					label='Docs & Support'
-					href='https://docs.sonr.io/'
+				<MenuLink
+					label="Docs & Support"
+					href="https://docs.sonr.io/"
 					Icon={IconLinkDocsSupport}
 				/>
-				<MenuLink 
-					label='Report Bugs'
-					href='mailto:speedway@sonr.io'
+				<MenuLink
+					label="Report Bugs"
+					href="mailto:speedway@sonr.io"
 					Icon={() => (
 						<span className="mr-2">
 							<div className="w-6 flex items-center">

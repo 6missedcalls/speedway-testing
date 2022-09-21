@@ -1,10 +1,19 @@
-import { NoSpaces, HasNoSpecialCharacter } from "@sonr-io/validation/dist/validation"
+import {
+	NoSpaces,
+	HasNoSpecialCharacter,
+} from "@sonr-io/validation/dist/validation"
 import validate from "@sonr-io/validation/dist/validator"
 
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router"
-import { selectAddress, selectAlias, selectAuthenticationIsLoading, selectIsLogged, userBuyAlias } from "../../redux/slices/authenticationSlice"
+import {
+	selectAddress,
+	selectAlias,
+	selectAuthenticationIsLoading,
+	selectIsLogged,
+	userBuyAlias,
+} from "../../redux/slices/authenticationSlice"
 import { AppDispatch } from "../../redux/store"
 import { ROUTE_SCHEMAS, ROUTE_SIGNUP } from "../../utils/constants"
 import AliasCreationComponent from "./Component"
@@ -28,14 +37,14 @@ const aliasRules = [
 	},
 ]
 
-function AliasCreationContainer(){
+function AliasCreationContainer() {
 	const cachedAlias = useSelector(selectAlias)
 	const address = useSelector(selectAddress)
 	const loading = useSelector(selectAuthenticationIsLoading)
 	const dispatch = useDispatch<AppDispatch>()
 	const navigate = useNavigate()
-    const [alias, setAlias] = useState('')
-    const [errors, setErrors] = useState<Record<string, any>>({
+	const [alias, setAlias] = useState("")
+	const [errors, setErrors] = useState<Record<string, any>>({
 		alias: {
 			noSpaces: false,
 			hasNoSpecialCharacter: false,
@@ -44,70 +53,72 @@ function AliasCreationContainer(){
 	})
 
 	useEffect(() => {
-		if(!address){
+		if (!address) {
 			navigate(ROUTE_SIGNUP)
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	},[address])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [address])
 
 	useEffect(() => {
-		if(cachedAlias){
+		if (cachedAlias) {
 			navigate(ROUTE_SCHEMAS)
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	},[cachedAlias])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [cachedAlias])
 
-    async function onSubmit(){
-        const fields = {
+	async function onSubmit() {
+		const fields = {
 			alias: {
 				rules: aliasRules,
 				value: alias,
 			},
 		}
-        const { isValid, validationErrors } = validate({ fields })
-        setErrors({ ...validationErrors })
+		const { isValid, validationErrors } = validate({ fields })
+		setErrors({ ...validationErrors })
 
-        if(isValid){
-			try{
-            	const response = await dispatch<Record<string,any>>(userBuyAlias({ alias, creator: address }))
-				if(response?.error){
+		if (isValid) {
+			try {
+				const response = await dispatch<Record<string, any>>(
+					userBuyAlias({ alias, creator: address })
+				)
+				if (response?.error) {
 					setErrors({
 						alias: {
 							...errors.alias,
-							taken: 'That Profile Domain is taken, Try another.'
-						}
+							taken: "That Profile Domain is taken, Try another.",
+						},
 					})
 				} else {
 					navigate(ROUTE_SCHEMAS)
 				}
-			}catch(err){
+			} catch (err) {
 				console.error(err)
 			}
-        }
-    }
+		}
+	}
 
-    function validateAliasOnChange(value: string){
-        const fields = {
+	function validateAliasOnChange(value: string) {
+		const fields = {
 			alias: {
 				rules: aliasRules,
 				value,
 			},
 		}
-        const { validationErrors } = validate({ fields })
+		const { validationErrors } = validate({ fields })
 
-        setErrors({ ...validationErrors })
-        setAlias(value)
-    }
+		setErrors({ ...validationErrors })
+		setAlias(value)
+	}
 
-    return (
-        <AliasCreationComponent 
-            onSubmit={onSubmit}
-            errors={errors}
-            alias={alias}
-            validateAliasOnChange={validateAliasOnChange}
+	return (
+		<AliasCreationComponent
+			onSubmit={onSubmit}
+			errors={errors}
+			alias={alias}
+			validateAliasOnChange={validateAliasOnChange}
 			loading={loading}
-        />
-    )
+		/>
+	)
 }
 
 export default AliasCreationContainer

@@ -7,18 +7,16 @@ interface SideMenuContainerProps {
 	toggleMenuIsCollapsed: () => void
 }
 
-function SideMenuContainer({
-	toggleMenuIsCollapsed
-}: SideMenuContainerProps) {
+function SideMenuContainer({ toggleMenuIsCollapsed }: SideMenuContainerProps) {
 	const { menuIsCollapsed } = useContext(AppSettingsContext)
 	const navigate = useNavigate()
 	const location = useLocation()
 	const currentPath = location.pathname
 
 	return (
-		<SideMenuComponent 
-			navigate={navigate} 
-			currentPath={currentPath} 
+		<SideMenuComponent
+			navigate={navigate}
+			currentPath={currentPath}
 			menuIsCollapsed={menuIsCollapsed}
 			toggleMenuIsCollapsed={toggleMenuIsCollapsed}
 		/>

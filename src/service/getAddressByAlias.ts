@@ -20,4 +20,3 @@ const getAddressByAlias = async (alias: string): Promise<string> => {
 }
 
 export default getAddressByAlias
-

@@ -9,7 +9,11 @@ import {
 	userCreateAccount,
 	userLogin,
 } from "../../redux/slices/authenticationSlice"
-import { ROUTE_BUY_ALIAS, ROUTE_SCHEMAS, ROUTE_SIGNUP } from "../../utils/constants"
+import {
+	ROUTE_BUY_ALIAS,
+	ROUTE_SCHEMAS,
+	ROUTE_SIGNUP,
+} from "../../utils/constants"
 import {
 	HasAtLeastOneLowercaseCharacter,
 	HasAtLeastOneNumber,

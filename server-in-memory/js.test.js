@@ -138,7 +138,9 @@ it("fetches a list of schemas", async () => {
 	const { body: result } = await app.get("/proxy/schemas")
 	expect(result.what_is.length).toBe(1)
 	expect(result.what_is[0].creator).toBe(addressToDid(address))
-	expect(result.what_is[0].schema.did).toBe(responseSchema.body.whatIs.schema.did)
+	expect(result.what_is[0].schema.did).toBe(
+		responseSchema.body.whatIs.schema.did
+	)
 	expect(result.what_is[0].schema.label).toBe("Dinosaurs")
 })
 

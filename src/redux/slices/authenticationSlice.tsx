@@ -32,8 +32,8 @@ export const initialState: AuthenticationState = {
 	isLogged: false,
 	loading: false,
 	error: false,
-	Address: '',
-	alias: ''
+	Address: "",
+	alias: "",
 }
 
 export const userLogin = createAsyncThunk(

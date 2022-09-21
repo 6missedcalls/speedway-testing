@@ -5,20 +5,21 @@ import { AppSettingsContext } from "../../contexts/appSettingsContext/appSetting
 
 type Props = { children: ReactNode }
 const Component: FC<Props> = ({ children }) => {
-	const { menuIsCollapsed, setMenusIsCollapsed } = useContext(AppSettingsContext)
+	const { menuIsCollapsed, setMenusIsCollapsed } =
+		useContext(AppSettingsContext)
 
-	function toggleMenuIsCollapsed(){
+	function toggleMenuIsCollapsed() {
 		setMenusIsCollapsed(!menuIsCollapsed)
 	}
 
 	return (
 		<div className="flex">
 			<SideMenu toggleMenuIsCollapsed={toggleMenuIsCollapsed} />
-			<div 
+			<div
 				className={`
-					${menuIsCollapsed ? 'pl-28' : 'pl-80'}
+					${menuIsCollapsed ? "pl-28" : "pl-80"}
 					w-full relative
-				`} 
+				`}
 			>
 				{children}
 			</div>
