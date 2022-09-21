@@ -11,7 +11,7 @@ func (d *Daemon) CreateSchema(req rtmv1.CreateSchemaRequest, res *rtmv1.CreateSc
 	return
 }
 
-func (d *Daemon) GetSchema(req rtmv1.QuerySchemaRequest, res *rtmv1.QueryWhatIsResponse) (err error) {
+func (d *Daemon) GetSchema(req rtmv1.QueryWhatIsRequest, res *rtmv1.QueryWhatIsResponse) (err error) {
 	*res, err = d.instance.GetSchema(context.Background(), req.Creator, req.Did)
 	return
 }
