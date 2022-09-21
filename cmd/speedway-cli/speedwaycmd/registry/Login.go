@@ -2,10 +2,10 @@ package registry
 
 import (
 	"context"
-	"fmt"
+	"regexp"
 
+	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
-	"github.com/manifoldco/promptui"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/status"
@@ -22,29 +22,21 @@ func bootstrapLoginCommand(ctx context.Context, logger *golog.Logger) (loginCmd 
 		You will be prompted to enter your password to decrypt your vault.
 		You may be also be prompted to enter your computer password to allow Speedway to access a keypair for you.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			prompt := promptui.Prompt{
-				Label: "Enter your Address",
-			}
-			addr, err := prompt.Run()
-			if err != nil {
-				fmt.Printf("Command failed %v\n", err)
-				return
-			}
-			prompt = promptui.Prompt{
-				Label: "Enter your Password",
-			}
-			password, err := prompt.Run()
-			if err != nil {
-				fmt.Printf("Command failed %v\n", err)
-				return
-			}
+			addr := (&prompter.Prompter{
+				Message: "Enter the address of the registry you wish to login to",
+			}).Prompt()
+
+			password := (&prompter.Prompter{
+				Message: "Enter your password",
+				Regexp:  regexp.MustCompile(`.{8,}`),
+				NoEcho:  true,
+			}).Prompt()
+
 			req := rtmv1.LoginRequest{
 				Did:      addr,
 				Password: password,
 			}
-			if err != nil {
-				logger.Fatalf(status.Error("LoginRequest Error: "), err)
-			}
+
 			m := binding.CreateInstance()
 			res, err := m.Login(req)
 			if err != nil {

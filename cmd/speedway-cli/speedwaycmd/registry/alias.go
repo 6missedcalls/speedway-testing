@@ -6,8 +6,8 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
-	"github.com/manifoldco/promptui"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
@@ -16,19 +16,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Validate an Alias
-func validateAlias(input string) error {
-	if len(input) < 3 {
-		return errors.New("alias is too short")
+// Validate Alias and return bool if valid or err if invalid
+func validateAlias(alias string) (bool, error) {
+	if len(alias) < 3 {
+		return false, errors.New("alias is too short")
 	}
-	if len(input) > 12 {
-		return errors.New("alias is too long")
+	if len(alias) > 32 {
+		return false, errors.New("alias is too long")
 	}
 	var validAlias = regexp.MustCompile(`^[a-zA-Z0-9]+$`).MatchString
-	if !validAlias(input) {
-		return errors.New("alias is invalid")
+	if !validAlias(alias) {
+		return false, errors.New("alias is invalid")
 	}
-	return nil
+	return true, nil
+
 }
 
 // Method to buy an Alias
@@ -58,19 +59,18 @@ func bootstrapBuyAlias(ctx context.Context, logger *golog.Logger) (buyAliasCmd *
 			var name string
 			msg := rt.MsgBuyAlias{}
 			if name, err = cmd.Flags().GetString("alias"); err == nil && name == "" {
-				aliasPrompt := promptui.Prompt{
-					Label:    "Enter the Alias name",
-					Validate: validateAlias,
-				}
-				name, err = aliasPrompt.Run()
-				if err != nil {
-					logger.Info("Command failed %v\n", err)
-					return
-				}
+				name = (&prompter.Prompter{
+					Message: "Enter Alias",
+					Regexp:  regexp.MustCompile(`.{3,}`),
+				}).Prompt()
+			}
+			if name == "" {
+				logger.Fatal(status.Error("Alias is required"))
+				return
 			}
 
-			if err = validateAlias(name); err != nil {
-				logger.Info("Command failed %v\n", err)
+			if valid, err := validateAlias(name); !valid {
+				logger.Fatal(status.Error(err.Error()))
 				return
 			}
 
@@ -126,15 +126,10 @@ func bootstrapSellAlias(ctx context.Context, logger *golog.Logger) (sellAliasCmd
 			var name string
 			msg := rt.MsgSellAlias{}
 			if name, err = cmd.Flags().GetString("alias"); err == nil && name == "" {
-				aliasName := promptui.Prompt{
-					Label:    "Enter the Alias name",
-					Validate: validateAlias,
-				}
-				name, err = aliasName.Run()
-				if err != nil {
-					logger.Info("Command failed %v\n", err)
-					return
-				}
+				name = (&prompter.Prompter{
+					Message: "Enter Alias",
+					Regexp:  regexp.MustCompile(`.{3,}`),
+				}).Prompt()
 			}
 
 			// If price flag is not set, prompt for price
@@ -142,14 +137,9 @@ func bootstrapSellAlias(ctx context.Context, logger *golog.Logger) (sellAliasCmd
 			// price needs to be greater than 0
 			var price int
 			if price, err = cmd.Flags().GetInt("price"); err == nil && price <= 0 {
-				pricePrompt := promptui.Prompt{
-					Label: "Enter the price",
-				}
-				priceStr, err := pricePrompt.Run()
-				if err != nil {
-					logger.Info("Command failed %v\n", err)
-					return
-				}
+				priceStr := (&prompter.Prompter{
+					Message: "Enter Price",
+				}).Prompt()
 				price, err = strconv.Atoi(priceStr)
 				if err != nil {
 					logger.Info("Command failed %v\n", err)
@@ -162,8 +152,8 @@ func bootstrapSellAlias(ctx context.Context, logger *golog.Logger) (sellAliasCmd
 				}
 			}
 
-			if err = validateAlias(name); err != nil {
-				logger.Info("Command failed %v\n", err)
+			if valid, err := validateAlias(name); !valid {
+				logger.Fatal(status.Error(err.Error()))
 				return
 			}
 
@@ -220,39 +210,24 @@ func bootstrapTransferAlias(ctx context.Context, logger *golog.Logger) (transfer
 			var name string
 			msg := rt.MsgTransferAlias{}
 			if name, err = cmd.Flags().GetString("alias"); err == nil && name == "" {
-				aliasName := promptui.Prompt{
-					Label:    "Enter the Alias name",
-					Validate: validateAlias,
-				}
-				name, err = aliasName.Run()
-				if err != nil {
-					logger.Info("Command failed %v\n", err)
-					return
-				}
+				name = (&prompter.Prompter{
+					Message: "Enter Alias",
+					Regexp:  regexp.MustCompile(`.{3,}`),
+				}).Prompt()
 			}
 
 			var recipient string
 			if recipient, err = cmd.Flags().GetString("recipient"); err == nil && recipient == "" {
-				recipientPrompt := promptui.Prompt{
-					Label: "Enter the recipient DID",
-				}
-				recipient, err = recipientPrompt.Run()
-				if err != nil {
-					logger.Info("Command failed %v\n", err)
-					return
-				}
+				recipient = (&prompter.Prompter{
+					Message: "Enter Recipient",
+				}).Prompt()
 			}
 
 			var amount int
 			if amount, err = cmd.Flags().GetInt("amount"); err == nil && amount == 0 {
-				amountPrompt := promptui.Prompt{
-					Label: "Enter the price",
-				}
-				amountStr, err := amountPrompt.Run()
-				if err != nil {
-					logger.Info("Command failed %v\n", err)
-					return
-				}
+				amountStr := (&prompter.Prompter{
+					Message: "Enter Amount",
+				}).Prompt()
 				amount, err = strconv.Atoi(amountStr)
 				if err != nil {
 					logger.Info("Command failed %v\n", err)
@@ -260,8 +235,8 @@ func bootstrapTransferAlias(ctx context.Context, logger *golog.Logger) (transfer
 				}
 			}
 
-			if err = validateAlias(name); err != nil {
-				logger.Info("Command failed %v\n", err)
+			if valid, err := validateAlias(name); !valid {
+				logger.Fatal(status.Error(err.Error()))
 				return
 			}
 
