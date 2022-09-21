@@ -117,18 +117,24 @@ it(
 		const schemaDid = userSchemas[0].schema.did
 
 		// GET A LIST OF BUCKETS
-		const resBucketList = await app.get(proxy(`buckets/${address}`))
+		const resBucketList = await app.get(proxy("buckets"))
 		expect(resBucketList.status).toBe(200)
 		expect(resBucketList.body).toHaveProperty("where_is.length")
-		expect(resBucketList.body.where_is.length).toBe(1)
-		expect(resBucketList.body.where_is[0]).toHaveProperty("did")
-		expect(resBucketList.body.where_is[0].did).toBeDid()
-		expect(resBucketList.body.where_is[0]).toHaveProperty("label")
-		expect(resBucketList.body.where_is[0].label).toBe("great philosophers")
-		expect(resBucketList.body.where_is[0]).toHaveProperty("content.length")
-		expect(resBucketList.body.where_is[0].content.length).toBe(0)
+		expect(resBucketList.body.where_is.length).toBeGreaterThan(0)
 
-		const bucketDid = resBucketList.body.where_is[0].did
+		const userBuckets = _.filter(
+			resBucketList.body.where_is,
+			(bucket) => bucket.creator === address
+		)
+		expect(userBuckets.length).toBe(1)
+		expect(userBuckets[0]).toHaveProperty("did")
+		expect(userBuckets[0].did).toBeDid()
+		expect(userBuckets[0]).toHaveProperty("label")
+		expect(userBuckets[0].label).toBe("great philosophers")
+		expect(userBuckets[0]).toHaveProperty("content.length")
+		expect(userBuckets[0].content.length).toBe(0)
+
+		const bucketDid = userBuckets[0].did
 
 		// CHECK SCHEMA FIELDS
 		const resFields = await app.post(api("/schema/get"), { schema: schemaDid })
