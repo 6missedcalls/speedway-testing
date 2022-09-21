@@ -160,6 +160,10 @@ func (b *SpeedwayBinding) LoginWithKeys(req rtmv1.LoginWithKeysRequest) (rtmv1.L
 	return res, err
 }
 
+func (b *SpeedwayBinding) GetLoggedIn() bool {
+	return b.loggedIn
+}
+
 /*
  [DEPRECATED] Get the object and return a map of the object
 */

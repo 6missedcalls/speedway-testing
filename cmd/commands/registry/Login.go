@@ -7,7 +7,7 @@ import (
 	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/speedway/internal/binding"
+	"github.com/sonr-io/speedway/internal/client"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/spf13/cobra"
 )
@@ -32,18 +32,22 @@ func bootstrapLoginCommand(ctx context.Context, logger *golog.Logger) (loginCmd 
 				NoEcho:  true,
 			}).Prompt()
 
-			req := rtmv1.LoginRequest{
-				Did:      addr,
-				Password: password,
+			cli, err := client.New(ctx)
+			if err != nil {
+				logger.Fatalf(status.Error("RPC Client Error: "), err)
+				return
 			}
 
-			m := binding.CreateInstance()
-			res, err := m.Login(req)
+			res, err := cli.Login(rtmv1.LoginRequest{
+				Did:      addr,
+				Password: password,
+			})
 			if err != nil {
 				logger.Fatalf(status.Error("Login Error: "), err)
 				return
 			}
 			logger.Info(status.Debug, "Login Response: ", res)
+
 			if res.Success {
 				logger.Info(status.Success("Login Successful"))
 			} else {

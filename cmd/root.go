@@ -27,6 +27,8 @@ func bootstrapRootCommand(ctx context.Context, logger *golog.Logger, buildDir em
 		For more information, visit https://docs.sonr.io/.`,
 	}
 
+	ctx = context.WithValue(ctx, "DAEMON_PORT", 6868)
+
 	rootCmd.AddCommand(registry.BootstrapRegistryCommand(ctx, logger))
 	rootCmd.AddCommand(schema.BootstrapSchemaCommand(ctx, logger))
 	rootCmd.AddCommand(object.BootstrapObjectCommand(ctx, logger))

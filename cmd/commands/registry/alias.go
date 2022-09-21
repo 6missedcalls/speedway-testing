@@ -9,10 +9,8 @@ import (
 	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
 	rt "github.com/sonr-io/sonr/x/registry/types"
-	"github.com/sonr-io/speedway/internal/binding"
-	"github.com/sonr-io/speedway/internal/prompts"
+	"github.com/sonr-io/speedway/internal/client"
 	"github.com/sonr-io/speedway/internal/status"
-	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -40,24 +38,11 @@ func bootstrapBuyAlias(ctx context.Context, logger *golog.Logger) (buyAliasCmd *
 		Short: "Buy an alias on the Sonr Network.",
 		Long:  "Buys an alias on the Sonr Network.",
 		Run: func(cmd *cobra.Command, args []string) {
-			loginRequest := prompts.LoginPrompt()
+			var (
+				name string
+				err  error
+			)
 
-			m := binding.InitMotor()
-
-			loginResult, err := utils.Login(m, loginRequest)
-			if err != nil {
-				logger.Fatalf("Login Error: ", err)
-				return
-			}
-			if loginResult.Success {
-				logger.Info(status.Success("Login Successful"))
-			} else {
-				logger.Fatal(status.Error("Login Failed"))
-				return
-			}
-
-			var name string
-			msg := rt.MsgBuyAlias{}
 			if name, err = cmd.Flags().GetString("alias"); err == nil && name == "" {
 				name = (&prompter.Prompter{
 					Message: "Enter Alias",
@@ -74,14 +59,24 @@ func bootstrapBuyAlias(ctx context.Context, logger *golog.Logger) (buyAliasCmd *
 				return
 			}
 
-			msg = rt.MsgBuyAlias{
-				Creator: loginRequest.Did,
-				Name:    name,
+			cli, err := client.New(ctx)
+			if err != nil {
+				logger.Fatalf(status.Error("RPC Client Error: "), err)
+				return
+			}
+
+			session, err := cli.GetSessionInfo()
+			if err != nil {
+				logger.Fatalf(status.Error("SessionInfo Error: "), err)
+				return
 			}
 
 			logger.Info(status.Info, "Purchasing Alias")
 
-			buyAliasMsg, err := m.BuyAlias(msg)
+			buyAliasMsg, err := cli.BuyAlias(rt.MsgBuyAlias{
+				Creator: session.Info.Address,
+				Name:    name,
+			})
 			if err != nil {
 				logger.Fatalf("Error: ", err)
 				return
@@ -107,24 +102,10 @@ func bootstrapSellAlias(ctx context.Context, logger *golog.Logger) (sellAliasCmd
 		Short: "Sell an alias on the Sonr Network.",
 		Long:  "Sell an alias on the Sonr Network.",
 		Run: func(cmd *cobra.Command, args []string) {
-			loginRequest := prompts.LoginPrompt()
-
-			m := binding.InitMotor()
-
-			loginResult, err := utils.Login(m, loginRequest)
-			if err != nil {
-				logger.Fatalf("Login Error: ", err)
-				return
-			}
-			if loginResult.Success {
-				logger.Info(status.Success("Login Successful"))
-			} else {
-				logger.Fatal(status.Error("Login Failed"))
-				return
-			}
-
-			var name string
-			msg := rt.MsgSellAlias{}
+			var (
+				name string
+				err  error
+			)
 			if name, err = cmd.Flags().GetString("alias"); err == nil && name == "" {
 				name = (&prompter.Prompter{
 					Message: "Enter Alias",
@@ -157,15 +138,25 @@ func bootstrapSellAlias(ctx context.Context, logger *golog.Logger) (sellAliasCmd
 				return
 			}
 
-			msg = rt.MsgSellAlias{
-				Creator: loginRequest.Did,
-				Alias:   name,
-				Amount:  int32(price),
+			cli, err := client.New(ctx)
+			if err != nil {
+				logger.Fatalf(status.Error("RPC Client Error: "), err)
+				return
+			}
+
+			session, err := cli.GetSessionInfo()
+			if err != nil {
+				logger.Fatalf(status.Error("SessionInfo Error: "), err)
+				return
 			}
 
 			logger.Info(status.Info, "Attempting to put Alias up for sale")
 
-			sellAliasMsg, err := m.SellAlias(msg)
+			sellAliasMsg, err := cli.SellAlias(rt.MsgSellAlias{
+				Creator: session.Info.Address,
+				Alias:   name,
+				Amount:  int32(price),
+			})
 			if err != nil {
 				logger.Fatalf("Error: ", err)
 				return
@@ -191,24 +182,10 @@ func bootstrapTransferAlias(ctx context.Context, logger *golog.Logger) (transfer
 		Short: "Transfer an alias on the Sonr Network.",
 		Long:  "Transfer an alias on the Sonr Network.",
 		Run: func(cmd *cobra.Command, args []string) {
-			loginRequest := prompts.LoginPrompt()
-
-			m := binding.InitMotor()
-
-			loginResult, err := utils.Login(m, loginRequest)
-			if err != nil {
-				logger.Fatalf("Login Error: ", err)
-				return
-			}
-			if loginResult.Success {
-				logger.Info(status.Success("Login Successful"))
-			} else {
-				logger.Fatal(status.Error("Login Failed"))
-				return
-			}
-
-			var name string
-			msg := rt.MsgTransferAlias{}
+			var (
+				name string
+				err  error
+			)
 			if name, err = cmd.Flags().GetString("alias"); err == nil && name == "" {
 				name = (&prompter.Prompter{
 					Message: "Enter Alias",
@@ -240,16 +217,26 @@ func bootstrapTransferAlias(ctx context.Context, logger *golog.Logger) (transfer
 				return
 			}
 
-			msg = rt.MsgTransferAlias{
-				Creator:   loginRequest.Did,
-				Alias:     name,
-				Recipient: recipient,
-				Amount:    int32(amount),
+			cli, err := client.New(ctx)
+			if err != nil {
+				logger.Fatalf(status.Error("RPC Client Error: "), err)
+				return
+			}
+
+			session, err := cli.GetSessionInfo()
+			if err != nil {
+				logger.Fatalf(status.Error("SessionInfo Error: "), err)
+				return
 			}
 
 			logger.Info(status.Info, "Transferring Alias")
 
-			transferAliasMsg, err := m.TransferAlias(msg)
+			transferAliasMsg, err := cli.TransferAlias(rt.MsgTransferAlias{
+				Creator:   session.Info.Address,
+				Alias:     name,
+				Recipient: recipient,
+				Amount:    int32(amount),
+			})
 			if err != nil {
 				logger.Fatalf("Error: ", err)
 				return
