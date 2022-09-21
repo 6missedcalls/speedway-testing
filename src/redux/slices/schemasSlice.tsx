@@ -3,14 +3,9 @@ import { RootState } from "../store"
 import { InewSchema, SchemaMeta } from "../../utils/types"
 import getSchemaMetadata from "../../service/getSchemaMetadata"
 import createSchema from "../../service/createSchema"
-import getSchemaFields from "../../service/getSchemaFields"
 
 interface userCreateSchemaProp {
 	schema: InewSchema
-}
-
-interface userGetSchemaProp {
-	schema: { schema: string }
 }
 
 export const userGetAllSchemas = createAsyncThunk(
@@ -30,18 +25,6 @@ export const userCreateSchema = createAsyncThunk(
 	async ({ schema }: userCreateSchemaProp, thunkAPI) => {
 		try {
 			const data = await createSchema(schema.label, schema.fields)
-			return data
-		} catch (err) {
-			return thunkAPI.rejectWithValue(err)
-		}
-	}
-)
-
-export const userGetSchema = createAsyncThunk(
-	"schemas/get",
-	async ({ schema }: userGetSchemaProp, thunkAPI) => {
-		try {
-			const data = await getSchemaFields(schema.schema)
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
@@ -78,18 +61,6 @@ export const schemasSlice = createSlice({
 		builder.addCase(userGetAllSchemas.rejected, (state) => {
 			state.error = true
 			state.loading = false
-		})
-		builder.addCase(userGetSchema.pending, (state) => {
-			state.getSchemaLoading = true
-		})
-
-		builder.addCase(userGetSchema.fulfilled, (state) => {
-			state.getSchemaLoading = false
-		})
-
-		builder.addCase(userGetSchema.rejected, (state) => {
-			state.error = true
-			state.getSchemaLoading = false
 		})
 		builder.addCase(userCreateSchema.pending, (state) => {
 			state.loading = true

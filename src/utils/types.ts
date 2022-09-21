@@ -20,11 +20,6 @@ export interface Iproperty {
 	type: string
 }
 
-export interface IpropertyResponse {
-	name: string
-	type: number
-}
-
 export interface InewSchema {
 	address: string
 	label: string
@@ -35,11 +30,6 @@ export interface InewObject {
 	schemaDid: string
 	label: string
 	object: Record<string, any>
-}
-
-export interface IobjectPropertyChange {
-	index: number
-	value: string
 }
 
 export type SchemaMeta = {

@@ -2,7 +2,6 @@ import { Button, NebulaIcon } from "@sonr-io/nebula-react"
 import { Dispatch, SetStateAction } from "react"
 import {
 	Bucket,
-	IobjectPropertyChange,
 	SchemaField,
 	SchemaMeta,
 } from "../../../../utils/types"
@@ -12,11 +11,11 @@ interface NewSchemaModalContentComponentProps {
 	onSave: () => void
 	onChangeSchema: Dispatch<SetStateAction<string>>
 	onChangeBucket: (value: string) => void
-	onChangeProperty: ({ value, index }: IobjectPropertyChange) => void
+	onChangeProperty: (index: number, value: string) => void
 	schemas: Array<SchemaMeta>
 	buckets: Array<Bucket>
 	properties: Array<Record<string, any>>
-	selectedSchemaDid: string
+	selectedSchema: string
 	selectedBucket: string
 	error: string
 }
@@ -30,7 +29,7 @@ function NewObjectModalContentComponent({
 	schemas,
 	properties,
 	buckets,
-	selectedSchemaDid,
+	selectedSchema,
 	selectedBucket,
 	error,
 }: NewSchemaModalContentComponentProps) {
@@ -59,7 +58,7 @@ function NewObjectModalContentComponent({
 						<select
 							className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
 							onChange={(event) => onChangeSchema(event.target.value)}
-							value={selectedSchemaDid}
+							value={selectedSchema}
 						>
 							{schemas.map((item: SchemaMeta) => (
 								<option key={item.did} value={item.did}>
@@ -107,21 +106,20 @@ function NewObjectModalContentComponent({
 				</div>
 
 				<div className="overflow-auto flex flex-wrap box-border -mr-4">
-					{properties?.length &&
-						properties.map((item, index) => (
-							<div
-								key={`${item.name}-${index}`}
-								className="box-border flex-[50%] pr-4 mb-4"
-							>
-								<div className="text-custom-xs text-subdued pb-1">
-									{item.name}
-								</div>
-								<SchemaFieldInput
-									field={{ name: item.name, type: item.type }}
-									onChange={(value) => onChangeProperty({ value, index })}
-								/>
+					{properties.map((item, index) => (
+						<div
+							key={`${item.name}-${index}`}
+							className="box-border flex-[50%] pr-4 mb-4"
+						>
+							<div className="text-custom-xs text-subdued pb-1">
+								{item.name}
 							</div>
-						))}
+							<SchemaFieldInput
+								field={{ name: item.name, type: item.type }}
+								onChange={(value) => onChangeProperty(index, value)}
+							/>
+						</div>
+					))}
 				</div>
 			</div>
 			{error && (

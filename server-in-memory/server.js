@@ -11,7 +11,6 @@ const generateCid = () => md5(Math.random())
 const addressToDid = (address) => `did:snr:${address.slice(3)}`
 
 const accountStoreKey = (address) => `account-${address}`
-const schemaStoreKey = (did) => `schema-${did}`
 const objectStoreKey = (cid) => `object-${cid}`
 
 const fieldTypeMap = {
@@ -147,29 +146,12 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 		},
 	}
 
-	const schema = {
-		label: body.label,
-		creator,
-		fields: _.map(_.keys(body.fields), (name) => ({
-			name,
-			field: body.fields[name],
-		})),
-	}
-
 	const allMetadata = (await storage.getItem("schemaMetadata")) || []
 	allMetadata.push(schemaMetadata)
 
-	await Promise.all([
-		storage.setItem("schemaMetadata", allMetadata),
-		storage.setItem(schemaStoreKey(did), schema),
-	])
+	await storage.setItem("schemaMetadata", allMetadata)
 
 	res.json({ whatIs: schemaMetadata })
-})
-
-app.post("/api/v1/schema/get", async ({ body }, res) => {
-	const schema = await storage.getItem(schemaStoreKey(body.schema))
-	res.json({ definition: schema })
 })
 
 /// BUCKETS
@@ -243,9 +225,13 @@ app.post("/api/v1/bucket/get", async ({ body }, res) => {
 /// OBJECTS
 
 app.post("/api/v1/object/build", async ({ body }, res) => {
-	const schema = await storage.getItem(schemaStoreKey(body.schemaDid))
+	const allSchemaMetadata = await storage.getItem("schemaMetadata")
+	const schemaMetadata = _.find(
+		allSchemaMetadata,
+		(meta) => (meta.schema.did = body.schemaDid)
+	)
 
-	const fieldsExpected = _.map(schema.fields, "name")
+	const fieldsExpected = _.map(schemaMetadata.schema.fields, "name")
 	const fieldsReceived = _.keys(body.object)
 	if (_.difference(fieldsExpected, fieldsReceived).length > 0) {
 		res.status(500).json({ error: "Object Upload Failed" })

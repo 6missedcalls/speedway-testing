@@ -101,29 +101,6 @@ it("creates a schema", async () => {
 	expect(result.whatIs.schema.label).toBe("Dinosaurs")
 })
 
-// we no longer need to get individual schemas because metadata now contains the field info
-it("gets an individual schema", async () => {
-	const address = await accountLoggedIn(app)
-
-	const responseSchema = await app.post("/api/v1/schema/create").send({
-		label: "Dinosaurs",
-		fields: { name: 4 },
-	})
-
-	const { body: result } = await app.post("/api/v1/schema/get").send({
-		schema: responseSchema.body.whatIs.schema.did,
-	})
-
-	expect(result).toHaveProperty("definition")
-	expect(result.definition.creator).toBe(addressToDid(address))
-	expect(result.definition.label).toBe("Dinosaurs")
-	expect(result.definition.fields.length).toBe(1)
-	expect(result.definition.fields[0]).toEqual({
-		name: "name",
-		field: 4,
-	})
-})
-
 it("fetches a list of schemas", async () => {
 	const address = await accountLoggedIn(app)
 
