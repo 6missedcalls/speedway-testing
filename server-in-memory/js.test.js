@@ -15,7 +15,8 @@ beforeAll(async () => {
 })
 
 beforeEach(async () => {
-	await Promise.all([app.get("/logout"), storage.clear()])
+	await app.get("/logout")
+	await storage.clear()
 })
 
 it("creates an account", async () => {

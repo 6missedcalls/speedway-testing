@@ -25,8 +25,6 @@ const app = express()
 app.use(cors())
 app.use(bodyParser.json())
 
-let sessionAddress = null
-
 /// DEVELOPMENT
 
 app.use("*", async (req, _, next) => {
@@ -43,14 +41,14 @@ app.get("/dump", async (_, res) => {
 })
 
 app.get("/reset", async (_, res) => {
-	sessionAddress = null
+	await storage.setItem("sessionAddress", null)
 	await storage.clear()
 	const length = await storage.length()
 	res.json({ length })
 })
 
-app.get("/logout", (_, res) => {
-	sessionAddress = null
+app.get("/logout", async (_, res) => {
+	await storage.setItem("sessionAddress", null)
 	res.status(200).send()
 })
 
@@ -79,11 +77,12 @@ app.post("/api/v1/account/login", async ({ body }, res) => {
 		return
 	}
 
-	sessionAddress = account.address
+	await storage.setItem("sessionAddress", account.address)
 	res.json({ address: account.address })
 })
 
 app.get("/api/v1/account/info", async (_, res) => {
+	const sessionAddress = await storage.getItem("sessionAddress")
 	if (!sessionAddress) {
 		res.status(500).send()
 		return
@@ -103,7 +102,8 @@ app.get("/api/v1/alias/get/:alias", async (req, res) => {
 	res.json({ WhoIs: aliases[req.params.alias] })
 })
 
-app.use((_, res, next) => {
+app.use(async (_, res, next) => {
+	const sessionAddress = await storage.getItem("sessionAddress")
 	if (!sessionAddress) {
 		res.status(500).json({ message: "Not logged in" })
 		return
@@ -121,6 +121,7 @@ app.post("/api/v1/alias/buy", async (req, res) => {
 		return
 	}
 
+	const sessionAddress = await storage.getItem("sessionAddress")
 	aliases[req.body.alias] = { owner: sessionAddress }
 	await storage.setItem("aliases", aliases)
 
@@ -131,6 +132,7 @@ app.post("/api/v1/alias/buy", async (req, res) => {
 
 app.post("/api/v1/schema/create", async ({ body }, res) => {
 	const did = generateDid()
+	const sessionAddress = await storage.getItem("sessionAddress")
 	const creator = addressToDid(sessionAddress)
 
 	const schemaMetadata = {
