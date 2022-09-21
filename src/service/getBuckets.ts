@@ -3,7 +3,7 @@ import { formatApiError } from "../utils/errors"
 import { Bucket } from "../utils/types"
 
 const getBuckets = async (address: string): Promise<Bucket[]> => {
-	const url = `${BASE_API}/proxy/buckets/${address}`
+	const url = `${BASE_API}/proxy/buckets`
 	const options = {
 		method: "GET",
 		headers: { "content-type": "application/json" },
@@ -14,11 +14,13 @@ const getBuckets = async (address: string): Promise<Bucket[]> => {
 		if (!response.ok) throw new Error(response.statusText)
 		const data = await response.json()
 
-		return data.where_is.map((bucket: Bucket) => ({
-			did: bucket.did,
-			label: bucket.label,
-			content: bucket.content.filter((c) => c.uri),
-		}))
+		return data.where_is
+			.filter((bucket: Bucket) => bucket.creator === address)
+			.map((bucket: Bucket) => ({
+				did: bucket.did,
+				label: bucket.label,
+				content: bucket.content.filter((c) => c.uri),
+			}))
 	} catch (error) {
 		const errorMessage = formatApiError({ error, url, options })
 		throw new Error(errorMessage)
