@@ -88,19 +88,3 @@ export interface updateBucketProps {
 	objectCid: string
 	schemaDid: string
 }
-
-export type thunkApiResponse = {
-	meta: {
-		aborted: boolean
-		arg: Record<string,any>
-		condition: boolean
-		rejectedWithValue: boolean
-		requestId: string
-		requestStatus: string
-	}
-	error: {
-		message: string
-	}
-	payload: any
-	type: string	
-}
