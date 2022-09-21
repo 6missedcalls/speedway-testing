@@ -50,6 +50,9 @@ function SchemasPageContainer() {
 				DID: {
 					text: item.did,
 				},
+				"Field Count": {
+					text: item.fields.length.toString(),
+				},
 				Fields: {
 					Component: ViewProperties,
 					props: {

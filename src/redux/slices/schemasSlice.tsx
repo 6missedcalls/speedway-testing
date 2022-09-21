@@ -101,6 +101,7 @@ export const schemasSlice = createSlice({
 			state.list.push({
 				did: payload.did,
 				label: payload.label,
+				fields: payload.fields,
 			})
 		})
 		builder.addCase(userCreateSchema.rejected, (state) => {

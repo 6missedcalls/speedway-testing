@@ -45,6 +45,7 @@ export interface IobjectPropertyChange {
 export type SchemaMeta = {
 	did: string
 	label: string
+	fields: SchemaField[]
 }
 
 export type SchemaField = {
