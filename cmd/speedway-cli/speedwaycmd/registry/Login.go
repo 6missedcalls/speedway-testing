@@ -46,6 +46,7 @@ func bootstrapLoginCommand(ctx context.Context, logger *golog.Logger) (loginCmd 
 				logger.Fatalf(status.Error("Login Error: "), err)
 				return
 			}
+			logger.Info(status.Debug, "Login Response: ", res)
 
 			if res.Success {
 				logger.Info(status.Success("Login Successful"))

@@ -41,6 +41,7 @@ func bootstrapCreateAccountCommand(ctx context.Context, logger *golog.Logger) (c
 				return
 			}
 
+			logger.Info(status.Debug, "Create Account Response: ", res)
 			logger.Info(status.Info, "Account Address: ", res.Address)
 		},
 	}
