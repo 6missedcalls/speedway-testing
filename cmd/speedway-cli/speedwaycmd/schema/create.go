@@ -59,7 +59,6 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 				// Prompt the user for a list of label:IPLD_TYPE to create a schema
 				// IPLD_TYPE can be one of the following: list, bool, int, float, string, bytes & link
 				// e.g. "name:string,age:int"
-				logger.Infof("Enter a list of label:type to create a schema. Types can be one of the following: list, bool, int, float, string, bytes & link. \n e.g. name:string, age:int")
 				result := (&prompter.Prompter{
 					Message: "✔️ Enter a list of label:types for the schema",
 				}).Prompt()

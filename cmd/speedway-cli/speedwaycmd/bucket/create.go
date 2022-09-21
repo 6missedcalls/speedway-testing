@@ -39,7 +39,7 @@ func bootstrapCreateBucketCommand(ctx context.Context, logger *golog.Logger) (cr
 
 			logger.Info(status.Info, "Creating Bucket", status.Reset)
 			bucketLabel := (&prompter.Prompter{
-				Message: "Bucket Label: ",
+				Message: "Bucket Label",
 			}).Prompt()
 			if bucketLabel == "" {
 				logger.Fatal(status.Error("Bucket Label cannot be empty"))
@@ -49,7 +49,7 @@ func bootstrapCreateBucketCommand(ctx context.Context, logger *golog.Logger) (cr
 			// prompt for an owner (this can overwrite the Creator address)
 			// TODO: This is a short term solution until logging in from other devices works
 			creator := (&prompter.Prompter{
-				Message: "Creator Address:",
+				Message: "Creator Address",
 			}).Prompt()
 			if creator == "" {
 				logger.Info(status.Info, "Using default creator address", status.Reset)
@@ -64,7 +64,7 @@ func bootstrapCreateBucketCommand(ctx context.Context, logger *golog.Logger) (cr
 			visibility := (&prompter.Prompter{
 				Choices:    []string{"public", "private"},
 				Default:    "public",
-				Message:    "Please select visibility for the bucket: ",
+				Message:    "Please select visibility for the bucket",
 				IgnoreCase: true,
 			}).Prompt()
 
@@ -76,7 +76,7 @@ func bootstrapCreateBucketCommand(ctx context.Context, logger *golog.Logger) (cr
 			role := (&prompter.Prompter{
 				Choices:    []string{"application", "user"},
 				Default:    "application",
-				Message:    "Please select visibility for the bucket: ",
+				Message:    "Please select visibility for the bucket",
 				IgnoreCase: true,
 			}).Prompt()
 

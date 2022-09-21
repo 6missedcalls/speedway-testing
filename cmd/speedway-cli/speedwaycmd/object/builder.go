@@ -52,7 +52,7 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 			var schemaDid string
 			if schemaDid, err = cmd.Flags().GetString("did"); err == nil && schemaDid == "" {
 				schemaDid = (&prompter.Prompter{
-					Message: "Schema DID: ",
+					Message: "Schema DID",
 				}).Prompt()
 				if schemaDid == "" {
 					logger.Fatalf(status.Error("Error: %s"), "Schema DID cannot be empty")

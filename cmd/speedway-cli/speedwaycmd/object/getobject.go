@@ -40,14 +40,14 @@ func BootstrapGetObjectCommand(ctx context.Context, logger *golog.Logger) (getOb
 			var cid string
 			if cid, err = cmd.Flags().GetString("cid"); err == nil && cid == "" {
 				cid = (&prompter.Prompter{
-					Message: "Object CID: ",
+					Message: "Object CID",
 				}).Prompt()
 			}
 
 			var did string
 			if did, err = cmd.Flags().GetString("did"); err == nil && did == "" {
 				did = (&prompter.Prompter{
-					Message: "Schema DID: ",
+					Message: "Schema DID",
 				}).Prompt()
 			}
 
