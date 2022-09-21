@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
-	"github.com/manifoldco/promptui"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	btv1 "github.com/sonr-io/sonr/x/bucket/types"
 	"github.com/sonr-io/speedway/internal/status"
@@ -20,13 +20,11 @@ type LoginReturn struct {
 
 func fallbackLoginPrompt() (string, error) {
 	fmt.Println(status.Warning("Attempting Manual Login"), status.Reset)
-	prompt := promptui.Prompt{
-		Label: "Enter your Address",
-	}
-	did, err := prompt.Run()
-	if err != nil {
-		fmt.Printf("Command failed %v\n", err)
-		return "", err
+	did := (&prompter.Prompter{
+		Message: "Enter your Address",
+	}).Prompt()
+	if did == "" {
+		return "", fmt.Errorf("did cannot be empty")
 	}
 	return did, nil
 }
@@ -51,15 +49,10 @@ func LoginPrompt() rtmv1.LoginRequest {
 }
 
 func QuitSelector(label string) bool {
-	prompt := promptui.Select{
-		Label: label,
-		Items: []string{"Yes", "No"},
-	}
-	_, result, err := prompt.Run()
-	if err != nil {
-		fmt.Printf("Prompt failed %v\n", err)
-		return true
-	}
+	result := (&prompter.Prompter{
+		Choices: []string{"Yes", "No"},
+		Message: label,
+	}).Prompt()
 	if result == "Yes" {
 		return false
 	}
@@ -67,29 +60,28 @@ func QuitSelector(label string) bool {
 }
 
 func LabelPrompt(label string, logger *golog.Logger) string {
-	prompt := promptui.Prompt{
-		Label: label,
-	}
-	label, err := prompt.Run()
+	label = (&prompter.Prompter{
+		Message: label,
+	}).Prompt()
 
-	if err != nil {
-		logger.Fatalf("Error while running label prompt: %s", err)
+	if label == "" {
+		logger.Warn("Label cannot be empty")
+		return LabelPrompt(label, logger)
 	}
 
 	return label
 }
 
 func ResourceIdentifierPrompt(logger *golog.Logger) string {
-	prompt := promptui.Select{
-		Label: "Select the resource identifer",
-		Items: []string{
-			"None",
-			"DID",
-			"CID",
-		},
-	}
+	value := (&prompter.Prompter{
+		Choices: []string{"None", "DID", "CID"},
+		Message: "Select the resource identifer",
+	}).Prompt()
 
-	_, value, _ := prompt.Run()
+	if value == "" {
+		logger.Warn("Resource Identifier cannot be empty")
+		return ResourceIdentifierPrompt(logger)
+	}
 
 	return value
 }

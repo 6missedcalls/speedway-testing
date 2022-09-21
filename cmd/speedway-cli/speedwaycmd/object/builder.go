@@ -6,8 +6,8 @@ import (
 	"math"
 	"strconv"
 
+	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
-	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/schema/types"
@@ -33,33 +33,30 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 
 			loginResult, err := utils.Login(m, loginRequest)
 			if err != nil {
-				fmt.Println(status.Error("Error: %s"), err)
+				logger.Fatalf(status.Error("Error: %s"), err)
 				return
 			}
 			if loginResult.Success {
-				fmt.Println(status.Success("Login successful"))
+				logger.Infof(status.Success("Login successful"))
 			} else {
-				fmt.Println(status.Error("Login failed"))
+				logger.Fatalf(status.Error("Login failed"))
 				return
 			}
 
 			creatorDid := m.GetDID()
 			if err != nil {
-				fmt.Println(status.Error("Error: %s"), err)
+				logger.Fatalf(status.Error("Error: %s"), err)
 				return
 			}
 
 			var schemaDid string
 			if schemaDid, err = cmd.Flags().GetString("did"); err == nil && schemaDid == "" {
-				// prompt for schemaDid
-				schemaDidPrompt := promptui.Prompt{
-					Label: "Enter Schema DID",
-				}
-				schemaDid, err = schemaDidPrompt.Run()
-				if err != nil {
-					fmt.Printf("Command failed %v\n", err)
+				schemaDid = (&prompter.Prompter{
+					Message: "Schema DID",
+				}).Prompt()
+				if schemaDid == "" {
+					logger.Fatalf(status.Error("Error: %s"), "Schema DID cannot be empty")
 					return
-					// todo: run prompt again
 				}
 			}
 
@@ -83,14 +80,9 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 				return
 			}
 			if label, err := cmd.Flags().GetString("label"); err == nil && label == "" {
-				objectLabel := promptui.Prompt{
-					Label: "Enter Object Label",
-				}
-				label, err := objectLabel.Run()
-				if err != nil {
-					fmt.Printf("Command failed %v\n", err)
-					return
-				}
+				label = (&prompter.Prompter{
+					Message: "Object Label:",
+				}).Prompt()
 				objBuilder.SetLabel(label)
 			} else {
 				objBuilder.SetLabel(label)
@@ -99,14 +91,9 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 			if filePath, err := cmd.Flags().GetString("file"); err == nil && filePath == "" {
 
 				for _, field := range querySchema.Schema.Fields {
-					valuePrompt := promptui.Prompt{
-						Label: "Enter Value for " + field.Name,
-					}
-					value, err := valuePrompt.Run()
-					if err != nil {
-						fmt.Printf("Command failed %v\n", err)
-						return
-					}
+					value := (&prompter.Prompter{
+						Message: "Enter the value for the " + field.Name,
+					}).Prompt()
 					err = setNormalizedValueFromPrompt(objBuilder, field, value)
 					if err != nil {
 						fmt.Printf("Command failed %v\n", err)

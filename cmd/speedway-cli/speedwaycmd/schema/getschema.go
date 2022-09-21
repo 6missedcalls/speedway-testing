@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
-	"github.com/manifoldco/promptui"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
@@ -43,12 +43,11 @@ func bootstrapQuerySchemaCommand(ctx context.Context, logger *golog.Logger) (que
 			}
 			// get schema
 			if did == "" {
-				didPrompt := promptui.Prompt{
-					Label: "Enter Schema DID",
-				}
-				did, err = didPrompt.Run()
-				if err != nil {
-					fmt.Printf("Command failed %v\n", err)
+				did = (&prompter.Prompter{
+					Message: "Enter DID",
+				}).Prompt()
+				if did == "" {
+					logger.Fatal(status.Error("DID is required"))
 					return
 				}
 			}

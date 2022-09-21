@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
-	"github.com/manifoldco/promptui"
 	"github.com/sonr-io/sonr/pkg/did"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/schema/types"
@@ -66,12 +66,11 @@ func bootstrapBuildSchemaDocumentCommand(ctx context.Context, logger *golog.Logg
 
 			var label string
 			if label, err = cmd.Flags().GetString("label"); err == nil && label == "" {
-				schemaPrompt := promptui.Prompt{
-					Label: "Enter the Schema document Label",
-				}
-				label, err = schemaPrompt.Run()
-				if err != nil {
-					logger.Info("Command failed %v\n", err)
+				label = (&prompter.Prompter{
+					Message: "Enter Schema Label",
+				}).Prompt()
+				if label == "" {
+					logger.Fatalf("Label cannot be empty")
 					return
 				}
 			}

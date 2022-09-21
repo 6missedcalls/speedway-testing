@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
-	"github.com/manifoldco/promptui"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/prompts"
@@ -37,61 +37,48 @@ func bootstrapCreateBucketCommand(ctx context.Context, logger *golog.Logger) (cr
 				return
 			}
 
-			logger.Info(status.Info, "Creating Bucket")
-			schemaPrompt := promptui.Prompt{
-				Label: "Enter a Label",
-			}
-			bucketLabel, err := schemaPrompt.Run()
-			if err != nil {
-				fmt.Printf("Command failed %v\n", err)
+			logger.Info(status.Info, "Creating Bucket", status.Reset)
+			bucketLabel := (&prompter.Prompter{
+				Message: "Bucket Label",
+			}).Prompt()
+			if bucketLabel == "" {
+				logger.Fatal(status.Error("Bucket Label cannot be empty"))
 				return
 			}
 
 			// prompt for an owner (this can overwrite the Creator address)
 			// TODO: This is a short term solution until logging in from other devices works
-			creatorPrompt := promptui.Prompt{
-				Label:   "Enter an Owner address",
-				Default: loginRequest.Did,
-			}
-			creator, err := creatorPrompt.Run()
-			if err != nil {
-				fmt.Printf("Command failed %v\n", err)
-				return
+			creator := (&prompter.Prompter{
+				Message: "Creator Address",
+			}).Prompt()
+			if creator == "" {
+				logger.Info(status.Info, "Using default creator address", status.Reset)
+				creator = m.GetDID().String()
 			}
 
 			req := rtmv1.CreateBucketRequest{
 				Creator: creator,
 				Label:   bucketLabel,
 			}
-			visibilityPrompt := promptui.Select{
-				Label: "Bucket Visibility",
-				Items: []string{
-					"public",
-					"private",
-				},
-				Size: 2,
-			}
-			_, visibility, err := visibilityPrompt.Run()
-			if err != nil {
-				return
-			}
+
+			visibility := (&prompter.Prompter{
+				Choices:    []string{"public", "private"},
+				Default:    "public",
+				Message:    "Please select visibility for the bucket",
+				IgnoreCase: true,
+			}).Prompt()
 
 			req.Visibility, err = utils.ConvertBucketVisibility(visibility)
 			if err != nil {
 				return
 			}
-			rolePrompt := promptui.Select{
-				Label: "Bucket Visibility",
-				Items: []string{
-					"application",
-					"user",
-				},
-				Size: 2,
-			}
-			_, role, err := rolePrompt.Run()
-			if err != nil {
-				return
-			}
+
+			role := (&prompter.Prompter{
+				Choices:    []string{"application", "user"},
+				Default:    "application",
+				Message:    "Please select visibility for the bucket",
+				IgnoreCase: true,
+			}).Prompt()
 
 			req.Role, err = utils.ConvertBucketRole(role)
 

@@ -2,9 +2,10 @@ package daemon
 
 import (
 	"fmt"
-	"github.com/sonr-io/speedway/internal/binding"
 	"net"
 	"net/rpc"
+
+	"github.com/sonr-io/speedway/internal/binding"
 )
 
 var (
