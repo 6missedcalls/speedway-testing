@@ -37,12 +37,6 @@ function SchemasPageContainer() {
 
 	function mapToListFormat(list: Array<SchemaMeta>): SearchableList {
 		return list.map((item: SchemaMeta): SearchableListItem => {
-			const getSchemaPayload = {
-				address,
-				creator: "",
-				schema: item.did,
-			}
-
 			return {
 				"Schema name": {
 					text: item.label,
@@ -55,10 +49,7 @@ function SchemasPageContainer() {
 				},
 				Fields: {
 					Component: ViewProperties,
-					props: {
-						getSchemaPayload,
-						key: item.did,
-					},
+					props: { fields: item.fields },
 				},
 			}
 		})
