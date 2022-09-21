@@ -161,7 +161,7 @@ func (b *SpeedwayBinding) LoginWithKeys(req rtmv1.LoginWithKeysRequest) (rtmv1.L
 }
 
 /*
-Get the object and return a map of the object
+ [DEPRECATED] Get the object and return a map of the object
 */
 func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid string) (*object.Object, error) {
 	if b.Instance == nil {
@@ -199,6 +199,21 @@ func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid s
 	}
 
 	return &getObject, nil
+}
+
+/*
+Get a SchemaDocument from motor
+*/
+func (b *SpeedwayBinding) GetSchemaDocument(req rtmv1.GetDocumentRequest) (rtmv1.GetDocumentResponse, error) {
+	if b.Instance == nil {
+		return rtmv1.GetDocumentResponse{}, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return rtmv1.GetDocumentResponse{}, ErrNotAuthenticated
+	}
+
+	res, err := b.Instance.GetDocument(req)
+	return *res, err
 }
 
 /*
