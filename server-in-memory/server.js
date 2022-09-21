@@ -259,11 +259,9 @@ app.get("/proxy/schemas", async (_, res) => {
 	res.json({ what_is: metadata })
 })
 
-app.get("/proxy/buckets/:creator", async (req, res) => {
+app.get("/proxy/buckets", async (_, res) => {
 	const buckets = (await storage.getItem("buckets")) || []
-	res.json({
-		where_is: _.filter(buckets, { creator: req.params.creator }),
-	})
+	res.json({ where_is: buckets })
 })
 
 app.get("/api/v1/alias/get/:alias", async (req, res) => {
