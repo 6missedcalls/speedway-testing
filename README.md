@@ -50,7 +50,7 @@
 ## Requirements
 - have [Taskfile](https://taskfile.dev/installation/) installed
 - have [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed
-- have the [Go](https://go.dev/doc/install) programming langague installed
+- have the [Go](https://go.dev/doc/install) programming language installed
 
 ## Running Speedway UI
 
