@@ -10,6 +10,8 @@ before:
     - go generate ./...
 builds:
   - id: linux-build
+    env:
+    - CGO_ENABLED=1
     binary: speedway
     goos:
     - linux
