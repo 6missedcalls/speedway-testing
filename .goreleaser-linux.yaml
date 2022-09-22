@@ -8,22 +8,7 @@ before:
     - npm run build
     - go mod tidy
 builds:
-    goos:
-      - linux
-    goarch:
-      - amd64
-      - arm64
-    overrides:
-      - goos: linux
-        goarch: arm64
-        env:
-          - CC=aarch64-linux-gnu-gcc
-          - CGO_ENABLED=1
-      - goos: linux
-        goarch: amd64
-        env:
-          - CGO_ENABLED=1
-          - CC=gcc
+
 archives:
   - name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 checksum:
