@@ -3,28 +3,38 @@ name: goreleaser
 on:
   push:
     tags:
-      - v*
+      - "*"
 
 jobs:
-  goreleaser:
-    runs-on: macos-12
+  build-and-release:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-12]
+    runs-on: ${{ matrix.os }}
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      -
-        name: Set up Go
+      - name: Set up Go
         uses: actions/setup-go@v3
-      -
-        name: Run GoReleaser
+      - name: Run GoReleaser (Linux)
+        if: matrix.os == 'ubuntu-latest'
         uses: goreleaser/goreleaser-action@v3
         with:
           distribution: goreleaser
           version: latest
-          args: release --rm-dist
+          args: release --rm-dist --id linux-build
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Your GoReleaser Pro key, if you are using the 'goreleaser-pro' distribution
-          # GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_GH_TOKEN }}
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+      - name: Run GoReleaser (Darwin)
+        if: matrix.os == 'macos-12'
+        uses: goreleaser/goreleaser-action@v3
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --rm-dist --id darwin-build
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_GH_TOKEN }}
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
