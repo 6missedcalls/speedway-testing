@@ -88,7 +88,7 @@ function TextInputComponent({
 				/>
 			</div>
 			{error && (
-				<div>
+				<div className="mt-1.5">
 					<span className="text-tertiary-red  block  text-xs">{error}</span>
 				</div>
 			)}

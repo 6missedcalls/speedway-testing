@@ -2,14 +2,19 @@ import LayoutMenu from "../../components/LayoutMenu"
 import SearchableList from "../../components/SearchableList"
 import { NebulaIcon } from "@sonr-io/nebula-react"
 import EmptyList from "./components/EmptyList"
-import { ListTypes, SearchableListItem, SchemaMeta, Bucket } from "../../utils/types"
+import {
+	ListTypes,
+	SearchableListItem,
+	SchemaMeta,
+	Bucket,
+} from "../../utils/types"
 import LoadingCircleSvg from "../../assets/svgs/LoadingCircle"
 
 interface ObjectsPageComponentProps {
 	schemas: Array<SchemaMeta>
 	buckets: Array<Bucket>
 	selectedSchemaDid: string
-	selectedBucket: string;
+	selectedBucket: string
 	setSelectedSchema: React.Dispatch<React.SetStateAction<string>>
 	setSelectedBucket: React.Dispatch<React.SetStateAction<string>>
 	openNewObjectModal: () => void

@@ -157,13 +157,13 @@ function NewObjectModalContentContainer({
 		}
 
 		await dispatch(updateBucket({ ...bucketUpdatePayload }))
-		
+
 		dispatch(
 			userGetBucketObjects({
 				bucketDid: selectedBucket,
 			})
 		)
-		
+
 		closeModal()
 	}
 

@@ -14,7 +14,7 @@ function AppSettingsReducer(
 		case SET_MENU_IS_COLLAPSED: {
 			return {
 				...state,
-				menuIsCollapsed: payload
+				menuIsCollapsed: payload,
 			}
 		}
 	}

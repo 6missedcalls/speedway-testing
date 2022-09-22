@@ -1,13 +1,18 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router"
 import AuthenticationLoading from "../../components/AuthenticationLoading"
 import {
 	selectAuthenticationIsLoading,
+	selectIsLogged,
 	userCreateAccount,
 	userLogin,
 } from "../../redux/slices/authenticationSlice"
-import { ROUTE_POST_SIGNUP, ROUTE_SIGNUP } from "../../utils/constants"
+import {
+	ROUTE_BUY_ALIAS,
+	ROUTE_SCHEMAS,
+	ROUTE_SIGNUP,
+} from "../../utils/constants"
 import {
 	HasAtLeastOneLowercaseCharacter,
 	HasAtLeastOneNumber,
@@ -50,6 +55,7 @@ const passwordRules = [
 ]
 
 const Container = () => {
+	const isLogged = useSelector(selectIsLogged)
 	const [password, setPassword] = useState("")
 	const [passwordConfirm, setPasswordConfirm] = useState("")
 	const [passwordVisible, setPasswordVisible] = useState(false)
@@ -69,6 +75,12 @@ const Container = () => {
 	const navigate = useNavigate()
 	const dispatch: Function = useDispatch()
 
+	useEffect(() => {
+		if (isLogged) {
+			navigate(ROUTE_SCHEMAS)
+		}
+	}, [isLogged, navigate])
+
 	async function createAccountAndLogin() {
 		if (!validateStatePassword()) return
 
@@ -77,7 +89,7 @@ const Container = () => {
 		)
 		const { address } = createAccountResponse.payload
 		await dispatch(userLogin({ walletAddress: address, password }))
-		navigate(ROUTE_POST_SIGNUP)
+		navigate(ROUTE_BUY_ALIAS)
 	}
 
 	function validateStatePassword() {
