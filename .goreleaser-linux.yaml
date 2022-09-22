@@ -4,38 +4,26 @@ project_name: speedway
 dist: build
 before:
   hooks:
-    # You may remove this if you don't use go modules.
+    - npm install
+    - npm run build
     - go mod tidy
-    # you may remove this if you don't need go generate
-    - go generate ./...
 builds:
-  - id: linux-build
-    env:
-    - CGO_ENABLED=1
-    binary: speedway
     goos:
-    - linux
+      - linux
     goarch:
-    - amd64
-    - arm64
+      - amd64
+      - arm64
     overrides:
       - goos: linux
         goarch: arm64
         env:
           - CC=aarch64-linux-gnu-gcc
+          - CGO_ENABLED=1
       - goos: linux
         goarch: amd64
         env:
+          - CGO_ENABLED=1
           - CC=gcc
-  - id: darwin-build
-    env:
-    - CGO_ENABLED=1
-    binary: speedway
-    goos:
-    - darwin
-    goarch:
-    - amd64
-    - arm64
 archives:
   - name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 checksum:
@@ -48,8 +36,3 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
-# brews:
-#   - name: speedway
-#     tap:
-#       owner: sonr-io
-#       name: tap
