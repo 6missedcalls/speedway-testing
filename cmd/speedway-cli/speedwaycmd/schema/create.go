@@ -9,8 +9,7 @@ import (
 	"github.com/kataras/golog"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/schema/types"
-	"github.com/sonr-io/speedway/internal/binding"
-	"github.com/sonr-io/speedway/internal/prompts"
+	"github.com/sonr-io/speedway/internal/client"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
@@ -24,26 +23,14 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 		Short: "Create a new schema on the Sonr Network.",
 		Long:  "Creates a Schema definition with either a provided file path with the --file flag. If no flags are provided data will be prompted for via the cli prompt.",
 		Run: func(cmd *cobra.Command, args []string) {
-			loginRequest := prompts.LoginPrompt()
-
-			m := binding.InitMotor()
-
-			loginResult, err := utils.Login(m, loginRequest)
-			if err != nil {
-				logger.Fatalf(status.Error("Login Error: "), err)
-				return
-			}
-			if loginResult.Success {
-				logger.Info(status.Success("Login Successful"))
-			} else {
-				logger.Fatalf(status.Error("Login Failed"))
-				return
-			}
 
 			logger.Info("Creating schema...")
 
-			var label string
-			var createSchemaRequest rtmv1.CreateSchemaRequest
+			var (
+				label               string
+				createSchemaRequest rtmv1.CreateSchemaRequest
+				err                 error
+			)
 			if label, err = cmd.Flags().GetString("label"); err == nil && label == "" {
 				label = (&prompter.Prompter{
 					Message: "Schema Label",
@@ -102,8 +89,14 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 				logger.Infof("└── %s: %s", field, kind)
 			}
 
+			cli, err := client.New(ctx)
+			if err != nil {
+				logger.Fatalf(status.Error("RPC Client Error: "), err)
+				return
+			}
+
 			// create the schema
-			createSchemaResult, err := m.CreateSchema(createSchemaRequest)
+			createSchemaResult, err := cli.CreateSchema(createSchemaRequest)
 			if err != nil {
 				logger.Fatalf(status.Error("CreateSchema Error: "), err)
 				return
