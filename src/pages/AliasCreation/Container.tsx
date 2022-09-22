@@ -11,7 +11,6 @@ import {
 	selectAddress,
 	selectAlias,
 	selectAuthenticationIsLoading,
-	selectIsLogged,
 	userBuyAlias,
 } from "../../redux/slices/authenticationSlice"
 import { AppDispatch } from "../../redux/store"
