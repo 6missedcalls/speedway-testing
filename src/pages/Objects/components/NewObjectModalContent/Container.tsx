@@ -70,7 +70,7 @@ function NewObjectModalContentContainer({
 
 	function handlePropertiesChange({ value, index }: IobjectPropertyChange) {
 		setError("")
-
+		
 		const newProperties = [...properties]
 
 		newProperties.splice(index, 1, {
@@ -109,10 +109,12 @@ function NewObjectModalContentContainer({
 			schemaDid: selectedSchemaDid,
 			label: selectedSchemaData?.label || "",
 			object: properties.reduce(
-				(acc, item) => ({
-					...acc,
-					[item.name]: castValue(item.type, item.value),
-				}),
+				(acc, item) => {
+						return {
+							...acc,
+							[item.name]: castValue(item.type, item.value),
+						}
+					},
 				{}
 			),
 		}

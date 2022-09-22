@@ -19,6 +19,7 @@ import {
 	userGetSchema,
 } from "../../redux/slices/schemasSlice"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
+import { parseFileValueFromByteArrayAndDownload } from "../../utils/files"
 import {
 	SearchableList,
 	SearchableListItem,
@@ -26,6 +27,7 @@ import {
 	SchemaField,
 } from "../../utils/types"
 import ObjectsPageComponent from "./Component"
+const Buffer = require('buffer/').Buffer
 
 function ObjectsPageContainer() {
 	const { setModalContent, openModal } = useContext(AppModalContext)
@@ -125,7 +127,21 @@ function ObjectsPageContainer() {
 				const listItem: SearchableListItem = {}
 				listItem.cid = { text: cid }
 				Object.keys(data).forEach((key) => {
-					listItem[key] = { text: data[key].toString() }
+					if(data[key]?.buffer?.type === 'Buffer'){
+						const item = data[key].buffer
+						const arr = new Uint8Array(item.data as ArrayBuffer)
+            			const buffer = Buffer.from(arr)
+						listItem[key] = { 
+							text: '',
+							Component: () => (
+								<div onClick={() => parseFileValueFromByteArrayAndDownload(buffer as ArrayBuffer, 'test' + data[key].fileName)}>Download</div>
+							)
+						}	
+					} else {
+						listItem[key] = { 
+							text: data[key].toString() 
+						}
+					}
 				})
 				return listItem
 			})

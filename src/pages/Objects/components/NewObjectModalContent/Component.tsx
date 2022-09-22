@@ -1,5 +1,9 @@
 import { Button, NebulaIcon } from "@sonr-io/nebula-react"
 import { Dispatch, SetStateAction } from "react"
+import FileDropInput from "../../../../components/FileDropInput"
+import { fileToByteArray } from "../../../../utils/files"
+import { slugify } from "../../../../utils/string"
+
 import {
 	Bucket,
 	IobjectPropertyChange,
@@ -146,6 +150,18 @@ type Props = {
 	onChange: (value: string) => void
 }
 
+async function onLoad(files: any, onChange: any) {
+	const file = files[0]
+	const buffer = await fileToByteArray(file)
+	onChange({ buffer, fileName: file.name })
+}
+
+async function onInput(event: any, onChange: any){
+	const file = event.target.files[0]
+	const buffer = await fileToByteArray(file)
+	onChange({ buffer, fileName: file.name })
+}
+
 const SchemaFieldInput = ({ field, onChange }: Props) => {
 	switch (field.type) {
 		case 1:
@@ -181,6 +197,14 @@ const SchemaFieldInput = ({ field, onChange }: Props) => {
 					type="text"
 					className="border border-default-border rounded-md w-full p-2"
 					onChange={(event) => onChange(event.target.value)}
+				/>
+			)
+		case 5:
+			return (
+				<FileDropInput 
+					dropId={slugify(field.name)}
+					onLoad={(files: any) => onLoad(files, onChange)}
+					onInput={(event: any) => onInput(event, onChange)}
 				/>
 			)
 
