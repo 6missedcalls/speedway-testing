@@ -68,13 +68,13 @@ const Container = () => {
 		if (!isValid) return
 
 		if(isAddress(addressOrAlias)){
-			const response = await dispatch<Record<string,any>>(userLogin({ addressOrAlias, password }))
+			const response = await dispatch<Record<string,any>>(userLogin({ walletAddress: addressOrAlias, password }))
 			if(!response?.error) navigate(ROUTE_SCHEMAS)
 		}else{
 			const response = await dispatch<Record<string,any>>(userGetAddressByAlias({ alias: addressOrAlias }))
 			if(!response?.error){
 				const address = response.payload
-				await dispatch(userLogin({ addressOrAlias: address, password }))
+				await dispatch(userLogin({ walletAddress: address, password }))
 				navigate(ROUTE_SCHEMAS)
 			}
 		}

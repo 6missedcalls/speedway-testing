@@ -4,10 +4,9 @@ import login from "../../service/login"
 import createAccount from "../../service/createAccount"
 import buyAlias from "../../service/buyAlias"
 import getAddressByAlias from "../../service/getAddressByAlias"
-import { isAddress } from "../../utils/string"
 
 interface loginProps {
-	addressOrAlias: string
+	walletAddress: string
 	password: string
 }
 
@@ -38,9 +37,9 @@ export const initialState: AuthenticationState = {
 
 export const userLogin = createAsyncThunk(
 	"authentication/login",
-	async ({ addressOrAlias, password }: loginProps, thunkAPI) => {
+	async ({ walletAddress, password }: loginProps, thunkAPI) => {
 		try {
-			const data = await login(addressOrAlias, password)
+			const data = await login(walletAddress, password)
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
@@ -94,10 +93,9 @@ export const authenticationSlice = createSlice({
 		})
 
 		builder.addCase(userLogin.fulfilled, (state, action) => {
-			const { payload } = action
 			state.loading = false
 			state.isLogged = true
-			state.Address = payload
+			state.Address = action.payload
 		})
 
 		builder.addCase(userLogin.rejected, (state) => {

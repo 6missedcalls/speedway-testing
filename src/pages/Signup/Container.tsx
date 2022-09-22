@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router"
 import AuthenticationLoading from "../../components/AuthenticationLoading"
 import {
-	selectAlias,
 	selectAuthenticationIsLoading,
 	selectIsLogged,
 	userCreateAccount,
@@ -85,7 +84,7 @@ const Container = () => {
 			userCreateAccount({ password })
 		)
 		const { address } = createAccountResponse.payload
-		await dispatch(userLogin({ addressOrAlias: address, password }))
+		await dispatch(userLogin({ walletAddress: address, password }))
 		navigate(ROUTE_BUY_ALIAS)
 	}
 
