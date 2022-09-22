@@ -25,12 +25,13 @@ function ButtonGroup({
 	className,
 }: ButtonGroupProps) {
 	const { menuIsCollapsed } = useContext(AppSettingsContext)
-	
+
 	return (
 		<div className={className}>
 			<div className="mb-6">
-				<span className={`
-						${menuIsCollapsed ? 'text-center' : ''}
+				<span
+					className={`
+						${menuIsCollapsed ? "text-center" : ""}
 						block text-custom-2xs uppercase font-semibold text-subdued
 					`}
 				>
@@ -42,11 +43,11 @@ function ButtonGroup({
 					<Button
 						key={`${label}-${index}`}
 						styling={`
-							${menuIsCollapsed ? 'justify-center' : ''}
+							${menuIsCollapsed ? "justify-center" : ""}
 							w-full font-extrabold
 						`}
 						skin={route === currentPath ? "primary" : ""}
-						label={!menuIsCollapsed ? label : ''}
+						label={!menuIsCollapsed ? label : ""}
 						iconName={iconName}
 						iconType={route === currentPath ? "duotone" : "outline"}
 						onClick={() => navigate(route)}

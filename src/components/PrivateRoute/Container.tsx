@@ -10,7 +10,9 @@ interface PrivateRouteProps {
 function PrivateRoute({ Component, ...props }: PrivateRouteProps) {
 	const isLogged = useSelector(selectIsLogged)
 
-	return <>{isLogged ? <Component {...props} /> : <Navigate to={ROUTE_LOGIN} />}</>
+	return (
+		<>{isLogged ? <Component {...props} /> : <Navigate to={ROUTE_LOGIN} />}</>
+	)
 }
 
 export default PrivateRoute
