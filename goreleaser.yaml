@@ -4,10 +4,9 @@ project_name: speedway
 dist: build
 before:
   hooks:
-    # You may remove this if you don't use go modules.
+    - npm install
+    - npm run build
     - go mod tidy
-    # you may remove this if you don't need go generate
-    - go generate ./...
 builds:
   - id: linux-build
     env:

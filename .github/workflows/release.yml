@@ -30,12 +30,13 @@ jobs:
           distribution: goreleaser
           version: latest
           args: build --rm-dist --id linux-build
-      - name: Release
+      - name: Release (Linux)
+        if: matrix.os == 'ubuntu-22.04'
         uses: goreleaser/goreleaser-action@v3
         with:
           distribution: goreleaser
           version: latest
-          args: release --config .goreleaser-darwin.yaml --rm-dist
+          args: release --config .goreleaser-linux.yaml --rm-dist
         env:
           RUNNER_ARCH: amd64
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -48,7 +49,8 @@ jobs:
           distribution: goreleaser
           version: latest
           args: build --rm-dist --id darwin-build
-      - name: Release
+      - name: Release (Darwin)
+        if: matrix.os == 'macos-12'
         uses: goreleaser/goreleaser-action@v3
         with:
           distribution: goreleaser
