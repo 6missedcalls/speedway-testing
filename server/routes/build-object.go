@@ -93,7 +93,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 			if _, rem := math.Modf(value); rem > 0 {
 				objBuilder.Set(k, value)
 			} else {
-				objBuilder.Set(k, int32(value))
+				objBuilder.Set(k, int(v.(float32)))
 			}
 			continue
 		case float64:
@@ -101,7 +101,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 			if _, rem := math.Modf(value); rem > 0 {
 				objBuilder.Set(k, value)
 			} else {
-				objBuilder.Set(k, int64(value))
+				objBuilder.Set(k, int(v.(float64)))
 			}
 			continue
 		}
