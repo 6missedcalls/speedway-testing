@@ -12,3 +12,4 @@ build/
 out/
 .github/workflows/release.yml
 .goreleaser.yml
+.github/
