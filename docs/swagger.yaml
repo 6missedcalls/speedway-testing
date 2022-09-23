@@ -11,122 +11,10 @@ definitions:
       type:
         type: string
     type: object
-  github.com_sonr-io_speedway_server_routes.CAResponseBody:
-    properties:
-      address:
-        type: string
-    type: object
-  github.com_sonr-io_speedway_server_routes.ConvertBucketRes:
-    properties:
-      content:
-        $ref: '#/definitions/types.BucketContent'
-      name:
-        type: string
-      schemaDid:
-        type: string
-      timestamp:
-        type: integer
-      uri:
-        type: string
-    type: object
-  github.com_sonr-io_speedway_server_routes.CreateBucketResponse:
-    properties:
-      bucket:
-        items:
-          $ref: '#/definitions/types.BucketItem'
-        type: array
-      service:
-        $ref: '#/definitions/did.Service'
-    type: object
-  github.com_sonr-io_speedway_server_routes.CreateSchemaResponse:
-    properties:
-      definition:
-        $ref: '#/definitions/types.SchemaDefinition'
-      whatIs:
-        $ref: '#/definitions/types.WhatIs'
-    type: object
-  github.com_sonr-io_speedway_server_routes.FailedLogin:
-    properties:
-      success:
-        type: boolean
-    type: object
-  github.com_sonr-io_speedway_server_routes.FailedResponse:
-    properties:
-      error:
-        type: string
-    type: object
-  github.com_sonr-io_speedway_server_routes.GetBucketResponse:
-    properties:
-      bucket:
-        items:
-          $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.ConvertBucketRes'
-        type: array
-    type: object
-  github.com_sonr-io_speedway_server_routes.GetObjectResponse:
-    properties:
-      object:
-        $ref: '#/definitions/object.Object'
-    type: object
-  github.com_sonr-io_speedway_server_routes.QuerySchemaResponse:
-    properties:
-      definition:
-        $ref: '#/definitions/types.SchemaDefinition'
-    type: object
-  github.com_sonr-io_speedway_server_routes.SchemaResponse:
-    properties:
-      pagination:
-        properties:
-          next_key: {}
-          total:
-            type: string
-        type: object
-      what_is:
-        items:
-          properties:
-            creator:
-              type: string
-            did:
-              type: string
-            is_active:
-              type: boolean
-            metadata:
-              type: object
-            schema:
-              properties:
-                cid:
-                  type: string
-                did:
-                  type: string
-                label:
-                  type: string
-              type: object
-            timestamp:
-              type: string
-          type: object
-        type: array
-    type: object
-  github.com_sonr-io_speedway_server_routes.SuccessfulLogin:
-    properties:
-      address:
-        type: string
-      success:
-        type: boolean
-    type: object
-  github.com_sonr-io_speedway_server_routes.uResponse:
-    properties:
-      address:
-        type: string
-      didDocument: {}
-    type: object
   object.Object:
     additionalProperties: true
     type: object
-  server_routes.CAResponseBody:
-    properties:
-      address:
-        type: string
-    type: object
-  server_routes.ConvertBucketRes:
+  routes.ConvertBucketRes:
     properties:
       content:
         $ref: '#/definitions/types.BucketContent'
@@ -139,7 +27,12 @@ definitions:
       uri:
         type: string
     type: object
-  server_routes.CreateBucketResponse:
+  routes.CreateAccountResponse:
+    properties:
+      address:
+        type: string
+    type: object
+  routes.CreateBucketResponse:
     properties:
       bucket:
         items:
@@ -148,41 +41,39 @@ definitions:
       service:
         $ref: '#/definitions/did.Service'
     type: object
-  server_routes.CreateSchemaResponse:
+  routes.CreateSchemaResponse:
     properties:
-      definition:
-        $ref: '#/definitions/types.SchemaDefinition'
       whatIs:
         $ref: '#/definitions/types.WhatIs'
     type: object
-  server_routes.FailedLogin:
+  routes.FailedLogin:
     properties:
       success:
         type: boolean
     type: object
-  server_routes.FailedResponse:
+  routes.FailedResponse:
     properties:
       error:
         type: string
     type: object
-  server_routes.GetBucketResponse:
+  routes.GetBucketResponse:
     properties:
       bucket:
         items:
-          $ref: '#/definitions/server_routes.ConvertBucketRes'
+          $ref: '#/definitions/routes.ConvertBucketRes'
         type: array
     type: object
-  server_routes.GetObjectResponse:
+  routes.GetObjectResponse:
     properties:
       object:
         $ref: '#/definitions/object.Object'
     type: object
-  server_routes.QuerySchemaResponse:
+  routes.QuerySchemaResponse:
     properties:
       definition:
         $ref: '#/definitions/types.SchemaDefinition'
     type: object
-  server_routes.SchemaResponse:
+  routes.SchemaResponse:
     properties:
       pagination:
         properties:
@@ -215,14 +106,14 @@ definitions:
           type: object
         type: array
     type: object
-  server_routes.SuccessfulLogin:
+  routes.SuccessfulLogin:
     properties:
       address:
         type: string
       success:
         type: boolean
     type: object
-  server_routes.uResponse:
+  routes.uResponse:
     properties:
       address:
         type: string
@@ -274,6 +165,18 @@ definitions:
         description: Name is the string name of an Alias
         type: string
     type: object
+  types.ArrayValue:
+    properties:
+      value:
+        items:
+          $ref: '#/definitions/types.SchemaDocumentValue'
+        type: array
+    type: object
+  types.BoolValue:
+    properties:
+      value:
+        type: boolean
+    type: object
   types.BucketContent:
     properties:
       content_type:
@@ -307,6 +210,13 @@ definitions:
       uri:
         description: DID of the item. If applicable // optional
         type: string
+    type: object
+  types.BytesValue:
+    properties:
+      value:
+        items:
+          type: integer
+        type: array
     type: object
   types.DIDDocument:
     properties:
@@ -353,10 +263,29 @@ definitions:
           $ref: '#/definitions/types.VerificationMethod'
         type: array
     type: object
+  types.FloatValue:
+    properties:
+      value:
+        type: number
+    type: object
+  types.IntValue:
+    properties:
+      value:
+        type: integer
+    type: object
   types.KeyValuePair:
     properties:
       key:
         type: string
+      value:
+        type: string
+    type: object
+  types.LinkValue:
+    properties:
+      link:
+        description: Optional field for a link context if `SchemaKind` is of type
+          `Link`
+        type: integer
       value:
         type: string
     type: object
@@ -395,9 +324,7 @@ definitions:
       creator:
         type: string
       did:
-        description: |-
-          Represents the types of fields a schema can have
-          the DID for this schema
+        description: the DID for this schema should not be populated by request
         type: string
       fields:
         description: the properties of this schema
@@ -407,6 +334,47 @@ definitions:
       label:
         description: an alternative reference point
         type: string
+    type: object
+  types.SchemaDocument:
+    properties:
+      cid:
+        type: string
+      creator:
+        type: string
+      definition:
+        $ref: '#/definitions/types.SchemaDefinition'
+        description: The definition of the document used to build the values
+      did:
+        description: the DID for this schema should not be populated by request
+        type: string
+      fields:
+        description: the properties of this schemadocument
+        items:
+          $ref: '#/definitions/types.SchemaDocumentValue'
+        type: array
+    type: object
+  types.SchemaDocumentValue:
+    properties:
+      array_value:
+        $ref: '#/definitions/types.ArrayValue'
+      bool_value:
+        $ref: '#/definitions/types.BoolValue'
+        description: The value of the field
+      bytes_value:
+        $ref: '#/definitions/types.BytesValue'
+      field:
+        description: Type of a single schema property
+        type: integer
+      float_value:
+        $ref: '#/definitions/types.FloatValue'
+      int_value:
+        $ref: '#/definitions/types.IntValue'
+      link_value:
+        $ref: '#/definitions/types.LinkValue'
+      name:
+        type: string
+      string_value:
+        $ref: '#/definitions/types.StringValue'
     type: object
   types.SchemaKindDefinition:
     properties:
@@ -422,18 +390,6 @@ definitions:
       name:
         type: string
     type: object
-  types.SchemaReference:
-    properties:
-      cid:
-        description: a reference to information stored within an IPFS node.
-        type: string
-      did:
-        description: the DID for this schema
-        type: string
-      label:
-        description: an alternative reference point
-        type: string
-    type: object
   types.Service:
     properties:
       id:
@@ -443,6 +399,11 @@ definitions:
           $ref: '#/definitions/types.KeyValuePair'
         type: array
       type:
+        type: string
+    type: object
+  types.StringValue:
+    properties:
+      value:
         type: string
     type: object
   types.VerificationMethod:
@@ -482,7 +443,7 @@ definitions:
           additional information about the WhatIs (Schema)
         type: object
       schema:
-        $ref: '#/definitions/types.SchemaReference'
+        $ref: '#/definitions/types.SchemaDefinition'
         description: Object_doc is the object document
       timestamp:
         description: Timestamp is the time of the last update of the DID Document
@@ -529,6 +490,17 @@ definitions:
     type: object
   url.Userinfo:
     type: object
+  v1.GetDocumentResponse:
+    properties:
+      cid:
+        type: string
+      did:
+        type: string
+      document:
+        $ref: '#/definitions/types.SchemaDocument'
+      status:
+        type: integer
+    type: object
   v1.ObjectReference:
     properties:
       cid:
@@ -550,6 +522,17 @@ definitions:
         type: array
       schema_did:
         type: string
+      status:
+        type: integer
+    type: object
+  v1.UploadDocumentResponse:
+    properties:
+      cid:
+        type: string
+      did:
+        type: string
+      document:
+        $ref: '#/definitions/types.SchemaDocument'
       status:
         type: integer
     type: object
@@ -597,11 +580,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.CAResponseBody'
+            $ref: '#/definitions/routes.CreateAccountResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/routes.FailedResponse'
       summary: CreateAccount
       tags:
       - Account
@@ -617,11 +600,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.uResponse'
+            $ref: '#/definitions/routes.uResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/routes.FailedResponse'
       summary: GetAccount
       tags:
       - Account
@@ -652,11 +635,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/server_routes.SuccessfulLogin'
+            $ref: '#/definitions/routes.SuccessfulLogin'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedLogin'
+            $ref: '#/definitions/routes.FailedLogin'
       summary: LoginAccount
       tags:
       - Account
@@ -688,7 +671,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/routes.FailedResponse'
       summary: BuyAlias
       tags:
       - Alias
@@ -726,7 +709,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/routes.FailedResponse'
       summary: SellAlias
       tags:
       - Alias
@@ -770,7 +753,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/routes.FailedResponse'
       summary: TransferAlias
       tags:
       - Alias
@@ -828,11 +811,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/server_routes.CreateBucketResponse'
+            $ref: '#/definitions/routes.CreateBucketResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/routes.FailedResponse'
       summary: CreateBucket
       tags:
       - Bucket
@@ -855,11 +838,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/server_routes.GetBucketResponse'
+            $ref: '#/definitions/routes.GetBucketResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/routes.FailedResponse'
       summary: GetBucket
       tags:
       - Bucket
@@ -900,7 +883,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/routes.FailedResponse'
       summary: GetBucketBySchema
       tags:
       - Bucket
@@ -932,10 +915,10 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/routes.FailedResponse'
       summary: UpdateBucketItems
       tags:
-      - bucket
+      - Bucket
   /bucket/update-label:
     post:
       description: Update a bucket on Sonr using the bucket module of Sonr's Blockchain.
@@ -963,10 +946,10 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/routes.FailedResponse'
       summary: UpdateBucketLabel
       tags:
-      - bucket
+      - Bucket
   /bucket/update-visibility:
     post:
       description: Update a bucket on Sonr using the bucket module of Sonr's Blockchain.
@@ -994,10 +977,10 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/routes.FailedResponse'
       summary: UpdateBucketVisibility
       tags:
-      - bucket
+      - Bucket
   /object/build:
     post:
       consumes:
@@ -1035,7 +1018,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/routes.FailedResponse'
       summary: BuildObject
       tags:
       - Object
@@ -1065,14 +1048,89 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.GetObjectResponse'
+            $ref: '#/definitions/routes.GetObjectResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github.com_sonr-io_speedway_server_routes.FailedResponse'
+            $ref: '#/definitions/routes.FailedResponse'
       summary: GetObject
       tags:
       - Object
+  /schema-document/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new schema document on Sonr using the Registry module
+        of Sonr's Blockchain.
+      parameters:
+      - description: creator
+        example: '"did:sonr:0x1234"'
+        in: body
+        name: creator
+        required: true
+        schema:
+          type: string
+      - description: label
+        example: '"My Schema"'
+        in: body
+        name: label
+        required: true
+        schema:
+          type: string
+      - description: schema_did
+        example: '"did:sonr:0x1234"'
+        in: body
+        name: schema_did
+        required: true
+        schema:
+          type: string
+      - description: fields
+        example: '"did:sonr:0x1234"'
+        in: body
+        name: fields
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.UploadDocumentResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/routes.FailedResponse'
+      summary: CreateSchemaDocument
+      tags:
+      - Schema
+  /schema-document/get:
+    post:
+      consumes:
+      - application/json
+      description: Get a schema document utilizing motor client. Returns the schema
+        document.
+      parameters:
+      - description: Cid of the schema
+        in: query
+        name: cid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.GetDocumentResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/routes.FailedResponse'
+      summary: GetSchemaDocument
+      tags:
+      - Schema
   /schema/create:
     post:
       consumes:
@@ -1096,11 +1154,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/server_routes.CreateSchemaResponse'
+            $ref: '#/definitions/routes.CreateSchemaResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/routes.FailedResponse'
       summary: CreateSchema
       tags:
       - Schema
@@ -1129,11 +1187,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/server_routes.QuerySchemaResponse'
+            $ref: '#/definitions/routes.QuerySchemaResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/routes.FailedResponse'
       summary: GetSchema
       tags:
       - Schema
@@ -1147,11 +1205,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/server_routes.SchemaResponse'
+            $ref: '#/definitions/routes.SchemaResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/server_routes.FailedResponse'
+            $ref: '#/definitions/routes.FailedResponse'
       summary: QuerySchemas
       tags:
       - Schema

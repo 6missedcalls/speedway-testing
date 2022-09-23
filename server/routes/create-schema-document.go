@@ -21,7 +21,7 @@ type CreateSchemaDocumentRequest struct {
 // @Summary CreateSchemaDocument
 // @Schemes
 // @Description Create a new schema document on Sonr using the Registry module of Sonr's Blockchain.
-// @Tags Schema
+// @Tags Schema Document
 // @Accept json
 // @Produce json
 // @Param 		 creator body string true "creator" example("did:sonr:0x1234")
@@ -30,7 +30,7 @@ type CreateSchemaDocumentRequest struct {
 // @Param 		 fields body string true "fields" example("did:sonr:0x1234")
 // @Success 	 200  {object}  rtmv1.UploadDocumentResponse
 // @Failure      500  {object}  FailedResponse
-// @Router /schema/create [post]
+// @Router /schema-document/create [post]
 func (ns *NebulaServer) CreateSchemaDocument(c *gin.Context) {
 	var body CreateSchemaDocumentRequest
 	err := c.BindJSON(&body)
