@@ -9,3 +9,5 @@ build/
 *.MD
 *.md
 .vscode
+.goreleaser.yaml
+.github/
