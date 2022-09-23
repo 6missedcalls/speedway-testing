@@ -88,6 +88,8 @@ it(
 		expect(resSchemaCreate.body).toHaveProperty("whatIs.schema.did")
 		expect(resSchemaCreate.body.whatIs.schema.did).toBeDid()
 
+		const schemaDid = resSchemaCreate.body.whatIs.schema.did
+
 		// CREATE A BUCKET
 		const resBucketCreate = await app.post(api("/bucket/create"), {
 			creator: address,
@@ -110,11 +112,9 @@ it(
 		)
 		expect(userSchemas.length).toBe(1)
 		expect(userSchemas[0]).toHaveProperty("schema.did")
-		expect(userSchemas[0].schema.did).toBeDid()
+		expect(userSchemas[0].schema.did).toBe(schemaDid)
 		expect(userSchemas[0]).toHaveProperty("schema.label")
 		expect(userSchemas[0].schema.label).toBe("dinosaurs")
-
-		const schemaDid = userSchemas[0].schema.did
 
 		// GET A LIST OF BUCKETS
 		const resBucketList = await app.get(proxy("buckets"))
