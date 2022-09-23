@@ -12,19 +12,28 @@ builds:
   - id: linux-build
     binary: speedway
     goos:
-    - linux
+      - linux
     goarch:
-    - amd64
-    - arm64
+      - amd64
+      - arm64
+    overrides:
+      - goos: linux
+        goarch: arm64
+        env:
+          - CC=aarch64-linux-gnu-gcc
+      - goos: linux
+        goarch: amd64
+        env:
+          - CC=gcc
   - id: darwin-build
     env:
-    - CGO_ENABLED=1
+      - CGO_ENABLED=1
     binary: speedway
     goos:
-    - darwin
+      - darwin
     goarch:
-    - amd64
-    - arm64
+      - amd64
+      - arm64
 archives:
   - name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 checksum:

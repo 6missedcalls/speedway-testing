@@ -92,13 +92,24 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	ns.Router.POST("/api/v1/account/create", ns.CreateAccount)
 	ns.Router.POST("/api/v1/account/login", ns.LoginAccount)
 	ns.Router.GET("api/v1/account/info", ns.GetAccount)
+
+	// * Alias Routes
+	ns.Router.POST("/api/v1/alias/buy", ns.BuyAlias)
+	ns.Router.POST("/api/v1/alias/sell", ns.SellAlias)
+	ns.Router.POST("/api/v1/alias/transfer", ns.TransferAlias)
+
 	ns.Router.GET("/api/v1/alias/get/:alias", ns.GetAlias)
 
 	// * Schema Routes
 	ns.Router.POST("/api/v1/schema/create", ns.CreateSchema)
 	ns.Router.POST("/api/v1/schema/get", ns.QuerySchema)
 
-	// * Object Routes
+	// * Schema Document Routes
+	ns.Router.POST("/api/v1/schema-document/create", ns.CreateSchemaDocument)
+	ns.Router.POST("/api/v1/schema-document/get", ns.GetSchemaDocument)
+
+	// ! Deprecated Routes (Will be removed in future versions)
+	// ! Object Routes
 	ns.Router.POST("/api/v1/object/build", ns.BuildObject)
 	ns.Router.POST("/api/v1/object/get", ns.GetObject)
 

@@ -9,3 +9,6 @@ build/
 *.MD
 *.md
 .vscode
+out/
+.github/workflows/release.yml
+.goreleaser.yml
