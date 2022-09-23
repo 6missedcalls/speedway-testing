@@ -4,9 +4,10 @@ project_name: speedway
 dist: build
 before:
   hooks:
-    - npm install
-    - npm run build
+    # You may remove this if you don't use go modules.
     - go mod tidy
+    # you may remove this if you don't need go generate
+    - go generate ./...
 builds:
   - id: linux-build
     env:
@@ -17,6 +18,15 @@ builds:
     goarch:
     - amd64
     - arm64
+    overrides:
+      - goos: linux
+        goarch: arm64
+        env:
+          - CC=aarch64-linux-gnu-gcc
+      - goos: linux
+        goarch: amd64
+        env:
+          - CC=gcc
   - id: darwin-build
     env:
     - CGO_ENABLED=1
