@@ -1,17 +1,17 @@
 import { useRef } from "react"
 import useDetectOutsideClick from "../../../../hooks/useDetectOutsideClick"
 import { ItypeSchemaMap, typeSchemaMap } from "../../../../utils/mappings"
-import { IpropertyResponse } from "../../../../utils/types"
+import { SchemaField } from "../../../../utils/types"
 
 interface ViewPropertiesComponentProps {
-	properties: Array<IpropertyResponse>
+	properties: Array<SchemaField>
 	onClick: () => void
 	isOpen: boolean
 	close: () => void
 }
 
 function ViewPropertiesComponent({
-	properties = [],
+	properties,
 	onClick,
 	isOpen,
 	close,

@@ -108,11 +108,23 @@ it(
 			resSchemaList.body.what_is,
 			(schema) => schema.creator === addressToDid(address)
 		)
+
 		expect(userSchemas.length).toBe(1)
 		expect(userSchemas[0]).toHaveProperty("schema.did")
 		expect(userSchemas[0].schema.did).toBeDid()
 		expect(userSchemas[0]).toHaveProperty("schema.label")
 		expect(userSchemas[0].schema.label).toBe("dinosaurs")
+		expect(userSchemas[0]).toHaveProperty("schema.fields.length")
+		expect(userSchemas[0].schema.fields.length).toBe(4)
+
+		expect(userSchemas[0].schema.fields[0].name).toBe("firstname")
+		expect(userSchemas[0].schema.fields[0].field).toBe("STRING")
+		expect(userSchemas[0].schema.fields[1].name).toBe("extinct")
+		expect(userSchemas[0].schema.fields[1].field).toBe("BOOL")
+		expect(userSchemas[0].schema.fields[2].name).toBe("strength")
+		expect(userSchemas[0].schema.fields[2].field).toBe("INT")
+		expect(userSchemas[0].schema.fields[3].name).toBe("interest")
+		expect(userSchemas[0].schema.fields[3].field).toBe("FLOAT")
 
 		const schemaDid = userSchemas[0].schema.did
 
@@ -135,21 +147,6 @@ it(
 		expect(userBuckets[0].content.length).toBe(0)
 
 		const bucketDid = userBuckets[0].did
-
-		// CHECK SCHEMA FIELDS
-		const resFields = await app.post(api("/schema/get"), { schema: schemaDid })
-		expect(resFields.status).toBe(200)
-		expect(resFields.body).toHaveProperty("definition.fields.length")
-		expect(resFields.body.definition.fields.length).toBe(4)
-		const sortedFields = _.sortBy(resFields.body.definition.fields, "name")
-		expect(sortedFields[0].name).toBe("extinct")
-		expect(sortedFields[0].field).toBe(1)
-		expect(sortedFields[1].name).toBe("firstname")
-		expect(sortedFields[1].field).toBe(4)
-		expect(sortedFields[2].name).toBe("interest")
-		expect(sortedFields[2].field).toBe(3)
-		expect(sortedFields[3].name).toBe("strength")
-		expect(sortedFields[3].field).toBe(2)
 
 		// CREATE AN OBJECT
 		const resObject = await app.post(api("/object/build"), {

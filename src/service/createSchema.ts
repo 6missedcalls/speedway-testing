@@ -22,6 +22,10 @@ const createSchema = async (
 		return {
 			did: data.whatIs.schema.did,
 			label: data.whatIs.schema.label,
+			fields: Object.keys(fields).map((fieldName: string) => ({
+				name: fieldName,
+				type: fields[fieldName],
+			})),
 		}
 	} catch (error) {
 		const errorMessage = formatApiError({ error, url, options })

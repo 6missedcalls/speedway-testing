@@ -13,7 +13,7 @@ import LoadingCircleSvg from "../../assets/svgs/LoadingCircle"
 interface ObjectsPageComponentProps {
 	schemas: Array<SchemaMeta>
 	buckets: Array<Bucket>
-	selectedSchemaDid: string
+	selectedSchema: string
 	selectedBucket: string
 	setSelectedSchema: React.Dispatch<React.SetStateAction<string>>
 	setSelectedBucket: React.Dispatch<React.SetStateAction<string>>
@@ -27,7 +27,7 @@ interface ObjectsPageComponentProps {
 const ObjectsPageComponent = ({
 	schemas,
 	buckets,
-	selectedSchemaDid,
+	selectedSchema,
 	selectedBucket,
 	setSelectedSchema,
 	setSelectedBucket,
@@ -52,7 +52,7 @@ const ObjectsPageComponent = ({
 									<select
 										className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
 										onChange={(event) => setSelectedSchema(event.target.value)}
-										value={selectedSchemaDid}
+										value={selectedSchema}
 									>
 										{schemas.map((item) => (
 											<option key={item.did} value={item.did}>
