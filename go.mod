@@ -18,6 +18,7 @@ require (
 	github.com/gin-gonic/contrib v0.0.0-20201101042839-6a891bf89f19
 	github.com/gin-gonic/gin v1.8.1
 	github.com/kataras/golog v0.1.7
+	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
 	github.com/shengdoushi/base58 v1.0.0
 	github.com/sonr-io/sonr v0.4.3
 	github.com/spf13/cobra v1.4.0
@@ -26,5 +27,6 @@ require (
 	github.com/swaggo/gin-swagger v1.5.0
 	github.com/swaggo/swag v1.8.1
 	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31
+	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
 	google.golang.org/grpc v1.48.0
 )

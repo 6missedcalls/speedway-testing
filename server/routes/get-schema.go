@@ -1,12 +1,12 @@
 package routes
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/binding"
 )
@@ -45,9 +45,16 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 
 	m := binding.CreateInstance()
 
-	ctx := context.Background()
-
-	schema, err := m.GetSchema(ctx, r.Creator, r.Schema)
+	schema, err := m.GetSchema(rtmv1.QueryWhatIsRequest{
+		Creator: r.Creator,
+		Did:     r.Schema,
+	})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
+		})
+		return
+	}
 	if schema.WhatIs == nil {
 		fmt.Printf("GetSchema failed %v\n", err)
 		c.JSON(http.StatusInternalServerError, FailedResponse{

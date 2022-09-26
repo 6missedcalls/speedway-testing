@@ -206,6 +206,25 @@ func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid s
 }
 
 /*
+Create a SchemaDocument from motor and return the response
+*/
+func (b *SpeedwayBinding) CreateSchemaDocument(req rtmv1.UploadDocumentRequest) (rtmv1.UploadDocumentResponse, error) {
+	if b.Instance == nil {
+		return rtmv1.UploadDocumentResponse{}, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return rtmv1.UploadDocumentResponse{}, ErrNotAuthenticated
+	}
+
+	res, err := b.Instance.UploadDocument(req)
+	if err != nil {
+		fmt.Println(status.Error("Upload Document Error"), err)
+	}
+
+	return *res, err
+}
+
+/*
 Get a SchemaDocument from motor
 */
 func (b *SpeedwayBinding) GetSchemaDocument(req rtmv1.GetDocumentRequest) (rtmv1.GetDocumentResponse, error) {
@@ -223,7 +242,7 @@ func (b *SpeedwayBinding) GetSchemaDocument(req rtmv1.GetDocumentRequest) (rtmv1
 /*
 Get the schema and return the WhatIsResponse
 */
-func (b *SpeedwayBinding) GetSchema(ctx context.Context, creator string, schemaDid string) (rtmv1.QueryWhatIsResponse, error) {
+func (b *SpeedwayBinding) GetSchema(req rtmv1.QueryWhatIsRequest) (rtmv1.QueryWhatIsResponse, error) {
 	if b.Instance == nil {
 		return rtmv1.QueryWhatIsResponse{}, ErrMotorNotInitialized
 	}
@@ -231,19 +250,9 @@ func (b *SpeedwayBinding) GetSchema(ctx context.Context, creator string, schemaD
 		return rtmv1.QueryWhatIsResponse{}, ErrNotAuthenticated
 	}
 
-	querySchemaReq := rtmv1.QueryWhatIsRequest{
-		Creator: creator,
-		Did:     schemaDid,
-	}
+	res, err := b.Instance.QueryWhatIs(req)
+	return *res, err
 
-	// query schema
-	querySchemaRes, err := b.Instance.QueryWhatIs(querySchemaReq)
-	if err != nil {
-		fmt.Printf("Binding failed %v\n", err)
-		return rtmv1.QueryWhatIsResponse{}, err
-	}
-
-	return *querySchemaRes, nil
 }
 
 /*
