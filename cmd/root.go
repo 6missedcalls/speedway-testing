@@ -1,23 +1,25 @@
-package speedwaycmd
+package cmd
 
 import (
 	"context"
+	"embed"
 
 	"github.com/kataras/golog"
-	bucket "github.com/sonr-io/speedway/cmd/speedway-cli/speedwaycmd/bucket"
-	daemon "github.com/sonr-io/speedway/cmd/speedway-cli/speedwaycmd/daemon"
-	object "github.com/sonr-io/speedway/cmd/speedway-cli/speedwaycmd/object"
-	registry "github.com/sonr-io/speedway/cmd/speedway-cli/speedwaycmd/registry"
-	schema "github.com/sonr-io/speedway/cmd/speedway-cli/speedwaycmd/schema"
+	bucket "github.com/sonr-io/speedway/cmd/commands/bucket"
+	daemon "github.com/sonr-io/speedway/cmd/commands/daemon"
+	object "github.com/sonr-io/speedway/cmd/commands/object"
+	registry "github.com/sonr-io/speedway/cmd/commands/registry"
+	schema "github.com/sonr-io/speedway/cmd/commands/schema"
 	prompts "github.com/sonr-io/speedway/internal/prompts"
 	"github.com/spf13/cobra"
+	cobracompletefig "github.com/withfig/autocomplete-tools/integrations/cobra"
 )
 
-func Execute(logger *golog.Logger) error {
-	return bootstrapRootCommand(context.Background(), logger).Execute()
+func Execute(logger *golog.Logger, buildDir embed.FS) error {
+	return bootstrapRootCommand(context.Background(), logger, buildDir).Execute()
 }
 
-func bootstrapRootCommand(ctx context.Context, logger *golog.Logger) (rootCmd *cobra.Command) {
+func bootstrapRootCommand(ctx context.Context, logger *golog.Logger, buildDir embed.FS) (rootCmd *cobra.Command) {
 	rootCmd = &cobra.Command{
 		Use:   "speedway",
 		Short: "The Sonr Speedway CLI tool",
@@ -33,7 +35,8 @@ func bootstrapRootCommand(ctx context.Context, logger *golog.Logger) (rootCmd *c
 	rootCmd.AddCommand(object.BootstrapObjectCommand(ctx, logger))
 	rootCmd.AddCommand(bucket.BootstrapBucketCommand(ctx, logger))
 	rootCmd.AddCommand(daemon.BootstrapDaemonCommand(ctx, logger))
-	rootCmd.AddCommand(BootstrapServeCommand(ctx))
+	rootCmd.AddCommand(BootstrapServeCommand(ctx, buildDir))
+	rootCmd.AddCommand(cobracompletefig.CreateCompletionSpecCommand())
 
 	return
 }

@@ -11,15 +11,20 @@ const generateCid = () => md5(Math.random())
 const addressToDid = (address) => `did:snr:${address.slice(3)}`
 
 const accountStoreKey = (address) => `account-${address}`
-const schemaStoreKey = (did) => `schema-${did}`
 const objectStoreKey = (cid) => `object-${cid}`
+
+const fieldTypeMap = {
+	0: "LIST",
+	1: "BOOL",
+	2: "INT",
+	3: "FLOAT",
+	4: "STRING",
+}
 
 const app = express()
 app.use(cors())
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
-
-let sessionAddress = null
+app.use(bodyParser.json({ limit: "50mb" }))
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }))
 
 /// DEVELOPMENT
 
@@ -37,14 +42,14 @@ app.get("/dump", async (_, res) => {
 })
 
 app.get("/reset", async (_, res) => {
-	sessionAddress = null
+	await storage.setItem("sessionAddress", null)
 	await storage.clear()
 	const length = await storage.length()
 	res.json({ length })
 })
 
-app.get("/logout", (_, res) => {
-	sessionAddress = null
+app.get("/logout", async (_, res) => {
+	await storage.setItem("sessionAddress", null)
 	res.status(200).send()
 })
 
@@ -73,11 +78,12 @@ app.post("/api/v1/account/login", async ({ body }, res) => {
 		return
 	}
 
-	sessionAddress = account.address
+	await storage.setItem("sessionAddress", account.address)
 	res.json({ address: account.address })
 })
 
 app.get("/api/v1/account/info", async (_, res) => {
+	const sessionAddress = await storage.getItem("sessionAddress")
 	if (!sessionAddress) {
 		res.status(500).send()
 		return
@@ -86,7 +92,19 @@ app.get("/api/v1/account/info", async (_, res) => {
 	res.json({ Address: sessionAddress })
 })
 
-app.use((_, res, next) => {
+app.get("/api/v1/alias/get/:alias", async (req, res) => {
+	const aliases = await storage.getItem("aliases")
+
+	if (!_.has(aliases, req.params.alias)) {
+		res.status(404).send()
+		return
+	}
+
+	res.json({ WhoIs: aliases[req.params.alias] })
+})
+
+app.use(async (_, res, next) => {
+	const sessionAddress = await storage.getItem("sessionAddress")
 	if (!sessionAddress) {
 		res.status(500).json({ message: "Not logged in" })
 		return
@@ -104,6 +122,7 @@ app.post("/api/v1/alias/buy", async (req, res) => {
 		return
 	}
 
+	const sessionAddress = await storage.getItem("sessionAddress")
 	aliases[req.body.alias] = { owner: sessionAddress }
 	await storage.setItem("aliases", aliases)
 
@@ -114,6 +133,7 @@ app.post("/api/v1/alias/buy", async (req, res) => {
 
 app.post("/api/v1/schema/create", async ({ body }, res) => {
 	const did = generateDid()
+	const sessionAddress = await storage.getItem("sessionAddress")
 	const creator = addressToDid(sessionAddress)
 
 	const schemaMetadata = {
@@ -121,33 +141,19 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 		schema: {
 			did,
 			label: body.label,
+			fields: _.map(_.keys(body.fields), (name) => ({
+				name,
+				field: fieldTypeMap[body.fields[name]],
+			})),
 		},
-	}
-
-	const fields = _.map(_.keys(body.fields), (name) => ({
-		name,
-		field: body.fields[name],
-	}))
-	const schema = {
-		label: body.label,
-		creator,
-		fields,
 	}
 
 	const allMetadata = (await storage.getItem("schemaMetadata")) || []
 	allMetadata.push(schemaMetadata)
 
-	await Promise.all([
-		storage.setItem("schemaMetadata", allMetadata),
-		storage.setItem(schemaStoreKey(did), schema),
-	])
+	await storage.setItem("schemaMetadata", allMetadata)
 
 	res.json({ whatIs: schemaMetadata })
-})
-
-app.post("/api/v1/schema/get", async ({ body }, res) => {
-	const schema = await storage.getItem(schemaStoreKey(body.schema))
-	res.json({ definition: schema })
 })
 
 /// BUCKETS
@@ -221,20 +227,33 @@ app.post("/api/v1/bucket/get", async ({ body }, res) => {
 /// OBJECTS
 
 app.post("/api/v1/object/build", async ({ body }, res) => {
-	const schema = await storage.getItem(schemaStoreKey(body.schemaDid))
+	const allSchemaMetadata = await storage.getItem("schemaMetadata")
+	const schemaMetadata = _.find(
+		allSchemaMetadata,
+		(meta) => (meta.schema.did = body.schemaDid)
+	)
 
-	const fieldsExpected = _.map(schema.fields, "name")
+	const fieldsExpected = _.map(schemaMetadata.schema.fields, "name")
 	const fieldsReceived = _.keys(body.object)
 	if (_.difference(fieldsExpected, fieldsReceived).length > 0) {
 		res.status(500).json({ error: "Object Upload Failed" })
 		return
 	}
 
+	const objectData = _.chain(body.object)
+		.keys()
+		.sortBy()
+		.reduce((acc, key) => {
+			acc[key] = body.object[key]
+			return acc
+		}, {})
+		.valueOf()
+
 	const cid = generateCid()
 	const object = {
 		cid,
 		schema: body.schemaDid,
-		...body.object,
+		...objectData,
 	}
 	await storage.setItem(objectStoreKey(cid), object)
 
@@ -263,17 +282,6 @@ app.get("/proxy/schemas", async (_, res) => {
 app.get("/proxy/buckets", async (_, res) => {
 	const buckets = (await storage.getItem("buckets")) || []
 	res.json({ where_is: buckets })
-})
-
-app.get("/api/v1/alias/get/:alias", async (req, res) => {
-	const aliases = await storage.getItem("aliases")
-
-	if (!_.has(aliases, req.params.alias)) {
-		res.status(404).send()
-		return
-	}
-
-	res.json({ WhoIs: aliases[req.params.alias] })
 })
 
 export default app

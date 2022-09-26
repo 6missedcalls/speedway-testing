@@ -7,7 +7,7 @@ interface AppSettingsProviderProps {
 }
 
 export interface IappSettingsContextState {
-    menuIsCollapsed: boolean
+	menuIsCollapsed: boolean
 	setMenusIsCollapsed: (data: boolean) => void
 }
 

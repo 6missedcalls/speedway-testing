@@ -37,12 +37,6 @@ function SchemasPageContainer() {
 
 	function mapToListFormat(list: Array<SchemaMeta>): SearchableList {
 		return list.map((item: SchemaMeta): SearchableListItem => {
-			const getSchemaPayload = {
-				address,
-				creator: "",
-				schema: item.did,
-			}
-
 			return {
 				"Schema name": {
 					text: item.label,
@@ -50,12 +44,12 @@ function SchemasPageContainer() {
 				DID: {
 					text: item.did,
 				},
+				"Field Count": {
+					text: item.fields.length.toString(),
+				},
 				Fields: {
 					Component: ViewProperties,
-					props: {
-						getSchemaPayload,
-						key: item.did,
-					},
+					props: { fields: item.fields },
 				},
 			}
 		})

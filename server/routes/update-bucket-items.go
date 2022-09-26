@@ -22,7 +22,7 @@ type UpdateBucketRequest struct {
 // @Summary UpdateBucketItems
 // @Schemes
 // @Description Update a bucket on Sonr using the bucket module of Sonr's Blockchain.
-// @Tags bucket
+// @Tags Bucket
 // @Produce json
 // @Param 		 bucketDid body string true "BucketDid" example("did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
 // @Param 		 Content body string true "Content" example("name: My Bucket, uri: bafyreifqum26tv4wprgri5t4ddef7tozknnicuayjcvd4m5gag5avgtvsa")

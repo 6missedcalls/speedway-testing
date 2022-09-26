@@ -1,26 +1,20 @@
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react"
 import { Button, NebulaIcon } from "@sonr-io/nebula-react"
-import { Dispatch, SetStateAction } from "react"
 import FileDropInput from "../../../../components/FileDropInput"
 import { fileToByteArray } from "../../../../utils/files"
 import { slugify } from "../../../../utils/string"
-
-import {
-	Bucket,
-	IobjectPropertyChange,
-	SchemaField,
-	SchemaMeta,
-} from "../../../../utils/types"
+import { Bucket, SchemaField, SchemaMeta } from "../../../../utils/types"
 
 interface NewSchemaModalContentComponentProps {
 	onClose: () => void
 	onSave: () => void
 	onChangeSchema: Dispatch<SetStateAction<string>>
 	onChangeBucket: (value: string) => void
-	onChangeProperty: ({ value, index }: IobjectPropertyChange) => void
+	onChangeProperty: (index: number, value: string) => void
 	schemas: Array<SchemaMeta>
 	buckets: Array<Bucket>
 	properties: Array<Record<string, any>>
-	selectedSchemaDid: string
+	selectedSchema: string
 	selectedBucket: string
 	error: string
 }
@@ -34,7 +28,7 @@ function NewObjectModalContentComponent({
 	schemas,
 	properties,
 	buckets,
-	selectedSchemaDid,
+	selectedSchema,
 	selectedBucket,
 	error,
 }: NewSchemaModalContentComponentProps) {
@@ -63,7 +57,7 @@ function NewObjectModalContentComponent({
 						<select
 							className="appearance-none py-2 px-3 rounded-md pointer-events-auto cursor-pointer w-full"
 							onChange={(event) => onChangeSchema(event.target.value)}
-							value={selectedSchemaDid}
+							value={selectedSchema}
 						>
 							{schemas.map((item: SchemaMeta) => (
 								<option key={item.did} value={item.did}>
@@ -111,21 +105,20 @@ function NewObjectModalContentComponent({
 				</div>
 
 				<div className="overflow-auto flex flex-wrap box-border -mr-4">
-					{properties?.length &&
-						properties.map((item, index) => (
-							<div
-								key={`${item.name}-${index}`}
-								className="box-border flex-[50%] pr-4 mb-4"
-							>
-								<div className="text-custom-xs text-subdued pb-1">
-									{item.name}
-								</div>
-								<SchemaFieldInput
-									field={{ name: item.name, type: item.type }}
-									onChange={(value) => onChangeProperty({ value, index })}
-								/>
+					{properties.map((item, index) => (
+						<div
+							key={`${item.name}-${index}`}
+							className="box-border flex-[50%] pr-4 mb-4"
+						>
+							<div className="text-custom-xs text-subdued pb-1">
+								{item.name}
 							</div>
-						))}
+							<SchemaFieldInput
+								field={{ name: item.name, type: item.type }}
+								onChange={(value) => onChangeProperty(index, value)}
+							/>
+						</div>
+					))}
 				</div>
 			</div>
 			{error && (
@@ -161,7 +154,7 @@ function onDrop(files: any) {
 	console.log("Drop")
 }
 
-async function onInput(event: any, onChange: any){
+async function onInput(event: any, onChange: any) {
 	const file = event.target.files[0]
 	const buffer = await fileToByteArray(file)
 	onChange({ buffer, fileName: file.name })
@@ -169,6 +162,8 @@ async function onInput(event: any, onChange: any){
 
 const SchemaFieldInput = ({ field, onChange }: Props) => {
 	switch (field.type) {
+		case 0:
+			return <ListInput onChange={onChange} />
 		case 1:
 			return (
 				<select
@@ -206,7 +201,7 @@ const SchemaFieldInput = ({ field, onChange }: Props) => {
 			)
 		case 5:
 			return (
-				<FileDropInput 
+				<FileDropInput
 					onDrop={(files: any) => onLoad(files, onChange)}
 					dropId={slugify(field.name)}
 					onLoad={(files: any) => onLoad(files, onChange)}
@@ -217,6 +212,33 @@ const SchemaFieldInput = ({ field, onChange }: Props) => {
 		default:
 			return <div className="italic text-subdued">Unrecognized field type</div>
 	}
+}
+
+const ListInput = ({ onChange }: { onChange: (value: string) => void }) => {
+	const [values, setValues] = useState<string[]>([""])
+	const addItem = () => setValues((values) => [...values, ""])
+	const onChangeItem =
+		(key: number) => (event: ChangeEvent<HTMLInputElement>) => {
+			setValues((values) => {
+				values[key] = event.target.value
+				return [...values]
+			})
+			onChange(JSON.stringify(values))
+		}
+	return (
+		<div>
+			{values.map((value, key) => (
+				<div>
+					<input
+						className="border border-black"
+						value={value}
+						onChange={onChangeItem(key)}
+					/>
+				</div>
+			))}
+			<button onClick={addItem}>Add item</button>
+		</div>
+	)
 }
 
 export default NewObjectModalContentComponent

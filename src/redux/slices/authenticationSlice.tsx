@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import type { PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../store"
 import login from "../../service/login"
 import createAccount from "../../service/createAccount"
+import buyAlias from "../../service/buyAlias"
+import getAddressByAlias from "../../service/getAddressByAlias"
 
 interface loginProps {
 	walletAddress: string
@@ -13,17 +14,25 @@ interface createAccountProps {
 	password: string
 }
 
+interface buyAliasProps {
+	alias: string
+	creator: string
+}
+
 interface AuthenticationState {
 	isLogged: boolean
 	loading: boolean
 	error: boolean
 	Address: string
+	alias: string
 }
+
 export const initialState: AuthenticationState = {
 	isLogged: false,
 	loading: false,
 	error: false,
 	Address: "",
+	alias: "",
 }
 
 export const userLogin = createAsyncThunk(
@@ -50,14 +59,34 @@ export const userCreateAccount = createAsyncThunk(
 	}
 )
 
+export const userBuyAlias = createAsyncThunk(
+	"authentication/buyAlias",
+	async ({ alias, creator }: buyAliasProps, thunkAPI) => {
+		try {
+			const data = await buyAlias(alias, creator)
+			return data
+		} catch (err) {
+			return thunkAPI.rejectWithValue(err)
+		}
+	}
+)
+
+export const userGetAddressByAlias = createAsyncThunk(
+	"authentication/getAddressByAlias",
+	async ({ alias }: { alias: string }, thunkAPI) => {
+		try {
+			const data = await getAddressByAlias(alias)
+			return data
+		} catch (err) {
+			return thunkAPI.rejectWithValue(err)
+		}
+	}
+)
+
 export const authenticationSlice = createSlice({
 	name: "authentication",
 	initialState,
-	reducers: {
-		setIsLogged: (state, action: PayloadAction<boolean>) => {
-			state.isLogged = action.payload
-		},
-	},
+	reducers: {},
 	extraReducers: (builder) => {
 		builder.addCase(userLogin.pending, (state) => {
 			state.loading = true
@@ -86,10 +115,38 @@ export const authenticationSlice = createSlice({
 			state.error = true
 			state.loading = false
 		})
+
+		builder.addCase(userBuyAlias.pending, (state) => {
+			state.loading = true
+		})
+
+		builder.addCase(userBuyAlias.fulfilled, (state, action) => {
+			const { meta } = action
+			state.alias = meta.arg.alias
+			state.loading = false
+		})
+
+		builder.addCase(userBuyAlias.rejected, (state) => {
+			state.error = true
+			state.loading = false
+		})
+
+		builder.addCase(userGetAddressByAlias.pending, (state) => {
+			state.loading = true
+		})
+
+		builder.addCase(userGetAddressByAlias.fulfilled, (state, action) => {
+			const { meta } = action
+			state.loading = false
+			state.alias = meta.arg.alias
+		})
+
+		builder.addCase(userGetAddressByAlias.rejected, (state) => {
+			state.error = true
+			state.loading = false
+		})
 	},
 })
-
-export const { setIsLogged } = authenticationSlice.actions
 
 export const selectIsLogged = (state: RootState) => {
 	return state.authentication.isLogged
@@ -105,6 +162,10 @@ export const selectAuthenticationIsLoading = (state: RootState) => {
 
 export const selectAddress = (state: RootState) => {
 	return state.authentication.Address
+}
+
+export const selectAlias = (state: RootState) => {
+	return state.authentication.alias
 }
 
 export default authenticationSlice.reducer

@@ -1,10 +1,10 @@
 export const ROUTE_LOGIN = "/"
 export const ROUTE_SIGNUP = "/signup"
+export const ROUTE_BUY_ALIAS = "/buy-alias"
 export const ROUTE_SCHEMAS = "/schema"
 export const ROUTE_OBJECTS = "/objects"
 export const ROUTE_BUCKETS = "/buckets"
 export const ROUTE_404 = "/404"
-export const ROUTE_POST_SIGNUP = "/post-signup"
 
 // app modal context
 export const SET_MODAL_CONTENT = "SET_MODAL_CONTENT"

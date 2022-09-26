@@ -12,8 +12,8 @@ type Props = {
 	togglePasswordVisible: () => void
 	passwordVisible: boolean
 	setPassword: React.Dispatch<React.SetStateAction<string>>
-	walletAddress: string
-	setWalletAddress: React.Dispatch<React.SetStateAction<string>>
+	addressOrAlias: string
+	setAddressOrAlias: React.Dispatch<React.SetStateAction<string>>
 	password: string
 	loginError: string
 }
@@ -24,8 +24,8 @@ const Component = ({
 	togglePasswordVisible,
 	setPassword,
 	passwordVisible,
-	walletAddress,
-	setWalletAddress,
+	addressOrAlias,
+	setAddressOrAlias,
 	password,
 	loginError,
 }: Props) => {
@@ -52,19 +52,19 @@ const Component = ({
 			content={
 				<div className="flex flex-col justify-center w-full max-w-sm">
 					<h1 className="text-custom-xl font-extrabold mb-8 text-emphasis">
-						Login to Your Vault
+						Login to Your Vault - test2
 					</h1>
 
 					<form onSubmit={_onSubmit} className="w-full">
 						<TextInput
-							error={errors?.walletAddress?.isRequired}
+							error={errors?.addressOrAlias?.isRequired}
 							className="text-white mb-4"
 							label="Wallet Address"
 							ariaLabel="Wallet Address"
 							handleOnChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-								setWalletAddress(event.target.value)
+								setAddressOrAlias(event.target.value)
 							}}
-							value={walletAddress}
+							value={addressOrAlias}
 							type="text"
 						/>
 						<TextInput

@@ -17,7 +17,6 @@ import {
 	selectSchemasLoading,
 	selectSchemasMetadataList,
 	userGetAllSchemas,
-	userGetSchema,
 } from "../../redux/slices/schemasSlice"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
 import { parseFileValueFromByteArrayAndDownload } from "../../utils/files"
@@ -25,18 +24,16 @@ import {
 	SearchableList,
 	SearchableListItem,
 	SonrObject,
-	SchemaField,
 } from "../../utils/types"
 import ObjectsPageComponent from "./Component"
-const Buffer = require('buffer/').Buffer
+const Buffer = require("buffer/").Buffer
 
 function ObjectsPageContainer() {
 	const { setModalContent, openModal } = useContext(AppModalContext)
 	const dispatch: Function = useDispatch()
 	const buckets = useSelector(selectBuckets)
-	const [selectedSchemaDid, setSelectedSchema] = useState("")
+	const [selectedSchema, setSelectedSchema] = useState("")
 	const [selectedBucket, setSelectedBucket] = useState(buckets[0]?.did)
-	const [schemaFields, setSchemaFields] = useState<SchemaField[]>([])
 	const objectsList = useSelector(selectObjectsList)
 	const schemasLoading = useSelector(selectSchemasLoading)
 	const bucketsLoading = useSelector(selectBucketsLoading)
@@ -46,6 +43,15 @@ function ObjectsPageContainer() {
 	const loading = schemasLoading || objectsLoading || bucketsLoading
 
 	useEffect(() => {
+		async function initialize() {
+			await Promise.all([
+				dispatch(userGetAllSchemas),
+				dispatch(userGetAllBuckets(address)),
+			])
+			if (schemaMetadata.length > 0) {
+				setSelectedSchema(schemaMetadata[0].did)
+			}
+		}
 		initialize()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
@@ -62,59 +68,29 @@ function ObjectsPageContainer() {
 	}, [selectedBucket])
 
 	useEffect(() => {
-		if (selectedSchemaDid && selectedBucket) {
-			getSchema()
+		if (selectedSchema && selectedBucket) {
 			setModalContent({
 				content: MODAL_CONTENT_NEW_OBJECT,
 				props: {
-					selectedSchemaDid,
-					setSelectedSchema,
+					selectedSchema,
 					selectedBucket,
-					setSelectedBucket,
-					initialSchemaFields: schemaFields,
+					onChangeSchema: setSelectedSchema,
+					onChangeBucket: setSelectedBucket,
 					schemas: schemaMetadata,
 				},
 			})
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedSchemaDid, selectedBucket])
-
-	async function getSchema() {
-		const selectedSchemaData = schemaMetadata.find(
-			(item) => item.did === selectedSchemaDid
-		)!
-		const getSchemaPayload = {
-			address,
-			creator: "",
-			schema: selectedSchemaData.did,
-		}
-
-		const schemaFields = await dispatch(
-			userGetSchema({ schema: getSchemaPayload })
-		)
-
-		setSchemaFields(schemaFields.payload)
-	}
-
-	async function initialize() {
-		await Promise.all([
-			dispatch(userGetAllSchemas),
-			dispatch(userGetAllBuckets(address)),
-		])
-		if (schemaMetadata.length > 0) {
-			setSelectedSchema(schemaMetadata[0].did)
-		}
-	}
+	}, [selectedSchema, selectedBucket])
 
 	function openNewObjectModal() {
 		setModalContent({
 			content: MODAL_CONTENT_NEW_OBJECT,
 			props: {
-				selectedSchemaDid,
-				setSelectedSchema,
+				selectedSchema,
 				selectedBucket,
-				setSelectedBucket,
-				initialSchemaFields: schemaFields,
+				onChangeSchema: setSelectedSchema,
+				onChangeBucket: setSelectedBucket,
 				schemas: schemaMetadata,
 			},
 		})
@@ -123,31 +99,36 @@ function ObjectsPageContainer() {
 
 	function mapToListFormat(): SearchableList {
 		return objectsList
-			.filter((item: SonrObject) => item.schemaDid === selectedSchemaDid)
+			.filter((item: SonrObject) => item.schemaDid === selectedSchema)
 			.map(({ cid, data }: SonrObject): SearchableListItem => {
 				const listItem: SearchableListItem = {}
 				listItem.cid = { text: cid }
 				Object.keys(data).forEach((key) => {
-					if(data[key]?.buffer?.type === 'Buffer'){
+					if (data[key]?.buffer?.type === "Buffer") {
 						const item = data[key].buffer
 						const arr = new Uint8Array(item.data as ArrayBuffer)
-            			const buffer = Buffer.from(arr)
-						listItem[key] = { 
-							text: '',
+						const buffer = Buffer.from(arr)
+						listItem[key] = {
+							text: "",
 							Component: () => (
 								<div
 									className="w-20 h-8 bg-button-subtle rounded cursor-pointer flex justify-center items-center"
-									onClick={() => parseFileValueFromByteArrayAndDownload(buffer as ArrayBuffer, data[key].fileName)}
+									onClick={() =>
+										parseFileValueFromByteArrayAndDownload(
+											buffer as ArrayBuffer,
+											data[key].fileName
+										)
+									}
 								>
 									<span className="block font-extrabold text-custom-xs text-button-subtle">
 										Download
 									</span>
 								</div>
-							)
-						}	
+							),
+						}
 					} else {
-						listItem[key] = { 
-							text: data[key].toString() 
+						listItem[key] = {
+							text: data[key].toString(),
 						}
 					}
 				})
@@ -159,7 +140,7 @@ function ObjectsPageContainer() {
 		<ObjectsPageComponent
 			schemas={schemaMetadata}
 			buckets={buckets}
-			selectedSchemaDid={selectedSchemaDid}
+			selectedSchema={selectedSchema}
 			selectedBucket={selectedBucket}
 			setSelectedBucket={setSelectedBucket}
 			setSelectedSchema={setSelectedSchema}

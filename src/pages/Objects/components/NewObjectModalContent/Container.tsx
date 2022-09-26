@@ -1,4 +1,10 @@
-import { useContext, useEffect, useState } from "react"
+import {
+	Dispatch,
+	SetStateAction,
+	useContext,
+	useEffect,
+	useState,
+} from "react"
 import { useDispatch, useSelector } from "react-redux"
 import RefreshSvg from "../../../../assets/svgs/Refresh"
 import { AppModalContext } from "../../../../contexts/appModalContext/appModalContext"
@@ -12,88 +18,56 @@ import {
 	userCreateObject,
 	userGetBucketObjects,
 } from "../../../../redux/slices/objectsSlice"
-import {
-	selectSchemasLoading,
-	userGetSchema,
-} from "../../../../redux/slices/schemasSlice"
-import { IobjectPropertyChange, SchemaMeta } from "../../../../utils/types"
+import { selectSchemasLoading } from "../../../../redux/slices/schemasSlice"
+import { SchemaField, SchemaMeta } from "../../../../utils/types"
 import NewObjectModalContentComponent from "./Component"
 
 export interface NewObjectModalContentContainerProps {
-	selectedSchemaDid: string
+	selectedSchema: string
 	selectedBucket: string
-	setSelectedBucket: React.Dispatch<React.SetStateAction<string>>
-	setSelectedSchema: React.Dispatch<React.SetStateAction<string>>
-	initialSchemaFields: Array<Record<string, any>>
+	onChangeBucket: Dispatch<SetStateAction<string>>
+	onChangeSchema: Dispatch<SetStateAction<string>>
 	schemas: Array<SchemaMeta>
 }
 
 function NewObjectModalContentContainer({
-	selectedSchemaDid,
-	setSelectedBucket,
-	setSelectedSchema,
+	selectedSchema,
 	selectedBucket,
-	initialSchemaFields = [],
+	onChangeBucket,
+	onChangeSchema,
 	schemas,
 }: NewObjectModalContentContainerProps) {
 	const { closeModal } = useContext(AppModalContext)
 	const dispatch: Function = useDispatch()
 	const buckets = useSelector(selectBuckets)
 	const [error, setError] = useState("")
-	const [properties, setProperties] = useState(initialSchemaFields)
+	const [properties, setProperties] = useState<SchemaField[]>([])
+	const [values, setValues] = useState<string[]>([])
 	const schemasLoading = useSelector(selectSchemasLoading)
 	const bucketsLoading = useSelector(selectBucketsLoading)
 	const objectsLoading = useSelector(selectObjectsLoading)
 	const loading = schemasLoading || objectsLoading || bucketsLoading
 
 	useEffect(() => {
-		if (selectedSchemaDid) {
-			getSchema()
-		}
+		const schema = schemas.find((schema) => schema.did === selectedSchema)!
+		setProperties(schema.fields)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedSchemaDid])
+	}, [selectedSchema])
 
-	async function getSchema() {
-		const selectedSchemaData = schemas.find(
-			(item) => item.did === selectedSchemaDid
-		)!
-		const getSchemaPayload = {
-			schema: selectedSchemaData.did,
-		}
-
-		const getSchemaResponse = await dispatch(
-			userGetSchema({ schema: getSchemaPayload })
-		)
-
-		setProperties(getSchemaResponse.payload)
-	}
-
-	function handlePropertiesChange({ value, index }: IobjectPropertyChange) {
+	function handlePropertiesChange(index: number, value: string) {
 		setError("")
-		//console.log("index", index)
-		const newProperties = [...properties]
-
-		if(!value) return
-
-		newProperties.splice(index, 1, {
-			...properties[index],
-			value,
-		})
-		//console.log("newProperties", newProperties)
-		setProperties(newProperties)
-	}
-
-	function handleChangeBucket(value: string) {
-		setSelectedBucket(value)
+		const newValues = [...values]
+		newValues[index] = value
+		setValues(newValues)
 	}
 
 	async function save() {
-		const selectedSchemaData = schemas.find(
-			(item) => item.did === selectedSchemaDid
-		)
+		const schema = schemas.find((item) => item.did === selectedSchema)!
 
 		const castValue = (type: Number, value: string) => {
 			switch (type) {
+				case 0:
+					return JSON.parse(value)
 				case 1:
 					if (value === "true") return true
 					if (value === "false") return false
@@ -108,32 +82,26 @@ function NewObjectModalContentContainer({
 		}
 
 		const objectPayload = {
-			schemaDid: selectedSchemaDid,
-			label: selectedSchemaData?.label || "",
+			schemaDid: selectedSchema,
+			label: schema.label || "",
 			object: properties.reduce(
-				(acc, item) => {
-						return {
-							...acc,
-							[item.name]: castValue(item.type, item.value),
-						}
-					},
+				(acc, item, index) => ({
+					...acc,
+					[item.name]: castValue(item.type, values[index]),
+				}),
 				{}
 			),
 		}
 
-		if (
-			!Object.keys(objectPayload.object).every(
-				(key) => objectPayload.object[key] !== null
-			)
-		) {
+		if (!Object.values(objectPayload.object).every((v) => v !== null)) {
 			setError("Properties are required.")
 			return
 		}
 
 		let floatError = false
-		properties.forEach((item) => {
+		properties.forEach((item, index) => {
 			if (item.type === 3) {
-				const splitValue = item.value.split(".")
+				const splitValue = values[index].split(".")
 				if (
 					splitValue.length &&
 					(splitValue.length < 2 || parseFloat(splitValue[1]) === 0)
@@ -157,17 +125,12 @@ function NewObjectModalContentContainer({
 		const bucketUpdatePayload = {
 			bucketDid: selectedBucket,
 			objectCid: response.payload,
-			schemaDid: selectedSchemaDid,
+			schemaDid: selectedSchema,
 		}
 
 		await dispatch(updateBucket({ ...bucketUpdatePayload }))
-		
-		dispatch(
-			userGetBucketObjects({
-				bucketDid: selectedBucket,
-			})
-		)
-		
+		dispatch(userGetBucketObjects({ bucketDid: selectedBucket }))
+
 		closeModal()
 	}
 
@@ -181,17 +144,17 @@ function NewObjectModalContentContainer({
 				</div>
 			) : (
 				<NewObjectModalContentComponent
+					schemas={schemas}
+					buckets={buckets}
+					selectedSchema={selectedSchema}
+					selectedBucket={selectedBucket}
 					onClose={closeModal}
 					onSave={save}
-					onChangeSchema={setSelectedSchema}
-					onChangeBucket={handleChangeBucket}
+					onChangeSchema={onChangeSchema}
+					onChangeBucket={onChangeBucket}
 					onChangeProperty={handlePropertiesChange}
-					schemas={schemas}
 					error={error}
-					buckets={buckets}
 					properties={properties}
-					selectedSchemaDid={selectedSchemaDid}
-					selectedBucket={selectedBucket}
 				/>
 			)}
 		</>

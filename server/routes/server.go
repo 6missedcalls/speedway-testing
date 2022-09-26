@@ -2,15 +2,20 @@ package routes
 
 import (
 	"context"
+	"embed"
 	"fmt"
+	"io/fs"
 	"net/http"
 	"os"
+	"os/exec"
+	"runtime"
 	"time"
 
 	"github.com/duo-labs/webauthn/protocol"
 	"github.com/duo-labs/webauthn/webauthn"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/browser"
 	_ "github.com/sonr-io/speedway/docs"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -99,7 +104,12 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	ns.Router.POST("/api/v1/schema/create", ns.CreateSchema)
 	ns.Router.POST("/api/v1/schema/get", ns.QuerySchema)
 
-	// * Object Routes
+	// * Schema Document Routes
+	ns.Router.POST("/api/v1/schema-document/create", ns.CreateSchemaDocument)
+	ns.Router.POST("/api/v1/schema-document/get", ns.GetSchemaDocument)
+
+	// ! Deprecated Routes (Will be removed in future versions)
+	// ! Object Routes
 	ns.Router.POST("/api/v1/object/build", ns.BuildObject)
 	ns.Router.POST("/api/v1/object/get", ns.GetObject)
 
@@ -116,16 +126,31 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	ns.Router.GET("/proxy/buckets", ns.ProxyQueryBuckets)
 
 	// * Serve Static Route
-	ns.Router.Use(static.Serve("/", static.LocalFile(ns.Config.StaticDir, true)))
-	ns.Router.Use(static.Serve("/schema", static.LocalFile(ns.Config.StaticDir, true)))
-	ns.Router.Use(static.Serve("/objects", static.LocalFile(ns.Config.StaticDir, true)))
-	ns.Router.Use(static.Serve("/buckets", static.LocalFile(ns.Config.StaticDir, true)))
+	if ns.Config.EmbedFs != nil {
+		ns.Router.Use(static.Serve("/", EmbedFolder(*ns.Config.EmbedFs, ns.Config.StaticDir)))
+		ns.Router.Use(static.Serve("/schema", EmbedFolder(*ns.Config.EmbedFs, ns.Config.StaticDir)))
+		ns.Router.Use(static.Serve("/objects", EmbedFolder(*ns.Config.EmbedFs, ns.Config.StaticDir)))
+		ns.Router.Use(static.Serve("/buckets", EmbedFolder(*ns.Config.EmbedFs, ns.Config.StaticDir)))
+	} else {
+		ns.Router.Use(static.Serve("/", static.LocalFile(ns.Config.StaticDir, true)))
+		ns.Router.Use(static.Serve("/schema", static.LocalFile(ns.Config.StaticDir, true)))
+		ns.Router.Use(static.Serve("/objects", static.LocalFile(ns.Config.StaticDir, true)))
+		ns.Router.Use(static.Serve("/buckets", static.LocalFile(ns.Config.StaticDir, true)))
+
+	}
 	ns.Router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return nil
 }
 
-func (ns *NebulaServer) Serve() error {
+func (ns *NebulaServer) Serve(openInBrowser bool) error {
+	if openInBrowser {
+		go func() {
+			time.Sleep(1 * time.Second)
+			browser.OpenURL("http://localhost:4040")
+		}()
+	}
+
 	// Start Highway HTTP server on a separate goroutine
 	go func() {
 		// Start HTTP server (and proxy calls to gRPC server endpoint)
@@ -148,4 +173,43 @@ func (ns *NebulaServer) Serve() error {
 	}
 
 	return nil
+}
+
+func open(url string) error {
+	var cmd string
+	var args []string
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = "cmd"
+		args = []string{"/c", "start"}
+	case "darwin":
+		cmd = "open"
+	default: // "linux", "freebsd", "openbsd", "netbsd"
+		cmd = "xdg-open"
+	}
+	args = append(args, url)
+	return exec.Command(cmd, args...).Start()
+}
+
+type embedFileSystem struct {
+	http.FileSystem
+}
+
+func (e embedFileSystem) Exists(prefix string, path string) bool {
+	_, err := e.Open(path)
+	if err != nil {
+		return false
+	}
+	return true
+}
+
+func EmbedFolder(fsEmbed embed.FS, targetPath string) static.ServeFileSystem {
+	fsys, err := fs.Sub(fsEmbed, targetPath)
+	if err != nil {
+		panic(err)
+	}
+	return embedFileSystem{
+		FileSystem: http.FS(fsys),
+	}
 }

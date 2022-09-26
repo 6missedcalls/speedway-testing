@@ -4,11 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/speedway/internal/binding"
+	"github.com/sonr-io/speedway/internal/client"
 	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/utils"
@@ -23,41 +25,40 @@ func bootstrapQuerySchemaCommand(ctx context.Context, logger *golog.Logger) (que
 		Short: "Use: Returns a schema by the provided did",
 		Long:  "Returns a schema matching the did, if not provided the cli will prompt",
 		Run: func(cmd *cobra.Command, args []string) {
-			loginRequest := prompts.LoginPrompt()
-
-			m := binding.InitMotor()
-
-			loginResult, err := m.Login(loginRequest)
-			if err != nil {
-				logger.Fatalf(status.Error("Error: %s"), err)
-				return
-			}
-			if loginResult.Success {
-				logger.Info(status.Success("Login successful"))
-			} else {
-				logger.Fatalf(status.Error("Login failed"))
-			}
-			var did string = ""
+			var did string
 			if len(args) > 0 {
 				did = args[0]
 			}
+
 			// get schema
-			if did == "" {
+			for did == "" {
 				did = (&prompter.Prompter{
 					Message: "Enter DID",
 				}).Prompt()
+				did = strings.Trim(did, " ")
+
 				if did == "" {
-					logger.Fatal(status.Error("DID is required"))
-					return
+					logger.Info(status.Info, "DID is required")
 				}
 			}
-			querySchemaReq := rtmv1.QueryWhatIsRequest{
-				Creator: m.GetDID().String(),
-				Did:     did,
+
+			cli, err := client.New(ctx)
+			if err != nil {
+				logger.Fatalf(status.Error("RPC Client Error: "), err)
+				return
+			}
+
+			session, err := cli.GetSessionInfo()
+			if err != nil {
+				logger.Fatalf(status.Error("SessionInfo Error: "), err)
+				return
 			}
 
 			// query schema
-			querySchemaRes, err := m.QueryWhatIs(querySchemaReq)
+			querySchemaRes, err := cli.GetSchema(rtmv1.QueryWhatIsRequest{
+				Creator: session.Info.Address,
+				Did:     did,
+			})
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return

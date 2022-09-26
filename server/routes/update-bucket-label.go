@@ -19,7 +19,7 @@ type UpdateBucketLabelRequest struct {
 // @Summary UpdateBucketLabel
 // @Schemes
 // @Description Update a bucket on Sonr using the bucket module of Sonr's Blockchain.
-// @Tags bucket
+// @Tags Bucket
 // @Produce json
 // @Param 		 bucketDid body string true "BucketDid" example("did:snr:172ljvam8m7xxlv59v6w27lula58zwwct3vgn9p")
 // @Param 		 label body string true "Label" example("My Bucket")

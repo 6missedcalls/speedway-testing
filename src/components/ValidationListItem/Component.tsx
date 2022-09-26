@@ -9,7 +9,9 @@ interface ValidationListItemProps {
 function ValidationListItem({ error, label }: ValidationListItemProps) {
 	return (
 		<div className="flex">
-			<div className="w-4 h-4 shrink-0 mr-2">{error ? <DeniedSvg /> : <CheckedSvg />}</div>
+			<div className="w-4 h-4 shrink-0 mr-2">
+				{error ? <DeniedSvg /> : <CheckedSvg />}
+			</div>
 			<div className="flex">{label}</div>
 		</div>
 	)

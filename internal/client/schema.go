@@ -12,7 +12,7 @@ func (c *RpcClient) CreateSchema(req rtmv1.CreateSchemaRequest) (*rtmv1.CreateSc
 	return &response, nil
 }
 
-func (c *RpcClient) GetSchema(req rtmv1.QuerySchemaRequest) (*rtmv1.QueryWhatIsResponse, error) {
+func (c *RpcClient) GetSchema(req rtmv1.QueryWhatIsRequest) (*rtmv1.QueryWhatIsResponse, error) {
 	var response rtmv1.QueryWhatIsResponse
 	if err := c.client.Call("Daemon.GetSchema", req, &response); err != nil {
 		return nil, err
