@@ -207,7 +207,7 @@ const ListInput = ({ onChange }: { onChange: (value: string) => void }) => {
 		onChange(JSON.stringify(newValues))
 	}
 	return (
-		<div>
+		<div className="border-l border-gray-200 pl-2">
 			{values.map((value, index) => (
 				<div className="flex mb-2" key={index}>
 					<input
