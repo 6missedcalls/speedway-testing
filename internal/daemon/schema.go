@@ -15,9 +15,7 @@ func (d *Daemon) GetSchema(req rtmv1.QueryWhatIsRequest, res *rtmv1.QueryWhatIsR
 }
 
 func (d *Daemon) CreateSchemaDocument(req rtmv1.UploadDocumentRequest, res *rtmv1.UploadDocumentResponse) (err error) {
-	r, e := d.instance.Instance.UploadDocument(req)
-	*res = *r
-	err = e
+	*res, err = d.instance.CreateSchemaDocument(req)
 	return
 }
 

@@ -27,5 +27,6 @@ require (
 	github.com/swaggo/gin-swagger v1.5.0
 	github.com/swaggo/swag v1.8.1
 	github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31
+	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
 	google.golang.org/grpc v1.48.0
 )

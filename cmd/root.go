@@ -12,6 +12,7 @@ import (
 	schema "github.com/sonr-io/speedway/cmd/commands/schema"
 	prompts "github.com/sonr-io/speedway/internal/prompts"
 	"github.com/spf13/cobra"
+	cobracompletefig "github.com/withfig/autocomplete-tools/integrations/cobra"
 )
 
 func Execute(logger *golog.Logger, buildDir embed.FS) error {
@@ -35,6 +36,7 @@ func bootstrapRootCommand(ctx context.Context, logger *golog.Logger, buildDir em
 	rootCmd.AddCommand(bucket.BootstrapBucketCommand(ctx, logger))
 	rootCmd.AddCommand(daemon.BootstrapDaemonCommand(ctx, logger))
 	rootCmd.AddCommand(BootstrapServeCommand(ctx, buildDir))
+	rootCmd.AddCommand(cobracompletefig.CreateCompletionSpecCommand())
 
 	return
 }
