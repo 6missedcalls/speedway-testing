@@ -66,6 +66,8 @@ function NewObjectModalContentContainer({
 
 		const castValue = (type: Number, value: string) => {
 			switch (type) {
+				case 0:
+					return JSON.parse(value)
 				case 1:
 					if (value === "true") return true
 					if (value === "false") return false

@@ -41,6 +41,7 @@ function SchemaPropertyComponent({
 					<option value="int">Integer</option>
 					<option value="float">Float</option>
 					<option value="boolean">Boolean</option>
+					{/* <option value="list">List</option> */}
 				</select>
 				<NebulaIcon
 					iconName="ArrowSquareDown"

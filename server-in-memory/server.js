@@ -14,6 +14,7 @@ const accountStoreKey = (address) => `account-${address}`
 const objectStoreKey = (cid) => `object-${cid}`
 
 const fieldTypeMap = {
+	0: "LIST",
 	1: "BOOL",
 	2: "INT",
 	3: "FLOAT",
@@ -238,11 +239,20 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 		return
 	}
 
+	const objectData = _.chain(body.object)
+		.keys()
+		.sortBy()
+		.reduce((acc, key) => {
+			acc[key] = body.object[key]
+			return acc
+		}, {})
+		.valueOf()
+
 	const cid = generateCid()
 	const object = {
 		cid,
 		schema: body.schemaDid,
-		...body.object,
+		...objectData,
 	}
 	await storage.setItem(objectStoreKey(cid), object)
 

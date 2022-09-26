@@ -78,6 +78,7 @@ it(
 				extinct: 1,
 				strength: 2,
 				interest: 3,
+				friends: 0,
 			},
 		})
 		expect(resSchemaCreate.status).toBe(200)
@@ -117,7 +118,7 @@ it(
 		expect(userSchemas[0]).toHaveProperty("schema.label")
 		expect(userSchemas[0].schema.label).toBe("dinosaurs")
 		expect(userSchemas[0]).toHaveProperty("schema.fields.length")
-		expect(userSchemas[0].schema.fields.length).toBe(4)
+		expect(userSchemas[0].schema.fields.length).toBe(5)
 
 		expect(userSchemas[0].schema.fields[0].name).toBe("firstname")
 		expect(userSchemas[0].schema.fields[0].field).toBe("STRING")
@@ -127,6 +128,8 @@ it(
 		expect(userSchemas[0].schema.fields[2].field).toBe("INT")
 		expect(userSchemas[0].schema.fields[3].name).toBe("interest")
 		expect(userSchemas[0].schema.fields[3].field).toBe("FLOAT")
+		expect(userSchemas[0].schema.fields[4].name).toBe("friends")
+		expect(userSchemas[0].schema.fields[4].field).toBe("LIST")
 
 		// GET A LIST OF BUCKETS
 		const resBucketList = await app.get(proxy("buckets"))
@@ -157,6 +160,7 @@ it(
 				firstname: "steve",
 				interest: 2.5,
 				strength: 10,
+				friends: ["robin", "nancy"],
 			},
 		})
 		expect(resObject.status).toBe(200)
@@ -191,7 +195,7 @@ it(
 		expect(resBucketContents.body.bucket[0].uri).toBe(objectCid)
 		expect(resBucketContents.body.bucket[0]).toHaveProperty("content.item")
 		expect(resBucketContents.body.bucket[0].content.item).toBe(
-			"eyJleHRpbmN0Ijp0cnVlLCJmaXJzdG5hbWUiOiJzdGV2ZSIsImludGVyZXN0IjoyLjUsInN0cmVuZ3RoIjoxMH0="
+			"eyJleHRpbmN0Ijp0cnVlLCJmaXJzdG5hbWUiOiJzdGV2ZSIsImZyaWVuZHMiOlsicm9iaW4iLCJuYW5jeSJdLCJpbnRlcmVzdCI6Mi41LCJzdHJlbmd0aCI6MTB9"
 		)
 	},
 	10 * 60 * 1000 // 10 minutes timeout
