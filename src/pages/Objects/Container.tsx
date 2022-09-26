@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
+
 import {
 	selectBuckets,
 	selectBucketsLoading,
@@ -134,7 +135,14 @@ function ObjectsPageContainer() {
 						listItem[key] = { 
 							text: '',
 							Component: () => (
-								<div onClick={() => parseFileValueFromByteArrayAndDownload(buffer as ArrayBuffer, 'test' + data[key].fileName)}>Download</div>
+								<div
+									className="w-20 h-8 bg-button-subtle rounded cursor-pointer flex justify-center items-center"
+									onClick={() => parseFileValueFromByteArrayAndDownload(buffer as ArrayBuffer, data[key].fileName)}
+								>
+									<span className="block font-extrabold text-custom-xs text-button-subtle">
+										Download
+									</span>
+								</div>
 							)
 						}	
 					} else {

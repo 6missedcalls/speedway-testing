@@ -152,8 +152,13 @@ type Props = {
 
 async function onLoad(files: any, onChange: any) {
 	const file = files[0]
+	console.log("file", file)
 	const buffer = await fileToByteArray(file)
 	onChange({ buffer, fileName: file.name })
+}
+
+function onDrop(files: any) {
+	console.log("Drop")
 }
 
 async function onInput(event: any, onChange: any){
@@ -202,6 +207,7 @@ const SchemaFieldInput = ({ field, onChange }: Props) => {
 		case 5:
 			return (
 				<FileDropInput 
+					onDrop={(files: any) => onLoad(files, onChange)}
 					dropId={slugify(field.name)}
 					onLoad={(files: any) => onLoad(files, onChange)}
 					onInput={(event: any) => onInput(event, onChange)}

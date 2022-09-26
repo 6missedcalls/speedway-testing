@@ -70,14 +70,16 @@ function NewObjectModalContentContainer({
 
 	function handlePropertiesChange({ value, index }: IobjectPropertyChange) {
 		setError("")
-		
+		//console.log("index", index)
 		const newProperties = [...properties]
+
+		if(!value) return
 
 		newProperties.splice(index, 1, {
 			...properties[index],
 			value,
 		})
-
+		//console.log("newProperties", newProperties)
 		setProperties(newProperties)
 	}
 

@@ -1,26 +1,42 @@
 import FileDropInputComponent from "./Component"
 import dragDrop from 'drag-drop'
-import { FormEvent, useEffect } from "react"
+import { FormEvent, useEffect, useState } from "react"
 
 interface FileDropInputContainerProps {
     onInput: (e: FormEvent<HTMLInputElement>) => void
     onLoad: (files: any) => void
+    onDrop: (files: any) => void
     dropId: string
 }
 
 function FileDropInputContainer({
     onInput,
     onLoad,
+    onDrop,
     dropId
 }: FileDropInputContainerProps){
+    const [hasFile, setHasFile] = useState(false)
+
     useEffect(() => {
-        dragDrop(`#${dropId}`, (files: any) => onLoad(files))
+        dragDrop(
+            `#${dropId}`, {
+                onDrop: (files: any) => {
+                    setHasFile(true)
+                    onLoad(files)
+                },
+            }
+        )
     }, [])
 
     return (
         <FileDropInputComponent 
-            onInput={onInput} 
+            setHasFile={setHasFile}
+            onInput={(event: any) => {
+                setHasFile(true)
+                onInput(event)
+            }} 
             dropId={dropId}
+            hasFile={hasFile}
         />
     )
 }
