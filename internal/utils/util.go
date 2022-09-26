@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/denisbrodbeck/machineid"
@@ -12,7 +13,6 @@ import (
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/bucket/types"
 	st "github.com/sonr-io/sonr/x/schema/types"
-	"github.com/sonr-io/speedway/internal/storage"
 )
 
 type ObjectBuilder struct {
@@ -86,7 +86,7 @@ func CreateAccount(m motor.MotorNode, req rtmv1.CreateAccountRequest) (rtmv1.Cre
 		return res, err
 	}
 
-	if storage.StoreInfo("address.snr", m) != nil {
+	if StoreInfo("address.snr", m) != nil {
 		fmt.Println("Storage Error: ", err)
 		return res, err
 	}
@@ -186,4 +186,57 @@ func MarshalJsonFmt(data interface{}) (string, error) {
 	}
 
 	return string(b), err
+}
+
+//	Storage Information Utils	//
+
+/*
+The StoreInfo function stores the specified key in the ~/.speedway/info directory
+*/
+func StoreInfo(name string, m motor.MotorNode) error {
+	homedir, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+	if _, err := os.Stat(homedir + "/.speedway/info/" + name); os.IsNotExist(err) {
+		err := os.MkdirAll(homedir+"/.speedway/info/", 0700)
+		if err != nil {
+			return err
+		}
+	}
+
+	file, err := os.Create(homedir + "/.speedway/info/" + name)
+	if err != nil {
+		return err
+	}
+
+	address := m.GetAddress()
+
+	// write to the file with the address and did document in json format and close the file
+	_, err = file.WriteString(address)
+	if err != nil {
+		return err
+	}
+
+	return err
+}
+
+/*
+LoadInfo loads the account information from the ~/.speedway/info directory
+*/
+func LoadInfo(name string) (string, error) {
+	var file *os.File
+	if _, err := os.Stat(fmt.Sprintf("%s/%s", os.Getenv("HOME"), ".speedway/info/"+name)); err != nil {
+		if os.IsNotExist(err) {
+			return "", err
+		}
+		return "", err
+	}
+	file, err := os.Open(fmt.Sprintf("%s/%s", os.Getenv("HOME"), ".speedway/info/"+name))
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+	data, err := ioutil.ReadAll(file)
+	return string(data), err
 }

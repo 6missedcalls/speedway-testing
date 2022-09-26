@@ -13,20 +13,19 @@ import (
 	btv1 "github.com/sonr-io/sonr/x/bucket/types"
 	rt "github.com/sonr-io/sonr/x/registry/types"
 	"github.com/sonr-io/speedway/internal/status"
-	"github.com/sonr-io/speedway/internal/storage"
 	"github.com/sonr-io/speedway/internal/utils"
 )
 
 var (
-	ErrMotorNotInitialized = fmt.Errorf("cannot find instance of motor")
-	ErrNotAuthenticated    = fmt.Errorf("must be logged in to preform that action")
-	ErrIsAuthenticated     = fmt.Errorf("you are already authenticated")
-	ErrMotorFailedInit     = fmt.Errorf("motor failed to initialize")
+	ErrMotorNotInitialized = fmt.Errorf("cannot find instance of motor")            // Error for when the motor is not initialized
+	ErrNotAuthenticated    = fmt.Errorf("must be logged in to preform that action") // Error for when the user is not logged in
+	ErrIsAuthenticated     = fmt.Errorf("you are already authenticated")            // Error for when the user is already logged in
+	ErrMotorFailedInit     = fmt.Errorf("motor failed to initialize")               // Error for when the motor fails to initialize
 )
 
 type SpeedwayBinding struct {
-	loggedIn bool
-	Instance mtr.MotorNode
+	loggedIn bool          // Flag for if the user is logged in
+	Instance mtr.MotorNode // Instance of the motor node
 }
 
 type MotorCallback struct {
@@ -93,7 +92,7 @@ func (b *SpeedwayBinding) CreateAccount(req rtmv1.CreateAccountRequest) (rtmv1.C
 		fmt.Println(status.Error("Create Account Error"), err)
 	}
 
-	if storage.StoreInfo("address.snr", b.Instance) != nil {
+	if utils.StoreInfo("address.snr", b.Instance) != nil {
 		fmt.Println(status.Error("Storage Error: "), err)
 	}
 
@@ -109,7 +108,7 @@ func (b *SpeedwayBinding) CreateAccountWithKeys(req rtmv1.CreateAccountWithKeysR
 		fmt.Println(status.Error("Create Account With Keys Error"), err)
 	}
 
-	if storage.StoreInfo("address.snr", b.Instance) != nil {
+	if utils.StoreInfo("address.snr", b.Instance) != nil {
 		fmt.Println(status.Error("Storage Error: "), err)
 	}
 
@@ -125,7 +124,11 @@ func (b *SpeedwayBinding) Login(req rtmv1.LoginRequest) (rtmv1.LoginResponse, er
 		return rtmv1.LoginResponse{}, ErrMotorNotInitialized
 	}
 	if b.loggedIn {
-		fmt.Println(status.Info, "You are already logged in")
+		fmt.Println(status.Info, "You are already logged in, now logging out...")
+		b.loggedIn = false
+		b.Instance = nil
+		b.Instance = InitMotor()
+		return rtmv1.LoginResponse{}, ErrIsAuthenticated
 	}
 
 	res, err := b.Instance.Login(req)
@@ -133,7 +136,7 @@ func (b *SpeedwayBinding) Login(req rtmv1.LoginRequest) (rtmv1.LoginResponse, er
 		fmt.Println(status.Error("Login Error"), err)
 	}
 
-	b.loggedIn = true
+	b.loggedIn = res.GetSuccess()
 
 	return res, err
 }
@@ -147,7 +150,11 @@ func (b *SpeedwayBinding) LoginWithKeys(req rtmv1.LoginWithKeysRequest) (rtmv1.L
 		return rtmv1.LoginResponse{}, ErrMotorNotInitialized
 	}
 	if b.loggedIn {
-		fmt.Println(status.Info, "You are already logged in")
+		fmt.Println(status.Info, "You are already logged in, now logging out...")
+		b.loggedIn = false
+		b.Instance = nil
+		b.Instance = InitMotor()
+		return rtmv1.LoginResponse{}, ErrIsAuthenticated
 	}
 
 	res, err := b.Instance.LoginWithKeys(req)
@@ -155,7 +162,7 @@ func (b *SpeedwayBinding) LoginWithKeys(req rtmv1.LoginWithKeysRequest) (rtmv1.L
 		fmt.Println(status.Error("Login Error"), err)
 	}
 
-	b.loggedIn = true
+	b.loggedIn = res.GetSuccess()
 
 	return res, err
 }
