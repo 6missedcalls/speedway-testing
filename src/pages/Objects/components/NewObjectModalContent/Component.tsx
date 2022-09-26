@@ -189,26 +189,31 @@ const SchemaFieldInput = ({ field, onChange }: Props) => {
 
 const ListInput = ({ onChange }: { onChange: (value: string) => void }) => {
 	const [values, setValues] = useState<string[]>([""])
-	const addItem = () => setValues((values) => [...values, ""])
-	const onChangeItem =
+	const addItem = () => {
+		const newValues = [...values, ""]
+		setValues(newValues)
+		onChange(JSON.stringify(newValues))
+	}
+	const editItem =
 		(index: number) => (event: ChangeEvent<HTMLInputElement>) => {
-			setValues((values) => {
-				values[index] = event.target.value
-				return [...values]
-			})
-			onChange(JSON.stringify(values))
+			const newValues = [...values]
+			newValues[index] = event.target.value
+			setValues(newValues)
+			onChange(JSON.stringify(newValues))
 		}
 	const deleteItem = (index: number) => () => {
-		setValues((values) => values.filter((_, i) => i !== index))
+		const newValues = values.filter((_, i) => i !== index)
+		setValues(newValues)
+		onChange(JSON.stringify(newValues))
 	}
 	return (
 		<div>
 			{values.map((value, index) => (
-				<div className="flex mb-2">
+				<div className="flex mb-2" key={index}>
 					<input
 						className="flex-1 border border-default-border rounded-md w-full p-2"
 						value={value}
-						onChange={onChangeItem(index)}
+						onChange={editItem(index)}
 					/>
 					<button className="p-2 ml-2 text-subdued" onClick={deleteItem(index)}>
 						✕
@@ -217,7 +222,7 @@ const ListInput = ({ onChange }: { onChange: (value: string) => void }) => {
 			))}
 
 			<button
-				className="text-button-transparent tracking-custom-tight text-custom-sm font-extrabold py-1"
+				className="text-button-transparent tracking-custom-tight text-custom-sm font-extrabold py-2"
 				onClick={addItem}
 			>
 				+ Add item
