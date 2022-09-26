@@ -199,15 +199,21 @@ const ListInput = ({ onChange }: { onChange: (value: string) => void }) => {
 	return (
 		<div>
 			{values.map((value, key) => (
-				<div>
+				<div className="mb-2">
 					<input
-						className="border border-black"
+						className="border border-default-border rounded-md w-full p-2"
 						value={value}
 						onChange={onChangeItem(key)}
 					/>
 				</div>
 			))}
-			<button onClick={addItem}>Add item</button>
+
+			<button
+				className="text-button-transparent tracking-custom-tight text-custom-sm font-extrabold py-1"
+				onClick={addItem}
+			>
+				+ Add item
+			</button>
 		</div>
 	)
 }
