@@ -5,29 +5,17 @@ tasks:
   swag:build:
     cmds:
       - swag init --generalInfo server/routes/server.go -o docs/ -pd
-
-  server:start:debug:
-    dir: server
+  build:ui:prod:
     cmds:
-      - go run main.go
-    env:
-      GIN_MODE: "debug"
-      RPDisplayName: "Sonr - Speedway"
-      RPID: "localhost"
-      RPOrigin: "http://0.0.0.0:4040"
-      Address: "0.0.0.0:4040"
-      StaticDir: "./build"
-      SONR_RPC_ADDR_PUBLIC: 137.184.190.146:9090
-
-  server:start:release:
-    dir: server
+      - npm install
+      - npm run build:embed
+  build:ui:dev:
     cmds:
-      - go run main.go
-    env:
-      GIN_MODE: "release"
-      RPDisplayName: "Sonr - Speedway"
-      RPID: "localhost"
-      RPOrigin: "http://0.0.0.0:4040"
-      Address: "0.0.0.0:4040"
-      StaticDir: "./build"
-      SONR_RPC_ADDR_PUBLIC: 137.184.190.146:9090
+      - npm install
+      - npm run build:debug
+  build:cmd:
+    cmds:
+      - npm install
+      - npm run build:embed
+      - go build -o bin/speedway
+      - mv bin/speedway /usr/local/bin/

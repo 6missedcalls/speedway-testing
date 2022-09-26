@@ -7,9 +7,9 @@ echo "Done!"
 
 echo "Speedway CLI 🏎  Moving Build..."
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    mv bin/speedway /usr/local/bin/speedway
+    mv bin/speedway /usr/local/bin
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    mv bin/speedway /usr/local/bin/speedway
+    mv bin/speedway /usr/local/bin
 else
     echo "OS not supported"
     exit 1
