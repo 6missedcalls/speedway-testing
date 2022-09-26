@@ -52,7 +52,7 @@ const Component = ({
 			content={
 				<div className="flex flex-col justify-center w-full max-w-sm">
 					<h1 className="text-custom-xl font-extrabold mb-8 text-emphasis">
-						Login to Your Vault - test2
+						Login to Your Vault
 					</h1>
 
 					<form onSubmit={_onSubmit} className="w-full">
