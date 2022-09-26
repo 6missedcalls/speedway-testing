@@ -191,22 +191,28 @@ const ListInput = ({ onChange }: { onChange: (value: string) => void }) => {
 	const [values, setValues] = useState<string[]>([""])
 	const addItem = () => setValues((values) => [...values, ""])
 	const onChangeItem =
-		(key: number) => (event: ChangeEvent<HTMLInputElement>) => {
+		(index: number) => (event: ChangeEvent<HTMLInputElement>) => {
 			setValues((values) => {
-				values[key] = event.target.value
+				values[index] = event.target.value
 				return [...values]
 			})
 			onChange(JSON.stringify(values))
 		}
+	const deleteItem = (index: number) => () => {
+		setValues((values) => values.filter((_, i) => i !== index))
+	}
 	return (
 		<div>
-			{values.map((value, key) => (
-				<div className="mb-2">
+			{values.map((value, index) => (
+				<div className="flex mb-2">
 					<input
-						className="border border-default-border rounded-md w-full p-2"
+						className="flex-1 border border-default-border rounded-md w-full p-2"
 						value={value}
-						onChange={onChangeItem(key)}
+						onChange={onChangeItem(index)}
 					/>
+					<button className="p-2 ml-2 text-subdued" onClick={deleteItem(index)}>
+						✕
+					</button>
 				</div>
 			))}
 
