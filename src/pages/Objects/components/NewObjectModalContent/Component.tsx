@@ -118,11 +118,13 @@ function NewObjectModalContentComponent({
 					))}
 				</div>
 			</div>
+
 			{error && (
-				<div className="ml-8">
+				<div className="mx-8 pt-2 -mb-2 z-10">
 					<span className="text-tertiary-red block text-xs">{error}</span>
 				</div>
 			)}
+
 			<div className="bg-black w-full rounded-b-2xl justify-end flex relative">
 				<div className="absolute rounded-b-2xl w-full h-6 bg-white -top-px" />
 				<Button

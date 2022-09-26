@@ -94,7 +94,7 @@ function NewObjectModalContentContainer({
 		}
 
 		if (!Object.values(objectPayload.object).every((v) => v !== null)) {
-			setError("Properties are required.")
+			setError("All properties are required")
 			return
 		}
 
