@@ -202,6 +202,25 @@ func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid s
 }
 
 /*
+Create a SchemaDocument from motor and return the response
+*/
+func (b *SpeedwayBinding) CreateSchemaDocument(req rtmv1.UploadDocumentRequest) (rtmv1.UploadDocumentResponse, error) {
+	if b.Instance == nil {
+		return rtmv1.UploadDocumentResponse{}, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return rtmv1.UploadDocumentResponse{}, ErrNotAuthenticated
+	}
+
+	res, err := b.Instance.UploadDocument(req)
+	if err != nil {
+		fmt.Println(status.Error("Upload Document Error"), err)
+	}
+
+	return *res, err
+}
+
+/*
 Get a SchemaDocument from motor
 */
 func (b *SpeedwayBinding) GetSchemaDocument(req rtmv1.GetDocumentRequest) (rtmv1.GetDocumentResponse, error) {
