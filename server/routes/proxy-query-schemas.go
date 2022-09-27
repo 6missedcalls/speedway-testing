@@ -49,7 +49,7 @@ type SchemaResponse struct {
 // @Summary QuerySchemas
 // @Schemes
 // @Description Query the Sonr Blockchain for all public schemas on the Blockchain. This is a read-only endpoint.
-// @Tags Schema
+// @Tags Proxy
 // @Produce json
 // @Success 200 {object} SchemaResponse
 // @Failure      500  {object} FailedResponse

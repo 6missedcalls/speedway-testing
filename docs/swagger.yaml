@@ -14,6 +14,36 @@ definitions:
   object.Object:
     additionalProperties: true
     type: object
+  routes.BucketResponse:
+    description: Query the Sonr Blockchain for all public buckets on the Blockchain.
+      This is a read-only endpoint.
+    properties:
+      where_is:
+        items:
+          properties:
+            content:
+              items: {}
+              type: array
+            content_acl:
+              items: {}
+              type: array
+            creator:
+              type: string
+            did:
+              type: string
+            is_active:
+              type: boolean
+            label:
+              type: string
+            role:
+              type: string
+            timestamp:
+              type: string
+            visibility:
+              type: string
+          type: object
+        type: array
+    type: object
   routes.ConvertBucketRes:
     properties:
       content:
@@ -98,6 +128,19 @@ definitions:
                   type: string
                 did:
                   type: string
+                fields:
+                  items:
+                    properties:
+                      field:
+                        type: string
+                      link:
+                        type: string
+                      link_kind:
+                        type: string
+                      name:
+                        type: string
+                    type: object
+                  type: array
                 label:
                   type: string
               type: object
@@ -887,6 +930,33 @@ paths:
       summary: GetBucketBySchema
       tags:
       - Bucket
+  /bucket/query:
+    get:
+      description: Query the Sonr Blockchain for all public buckets by a specified
+        creator.
+      parameters:
+      - description: creator
+        in: query
+        name: creator
+        type: string
+      - description: pagination
+        in: query
+        name: pagination
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.BucketResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/routes.FailedResponse'
+      summary: QueryBuckets
+      tags:
+      - Proxy
   /bucket/update-items:
     post:
       description: Update a bucket on Sonr using the bucket module of Sonr's Blockchain.
@@ -1104,7 +1174,7 @@ paths:
             $ref: '#/definitions/routes.FailedResponse'
       summary: CreateSchemaDocument
       tags:
-      - Schema
+      - Schema Document
   /schema-document/get:
     post:
       consumes:
@@ -1130,7 +1200,7 @@ paths:
             $ref: '#/definitions/routes.FailedResponse'
       summary: GetSchemaDocument
       tags:
-      - Schema
+      - Schema Document
   /schema/create:
     post:
       consumes:
@@ -1195,6 +1265,24 @@ paths:
       summary: GetSchema
       tags:
       - Schema
+  /schema/get-from-creator:
+    get:
+      description: Query the Sonr Blockchain for all public schemas on the Blockchain.
+        This is a read-only endpoint.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SchemaResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/routes.FailedResponse'
+      summary: QueryWhatIsByCreator
+      tags:
+      - Schema
   /schema/query:
     get:
       description: Query the Sonr Blockchain for all public schemas on the Blockchain.
@@ -1212,5 +1300,5 @@ paths:
             $ref: '#/definitions/routes.FailedResponse'
       summary: QuerySchemas
       tags:
-      - Schema
+      - Proxy
 swagger: "2.0"

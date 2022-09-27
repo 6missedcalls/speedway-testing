@@ -15,7 +15,7 @@ import (
 // @Summary QueryBuckets
 // @Schemes
 // @Description Query the Sonr Blockchain for all public buckets by a specified creator.
-// @Tags Bucket
+// @Tags Proxy
 // @Produce json
 // @Param creator query string false "creator"
 // @Param pagination query string false "pagination"

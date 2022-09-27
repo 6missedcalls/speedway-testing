@@ -11,14 +11,14 @@ import (
 )
 
 // @BasePath /api/v1
-// @Summary QuerySchemas
+// @Summary QueryWhatIsByCreator
 // @Schemes
 // @Description Query the Sonr Blockchain for all public schemas on the Blockchain. This is a read-only endpoint.
 // @Tags Schema
 // @Produce json
 // @Success 200 {object} SchemaResponse
 // @Failure      500  {object} FailedResponse
-// @Router /schema/query [get]
+// @Router /schema/get-from-creator [get]
 func (ns *NebulaServer) QuerySchemaByCreator(c *gin.Context) {
 	rb := c.Request.Body
 	var body rtmv1.QueryWhatIsByCreatorRequest

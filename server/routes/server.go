@@ -109,7 +109,7 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	ns.Router.POST("/api/v1/schema-document/get", ns.GetSchemaDocument)
 
 	// ! Deprecated Routes (Will be removed in future versions)
-	// ! Object Routes
+	// * Object Routes
 	ns.Router.POST("/api/v1/object/build", ns.BuildObject)
 	ns.Router.POST("/api/v1/object/get", ns.GetObject)
 

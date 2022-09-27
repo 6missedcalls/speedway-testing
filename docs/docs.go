@@ -513,6 +513,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/bucket/query": {
+            "get": {
+                "description": "Query the Sonr Blockchain for all public buckets by a specified creator.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Proxy"
+                ],
+                "summary": "QueryBuckets",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "creator",
+                        "name": "creator",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "pagination",
+                        "name": "pagination",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.BucketResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/bucket/update-items": {
             "post": {
                 "description": "Update a bucket on Sonr using the bucket module of Sonr's Blockchain.",
@@ -775,7 +815,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Schema"
+                    "Schema Document"
                 ],
                 "summary": "CreateSchemaDocument",
                 "parameters": [
@@ -846,7 +886,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Schema"
+                    "Schema Document"
                 ],
                 "summary": "GetSchemaDocument",
                 "parameters": [
@@ -968,7 +1008,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/schema/query": {
+        "/schema/get-from-creator": {
             "get": {
                 "description": "Query the Sonr Blockchain for all public schemas on the Blockchain. This is a read-only endpoint.",
                 "produces": [
@@ -976,6 +1016,32 @@ const docTemplate = `{
                 ],
                 "tags": [
                     "Schema"
+                ],
+                "summary": "QueryWhatIsByCreator",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.SchemaResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/schema/query": {
+            "get": {
+                "description": "Query the Sonr Blockchain for all public schemas on the Blockchain. This is a read-only endpoint.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Proxy"
                 ],
                 "summary": "QuerySchemas",
                 "responses": {
@@ -1016,6 +1082,49 @@ const docTemplate = `{
         "object.Object": {
             "type": "object",
             "additionalProperties": true
+        },
+        "routes.BucketResponse": {
+            "description": "Query the Sonr Blockchain for all public buckets on the Blockchain. This is a read-only endpoint.",
+            "type": "object",
+            "properties": {
+                "where_is": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "content": {
+                                "type": "array",
+                                "items": {}
+                            },
+                            "content_acl": {
+                                "type": "array",
+                                "items": {}
+                            },
+                            "creator": {
+                                "type": "string"
+                            },
+                            "did": {
+                                "type": "string"
+                            },
+                            "is_active": {
+                                "type": "boolean"
+                            },
+                            "label": {
+                                "type": "string"
+                            },
+                            "role": {
+                                "type": "string"
+                            },
+                            "timestamp": {
+                                "type": "string"
+                            },
+                            "visibility": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
         },
         "routes.ConvertBucketRes": {
             "type": "object",
@@ -1147,6 +1256,26 @@ const docTemplate = `{
                                     },
                                     "did": {
                                         "type": "string"
+                                    },
+                                    "fields": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "field": {
+                                                    "type": "string"
+                                                },
+                                                "link": {
+                                                    "type": "string"
+                                                },
+                                                "link_kind": {
+                                                    "type": "string"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
                                     },
                                     "label": {
                                         "type": "string"

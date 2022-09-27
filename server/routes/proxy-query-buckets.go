@@ -22,7 +22,7 @@ const (
 // @Produce json
 // @Success 200 {object} BucketResponse
 // @Failure      500  {object} FailedResponse
-// @Router /bucket/query [get]
+// @Router bucket/get-from-creator [get]
 type BucketResponse struct {
 	WhereIs []struct {
 		Did        string        `json:"did"`
