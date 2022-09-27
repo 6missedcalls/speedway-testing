@@ -13,7 +13,7 @@ tasks:
     cmds:
       - npm install
       - npm run build:debug
-  build:cmd:
+  build:cli:
     cmds:
       - npm install
       - npm run build:embed
