@@ -15,13 +15,22 @@ jobs:
         go-version: [1.18.x]
         node-version: [16.x]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v2
         with:
-          go-version: '1.18.x'
-      # run the main.go serve command and then run the tests
-      - name: Run the server
-        run: task server:start:debug
+          go-version: ${{ matrix.go-version }}
+      - name: Set up Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Taskfile
+        run: |
+          go install github.com/go-task/task/v3/cmd/task@latest
+      - name: Run server
+        run: |
+          task server:start:debug
       # cd into the server directory
       - name: cd into server directory
         run: cd server-in-memory
