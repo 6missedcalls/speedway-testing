@@ -21,5 +21,4 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - run: cd ./server-in-memory && npm install
-      - run: npm run build --if-present
       - run: npm run smoke-detector
