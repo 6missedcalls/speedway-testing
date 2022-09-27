@@ -15,11 +15,8 @@ jobs:
         node-version: [16.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      - run: cd ./server-in-memory
-      - run: npm install
-      - run: npm run smoke-detector
+      - name: Setup & Test
+        working-directory: ./server-in-memory
+        run: |
+          npm install
+          npm run smoke-detector
