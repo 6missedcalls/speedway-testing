@@ -28,13 +28,13 @@ jobs:
       - name: Build UI
         run: |
           npm install
-          npm run build:test
+          npm run build:prod
       - name: Install Taskfile
         run: |
           go install github.com/go-task/task/v3/cmd/task@latest
       - name: Run server
         run: |
-          task server:start:debug
+          go run main.go serve
       # cd into the server directory
       - name: cd into server directory
         run: cd server-in-memory

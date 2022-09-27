@@ -17,7 +17,10 @@ tasks:
       RPOrigin: "http://0.0.0.0:4040"
       Address: "0.0.0.0:4040"
       StaticDir: "./build"
+      EmbedFs: 
       SONR_RPC_ADDR_PUBLIC: 137.184.190.146:9090
+
+      
 
   server:start:release:
     dir: server
