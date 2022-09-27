@@ -118,11 +118,13 @@ function NewObjectModalContentComponent({
 					))}
 				</div>
 			</div>
+
 			{error && (
-				<div className="ml-8">
+				<div className="mx-8 pt-2 -mb-2 z-10">
 					<span className="text-tertiary-red block text-xs">{error}</span>
 				</div>
 			)}
+
 			<div className="bg-black w-full rounded-b-2xl justify-end flex relative">
 				<div className="absolute rounded-b-2xl w-full h-6 bg-white -top-px" />
 				<Button
@@ -187,27 +189,44 @@ const SchemaFieldInput = ({ field, onChange }: Props) => {
 
 const ListInput = ({ onChange }: { onChange: (value: string) => void }) => {
 	const [values, setValues] = useState<string[]>([""])
-	const addItem = () => setValues((values) => [...values, ""])
-	const onChangeItem =
-		(key: number) => (event: ChangeEvent<HTMLInputElement>) => {
-			setValues((values) => {
-				values[key] = event.target.value
-				return [...values]
-			})
-			onChange(JSON.stringify(values))
+	const addItem = () => {
+		const newValues = [...values, ""]
+		setValues(newValues)
+		onChange(JSON.stringify(newValues))
+	}
+	const editItem =
+		(index: number) => (event: ChangeEvent<HTMLInputElement>) => {
+			const newValues = [...values]
+			newValues[index] = event.target.value
+			setValues(newValues)
+			onChange(JSON.stringify(newValues))
 		}
+	const deleteItem = (index: number) => () => {
+		const newValues = values.filter((_, i) => i !== index)
+		setValues(newValues)
+		onChange(JSON.stringify(newValues))
+	}
 	return (
-		<div>
-			{values.map((value, key) => (
-				<div>
+		<div className="border-l border-gray-200 pl-2">
+			{values.map((value, index) => (
+				<div className="flex mb-2" key={index}>
 					<input
-						className="border border-black"
+						className="flex-1 border border-default-border rounded-md w-full p-2"
 						value={value}
-						onChange={onChangeItem(key)}
+						onChange={editItem(index)}
 					/>
+					<button className="p-2 ml-2 text-subdued" onClick={deleteItem(index)}>
+						✕
+					</button>
 				</div>
 			))}
-			<button onClick={addItem}>Add item</button>
+
+			<button
+				className="text-button-transparent tracking-custom-tight text-custom-sm font-extrabold py-2"
+				onClick={addItem}
+			>
+				+ Add item
+			</button>
 		</div>
 	)
 }

@@ -67,7 +67,7 @@ function NewObjectModalContentContainer({
 		const castValue = (type: Number, value: string) => {
 			switch (type) {
 				case 0:
-					return JSON.parse(value)
+					return value ? JSON.parse(value) : null
 				case 1:
 					if (value === "true") return true
 					if (value === "false") return false
@@ -93,8 +93,14 @@ function NewObjectModalContentContainer({
 			),
 		}
 
-		if (!Object.values(objectPayload.object).every((v) => v !== null)) {
-			setError("Properties are required.")
+		if (
+			!Object.values(objectPayload.object).every((value) => {
+				return Array.isArray(value)
+					? value.every((item) => item !== "")
+					: value !== null
+			})
+		) {
+			setError("All properties are required")
 			return
 		}
 
