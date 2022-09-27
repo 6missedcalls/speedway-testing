@@ -12,10 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        go-version: [1.18.x]
         node-version: [16.x]
     steps:
-      - uses: actions/checkout@v3
+      - name: Starting Build and Test
+        run: go run main.go serve
       - name: Setup & Test
+        uses: actions/checkout@v3
         working-directory: ./server-in-memory
         run: |
           npm install
