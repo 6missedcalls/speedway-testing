@@ -43,10 +43,5 @@ func (ns *NebulaServer) QuerySchemaByCreator(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, rtmv1.QueryWhatIsByCreatorResponse{
-		Code:       res.Code,
-		WhatIs:     res.WhatIs,
-		Schemas:    res.Schemas,
-		Pagination: res.Pagination,
-	})
+	c.JSON(http.StatusOK, res)
 }

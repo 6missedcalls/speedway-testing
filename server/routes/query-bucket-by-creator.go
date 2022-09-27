@@ -46,10 +46,5 @@ func (ns *NebulaServer) QueryBucketByCreator(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, rtmv1.QueryWhereIsByCreatorResponse{
-		Code:       res.Code,
-		WhereIs:    res.WhereIs,
-		Pagination: res.Pagination,
-	})
-
+	c.JSON(http.StatusOK, res)
 }
