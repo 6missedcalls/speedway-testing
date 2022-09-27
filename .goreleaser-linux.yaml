@@ -2,12 +2,7 @@
 # Make sure to check the documentation at https://goreleaser.com
 project_name: speedway
 dist: build
-before:
-  hooks:
-    - npm install
-    - npm run build
-    - go mod tidy
-builds:
+
 
 archives:
   - name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
