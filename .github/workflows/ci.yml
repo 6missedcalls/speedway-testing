@@ -25,6 +25,10 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Build UI
+        run: |
+          npm install
+          npm run build:test
       - name: Install Taskfile
         run: |
           go install github.com/go-task/task/v3/cmd/task@latest
