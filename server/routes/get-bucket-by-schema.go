@@ -1,14 +1,12 @@
 package routes
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/speedway/internal/binding"
 )
 
 type GetBucketBySchemaBody struct {
@@ -42,7 +40,7 @@ func (ns *NebulaServer) GetBucketBySchema(c *gin.Context) {
 		return
 	}
 
-	b := binding.CreateInstance()
+	b := ns.Config.Binding
 
 	req := rtmv1.SeachBucketContentBySchemaRequest{
 		Creator:   body.Creator,
@@ -50,7 +48,7 @@ func (ns *NebulaServer) GetBucketBySchema(c *gin.Context) {
 		SchemaDid: body.SchemaDid,
 	}
 
-	bucket, err := b.GetBucketFromSchema(context.Background(), req)
+	res, err := b.Instance.SeachBucketBySchema(req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: err.Error(),
@@ -58,7 +56,5 @@ func (ns *NebulaServer) GetBucketBySchema(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"bucket": bucket,
-	})
+	c.JSON(http.StatusOK, res)
 }

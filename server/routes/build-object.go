@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"math"
@@ -9,7 +8,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/speedway/internal/binding"
 )
 
 type BuildObjectBody struct {
@@ -48,10 +46,10 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 
 	label := body.Label
 	// init motor
-	m := binding.CreateInstance()
+	b := ns.Config.Binding
 
 	// query whatis
-	did, err := m.GetDID()
+	did := b.Instance.GetDID()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: "Failed to get DID",
@@ -65,7 +63,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 		Did:     body.SchemaDid,
 	}
 
-	querySchema, err := m.QuerySchema(context.Background(), querySchemaReq)
+	querySchema, err := b.Instance.QueryWhatIs(querySchemaReq)
 	if err != nil {
 		fmt.Printf("Command failed %v\n", err)
 		return
@@ -73,7 +71,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	fmt.Printf("Schema WhatIs Response %v\n", querySchema)
 
 	// Initialize NewObjectBuilder
-	objBuilder, err := m.NewObjectBuilder(body.SchemaDid)
+	objBuilder, err := b.Instance.NewObjectBuilder(body.SchemaDid)
 	if err != nil {
 		fmt.Println("ObjectBuilder Error: ", err)
 		c.JSON(http.StatusUnprocessableEntity, FailedResponse{

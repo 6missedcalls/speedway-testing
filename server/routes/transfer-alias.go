@@ -1,12 +1,10 @@
 package routes
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	rt "github.com/sonr-io/sonr/x/registry/types"
-	"github.com/sonr-io/speedway/internal/binding"
 )
 
 type TransferAliasBody struct {
@@ -39,14 +37,16 @@ func (ns *NebulaServer) TransferAlias(c *gin.Context) {
 		})
 		return
 	}
-	m := binding.CreateInstance()
+	m := ns.Config.Binding
+
 	msg := rt.MsgTransferAlias{
 		Creator:   body.Creator,
 		Alias:     body.Alias,
 		Recipient: body.Recipient,
 		Amount:    body.Amount,
 	}
-	res, err := m.TransferAlias(context.Background(), msg)
+
+	res, err := m.Instance.TransferAlias(msg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: err.Error(),

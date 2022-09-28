@@ -5,7 +5,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/sonr/pkg/did"
-	"github.com/sonr-io/speedway/internal/binding"
 )
 
 type uResponse struct {
@@ -24,7 +23,7 @@ type uResponse struct {
 // @Failure      500  {object} FailedResponse
 // @Router /account/info [get]
 func (ns *NebulaServer) GetAccount(c *gin.Context) {
-	m := binding.CreateInstance()
+	m := ns.Config.Binding
 	if m == nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: "Failed to create binding instance",
@@ -32,25 +31,12 @@ func (ns *NebulaServer) GetAccount(c *gin.Context) {
 		return
 	}
 
-	addr, err := m.GetAddress()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: "Failed to get address",
-		})
-		return
-	}
-
-	didDocument, err := m.GetDidDocument()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: "Failed to get DID document",
-		})
-		return
-	}
+	addr := m.Instance.GetAddress()
+	didDocument := m.Instance.GetDIDDocument()
 
 	res := uResponse{
 		Address:     addr,
-		DidDocument: *didDocument,
+		DidDocument: didDocument,
 	}
 
 	c.JSON(http.StatusOK, res)

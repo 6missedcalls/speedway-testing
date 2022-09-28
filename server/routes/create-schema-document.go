@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/speedway/internal/binding"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/sonr/x/schema/types"
@@ -40,7 +39,7 @@ func (ns *NebulaServer) CreateSchemaDocument(c *gin.Context) {
 		})
 		return
 	}
-	b := binding.CreateInstance()
+	b := ns.Config.Binding
 
 	schemaDefinition, err := b.GetSchema(rtmv1.QueryWhatIsRequest{
 		Creator: body.Creator,

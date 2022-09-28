@@ -11,7 +11,6 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/bucket/types"
-	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/utils"
 )
 
@@ -107,20 +106,21 @@ func (ns *NebulaServer) CreateBucket(c *gin.Context) {
 		Content:    content,
 	}
 
-	b := binding.CreateInstance()
+	b := ns.Config.Binding
 
 	// create the bucket
-	bucket, service, err := b.CreateBucket(context.Background(), createBucketReq)
+	res, err := b.Instance.CreateBucket(context.Background(), createBucketReq)
 	if err != nil {
-		fmt.Println("Create Bucket Error: ", err)
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: err.Error(),
 		})
 		return
 	}
+	// create the service endpoint for the bucket
+	serv := res.CreateBucketServiceEndpoint()
 
 	c.JSON(http.StatusOK, CreateBucketResponse{
-		Bucket:  bucket,
-		Service: &service,
+		Bucket:  res.GetBucketItems(),
+		Service: &serv,
 	})
 }

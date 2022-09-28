@@ -8,7 +8,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	btv1 "github.com/sonr-io/sonr/x/bucket/types"
-	"github.com/sonr-io/speedway/internal/binding"
 )
 
 type GetBucketBody struct {
@@ -50,20 +49,21 @@ func (ns *NebulaServer) GetBucket(c *gin.Context) {
 		return
 	}
 
-	b := binding.CreateInstance()
+	b := ns.Config.Binding
 
-	bucket, err := b.GetBuckets(context.Background(), body.BucketDid)
+	bucket, err := b.Instance.GetBucket(body.BucketDid)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: err.Error(),
 		})
 		return
 	}
+	bucketItems := bucket.GetBucketItems()
 
 	var res []*ConvertBucketRes
 
 	// for each bucketitem in bucket get the content
-	for _, bucketItem := range bucket {
+	for _, bucketItem := range bucketItems {
 		content, err := b.GetContentById(context.Background(), body.BucketDid, bucketItem.Uri)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, FailedResponse{

@@ -7,7 +7,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/speedway/internal/binding"
 )
 
 type LoginRequestBody struct {
@@ -52,10 +51,10 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 		Password: body.Password,
 	}
 
-	m := binding.CreateInstance()
+	b := ns.Config.Binding
 
 	// Login to account with Speedway binding
-	res, err := m.Login(req)
+	res, err := b.Login(req)
 	if err != nil {
 		fmt.Println("Login Error: ", err)
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -69,10 +68,7 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 			Success: false,
 		})
 	} else {
-		addr, err := m.GetAddress()
-		if err != nil {
-			fmt.Println("GetAddress Error: ", err)
-		}
+		addr := b.Instance.GetAddress()
 		// use SuccessfulLogin struct to return address
 		c.JSON(http.StatusOK, SuccessfulLogin{
 			Success: true,

@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/speedway/internal/binding"
 
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 )
@@ -48,7 +47,7 @@ func (ns *NebulaServer) CreateAccount(c *gin.Context) {
 	req := rtmv1.CreateAccountRequest{
 		Password: body.Password,
 	}
-	b := binding.CreateInstance()
+	b := ns.Config.Binding
 
 	res, err := b.CreateAccount(req)
 	if err != nil {

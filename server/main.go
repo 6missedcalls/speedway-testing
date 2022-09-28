@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/sonr-io/speedway/internal/binding"
 	nebula "github.com/sonr-io/speedway/server/routes"
 )
 
@@ -19,6 +20,7 @@ func main() {
 	RPOrigin := os.Getenv("RPOrigin")
 	Address := os.Getenv("Address")
 	StaticDir := os.Getenv("StaticDir")
+	b := binding.CreateInstance()
 
 	srvr, err := nebula.New(func(options *nebula.ServerConfig) {
 		options.RPDisplayName = RPDisplayName
@@ -26,6 +28,7 @@ func main() {
 		options.RPOrigin = RPOrigin
 		options.Address = Address
 		options.StaticDir = StaticDir
+		options.Binding = b
 		options.EmbedFs = &res
 	})
 

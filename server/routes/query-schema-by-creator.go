@@ -7,7 +7,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/speedway/internal/binding"
 )
 
 // @BasePath /api/v1
@@ -31,8 +30,8 @@ func (ns *NebulaServer) QuerySchemaByCreator(c *gin.Context) {
 		return
 	}
 
-	b := binding.CreateInstance().Instance
-	res, err := b.QueryWhatIsByCreator(rtmv1.QueryWhatIsByCreatorRequest{
+	b := ns.Config.Binding
+	res, err := b.Instance.QueryWhatIsByCreator(rtmv1.QueryWhatIsByCreatorRequest{
 		Creator: body.Creator,
 	})
 	if err != nil {

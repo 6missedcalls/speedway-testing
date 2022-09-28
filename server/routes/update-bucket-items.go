@@ -9,7 +9,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/sonr/x/bucket/types"
-	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/utils"
 )
 
@@ -60,7 +59,7 @@ func (ns *NebulaServer) UpdateBucketItems(c *gin.Context) {
 		})
 	}
 
-	b := binding.CreateInstance()
+	b := ns.Config.Binding
 
 	// Get the bucket (this is a temporary solution)
 	bucket, err := b.GetBuckets(context.Background(), r.BucketDid)

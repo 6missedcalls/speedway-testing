@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/utils"
 )
 
@@ -47,7 +46,7 @@ func (ns *NebulaServer) UpdateBucketVisibility(c *gin.Context) {
 		return
 	}
 
-	b := binding.CreateInstance()
+	b := ns.Config.Binding
 
 	// Get the bucket (this is a temporary solution)
 	bucket, err := b.GetBuckets(context.Background(), r.BucketDid)

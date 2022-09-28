@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/sonr-io/sonr/pkg/did"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	"github.com/sonr-io/sonr/third_party/types/common"
@@ -48,29 +47,59 @@ var once sync.Once
 Initialize the speedway binding to the motor
 */
 func InitMotor() mtr.MotorNode {
-	initreq := &rtmv1.InitializeRequest{
+	// Create the InitializeRequest to the motor
+	// This request will be used to create the empty motor
+	r := &rtmv1.InitializeRequest{
 		DeviceId: utils.GetHwid(),
 	}
-	// add MotorCallback with onMotorEvent
-	m, err := mtr.EmptyMotor(initreq, &MotorCallback{})
+	// Initialize the motor node
+	motor, err := mtr.EmptyMotor(r, &MotorCallback{})
 	if err != nil {
-		fmt.Println(status.Error("Motor failed to initialize"), err)
+		fmt.Println(status.Error("Motor Error"), err)
 		return nil
 	}
-	return m
+	return motor
 }
+
+// func InitMotor() mtr.MotorNode {
+// 	initreq := &rtmv1.InitializeRequest{
+// 		DeviceId: utils.GetHwid(),
+// 	}
+// 	// add MotorCallback with onMotorEvent
+// 	m, err := mtr.EmptyMotor(initreq, &MotorCallback{})
+// 	if err != nil {
+// 		fmt.Println(status.Error("Motor failed to initialize"), err)
+// 		return nil
+// 	}
+// 	return m
+// }
 
 /*
 Here each function matches a function on the MotorNode for functionality being exposed to the cli and rest server there should be a wrapper function definedon the SpeedwayMotorBindingSruct.
 */
 func CreateInstance() *SpeedwayBinding {
 	once.Do(func() {
-		binding = &SpeedwayBinding{}
-		m := InitMotor()
-		binding.Instance = m
+		binding = &SpeedwayBinding{
+			Instance: InitMotor(),
+		}
 	})
+
+	if binding.Instance == nil {
+		fmt.Println(status.Error("Motor failed to initialize"))
+		return nil
+	}
+
 	return binding
 }
+
+// func CreateInstance() *SpeedwayBinding {
+// 	once.Do(func() {
+// 		binding = &SpeedwayBinding{}
+// 		m := InitMotor()
+// 		binding.Instance = m
+// 	})
+// 	return binding
+// }
 
 /*
 Get the Instance of the motor node and return it
@@ -263,38 +292,6 @@ func (b *SpeedwayBinding) GetSchema(req rtmv1.QueryWhatIsRequest) (rtmv1.QueryWh
 }
 
 /*
-Get the bucket and return the Response
-*/
-func (b *SpeedwayBinding) GetBucket(ctx context.Context, bucketDid string, contentId string) ([]*btv1.BucketItem, error) {
-	if b.Instance == nil {
-		return nil, ErrMotorNotInitialized
-	}
-	if !b.loggedIn {
-		return nil, ErrNotAuthenticated
-	}
-
-	res, err := b.Instance.GetBucket(bucketDid)
-	if err != nil {
-		fmt.Println(status.Error("Error"), err)
-		return nil, err
-	}
-
-	content := res.GetBucketItems()
-	if content == nil {
-		return nil, nil
-	}
-
-	cById, err := res.GetContentById(contentId)
-	if err != nil {
-		fmt.Println(status.Error("Error"), err)
-		return nil, err
-	}
-	fmt.Println(status.Info, "Content by ID", cById)
-
-	return content, nil
-}
-
-/*
 Get a list of BucketItems from the bucket and return the list
 */
 func (b *SpeedwayBinding) GetBuckets(ctx context.Context, bucketDid string) ([]*btv1.BucketItem, error) {
@@ -320,26 +317,6 @@ func (b *SpeedwayBinding) GetBuckets(ctx context.Context, bucketDid string) ([]*
 }
 
 /*
-Get a bucket with an associated schema and return the response
-*/
-func (b *SpeedwayBinding) GetBucketFromSchema(ctx context.Context, req rtmv1.SeachBucketContentBySchemaRequest) (rtmv1.SearchBucketContentBySchemaResponse, error) {
-	if b.Instance == nil {
-		return rtmv1.SearchBucketContentBySchemaResponse{}, ErrMotorNotInitialized
-	}
-	if !b.loggedIn {
-		return rtmv1.SearchBucketContentBySchemaResponse{}, ErrNotAuthenticated
-	}
-
-	res, err := b.Instance.SeachBucketBySchema(req)
-	if err != nil {
-		fmt.Println(status.Error("Error"), err)
-		return rtmv1.SearchBucketContentBySchemaResponse{}, err
-	}
-
-	return res, nil
-}
-
-/*
 Create the schema and return the WhatIsResponse
 */
 func (b *SpeedwayBinding) CreateSchema(req rtmv1.CreateSchemaRequest) (rtmv1.CreateSchemaResponse, error) {
@@ -357,51 +334,6 @@ func (b *SpeedwayBinding) CreateSchema(req rtmv1.CreateSchemaRequest) (rtmv1.Cre
 	}
 
 	return res, nil
-}
-
-/*
-Create the bucket and return the WhereIsResponse
-*/
-func (b *SpeedwayBinding) CreateBucket(ctx context.Context, req rtmv1.CreateBucketRequest) ([]*btv1.BucketItem, did.Service, error) {
-	if b.Instance == nil {
-		return nil, did.Service{}, ErrMotorNotInitialized
-	}
-	if !b.loggedIn {
-		return nil, did.Service{}, ErrNotAuthenticated
-	}
-
-	res, err := b.Instance.CreateBucket(ctx, req)
-	if err != nil {
-		fmt.Println(status.Error("Error"), err)
-		return nil, did.Service{}, err
-	}
-
-	serv := res.CreateBucketServiceEndpoint()
-	fmt.Println(status.Info, "Service Endpoint", serv)
-
-	bucket := res.GetBucketItems()
-
-	return bucket, serv, nil
-}
-
-/*
-NewObjectBuilder and return the ObjectBuilder
-*/
-func (b *SpeedwayBinding) NewObjectBuilder(schemaDid string) (*object.ObjectBuilder, error) {
-	if b.Instance == nil {
-		return nil, ErrMotorNotInitialized
-	}
-	if !b.loggedIn {
-		return nil, ErrNotAuthenticated
-	}
-
-	objBuilder, err := b.Instance.NewObjectBuilder(schemaDid)
-	if err != nil {
-		fmt.Println(status.Error("Binding failed %v\n"), err)
-		return nil, err
-	}
-
-	return objBuilder, nil
 }
 
 /*
@@ -576,90 +508,4 @@ func (b *SpeedwayBinding) GetContentById(ctx context.Context, bucketDid string, 
 	}
 
 	return content, nil
-}
-
-/*
-QueryWhatIs and return the WhatIsResponse
-*/
-func (b *SpeedwayBinding) QuerySchema(ctx context.Context, req rtmv1.QueryWhatIsRequest) (rtmv1.QueryWhatIsResponse, error) {
-	if b.Instance == nil {
-		return rtmv1.QueryWhatIsResponse{}, ErrMotorNotInitialized
-	}
-	if !b.loggedIn {
-		return rtmv1.QueryWhatIsResponse{}, ErrNotAuthenticated
-	}
-
-	schemaResponse, err := b.Instance.QueryWhatIs(req)
-	if err != nil {
-		fmt.Println(status.Error("Error"), err)
-		return rtmv1.QueryWhatIsResponse{}, err
-	}
-
-	return *schemaResponse, nil
-}
-
-/*
-GetDID and return the DID
-*/
-func (b *SpeedwayBinding) GetDID() (*did.DID, error) {
-	if b.Instance == nil {
-		return nil, ErrMotorNotInitialized
-	}
-
-	did := b.Instance.GetDID()
-	return &did, nil
-}
-
-/*
-GetDidDocument and return the DidDocument
-*/
-func (b *SpeedwayBinding) GetDidDocument() (*did.Document, error) {
-	if b.Instance == nil {
-		return nil, ErrMotorNotInitialized
-	}
-	if !b.loggedIn {
-		return nil, ErrNotAuthenticated
-	}
-
-	didDoc := b.Instance.GetDIDDocument()
-	if didDoc == nil {
-		return nil, ErrNotAuthenticated
-	}
-
-	return &didDoc, nil
-}
-
-/*
-GetAddress and return the address
-*/
-func (b *SpeedwayBinding) GetAddress() (string, error) {
-	if b.Instance == nil {
-		return "", ErrMotorNotInitialized
-	}
-	if !b.loggedIn {
-		return "", ErrNotAuthenticated
-	}
-
-	address := b.Instance.GetAddress()
-	if address == "" {
-		return "", ErrNotAuthenticated
-	}
-
-	return address, nil
-}
-
-/*
-GetBalance and return the balance
-*/
-func (b *SpeedwayBinding) GetBalance() (int64, error) {
-	if b.Instance == nil {
-		return 0, ErrMotorNotInitialized
-	}
-	if !b.loggedIn {
-		return 0, ErrNotAuthenticated
-	}
-
-	balance := b.Instance.GetBalance()
-
-	return balance, nil
 }

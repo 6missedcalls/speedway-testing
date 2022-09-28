@@ -8,17 +8,12 @@ import (
 	"github.com/gin-gonic/gin"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/schema/types"
-	"github.com/sonr-io/speedway/internal/binding"
 )
 
 type CreateSchemaRequest struct {
 	SchemaLabel string                      `json:"label"`    // Label of the schema
 	SchemaField map[string]types.SchemaKind `json:"fields"`   // Fields of the schema
 	Metadata    map[string]string           `json:"metadata"` // Metadata of the schema
-}
-
-type CreateSchemaResponse struct {
-	WhatIs *types.WhatIs `json:"whatIs"`
 }
 
 // @BasePath /api/v1
@@ -30,7 +25,7 @@ type CreateSchemaResponse struct {
 // @Produce json
 // @Param label query string true "Label of the schema"
 // @Param fields query string true "Fields of the schema"
-// @Success 	 200  {object}  CreateSchemaResponse
+// @Success 	 200  {object}  rtmv1.CreateSchemaResponse
 // @Failure      500  {object}  FailedResponse
 // @Router /schema/create [post]
 func (ns *NebulaServer) CreateSchema(c *gin.Context) {
@@ -51,7 +46,7 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 		Fields: r.SchemaField,
 	}
 
-	b := binding.CreateInstance()
+	b := ns.Config.Binding
 
 	// create the schema
 	res, err := b.CreateSchema(createSchemaReq)
@@ -63,8 +58,5 @@ func (ns *NebulaServer) CreateSchema(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK,
-		CreateSchemaResponse{
-			WhatIs: res.WhatIs,
-		})
+	c.JSON(http.StatusOK, res)
 }

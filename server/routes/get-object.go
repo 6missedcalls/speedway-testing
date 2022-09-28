@@ -7,17 +7,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/sonr/pkg/motor/x/object"
-	"github.com/sonr-io/speedway/internal/binding"
 )
 
 type GetObject struct {
 	SchemaDid string `json:"schemaDid"`
 	ObjectCid string `json:"objectCid"`
-}
-
-type GetObjectResponse struct {
-	Object *object.Object `json:"object"`
 }
 
 // @BasePath /api/v1
@@ -43,7 +37,7 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 		return
 	}
 
-	m := binding.CreateInstance()
+	m := ns.Config.Binding
 
 	ctx := context.Background()
 
@@ -56,8 +50,5 @@ func (ns *NebulaServer) GetObject(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK,
-		GetObjectResponse{
-			Object: object,
-		})
+	c.JSON(http.StatusOK, object)
 }

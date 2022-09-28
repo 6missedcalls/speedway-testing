@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/speedway/internal/binding"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,13 +33,13 @@ func (ns *NebulaServer) GetSchemaDocument(c *gin.Context) {
 		return
 	}
 
-	b := binding.CreateInstance()
+	b := ns.Config.Binding
 
 	req := rtmv1.GetDocumentRequest{
 		Cid: body.Cid,
 	}
 
-	res, err := b.GetSchemaDocument(req)
+	res, err := b.Instance.GetDocument(req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: err.Error(),
