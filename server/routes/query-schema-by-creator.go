@@ -26,7 +26,7 @@ func (ns *NebulaServer) QuerySchemaByCreator(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, FailedResponse{
-			Error: "Invalid request body",
+			Error: "Invalid QueryWhatIsByCreatorRequest",
 		})
 		return
 	}
