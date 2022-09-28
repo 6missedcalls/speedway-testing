@@ -12,16 +12,16 @@ import (
 )
 
 // @BasePath /api/v1
-// @Summary QueryBuckets
+// @Summary QueryWhereIsByCreator
 // @Schemes
 // @Description Query the Sonr Blockchain for all public buckets by a specified creator.
-// @Tags Proxy
+// @Tags Bucket
 // @Produce json
-// @Param creator query string false "creator"
+// @Param creator query string false "snr..."
 // @Param pagination query string false "pagination"
-// @Success 200 {object} BucketResponse
+// @Success 200 {object} rtmv1.QueryWhereIsByCreatorResponse
 // @Failure      500  {object} FailedResponse
-// @Router /bucket/query [get]
+// @Router /bucket/get-from-creator [post]
 func (ns *NebulaServer) QueryBucketByCreator(c *gin.Context) {
 	rBody := c.Request.Body
 	var body rtmv1.QueryWhereIsByCreatorRequest
@@ -39,7 +39,9 @@ func (ns *NebulaServer) QueryBucketByCreator(c *gin.Context) {
 		Creator: body.Creator,
 	})
 	if err != nil {
-		// TODO: Add proper error message
+		// * Note: If a specific creator has not created a bucket
+		// * this will return the QueryWhereIsByCreatorResponse with a code of 202.
+		// * This is the desired behavior.
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: err.Error(),
 		})

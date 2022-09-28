@@ -16,9 +16,11 @@ import (
 // @Description Query the Sonr Blockchain for all public schemas on the Blockchain. This is a read-only endpoint.
 // @Tags Schema
 // @Produce json
-// @Success 200 {object} SchemaResponse
+// @Param creator query string false "did:snr:..."
+// @Param pagination query string false "pagination"
+// @Success 200 {object} rtmv1.QueryWhatIsByCreatorResponse
 // @Failure      500  {object} FailedResponse
-// @Router /schema/get-from-creator [get]
+// @Router /schema/get-from-creator [post]
 func (ns *NebulaServer) QuerySchemaByCreator(c *gin.Context) {
 	rb := c.Request.Body
 	var body rtmv1.QueryWhatIsByCreatorRequest
@@ -36,9 +38,11 @@ func (ns *NebulaServer) QuerySchemaByCreator(c *gin.Context) {
 		Creator: body.Creator,
 	})
 	if err != nil {
-		// TODO: Add proper error message
+		// ! Issue: If a specific creator has no schemas, this will return an error.
+		// ! This is not the desired behavior.
+		// ! Here is a temporary solution to describe the error to the user.
 		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: err.Error(),
+			Error: "This user has no schemas or the creator is invalid.",
 		})
 		return
 	}
