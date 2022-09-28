@@ -134,11 +134,13 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 		ns.Router.Use(static.Serve("/schema", EmbedFolder(*ns.Config.EmbedFs, ns.Config.StaticDir)))
 		ns.Router.Use(static.Serve("/objects", EmbedFolder(*ns.Config.EmbedFs, ns.Config.StaticDir)))
 		ns.Router.Use(static.Serve("/buckets", EmbedFolder(*ns.Config.EmbedFs, ns.Config.StaticDir)))
+		ns.Router.Use(static.Serve("/buy-alias", EmbedFolder(*ns.Config.EmbedFs, ns.Config.StaticDir)))
 	} else {
 		ns.Router.Use(static.Serve("/", static.LocalFile(ns.Config.StaticDir, true)))
 		ns.Router.Use(static.Serve("/schema", static.LocalFile(ns.Config.StaticDir, true)))
 		ns.Router.Use(static.Serve("/objects", static.LocalFile(ns.Config.StaticDir, true)))
 		ns.Router.Use(static.Serve("/buckets", static.LocalFile(ns.Config.StaticDir, true)))
+		ns.Router.Use(static.Serve("/buy-alias", static.LocalFile(ns.Config.StaticDir, true)))
 
 	}
 	ns.Router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
