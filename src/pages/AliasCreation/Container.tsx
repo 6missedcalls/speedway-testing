@@ -84,7 +84,7 @@ function AliasCreationContainer() {
 					setErrors({
 						alias: {
 							...errors.alias,
-							taken: "That Profile Domain is taken, Try another.",
+							taken: "This domain is already taken",
 						},
 					})
 				} else {

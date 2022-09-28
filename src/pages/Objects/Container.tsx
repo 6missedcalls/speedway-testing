@@ -19,7 +19,8 @@ import {
 	userGetAllSchemas,
 } from "../../redux/slices/schemasSlice"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
-import { parseFileValueFromByteArrayAndDownload } from "../../utils/files"
+import { parseFileValueFromBase64AndDownload } from "../../utils/files"
+import { parseJsonFromBase64String } from "../../utils/object"
 import {
 	SearchableList,
 	SearchableListItem,
@@ -104,20 +105,20 @@ function ObjectsPageContainer() {
 				const listItem: SearchableListItem = {}
 				listItem.cid = { text: cid }
 				Object.keys(data).forEach((key) => {
-					if (data[key]?.buffer?.type === "Buffer") {
-						const item = data[key].buffer
-						const arr = new Uint8Array(item.data as ArrayBuffer)
-						const buffer = Buffer.from(arr)
+					if (data[key]?.bytes) {
+						const item = data[key].bytes
+
+						const parsedData = parseJsonFromBase64String(item)
+
+						const { base64File, fileName } = parsedData
+						console.log("base64File", base64File)
 						listItem[key] = {
 							text: "",
 							Component: () => (
 								<div
 									className="w-20 h-8 bg-button-subtle rounded cursor-pointer flex justify-center items-center"
 									onClick={() =>
-										parseFileValueFromByteArrayAndDownload(
-											buffer as ArrayBuffer,
-											data[key].fileName
-										)
+										parseFileValueFromBase64AndDownload(base64File, fileName)
 									}
 								>
 									<span className="block font-extrabold text-custom-xs text-button-subtle">
