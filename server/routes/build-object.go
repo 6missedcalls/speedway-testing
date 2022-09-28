@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"encoding/json"
 	"fmt"
 	"math"
 	"net/http"
@@ -14,10 +13,6 @@ type BuildObjectBody struct {
 	SchemaDid string                 `json:"schemaDid"`
 	Label     string                 `json:"label"`
 	Object    map[string]interface{} `json:"object"`
-}
-
-type BuildObjectResponse struct {
-	ObjectUpload *rtmv1.UploadObjectResponse `json:"objectUpload"`
 }
 
 // @BasePath /api/v1
@@ -34,12 +29,11 @@ type BuildObjectResponse struct {
 // @Failure 500  {object}  FailedResponse
 // @Router /object/build [post]
 func (ns *NebulaServer) BuildObject(c *gin.Context) {
-	rBody := c.Request.Body
 	var body BuildObjectBody
-	err := json.NewDecoder(rBody).Decode(&body)
+	err := c.BindJSON(&body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, FailedResponse{
-			Error: "Invalid request body",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
 		})
 		return
 	}
@@ -116,7 +110,5 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 			Error: err.Error(),
 		})
 	}
-	c.JSON(http.StatusOK, BuildObjectResponse{
-		ObjectUpload: upload,
-	})
+	c.JSON(http.StatusOK, upload)
 }

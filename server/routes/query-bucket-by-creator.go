@@ -1,8 +1,6 @@
 package routes
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
@@ -22,13 +20,11 @@ import (
 // @Failure      500  {object} FailedResponse
 // @Router /bucket/query [get]
 func (ns *NebulaServer) QueryBucketByCreator(c *gin.Context) {
-	rBody := c.Request.Body
 	var body rtmv1.QueryWhereIsByCreatorRequest
-	err := json.NewDecoder(rBody).Decode(&body)
+	err := c.BindJSON(&body)
 	if err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusBadRequest, FailedResponse{
-			Error: "Invalid request body",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
 		})
 		return
 	}

@@ -116,6 +116,10 @@ func GetInstance() (*SpeedwayBinding, error) {
 Create Account on Blockchain and return the response
 */
 func (b *SpeedwayBinding) CreateAccount(req rtmv1.CreateAccountRequest) (rtmv1.CreateAccountResponse, error) {
+	if b.Instance == nil {
+		return rtmv1.CreateAccountResponse{}, ErrMotorNotInitialized
+	}
+
 	res, err := b.Instance.CreateAccount(req)
 	if err != nil {
 		fmt.Println(status.Error("Create Account Error"), err)
@@ -132,6 +136,10 @@ func (b *SpeedwayBinding) CreateAccount(req rtmv1.CreateAccountRequest) (rtmv1.C
 Create Account With Keys on Blockchain and return the response
 */
 func (b *SpeedwayBinding) CreateAccountWithKeys(req rtmv1.CreateAccountWithKeysRequest) (rtmv1.CreateAccountWithKeysResponse, error) {
+	if b.Instance == nil {
+		return rtmv1.CreateAccountWithKeysResponse{}, ErrMotorNotInitialized
+	}
+
 	res, err := b.Instance.CreateAccountWithKeys(req)
 	if err != nil {
 		fmt.Println(status.Error("Create Account With Keys Error"), err)

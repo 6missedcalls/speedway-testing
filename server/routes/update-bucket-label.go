@@ -2,7 +2,6 @@ package routes
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -26,13 +25,11 @@ type UpdateBucketLabelRequest struct {
 // @Failure      500  {object}  FailedResponse
 // @Router /bucket/update-label [post]
 func (ns *NebulaServer) UpdateBucketLabel(c *gin.Context) {
-	rBody := c.Request.Body
-	var r UpdateBucketLabelRequest
-	err := json.NewDecoder(rBody).Decode(&r)
+	var body UpdateBucketLabelRequest
+	err := c.BindJSON(&body)
 	if err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid Request Body",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
 		})
 		return
 	}
@@ -40,7 +37,7 @@ func (ns *NebulaServer) UpdateBucketLabel(c *gin.Context) {
 	b := ns.Config.Binding
 
 	// Get the bucket (this is a temporary solution)
-	bucket, err := b.GetBuckets(context.Background(), r.BucketDid)
+	bucket, err := b.GetBuckets(context.Background(), body.BucketDid)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: "Failed to get bucket",
@@ -50,7 +47,7 @@ func (ns *NebulaServer) UpdateBucketLabel(c *gin.Context) {
 	fmt.Println("Bucket: ", bucket)
 
 	// Update the bucket's Content
-	updateContent, err := b.UpdateBucketLabel(context.Background(), r.BucketDid, r.Label)
+	updateContent, err := b.UpdateBucketLabel(context.Background(), body.BucketDid, body.Label)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: err.Error(),

@@ -2,7 +2,6 @@ package routes
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -27,12 +26,11 @@ type GetObject struct {
 // @Failure      500  {object} FailedResponse
 // @Router /object/get [post]
 func (ns *NebulaServer) GetObject(c *gin.Context) {
-	rBody := c.Request.Body
 	var body GetObject
-	err := json.NewDecoder(rBody).Decode(&body)
+	err := c.BindJSON(&body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, FailedResponse{
-			Error: "Invalid request body",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
 		})
 		return
 	}

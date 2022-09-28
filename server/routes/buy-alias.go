@@ -40,6 +40,7 @@ func (ns *NebulaServer) BuyAlias(c *gin.Context) {
 		Creator: body.Creator,
 		Name:    body.Alias,
 	}
+
 	res, err := b.Instance.BuyAlias(msg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{

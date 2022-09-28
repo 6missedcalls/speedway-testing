@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -34,12 +33,11 @@ type FailedResponse struct {
 // @Failure      500  {object}  FailedResponse
 // @Router /account/create [post]
 func (ns *NebulaServer) CreateAccount(c *gin.Context) {
-	rBody := c.Request.Body
 	var body CreateAccountBody
-	err := json.NewDecoder(rBody).Decode(&body)
+	err := c.BindJSON(&body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, FailedResponse{
-			Error: "Invalid request body",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
 		})
 		return
 	}

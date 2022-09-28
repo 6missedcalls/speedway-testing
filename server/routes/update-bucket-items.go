@@ -2,7 +2,6 @@ package routes
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -29,19 +28,17 @@ type UpdateBucketRequest struct {
 // @Failure      500  {object}  FailedResponse
 // @Router /bucket/update-items [post]
 func (ns *NebulaServer) UpdateBucketItems(c *gin.Context) {
-	rBody := c.Request.Body
-	var r UpdateBucketRequest
-	err := json.NewDecoder(rBody).Decode(&r)
+	var body UpdateBucketRequest
+	err := c.BindJSON(&body)
 	if err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid Request Body",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
 		})
 		return
 	}
 
 	var content []*types.BucketItem
-	for _, item := range r.Content {
+	for _, item := range body.Content {
 		rid, err := utils.ConvertResourceIdentifier(item["type"])
 		if err != nil {
 			c.JSON(http.StatusBadRequest, FailedResponse{
@@ -62,7 +59,7 @@ func (ns *NebulaServer) UpdateBucketItems(c *gin.Context) {
 	b := ns.Config.Binding
 
 	// Get the bucket (this is a temporary solution)
-	bucket, err := b.GetBuckets(context.Background(), r.BucketDid)
+	bucket, err := b.GetBuckets(context.Background(), body.BucketDid)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: "Failed to get bucket",
@@ -72,7 +69,7 @@ func (ns *NebulaServer) UpdateBucketItems(c *gin.Context) {
 	fmt.Println("Bucket: ", bucket)
 
 	// Update the bucket's Content
-	updateContent, err := b.UpdateBucketItems(context.Background(), r.BucketDid, content)
+	updateContent, err := b.UpdateBucketItems(context.Background(), body.BucketDid, content)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: err.Error(),

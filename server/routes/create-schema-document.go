@@ -39,9 +39,10 @@ func (ns *NebulaServer) CreateSchemaDocument(c *gin.Context) {
 		})
 		return
 	}
+
 	b := ns.Config.Binding
 
-	schemaDefinition, err := b.GetSchema(rtmv1.QueryWhatIsRequest{
+	schemadefinition, err := b.Instance.QueryWhatIs(rtmv1.QueryWhatIsRequest{
 		Creator: body.Creator,
 		Did:     body.SchemaDid,
 	})
@@ -55,7 +56,7 @@ func (ns *NebulaServer) CreateSchemaDocument(c *gin.Context) {
 	req := rtmv1.UploadDocumentRequest{
 		Creator:    body.Creator,
 		Label:      body.Label,
-		Definition: schemaDefinition.Schema,
+		Definition: schemadefinition.Schema,
 		Fields:     body.Fields,
 	}
 
@@ -67,10 +68,5 @@ func (ns *NebulaServer) CreateSchemaDocument(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, rtmv1.UploadDocumentResponse{
-		Status:   res.Status,
-		Did:      res.Did,
-		Cid:      res.Cid,
-		Document: res.Document,
-	})
+	c.JSON(http.StatusOK, res)
 }

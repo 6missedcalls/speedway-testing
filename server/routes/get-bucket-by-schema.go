@@ -1,8 +1,6 @@
 package routes
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -29,13 +27,11 @@ type GetBucketBySchemaBody struct {
 // @Failure      500  {object}  FailedResponse
 // @Router /bucket/get-by-schema [post]
 func (ns *NebulaServer) GetBucketBySchema(c *gin.Context) {
-	rBody := c.Request.Body
 	var body GetBucketBySchemaBody
-	err := json.NewDecoder(rBody).Decode(&body)
+	err := c.BindJSON(&body)
 	if err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusBadRequest, FailedResponse{
-			Error: "Invalid request body",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
 		})
 		return
 	}

@@ -1,8 +1,6 @@
 package routes
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -19,13 +17,11 @@ import (
 // @Failure      500  {object} FailedResponse
 // @Router /schema/get-from-creator [get]
 func (ns *NebulaServer) QuerySchemaByCreator(c *gin.Context) {
-	rb := c.Request.Body
 	var body rtmv1.QueryWhatIsByCreatorRequest
-	err := json.NewDecoder(rb).Decode(&body)
+	err := c.BindJSON(&body)
 	if err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusBadRequest, FailedResponse{
-			Error: "Invalid request body",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
 		})
 		return
 	}

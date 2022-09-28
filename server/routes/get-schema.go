@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -27,12 +26,11 @@ type QuerySchema struct {
 // @Failure      500  {object} FailedResponse
 // @Router /schema/get [post]
 func (ns *NebulaServer) QuerySchema(c *gin.Context) {
-	rBody := c.Request.Body
-	var r QuerySchema
-	err := json.NewDecoder(rBody).Decode(&r)
+	var body QuerySchema
+	err := c.BindJSON(&body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, FailedResponse{
-			Error: "Invalid Request Body",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
 		})
 		return
 	}
@@ -40,8 +38,8 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 	b := ns.Config.Binding
 
 	res, err := b.Instance.QueryWhatIs(rtmv1.QueryWhatIsRequest{
-		Creator: r.Creator,
-		Did:     r.Schema,
+		Creator: body.Creator,
+		Did:     body.Schema,
 	})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
