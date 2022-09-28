@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react"
 import { Button, NebulaIcon } from "@sonr-io/nebula-react"
 import FileDropInput from "../../../../components/FileDropInput"
-import { fileToByteArray } from "../../../../utils/files"
+import { fileToBase64, fileToByteArray } from "../../../../utils/files"
 import { slugify } from "../../../../utils/string"
 import { Bucket, SchemaField, SchemaMeta } from "../../../../utils/types"
 
@@ -145,18 +145,13 @@ type Props = {
 
 async function onLoad(files: any, onChange: any) {
 	const file = files[0]
-	console.log("file", file)
-	const buffer = await fileToByteArray(file)
+	const buffer = await fileToBase64(file)
 	onChange({ buffer, fileName: file.name })
-}
-
-function onDrop(files: any) {
-	console.log("Drop")
 }
 
 async function onInput(event: any, onChange: any) {
 	const file = event.target.files[0]
-	const buffer = await fileToByteArray(file)
+	const buffer = await fileToBase64(file)
 	onChange({ buffer, fileName: file.name })
 }
 

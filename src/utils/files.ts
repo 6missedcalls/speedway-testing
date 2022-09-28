@@ -16,6 +16,19 @@ export function fileToByteArray(file: any) {
 	})
 }
 
+export function fileToBase64(file: any) {
+	return new Promise((resolve, reject) => {
+		var reader = new FileReader()
+		reader.readAsDataURL(file)
+		reader.onload = function () {
+			resolve(reader.result)
+		}
+		reader.onerror = function (error) {
+			reject(error)
+		}
+	})
+}
+
 export function parseFileValueFromByteArrayAndDownload(
 	byteArray: ArrayBuffer,
 	name: string
