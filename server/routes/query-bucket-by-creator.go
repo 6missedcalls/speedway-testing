@@ -29,7 +29,7 @@ func (ns *NebulaServer) QueryBucketByCreator(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, FailedResponse{
-			Error: "Ivalid QueryWhereIsByCreatorRequest",
+			Error: "QueryWhereIsByCreatorRequest Could not be parsed",
 		})
 		return
 	}
