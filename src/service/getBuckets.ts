@@ -1,32 +1,20 @@
-import { BASE_API } from "../utils/constants"
-import { formatApiError } from "../utils/errors"
+import MotorHttp from "../MotorHttp"
 import { Bucket } from "../utils/types"
 
 const getBuckets = async (address: string): Promise<Bucket[]> => {
-	const url = `${BASE_API}/proxy/buckets`
-	const options = {
-		method: "GET",
-		headers: { "content-type": "application/json" },
-	}
+	const response = await MotorHttp.QueryWhereIsByCreator({
+		creator: address,
+	})
 
-	try {
-		const response = await fetch(url, options)
-		if (!response.ok) throw new Error(response.statusText)
-		const data = await response.json()
+	if (!response.whereIs) return []
 
-		return data.where_is
-			.filter((bucket: Bucket) => bucket.creator === address)
-			.map((bucket: Bucket) => ({
-				did: bucket.did,
-				label: bucket.label,
-				creator: bucket.creator,
-				timestamp: bucket.timestamp,
-				content: bucket.content.filter((c) => c.uri),
-			}))
-	} catch (error) {
-		const errorMessage = formatApiError({ error, url, options })
-		throw new Error(errorMessage)
-	}
+	return response.whereIs.map((bucket) => ({
+		did: bucket.did,
+		label: bucket.label,
+		creator: bucket.creator,
+		timestamp: bucket.timestamp,
+		content: bucket.content ? bucket.content.filter((c) => c.uri) : [],
+	}))
 }
 
 export default getBuckets
