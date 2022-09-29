@@ -64,7 +64,36 @@ export const objectsSlice = createSlice({
 		builder.addCase(userGetBucketObjects.fulfilled, (state, action) => {
 			const { payload } = action
 			state.loading = false
-			state.list = payload
+			//console.log("payload", payload)
+			const list = payload
+			// .reduce((acc: Array<SonrObject>, item: SonrObject) => {
+
+			// 	const remadeData = Object.keys(item.data).reduce((dataAcc: any, key: string) => {
+			// 		const dataItem = item.data[key]
+			// 		if(!dataItem?.bytes) return [...dataAcc, dataItem]
+
+			// 		return {
+
+			// 		}
+			// 	}, {})
+
+			// 	return [
+			// 		...acc,
+			// 		{
+			// 			...item,
+			// 			data: remadeData
+			// 		}
+			// 	]
+			// }, [])
+
+			// payload.forEach((item, index) => {
+			// 	Object.keys(item.data).forEach((prop: any) => {
+			// 		if(prop?.bytes){
+			// 			payload[index][prop].bytes = ''
+			// 		}
+			// 	})
+			// })
+			state.list = list
 		})
 
 		builder.addCase(userGetBucketObjects.rejected, (state) => {

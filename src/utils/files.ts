@@ -43,23 +43,10 @@ export function base64toBlob({
 	return blob
 }
 
-export function parseFileValueFromBase64AndDownload(
-	base64Data: string,
-	name: string
-) {
-	console.log("base64Data", base64Data)
-	console.log("name", name)
+export function downloadFileFromBase64(base64Data: string, name: string) {
 	var a = document.createElement("a")
 	a.href = base64Data
 	a.download = name
 	a.click()
 	a.remove()
-	// const downloadElement = document.createElement("a")
-	// downloadElement.style.display = "none"
-	// downloadElement.href = window.URL.createObjectURL(base64toBlob({ base64Data }))
-	// downloadElement.download = name
-	// document.body.appendChild(downloadElement)
-	// downloadElement.click()
-	// window.URL.revokeObjectURL(downloadElement.href)
-	// downloadElement.remove()
 }

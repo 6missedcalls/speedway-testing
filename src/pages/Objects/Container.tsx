@@ -19,7 +19,7 @@ import {
 	userGetAllSchemas,
 } from "../../redux/slices/schemasSlice"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
-import { parseFileValueFromBase64AndDownload } from "../../utils/files"
+import { downloadFileFromBase64 } from "../../utils/files"
 import { parseJsonFromBase64String } from "../../utils/object"
 import {
 	SearchableList,
@@ -105,21 +105,16 @@ function ObjectsPageContainer() {
 				const listItem: SearchableListItem = {}
 				listItem.cid = { text: cid }
 				Object.keys(data).forEach((key) => {
-					if (data[key]?.bytes) {
-						const item = data[key].bytes
-
+					if (data[key]?.["/"]?.bytes) {
+						const item = data[key]["/"].bytes
 						const parsedData = parseJsonFromBase64String(item)
-
 						const { base64File, fileName } = parsedData
-						console.log("base64File", base64File)
 						listItem[key] = {
 							text: "",
 							Component: () => (
 								<div
 									className="w-20 h-8 bg-button-subtle rounded cursor-pointer flex justify-center items-center"
-									onClick={() =>
-										parseFileValueFromBase64AndDownload(base64File, fileName)
-									}
+									onClick={() => downloadFileFromBase64(base64File, fileName)}
 								>
 									<span className="block font-extrabold text-custom-xs text-button-subtle">
 										Download
