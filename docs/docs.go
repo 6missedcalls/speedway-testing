@@ -513,6 +513,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/bucket/get-from-creator": {
+            "post": {
+                "description": "Query the Sonr Blockchain for all public buckets by a specified creator.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bucket"
+                ],
+                "summary": "QueryWhereIsByCreator",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "snr...",
+                        "name": "creator",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "pagination",
+                        "name": "pagination",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.QueryWhereIsByCreatorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/routes.FailedResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/bucket/update-items": {
             "post": {
                 "description": "Update a bucket on Sonr using the bucket module of Sonr's Blockchain.",
@@ -775,7 +815,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Schema"
+                    "Schema Document"
                 ],
                 "summary": "CreateSchemaDocument",
                 "parameters": [
@@ -846,7 +886,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Schema"
+                    "Schema Document"
                 ],
                 "summary": "GetSchemaDocument",
                 "parameters": [
@@ -968,8 +1008,8 @@ const docTemplate = `{
                 }
             }
         },
-        "/schema/query": {
-            "get": {
+        "/schema/get-from-creator": {
+            "post": {
                 "description": "Query the Sonr Blockchain for all public schemas on the Blockchain. This is a read-only endpoint.",
                 "produces": [
                     "application/json"
@@ -977,12 +1017,26 @@ const docTemplate = `{
                 "tags": [
                     "Schema"
                 ],
-                "summary": "QuerySchemas",
+                "summary": "QueryWhatIsByCreator",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "did:snr:...",
+                        "name": "creator",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "pagination",
+                        "name": "pagination",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SchemaResponse"
+                            "$ref": "#/definitions/v1.QueryWhatIsByCreatorResponse"
                         }
                     },
                     "500": {
@@ -1016,6 +1070,22 @@ const docTemplate = `{
         "object.Object": {
             "type": "object",
             "additionalProperties": true
+        },
+        "query.PageResponse": {
+            "type": "object",
+            "properties": {
+                "next_key": {
+                    "description": "next_key is the key to be passed to PageRequest.key to\nquery the next page most efficiently",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "total": {
+                    "description": "total is total number of results available if PageRequest.count_total\nwas set, its value is undefined otherwise",
+                    "type": "integer"
+                }
+            }
         },
         "routes.ConvertBucketRes": {
             "type": "object",
@@ -1110,57 +1180,6 @@ const docTemplate = `{
                 }
             }
         },
-        "routes.SchemaResponse": {
-            "type": "object",
-            "properties": {
-                "pagination": {
-                    "type": "object",
-                    "properties": {
-                        "next_key": {},
-                        "total": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "what_is": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "creator": {
-                                "type": "string"
-                            },
-                            "did": {
-                                "type": "string"
-                            },
-                            "is_active": {
-                                "type": "boolean"
-                            },
-                            "metadata": {
-                                "type": "object"
-                            },
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "cid": {
-                                        "type": "string"
-                                    },
-                                    "did": {
-                                        "type": "string"
-                                    },
-                                    "label": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "timestamp": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "routes.SuccessfulLogin": {
             "type": "object",
             "properties": {
@@ -1222,6 +1241,20 @@ const docTemplate = `{
                 "user": {
                     "description": "username and password information",
                     "$ref": "#/definitions/url.Userinfo"
+                }
+            }
+        },
+        "types.AclJwks": {
+            "type": "object",
+            "properties": {
+                "encrypted_jwks": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
                 }
             }
         },
@@ -1651,6 +1684,53 @@ const docTemplate = `{
                 }
             }
         },
+        "types.WhereIs": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "Content of the new bucket map of DIDs to CIDs.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.BucketItem"
+                    }
+                },
+                "content_acl": {
+                    "description": "JWKs of the new bucket.",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/types.AclJwks"
+                    }
+                },
+                "creator": {
+                    "description": "Creator of the new bucket",
+                    "type": "string"
+                },
+                "did": {
+                    "description": "DID of the created bucket.",
+                    "type": "string"
+                },
+                "is_active": {
+                    "description": "IsActive flag of the new bucket.",
+                    "type": "boolean"
+                },
+                "label": {
+                    "description": "Label of the new bucket.",
+                    "type": "string"
+                },
+                "role": {
+                    "description": "Role of the creator of the new bucket.",
+                    "type": "integer"
+                },
+                "timestamp": {
+                    "description": "Timestamp of the new bucket.",
+                    "type": "integer"
+                },
+                "visibility": {
+                    "description": "Visibility of the new bucket.",
+                    "type": "integer"
+                }
+            }
+        },
         "types.WhoIs": {
             "type": "object",
             "properties": {
@@ -1728,6 +1808,46 @@ const docTemplate = `{
                 },
                 "label": {
                     "type": "string"
+                }
+            }
+        },
+        "v1.QueryWhatIsByCreatorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "pagination": {
+                    "$ref": "#/definitions/query.PageResponse"
+                },
+                "schemas": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/types.SchemaDefinition"
+                    }
+                },
+                "what_is": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.WhatIs"
+                    }
+                }
+            }
+        },
+        "v1.QueryWhereIsByCreatorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "pagination": {
+                    "$ref": "#/definitions/query.PageResponse"
+                },
+                "where_is": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.WhereIs"
+                    }
                 }
             }
         },

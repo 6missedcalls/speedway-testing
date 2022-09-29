@@ -44,7 +44,7 @@ func (ns *NebulaServer) GetAlias(c *gin.Context) {
 	resp, err := http.Get("http://v1-beta.sonr.ws:1317/sonr-io/sonr/registry/who_is_alias/" + c.Param("alias"))
 	if err != nil {
 		fmt.Println(status.Error("Error: "), err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrNotAuthorized})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
 	if resp.StatusCode != 200 {
@@ -55,7 +55,7 @@ func (ns *NebulaServer) GetAlias(c *gin.Context) {
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println(status.Error("Error: "), err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrCannotParse})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
 	var result AliasResponse
