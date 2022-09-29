@@ -84,13 +84,12 @@ function NewObjectModalContentContainer({
 		const objectPayload = {
 			schemaDid: selectedSchema,
 			label: schema.label || "",
-			object: properties.reduce(
-				(acc, item, index) => ({
+			object: properties.reduce((acc, item, index) => {
+				return {
 					...acc,
 					[item.name]: castValue(item.type, values[index]),
-				}),
-				{}
-			),
+				}
+			}, {}),
 		}
 
 		if (
@@ -161,6 +160,7 @@ function NewObjectModalContentContainer({
 					onChangeProperty={handlePropertiesChange}
 					error={error}
 					properties={properties}
+					setError={setError}
 				/>
 			)}
 		</>

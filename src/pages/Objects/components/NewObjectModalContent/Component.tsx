@@ -11,13 +11,14 @@ interface NewSchemaModalContentComponentProps {
 	onSave: () => void
 	onChangeSchema: Dispatch<SetStateAction<string>>
 	onChangeBucket: (value: string) => void
-	onChangeProperty: (index: number, value: string) => void
+	onChangeProperty: (index: number, value: any) => void
 	schemas: Array<SchemaMeta>
 	buckets: Array<Bucket>
 	properties: Array<Record<string, any>>
 	selectedSchema: string
 	selectedBucket: string
 	error: string
+	setError: Dispatch<SetStateAction<string>>
 }
 
 function NewObjectModalContentComponent({
@@ -32,6 +33,7 @@ function NewObjectModalContentComponent({
 	selectedSchema,
 	selectedBucket,
 	error,
+	setError,
 }: NewSchemaModalContentComponentProps) {
 	return (
 		<div className="flex flex-col max-h-[90vh]">
@@ -117,6 +119,7 @@ function NewObjectModalContentComponent({
 							<SchemaFieldInput
 								field={{ name: item.name, type: item.type }}
 								onChange={(value) => onChangeProperty(index, value)}
+								setError={setError}
 							/>
 						</div>
 					))}
@@ -144,25 +147,17 @@ function NewObjectModalContentComponent({
 type Props = {
 	field: SchemaField
 	onChange: (value: string) => void
+	setError: Dispatch<SetStateAction<string>>
 }
 
-async function onLoad(files: any, onChange: any) {
-	const file = files[0]
-	const base64File = await fileToBase64(file)
-	onChange({
-		bytes: objectToBase64({ base64File, fileName: file.name }),
-	})
-}
+const SchemaFieldInput = ({ field, onChange, setError }: Props) => {
+	async function onInputFile(file: any, onChange: any) {
+		const base64File = await fileToBase64(file)
+		onChange({
+			bytes: objectToBase64({ base64File, fileName: file.name }),
+		})
+	}
 
-async function onInput(event: any, onChange: any) {
-	const file = event.target.files[0]
-	const base64File = await fileToBase64(file)
-	onChange({
-		bytes: objectToBase64({ base64File, fileName: file.name }),
-	})
-}
-
-const SchemaFieldInput = ({ field, onChange }: Props) => {
 	switch (field.type) {
 		case 0:
 			return <ListInput onChange={onChange} />
@@ -204,10 +199,8 @@ const SchemaFieldInput = ({ field, onChange }: Props) => {
 		case 5:
 			return (
 				<FileDropInput
-					onDrop={(files: any) => onLoad(files, onChange)}
-					dropId={slugify(field.name)}
-					onLoad={(files: any) => onLoad(files, onChange)}
-					onInput={(event: any) => onInput(event, onChange)}
+					onSizeError={setError}
+					onInput={(event: any) => onInputFile(event, onChange)}
 				/>
 			)
 

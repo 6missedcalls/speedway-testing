@@ -99,6 +99,27 @@ function ObjectsPageContainer() {
 		openModal()
 	}
 
+	async function getBytesAndDownload({
+		cid,
+		key,
+	}: {
+		cid: string
+		key: string
+	}) {
+		const { payload } = await dispatch(
+			userGetObject({
+				schemaDid: selectedSchema,
+				objectCid: cid,
+			})
+		)
+		const bytes = payload?.object[key]?.["/"]?.bytes
+		if (!bytes) return
+
+		const parsedData = parseJsonFromBase64String(bytes)
+		const { base64File, fileName } = parsedData
+		downloadFileFromBase64(base64File, fileName)
+	}
+
 	function mapToListFormat(): SearchableList {
 		return objectsList
 			.filter((item: SonrObject) => item.schemaDid === selectedSchema)
@@ -112,20 +133,7 @@ function ObjectsPageContainer() {
 							Component: () => (
 								<div
 									className="w-20 h-8 bg-button-subtle rounded cursor-pointer flex justify-center items-center"
-									onClick={async () => {
-										const { payload } = await dispatch(
-											userGetObject({
-												schemaDid: selectedSchema,
-												objectCid: cid,
-											})
-										)
-										const bytes = payload?.object[key]?.["/"]?.bytes
-										if (!bytes) return
-
-										const parsedData = parseJsonFromBase64String(bytes)
-										const { base64File, fileName } = parsedData
-										downloadFileFromBase64(base64File, fileName)
-									}}
+									onClick={() => getBytesAndDownload({ cid, key })}
 								>
 									<span className="block font-extrabold text-custom-xs text-button-subtle">
 										Download

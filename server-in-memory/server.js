@@ -19,6 +19,7 @@ const fieldTypeMap = {
 	2: "INT",
 	3: "FLOAT",
 	4: "STRING",
+	5: "BYTES",
 }
 
 const app = express()

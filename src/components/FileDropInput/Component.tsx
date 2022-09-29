@@ -1,18 +1,19 @@
 import { FormEvent } from "react"
 import CheckedSvg from "../../assets/svgs/Checked"
+import { FileUploader } from "react-drag-drop-files"
 
 interface FileDropInputComponentProps {
 	onInput: (e: FormEvent<HTMLInputElement>) => void
-	dropId: string
 	hasFile: boolean
 	setHasFile: Function
+	onSizeError: Function
 }
 
 function FileDropInputComponent({
 	onInput,
-	dropId,
 	hasFile,
 	setHasFile,
+	onSizeError,
 }: FileDropInputComponentProps) {
 	if (hasFile)
 		return (
@@ -30,29 +31,28 @@ function FileDropInputComponent({
 		)
 
 	return (
-		<div id={dropId} className="p-4 border-dashed border-3">
-			<input
-				hidden
-				type="file"
-				onInput={(event: FormEvent<HTMLInputElement>) => onInput(event)}
-				id={`${dropId}-input`}
-				name={`${dropId}-fileInput`}
-			/>
-			<div className="text-center w-full">
-				<span className="font-semibold text-secondary-800">
-					Drag & drop file
-				</span>
-			</div>
-			<div
-				className="text-center cursor-pointer"
-				onClick={() => document.getElementById(`${dropId}-input`)!.click()}
-			>
-				<span>or </span>
-				<span className="decoration-solid text-primary-700 underline">
-					browse media in your device
-				</span>
-			</div>
-		</div>
+		<FileUploader
+			hoverTitle=" "
+			maxSize={1}
+			onSizeError={onSizeError}
+			handleChange={onInput}
+			name="file"
+			children={
+				<div className="p-4 border-dashed border-3">
+					<div className="text-center w-full">
+						<span className="font-semibold text-secondary-800">
+							Drag & drop file
+						</span>
+					</div>
+					<div className="text-center cursor-pointer">
+						<span>or </span>
+						<span className="decoration-solid text-primary-700 underline">
+							browse media in your device
+						</span>
+					</div>
+				</div>
+			}
+		/>
 	)
 }
 
