@@ -225,6 +225,12 @@ app.post("/api/v1/bucket/get", async ({ body }, res) => {
 	res.json({ bucket: contents })
 })
 
+app.post("/api/v1/bucket/get-from-creator", async (req, res) => {
+	const allBuckets = (await storage.getItem("buckets")) || []
+	const buckets = _.filter(allBuckets, { creator: req.body.creator })
+	res.json({ where_is: buckets })
+})
+
 /// OBJECTS
 
 app.post("/api/v1/object/build", async ({ body }, res) => {
@@ -278,11 +284,6 @@ app.post("/api/v1/object/get", async ({ body }, res) => {
 app.get("/proxy/schemas", async (_, res) => {
 	const metadata = (await storage.getItem("schemaMetadata")) || []
 	res.json({ what_is: metadata })
-})
-
-app.get("/proxy/buckets", async (_, res) => {
-	const buckets = (await storage.getItem("buckets")) || []
-	res.json({ where_is: buckets })
 })
 
 export default app

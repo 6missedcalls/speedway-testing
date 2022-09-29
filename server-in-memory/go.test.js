@@ -120,38 +120,36 @@ it(
 		expect(userSchemas[0]).toHaveProperty("schema.fields.length")
 		expect(userSchemas[0].schema.fields.length).toBe(5)
 
-		expect(userSchemas[0].schema.fields[0].name).toBe("firstname")
-		expect(userSchemas[0].schema.fields[0].field).toBe("STRING")
-		expect(userSchemas[0].schema.fields[1].name).toBe("extinct")
-		expect(userSchemas[0].schema.fields[1].field).toBe("BOOL")
-		expect(userSchemas[0].schema.fields[2].name).toBe("strength")
-		expect(userSchemas[0].schema.fields[2].field).toBe("INT")
-		expect(userSchemas[0].schema.fields[3].name).toBe("interest")
-		expect(userSchemas[0].schema.fields[3].field).toBe("FLOAT")
-		expect(userSchemas[0].schema.fields[4].name).toBe("friends")
-		expect(userSchemas[0].schema.fields[4].field).toBe("LIST")
+		const fields = _.sortBy(userSchemas[0].schema.fields, "name")
+
+		expect(fields[0].name).toBe("extinct")
+		expect(fields[0].field).toBe("BOOL")
+		expect(fields[1].name).toBe("firstname")
+		expect(fields[1].field).toBe("STRING")
+		expect(fields[2].name).toBe("friends")
+		expect(fields[2].field).toBe("LIST")
+		expect(fields[3].name).toBe("interest")
+		expect(fields[3].field).toBe("FLOAT")
+		expect(fields[4].name).toBe("strength")
+		expect(fields[4].field).toBe("INT")
 
 		// GET A LIST OF BUCKETS
-		const resBucketList = await app.get(proxy("buckets"))
+		const resBucketList = await app.post(api("/bucket/get-from-creator"), {
+			creator: address,
+		})
 		expect(resBucketList.status).toBe(200)
 		expect(resBucketList.body).toHaveProperty("where_is.length")
-		expect(resBucketList.body.where_is.length).toBeGreaterThan(0)
+		expect(resBucketList.body.where_is.length).toBe(1)
+		expect(resBucketList.body.where_is[0]).toHaveProperty("did")
+		expect(resBucketList.body.where_is[0].did).toBeDid()
+		expect(resBucketList.body.where_is[0]).toHaveProperty("label")
+		expect(resBucketList.body.where_is[0].label).toBe("great philosophers")
+		expect(resBucketList.body.where_is[0]).toHaveProperty("timestamp")
+		expect(typeof resBucketList.body.where_is[0]).toBe("number")
+		// expect(resBucketList.body.where_is[0]).toHaveProperty("content.length")
+		// expect(resBucketList.body.where_is[0].content.length).toBe(0)
 
-		const userBuckets = _.filter(
-			resBucketList.body.where_is,
-			(bucket) => bucket.creator === address
-		)
-		expect(userBuckets.length).toBe(1)
-		expect(userBuckets[0]).toHaveProperty("did")
-		expect(userBuckets[0].did).toBeDid()
-		expect(userBuckets[0]).toHaveProperty("label")
-		expect(userBuckets[0].label).toBe("great philosophers")
-		expect(userBuckets[0]).toHaveProperty("content.length")
-		expect(userBuckets[0].content.length).toBe(0)
-		expect(userBuckets[0]).toHaveProperty("timestamp")
-		expect(typeof resBucketList.body.where_is[0].timestamp).toBe("number")
-
-		const bucketDid = userBuckets[0].did
+		const bucketDid = resBucketList.body.where_is[0].did
 
 		// CREATE AN OBJECT
 		const resObject = await app.post(api("/object/build"), {
