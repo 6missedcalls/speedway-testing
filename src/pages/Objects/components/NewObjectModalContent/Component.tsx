@@ -150,7 +150,7 @@ function NewObjectModalContentComponent({
 
 type SchemaFieldInputProps = {
 	field: SchemaField
-	onChange: (value: string) => void
+	onChange: (value: string|Record<string,any>) => void
 	setError: Dispatch<SetStateAction<string>>
 }
 
@@ -208,7 +208,7 @@ const SchemaFieldInput = ({
 			return (
 				<FileDropInput
 					onSizeError={setError}
-					onInput={(event: any) => onInputFile(event, onChange)}
+					onInput={(file: any) => onInputFile({ file, onChange })}
 				/>
 			)
 
