@@ -2,8 +2,12 @@ import { ChangeEvent, Dispatch, SetStateAction, useState } from "react"
 import { Button, NebulaIcon } from "@sonr-io/nebula-react"
 import FileDropInput from "../../../../components/FileDropInput"
 import { fileToBase64 } from "../../../../utils/files"
-import { slugify } from "../../../../utils/string"
-import { Bucket, SchemaField, SchemaMeta } from "../../../../utils/types"
+import {
+	Bucket,
+	onInputFileProps,
+	SchemaField,
+	SchemaMeta,
+} from "../../../../utils/types"
 import { objectToBase64 } from "../../../../utils/object"
 
 interface NewSchemaModalContentComponentProps {
@@ -144,14 +148,18 @@ function NewObjectModalContentComponent({
 	)
 }
 
-type Props = {
+type SchemaFieldInputProps = {
 	field: SchemaField
 	onChange: (value: string) => void
 	setError: Dispatch<SetStateAction<string>>
 }
 
-const SchemaFieldInput = ({ field, onChange, setError }: Props) => {
-	async function onInputFile(file: any, onChange: any) {
+const SchemaFieldInput = ({
+	field,
+	onChange,
+	setError,
+}: SchemaFieldInputProps) => {
+	async function onInputFile({ file, onChange }: onInputFileProps) {
 		const base64File = await fileToBase64(file)
 		onChange({
 			bytes: objectToBase64({ base64File, fileName: file.name }),

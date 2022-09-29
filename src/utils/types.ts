@@ -84,3 +84,8 @@ export interface userGetObjectProps {
 	schemaDid: string
 	objectCid: string
 }
+
+export interface onInputFileProps {
+	file: File
+	onChange: (value: Record<string, any>) => void
+}

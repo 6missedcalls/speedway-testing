@@ -28,7 +28,6 @@ import {
 	SonrObject,
 } from "../../utils/types"
 import ObjectsPageComponent from "./Component"
-const Buffer = require("buffer/").Buffer
 
 function ObjectsPageContainer() {
 	const { setModalContent, openModal } = useContext(AppModalContext)

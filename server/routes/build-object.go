@@ -2,11 +2,11 @@ package routes
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"math"
 	"net/http"
-	"encoding/base64"
 
 	"github.com/gin-gonic/gin"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
@@ -107,11 +107,8 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 			continue
 		case map[string]interface{}:
 			value := v.(map[string]interface{})
-			if base64String, ok :=  value["bytes"]; ok {
-				rawDecodedString, err := base64.StdEncoding.DecodeString(base64String.(string))
-				if err != nil {
-					panic(err)
-				}
+			if base64String, ok := value["bytes"]; ok {
+				rawDecodedString, _ := base64.StdEncoding.DecodeString(base64String.(string))
 				bytes := []byte(rawDecodedString)
 				objBuilder.Set(k, bytes)
 			}
