@@ -12,6 +12,7 @@ import {
 	selectObjectsList,
 	selectObjectsLoading,
 	userGetBucketObjects,
+	userGetObject,
 } from "../../redux/slices/objectsSlice"
 import {
 	selectSchemasLoading,
@@ -105,16 +106,26 @@ function ObjectsPageContainer() {
 				const listItem: SearchableListItem = {}
 				listItem.cid = { text: cid }
 				Object.keys(data).forEach((key) => {
-					if (data[key]?.["/"]?.bytes) {
-						const item = data[key]["/"].bytes
-						const parsedData = parseJsonFromBase64String(item)
-						const { base64File, fileName } = parsedData
+					if (data[key]?.bytes) {
 						listItem[key] = {
 							text: "",
 							Component: () => (
 								<div
 									className="w-20 h-8 bg-button-subtle rounded cursor-pointer flex justify-center items-center"
-									onClick={() => downloadFileFromBase64(base64File, fileName)}
+									onClick={async () => {
+										const { payload } = await dispatch(
+											userGetObject({
+												schemaDid: selectedSchema,
+												objectCid: cid,
+											})
+										)
+										const bytes = payload?.object[key]?.["/"]?.bytes
+										if (!bytes) return
+
+										const parsedData = parseJsonFromBase64String(bytes)
+										const { base64File, fileName } = parsedData
+										downloadFileFromBase64(base64File, fileName)
+									}}
 								>
 									<span className="block font-extrabold text-custom-xs text-button-subtle">
 										Download

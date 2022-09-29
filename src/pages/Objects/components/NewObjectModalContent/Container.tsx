@@ -92,7 +92,7 @@ function NewObjectModalContentContainer({
 				{}
 			),
 		}
-		console.log("objectPayload", objectPayload)
+
 		if (
 			!Object.values(objectPayload.object).every((value) => {
 				return Array.isArray(value)
