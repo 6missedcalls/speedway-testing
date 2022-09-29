@@ -150,7 +150,7 @@ function NewObjectModalContentComponent({
 
 type SchemaFieldInputProps = {
 	field: SchemaField
-	onChange: (value: string|Record<string,any>) => void
+	onChange: (value: string | Record<string, any>) => void
 	setError: Dispatch<SetStateAction<string>>
 }
 
