@@ -74,9 +74,26 @@ task server:start:release
 </br>
 
 ## Running Speedway CLI
+
+### Manual Build
 ### Build the Speedway CLI
 ```bash
-go build -o speedway cmd/speedway-cli/main.go
+    go build -o bin/speedway
+```
+
+### Move the Speedway CLI to your path
+```bash
+    mv bin/speedway /usr/local/bin/speedway
+```
+
+### With Taskfile
+```bash
+    task build:cli
+```
+
+### With Build Script
+```bash
+    ./build.sh
 ```
 
 ### Run the help command
@@ -115,7 +132,7 @@ To build for dev, run `task server:start:debug` instead of `task server:start:re
 ### Running the UI: Mock Server Mode
 This mode is ideal for UI development. Changes to the code will reflect on the browser automatically and there is no need to build. Any data generated will be local only. Behavior may not perfectly match the Sonr Speedway Backend.
 
-**Tun the Frontend:**
+**Run the Frontend:**
 ```
 npm install
 npm start

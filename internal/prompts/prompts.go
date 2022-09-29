@@ -9,7 +9,7 @@ import (
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	btv1 "github.com/sonr-io/sonr/x/bucket/types"
 	"github.com/sonr-io/speedway/internal/status"
-	"github.com/sonr-io/speedway/internal/storage"
+	"github.com/sonr-io/speedway/internal/utils"
 )
 
 type LoginReturn struct {
@@ -31,7 +31,7 @@ func fallbackLoginPrompt() (string, error) {
 
 func LoginPrompt() rtmv1.LoginRequest {
 	// Load the address from address.snr if it exists
-	address, err := storage.LoadInfo("address.snr")
+	address, err := utils.LoadInfo("address.snr")
 	// if error or address is empty, prompt for address with fallback prompt
 	if err != nil || address == "" {
 		fallbackAddr, err := fallbackLoginPrompt()
