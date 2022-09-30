@@ -53,7 +53,7 @@ function ObjectsPageContainer() {
 			}
 
 			if (!selectedBucket && buckets.payload.length > 0) {
-				setSelectedBucket(buckets.payload[0])
+				setSelectedBucket(buckets.payload[0].did)
 			}
 		}
 		initialize()
