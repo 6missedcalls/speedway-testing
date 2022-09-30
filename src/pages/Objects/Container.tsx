@@ -48,7 +48,7 @@ function ObjectsPageContainer() {
 				dispatch(userGetAllBuckets(address)),
 			])
 
-			if (!schemaMetadata && schemas.payload.length > 0) {
+			if (!selectedSchema && schemas.payload.length > 0) {
 				setSelectedSchema(schemas.payload[0])
 			}
 
