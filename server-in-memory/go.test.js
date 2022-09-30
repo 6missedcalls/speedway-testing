@@ -148,6 +148,8 @@ it(
 		expect(userBuckets[0].label).toBe("great philosophers")
 		expect(userBuckets[0]).toHaveProperty("content.length")
 		expect(userBuckets[0].content.length).toBe(0)
+		expect(userBuckets[0]).toHaveProperty("timestamp")
+		expect(typeof resBucketList.body.where_is[0].timestamp).toBe("number")
 
 		const bucketDid = userBuckets[0].did
 
