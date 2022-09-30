@@ -30,7 +30,9 @@ function ObjectsPageContainer() {
 	const dispatch: Function = useDispatch()
 	const buckets = useSelector(selectBuckets)
 	const schemaMetadata = useSelector(selectSchemasMetadataList)
-	const [selectedSchema, setSelectedSchema] = useState(schemaMetadata[0]?.did || "")
+	const [selectedSchema, setSelectedSchema] = useState(
+		schemaMetadata[0]?.did || ""
+	)
 	const [selectedBucket, setSelectedBucket] = useState(buckets[0]?.did || "")
 	const objectsList = useSelector(selectObjectsList)
 	const schemasLoading = useSelector(selectSchemasLoading)
@@ -45,15 +47,14 @@ function ObjectsPageContainer() {
 				dispatch(userGetAllSchemas(address)),
 				dispatch(userGetAllBuckets(address)),
 			])
-			
+
 			if (!schemaMetadata && schemas.payload.length > 0) {
 				setSelectedSchema(schemas.payload[0])
 			}
 
-			if(!selectedBucket && buckets.payload.length > 0){
+			if (!selectedBucket && buckets.payload.length > 0) {
 				setSelectedBucket(buckets.payload[0])
 			}
-
 		}
 		initialize()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
