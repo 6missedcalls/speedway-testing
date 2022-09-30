@@ -23,10 +23,10 @@ type CreateSchemaDocumentRequest struct {
 // @Tags Schema Document
 // @Accept json
 // @Produce json
-// @Param 		 creator body string true "creator" example("did:sonr:0x1234")
+// @Param 		 creator body string true "creator" example("did:snr:01234")
 // @Param 		 label body string true "label" example("My Schema")
-// @Param 		 schema_did body string true "schema_did" example("did:sonr:0x1234")
-// @Param 		 fields body string true "fields" example("did:sonr:0x1234")
+// @Param 		 schema_did body string true "schema_did" example("did:snr:01234")
+// @Param 		 fields body string true "fields" example("did:snr:01234")
 // @Success 	 200  {object}  rtmv1.UploadDocumentResponse
 // @Failure      500  {object}  FailedResponse
 // @Router /schema-document/create [post]
@@ -39,7 +39,6 @@ func (ns *NebulaServer) CreateSchemaDocument(c *gin.Context) {
 		})
 		return
 	}
-
 	b := ns.Config.Binding
 
 	schemadefinition, err := b.Instance.QueryWhatIs(rtmv1.QueryWhatIsRequest{
@@ -60,7 +59,7 @@ func (ns *NebulaServer) CreateSchemaDocument(c *gin.Context) {
 		Fields:     body.Fields,
 	}
 
-	res, err := b.CreateSchemaDocument(req)
+	res, err := b.Instance.UploadDocument(req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: err.Error(),
@@ -68,5 +67,10 @@ func (ns *NebulaServer) CreateSchemaDocument(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, rtmv1.UploadDocumentResponse{
+		Status:   res.Status,
+		Did:      res.Did,
+		Cid:      res.Cid,
+		Document: res.Document,
+	})
 }

@@ -263,6 +263,7 @@ func (b *SpeedwayBinding) CreateSchemaDocument(req rtmv1.UploadDocumentRequest) 
 	res, err := b.Instance.UploadDocument(req)
 	if err != nil {
 		fmt.Println(status.Error("Upload Document Error"), err)
+		return rtmv1.UploadDocumentResponse{}, err
 	}
 
 	return *res, err

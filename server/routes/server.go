@@ -121,12 +121,9 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	ns.Router.POST("/api/v1/bucket/update-label", ns.UpdateBucketLabel)
 	ns.Router.POST("/api/v1/bucket/update-visibility", ns.UpdateBucketVisibility)
 
-	// * Proxy Routes
+	// * Query Routes
 	ns.Router.POST("/api/v1/schema/get-from-creator", ns.QuerySchemaByCreator)
 	ns.Router.POST("/api/v1/bucket/get-from-creator", ns.QueryBucketByCreator)
-	// ! Deprecated Routes (Will be removed in future versions)
-	ns.Router.GET("/proxy/schemas", ns.ProxyQuerySchemas)
-	ns.Router.GET("/proxy/buckets", ns.ProxyQueryBuckets)
 
 	// * Serve Static Route
 	if ns.Config.EmbedFs != nil {
