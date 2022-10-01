@@ -14,6 +14,9 @@ const getBuckets = async (address: string): Promise<Bucket[]> => {
 		const response = await fetch(url, options)
 		if (!response.ok) throw new Error(response.statusText)
 		const data = await response.json()
+
+		if (!data.where_is) return []
+
 		return data.where_is.map((bucket: any) => ({
 			did: bucket.did,
 			label: bucket.label,

@@ -157,6 +157,12 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 app.post("/api/v1/schema/get-from-creator", async (req, res) => {
 	const allMetadata = (await storage.getItem("schemaMetadata")) || []
 	const metadata = _.filter(allMetadata, { creator: req.body.creator })
+
+	if (metadata.length === 0) {
+		res.status(500).send()
+		return
+	}
+
 	res.json({ what_is: metadata })
 })
 
@@ -232,8 +238,14 @@ app.post("/api/v1/bucket/get", async ({ body }, res) => {
 
 app.post("/api/v1/bucket/get-from-creator", async (req, res) => {
 	const allBuckets = (await storage.getItem("buckets")) || []
-	const buckets = _.filter(allBuckets, { creator: req.body.creator })
-	res.json({ where_is: buckets })
+	const buckets = _.chain(allBuckets)
+		.filter({ creator: req.body.creator })
+		.map((bucket) => ({
+			...bucket,
+			content: bucket.content.length > 0 ? bucket.content : undefined,
+		}))
+		.valueOf()
+	res.json({ where_is: buckets.length > 0 ? buckets : undefined })
 })
 
 /// OBJECTS

@@ -70,6 +70,19 @@ it(
 		const resAliasQueryWrong = await app.get(`/alias/get/${wrongAlias}`)
 		expect(resAliasQueryWrong.status).toBe(404)
 
+		// GETS AN EMPTY LIST OF SCHEMA
+		const resSchemaListEmpty = await app.post("/schema/get-from-creator", {
+			creator: address,
+		})
+		expect(resSchemaListEmpty.status).toBe(500)
+
+		// GET AN EMPTY LIST OF BUCKETS
+		const resBucketListEmpty = await app.post("/bucket/get-from-creator", {
+			creator: address,
+		})
+		expect(resBucketListEmpty.status).toBe(200)
+		expect(resBucketListEmpty.body.where_is).toBe(undefined)
+
 		// CREATE A SCHEMA
 		const resSchemaCreate = await app.post("/schema/create", {
 			label: "dinosaurs",
@@ -122,8 +135,8 @@ it(
 		expect(fields[1].name).toBe("firstname")
 		expect(fields[1].field).toBe(4)
 		expect(fields[2].name).toBe("friends")
-		// expect(fields[2].field).toBe(0)
 		expect(fields[2].field).toBe(undefined) // should be 0, but there's a bug currently
+		// expect(fields[2].field).toBe(0)
 		expect(fields[3].name).toBe("interest")
 		expect(fields[3].field).toBe(3)
 		expect(fields[4].name).toBe("strength")
@@ -142,8 +155,7 @@ it(
 		expect(resBucketList.body.where_is[0].label).toBe("great philosophers")
 		expect(resBucketList.body.where_is[0]).toHaveProperty("timestamp")
 		expect(typeof resBucketList.body.where_is[0].timestamp).toBe("number")
-		// expect(resBucketList.body.where_is[0]).toHaveProperty("content.length")
-		// expect(resBucketList.body.where_is[0].content.length).toBe(0)
+		expect(resBucketList.body.where_is[0].content).toBe(undefined)
 
 		const bucketDid = resBucketList.body.where_is[0].did
 
