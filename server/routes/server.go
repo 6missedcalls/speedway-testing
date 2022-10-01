@@ -103,12 +103,12 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	// * Schema Routes
 	ns.Router.POST("/api/v1/schema/create", ns.CreateSchema)
 	ns.Router.POST("/api/v1/schema/get", ns.QuerySchema)
+	ns.Router.POST("/api/v1/schema/get-from-creator", ns.QuerySchemaByCreator)
 
 	// * Schema Document Routes
 	ns.Router.POST("/api/v1/schema-document/create", ns.CreateSchemaDocument)
 	ns.Router.POST("/api/v1/schema-document/get", ns.GetSchemaDocument)
 
-	// ! Deprecated Routes (Will be removed in future versions)
 	// * Object Routes
 	ns.Router.POST("/api/v1/object/build", ns.BuildObject)
 	ns.Router.POST("/api/v1/object/get", ns.GetObject)
@@ -120,12 +120,7 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 	ns.Router.POST("/api/v1/bucket/update-items", ns.UpdateBucketItems)
 	ns.Router.POST("/api/v1/bucket/update-label", ns.UpdateBucketLabel)
 	ns.Router.POST("/api/v1/bucket/update-visibility", ns.UpdateBucketVisibility)
-
-	// * Proxy Routes
-	ns.Router.POST("/api/v1/schema/get-from-creator", ns.QuerySchemaByCreator)
 	ns.Router.POST("/api/v1/bucket/get-from-creator", ns.QueryBucketByCreator)
-	// ! Deprecated Routes (Will be removed in future versions)
-	ns.Router.GET("/proxy/schemas", ns.ProxyQuerySchemas)
 
 	// * Serve Static Route
 	if ns.Config.EmbedFs != nil {
@@ -140,7 +135,6 @@ func (ns *NebulaServer) ConfigureRoutes() error {
 		ns.Router.Use(static.Serve("/objects", static.LocalFile(ns.Config.StaticDir, true)))
 		ns.Router.Use(static.Serve("/buckets", static.LocalFile(ns.Config.StaticDir, true)))
 		ns.Router.Use(static.Serve("/buy-alias", static.LocalFile(ns.Config.StaticDir, true)))
-
 	}
 	ns.Router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
