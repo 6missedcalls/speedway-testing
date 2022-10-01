@@ -1,18 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { RootState } from "../store"
 import { InewSchema, SchemaMeta } from "../../utils/types"
-import getSchemaMetadata from "../../service/getSchemaMetadata"
+import getSchemas from "../../service/getSchemas"
 import createSchema from "../../service/createSchema"
-
-interface userCreateSchemaProp {
-	schema: InewSchema
-}
 
 export const userGetAllSchemas = createAsyncThunk(
 	"schemas/getAll",
 	async (address: string, thunkAPI) => {
 		try {
-			const data = await getSchemaMetadata(address)
+			const data = await getSchemas(address)
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
@@ -22,7 +18,7 @@ export const userGetAllSchemas = createAsyncThunk(
 
 export const userCreateSchema = createAsyncThunk(
 	"schemas/create",
-	async ({ schema }: userCreateSchemaProp, thunkAPI) => {
+	async ({ schema }: { schema: InewSchema }, thunkAPI) => {
 		try {
 			const data = await createSchema(schema.label, schema.fields)
 			return data
