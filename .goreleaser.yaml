@@ -8,6 +8,7 @@ before:
     - go mod tidy
     # you may remove this if you don't need go generate
     - go generate ./...
+    - task build:ui:prod
 builds:
   - id: linux-build
     binary: speedway
