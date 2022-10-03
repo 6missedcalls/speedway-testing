@@ -44,7 +44,7 @@ var once sync.Once
 // use MotorCallback for creating an empty motor
 
 /*
-Initialize the speedway binding to the motor
+ Initialize the speedway binding to the motor
 */
 func InitMotor() mtr.MotorNode {
 	// Create the InitializeRequest to the motor
@@ -61,21 +61,8 @@ func InitMotor() mtr.MotorNode {
 	return motor
 }
 
-// func InitMotor() mtr.MotorNode {
-// 	initreq := &rtmv1.InitializeRequest{
-// 		DeviceId: utils.GetHwid(),
-// 	}
-// 	// add MotorCallback with onMotorEvent
-// 	m, err := mtr.EmptyMotor(initreq, &MotorCallback{})
-// 	if err != nil {
-// 		fmt.Println(status.Error("Motor failed to initialize"), err)
-// 		return nil
-// 	}
-// 	return m
-// }
-
 /*
-Here each function matches a function on the MotorNode for functionality being exposed to the cli and rest server there should be a wrapper function definedon the SpeedwayMotorBindingSruct.
+ Here each function matches a function on the MotorNode for functionality being exposed to the cli and rest server there should be a wrapper function definedon the SpeedwayMotorBindingSruct.
 */
 func CreateInstance() *SpeedwayBinding {
 	once.Do(func() {
@@ -92,17 +79,8 @@ func CreateInstance() *SpeedwayBinding {
 	return binding
 }
 
-// func CreateInstance() *SpeedwayBinding {
-// 	once.Do(func() {
-// 		binding = &SpeedwayBinding{}
-// 		m := InitMotor()
-// 		binding.Instance = m
-// 	})
-// 	return binding
-// }
-
 /*
-Get the Instance of the motor node and return it
+ Get the Instance of the motor node and return it
 */
 func GetInstance() (*SpeedwayBinding, error) {
 	if binding.Instance == nil {
@@ -113,7 +91,7 @@ func GetInstance() (*SpeedwayBinding, error) {
 }
 
 /*
-Create Account on Blockchain and return the response
+ Create Account on Blockchain and return the response
 */
 func (b *SpeedwayBinding) CreateAccount(req rtmv1.CreateAccountRequest) (rtmv1.CreateAccountResponse, error) {
 	if b.Instance == nil {
@@ -133,7 +111,7 @@ func (b *SpeedwayBinding) CreateAccount(req rtmv1.CreateAccountRequest) (rtmv1.C
 }
 
 /*
-Create Account With Keys on Blockchain and return the response
+ Create Account With Keys on Blockchain and return the response
 */
 func (b *SpeedwayBinding) CreateAccountWithKeys(req rtmv1.CreateAccountWithKeysRequest) (rtmv1.CreateAccountWithKeysResponse, error) {
 	if b.Instance == nil {
@@ -153,8 +131,8 @@ func (b *SpeedwayBinding) CreateAccountWithKeys(req rtmv1.CreateAccountWithKeysR
 }
 
 /*
-Login and return the response
-Set the logged in flag to true if successful
+ Login and return the response
+ Set the logged in flag to true if successful
 */
 func (b *SpeedwayBinding) Login(req rtmv1.LoginRequest) (rtmv1.LoginResponse, error) {
 	if b.Instance == nil {
@@ -179,8 +157,8 @@ func (b *SpeedwayBinding) Login(req rtmv1.LoginRequest) (rtmv1.LoginResponse, er
 }
 
 /*
-Login With Keys and return the response
-Set the logged in flag to true if successful
+ Login With Keys and return the response
+ Set the logged in flag to true if successful
 */
 func (b *SpeedwayBinding) LoginWithKeys(req rtmv1.LoginWithKeysRequest) (rtmv1.LoginResponse, error) {
 	if b.Instance == nil {
@@ -250,7 +228,7 @@ func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid s
 }
 
 /*
-Create a SchemaDocument from motor and return the response
+ Create a SchemaDocument from motor and return the response
 */
 func (b *SpeedwayBinding) CreateSchemaDocument(req rtmv1.UploadDocumentRequest) (rtmv1.UploadDocumentResponse, error) {
 	if b.Instance == nil {
@@ -270,7 +248,7 @@ func (b *SpeedwayBinding) CreateSchemaDocument(req rtmv1.UploadDocumentRequest) 
 }
 
 /*
-Get a SchemaDocument from motor
+ Get a SchemaDocument from motor
 */
 func (b *SpeedwayBinding) GetSchemaDocument(req rtmv1.GetDocumentRequest) (rtmv1.GetDocumentResponse, error) {
 	if b.Instance == nil {
@@ -285,7 +263,7 @@ func (b *SpeedwayBinding) GetSchemaDocument(req rtmv1.GetDocumentRequest) (rtmv1
 }
 
 /*
-Get the schema and return the WhatIsResponse
+ Get the schema and return the WhatIsResponse
 */
 func (b *SpeedwayBinding) GetSchema(req rtmv1.QueryWhatIsRequest) (rtmv1.QueryWhatIsResponse, error) {
 	if b.Instance == nil {
@@ -301,7 +279,7 @@ func (b *SpeedwayBinding) GetSchema(req rtmv1.QueryWhatIsRequest) (rtmv1.QueryWh
 }
 
 /*
-Get a list of BucketItems from the bucket and return the list
+ Get a list of BucketItems from the bucket and return the list
 */
 func (b *SpeedwayBinding) GetBuckets(ctx context.Context, bucketDid string) ([]*btv1.BucketItem, error) {
 	if b.Instance == nil {
@@ -326,7 +304,7 @@ func (b *SpeedwayBinding) GetBuckets(ctx context.Context, bucketDid string) ([]*
 }
 
 /*
-Create the schema and return the WhatIsResponse
+ Create the schema and return the WhatIsResponse
 */
 func (b *SpeedwayBinding) CreateSchema(req rtmv1.CreateSchemaRequest) (rtmv1.CreateSchemaResponse, error) {
 	if b.Instance == nil {
@@ -346,7 +324,7 @@ func (b *SpeedwayBinding) CreateSchema(req rtmv1.CreateSchemaRequest) (rtmv1.Cre
 }
 
 /*
-UpdateBucketItems and return the bucket after the update
+ UpdateBucketItems and return the bucket after the update
 */
 func (b *SpeedwayBinding) UpdateBucketItems(ctx context.Context, bucketDid string, items []*btv1.BucketItem) ([]*btv1.BucketItem, error) {
 	if b.Instance == nil {
@@ -403,7 +381,7 @@ func (b *SpeedwayBinding) UpdateBucketLabel(ctx context.Context, bucketDid strin
 }
 
 /*
-UpdateBucketVisibility and return the bucket after the update
+ UpdateBucketVisibility and return the bucket after the update
 */
 func (b *SpeedwayBinding) UpdateBucketVisibility(ctx context.Context, bucketDid string, visibility *btv1.BucketVisibility) (*rtmv1.QueryWhereIsResponse, error) {
 	if b.Instance == nil {
@@ -434,7 +412,7 @@ func (b *SpeedwayBinding) UpdateBucketVisibility(ctx context.Context, bucketDid 
 }
 
 /*
-Buy Alias and return the response
+ Buy Alias and return the response
 */
 func (b *SpeedwayBinding) BuyAlias(ctx context.Context, req rt.MsgBuyAlias) (rt.MsgBuyAliasResponse, error) {
 	if b.Instance == nil {
@@ -454,7 +432,7 @@ func (b *SpeedwayBinding) BuyAlias(ctx context.Context, req rt.MsgBuyAlias) (rt.
 }
 
 /*
-Sell Alias and return the response
+ Sell Alias and return the response
 */
 func (b *SpeedwayBinding) SellAlias(ctx context.Context, req rt.MsgSellAlias) (rt.MsgSellAliasResponse, error) {
 	if b.Instance == nil {
@@ -474,7 +452,7 @@ func (b *SpeedwayBinding) SellAlias(ctx context.Context, req rt.MsgSellAlias) (r
 }
 
 /*
-Transfer Alias and return the response
+ Transfer Alias and return the response
 */
 func (b *SpeedwayBinding) TransferAlias(ctx context.Context, req rt.MsgTransferAlias) (rt.MsgTransferAliasResponse, error) {
 	if b.Instance == nil {
@@ -494,7 +472,7 @@ func (b *SpeedwayBinding) TransferAlias(ctx context.Context, req rt.MsgTransferA
 }
 
 /*
-GetContentById and return the content
+ GetContentById and return the content
 */
 func (b *SpeedwayBinding) GetContentById(ctx context.Context, bucketDid string, contentId string) (*btv1.BucketContent, error) {
 	if b.Instance == nil {
