@@ -8,6 +8,7 @@ before:
     - go mod tidy
     # you may remove this if you don't need go generate
     - go generate ./...
+    - task build:ui:prod
 builds:
   - id: linux-build
     binary: speedway
@@ -15,16 +16,6 @@ builds:
       - linux
     goarch:
       - amd64
-      - arm64
-    overrides:
-      - goos: linux
-        goarch: arm64
-        env:
-          - CC=aarch64-linux-gnu-gcc
-      - goos: linux
-        goarch: amd64
-        env:
-          - CC=gcc
   - id: darwin-build
     env:
       - CGO_ENABLED=1

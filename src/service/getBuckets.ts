@@ -19,6 +19,8 @@ const getBuckets = async (address: string): Promise<Bucket[]> => {
 			.map((bucket: Bucket) => ({
 				did: bucket.did,
 				label: bucket.label,
+				creator: bucket.creator,
+				timestamp: bucket.timestamp,
 				content: bucket.content.filter((c) => c.uri),
 			}))
 	} catch (error) {

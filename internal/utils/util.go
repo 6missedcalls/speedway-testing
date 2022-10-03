@@ -188,11 +188,11 @@ func MarshalJsonFmt(data interface{}) (string, error) {
 	return string(b), err
 }
 
-//	Storage Information Utils	//
-
 /*
-The StoreInfo function stores the specified key in the ~/.speedway/info directory
+	Storage Utils
 */
+
+// The StoreInfo function stores the specified key in the ~/.speedway/info directory
 func StoreInfo(name string, m motor.MotorNode) error {
 	homedir, err := os.UserHomeDir()
 	if err != nil {
@@ -221,17 +221,9 @@ func StoreInfo(name string, m motor.MotorNode) error {
 	return err
 }
 
-/*
-LoadInfo loads the account information from the ~/.speedway/info directory
-*/
+// The LoadInfo method loads the specified key from the ~/.speedway/info directory
 func LoadInfo(name string) (string, error) {
 	var file *os.File
-	if _, err := os.Stat(fmt.Sprintf("%s/%s", os.Getenv("HOME"), ".speedway/info/"+name)); err != nil {
-		if os.IsNotExist(err) {
-			return "", err
-		}
-		return "", err
-	}
 	file, err := os.Open(fmt.Sprintf("%s/%s", os.Getenv("HOME"), ".speedway/info/"+name))
 	if err != nil {
 		return "", err

@@ -16,10 +16,10 @@ import (
 )
 
 var (
-	ErrMotorNotInitialized = fmt.Errorf("cannot find instance of motor")            // Error for when the motor is not initialized
-	ErrNotAuthenticated    = fmt.Errorf("must be logged in to preform that action") // Error for when the user is not logged in
-	ErrIsAuthenticated     = fmt.Errorf("you are already authenticated")            // Error for when the user is already logged in
-	ErrMotorFailedInit     = fmt.Errorf("motor failed to initialize")               // Error for when the motor fails to initialize
+	ErrMotorNotInitialized = fmt.Errorf("cannot find instance of motor")
+	ErrNotAuthenticated    = fmt.Errorf("must be logged in to preform that action")
+	ErrIsAuthenticated     = fmt.Errorf("you are already authenticated")
+	ErrMotorFailedInit     = fmt.Errorf("motor failed to initialize")
 )
 
 type SpeedwayBinding struct {

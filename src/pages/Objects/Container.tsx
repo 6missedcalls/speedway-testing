@@ -29,24 +29,31 @@ function ObjectsPageContainer() {
 	const { setModalContent, openModal } = useContext(AppModalContext)
 	const dispatch: Function = useDispatch()
 	const buckets = useSelector(selectBuckets)
-	const [selectedSchema, setSelectedSchema] = useState("")
-	const [selectedBucket, setSelectedBucket] = useState(buckets[0]?.did)
+	const schemaMetadata = useSelector(selectSchemasMetadataList)
+	const [selectedSchema, setSelectedSchema] = useState(
+		schemaMetadata[0]?.did || ""
+	)
+	const [selectedBucket, setSelectedBucket] = useState(buckets[0]?.did || "")
 	const objectsList = useSelector(selectObjectsList)
 	const schemasLoading = useSelector(selectSchemasLoading)
 	const bucketsLoading = useSelector(selectBucketsLoading)
 	const objectsLoading = useSelector(selectObjectsLoading)
 	const address = useSelector(selectAddress)
-	const schemaMetadata = useSelector(selectSchemasMetadataList)
 	const loading = schemasLoading || objectsLoading || bucketsLoading
 
 	useEffect(() => {
 		async function initialize() {
-			await Promise.all([
-				dispatch(userGetAllSchemas),
+			const [schemas, buckets] = await Promise.all([
+				dispatch(userGetAllSchemas(address)),
 				dispatch(userGetAllBuckets(address)),
 			])
-			if (schemaMetadata.length > 0) {
-				setSelectedSchema(schemaMetadata[0].did)
+
+			if (!selectedSchema && schemas.payload.length > 0) {
+				setSelectedSchema(schemas.payload[0])
+			}
+
+			if (!selectedBucket && buckets.payload.length > 0) {
+				setSelectedBucket(buckets.payload[0].did)
 			}
 		}
 		initialize()

@@ -163,6 +163,7 @@ app.post("/api/v1/bucket/create", async ({ body }, res) => {
 		did,
 		label: body.label,
 		creator: body.creator,
+		timestamp: Date.now(),
 		content: [],
 	}
 
@@ -182,6 +183,7 @@ app.post("/api/v1/bucket/update-items", async ({ body }, res) => {
 		uri: c.uri,
 		schema_did: c.schemaDid,
 	}))
+	bucket.timestamp = Date.now()
 	await storage.setItem("buckets", allBuckets)
 	res.json({})
 })

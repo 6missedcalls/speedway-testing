@@ -14,35 +14,20 @@ definitions:
   object.Object:
     additionalProperties: true
     type: object
-  routes.BucketResponse:
-    description: Query the Sonr Blockchain for all public buckets on the Blockchain.
-      This is a read-only endpoint.
+  query.PageResponse:
     properties:
-      where_is:
+      next_key:
+        description: |-
+          next_key is the key to be passed to PageRequest.key to
+          query the next page most efficiently
         items:
-          properties:
-            content:
-              items: {}
-              type: array
-            content_acl:
-              items: {}
-              type: array
-            creator:
-              type: string
-            did:
-              type: string
-            is_active:
-              type: boolean
-            label:
-              type: string
-            role:
-              type: string
-            timestamp:
-              type: string
-            visibility:
-              type: string
-          type: object
+          type: integer
         type: array
+      total:
+        description: |-
+          total is total number of results available if PageRequest.count_total
+          was set, its value is undefined otherwise
+        type: integer
     type: object
   routes.ConvertBucketRes:
     properties:
@@ -103,52 +88,6 @@ definitions:
       definition:
         $ref: '#/definitions/types.SchemaDefinition'
     type: object
-  routes.SchemaResponse:
-    properties:
-      pagination:
-        properties:
-          next_key: {}
-          total:
-            type: string
-        type: object
-      what_is:
-        items:
-          properties:
-            creator:
-              type: string
-            did:
-              type: string
-            is_active:
-              type: boolean
-            metadata:
-              type: object
-            schema:
-              properties:
-                cid:
-                  type: string
-                did:
-                  type: string
-                fields:
-                  items:
-                    properties:
-                      field:
-                        type: string
-                      link:
-                        type: string
-                      link_kind:
-                        type: string
-                      name:
-                        type: string
-                    type: object
-                  type: array
-                label:
-                  type: string
-              type: object
-            timestamp:
-              type: string
-          type: object
-        type: array
-    type: object
   routes.SuccessfulLogin:
     properties:
       address:
@@ -193,6 +132,15 @@ definitions:
       user:
         $ref: '#/definitions/url.Userinfo'
         description: username and password information
+    type: object
+  types.AclJwks:
+    properties:
+      encrypted_jwks:
+        additionalProperties:
+          items:
+            type: integer
+          type: array
+        type: object
     type: object
   types.Alias:
     properties:
@@ -492,6 +440,40 @@ definitions:
         description: Timestamp is the time of the last update of the DID Document
         type: integer
     type: object
+  types.WhereIs:
+    properties:
+      content:
+        description: Content of the new bucket map of DIDs to CIDs.
+        items:
+          $ref: '#/definitions/types.BucketItem'
+        type: array
+      content_acl:
+        additionalProperties:
+          $ref: '#/definitions/types.AclJwks'
+        description: JWKs of the new bucket.
+        type: object
+      creator:
+        description: Creator of the new bucket
+        type: string
+      did:
+        description: DID of the created bucket.
+        type: string
+      is_active:
+        description: IsActive flag of the new bucket.
+        type: boolean
+      label:
+        description: Label of the new bucket.
+        type: string
+      role:
+        description: Role of the creator of the new bucket.
+        type: integer
+      timestamp:
+        description: Timestamp of the new bucket.
+        type: integer
+      visibility:
+        description: Visibility of the new bucket.
+        type: integer
+    type: object
   types.WhoIs:
     properties:
       alias:
@@ -552,6 +534,32 @@ definitions:
         type: string
       label:
         type: string
+    type: object
+  v1.QueryWhatIsByCreatorResponse:
+    properties:
+      code:
+        type: integer
+      pagination:
+        $ref: '#/definitions/query.PageResponse'
+      schemas:
+        additionalProperties:
+          $ref: '#/definitions/types.SchemaDefinition'
+        type: object
+      what_is:
+        items:
+          $ref: '#/definitions/types.WhatIs'
+        type: array
+    type: object
+  v1.QueryWhereIsByCreatorResponse:
+    properties:
+      code:
+        type: integer
+      pagination:
+        $ref: '#/definitions/query.PageResponse'
+      where_is:
+        items:
+          $ref: '#/definitions/types.WhereIs'
+        type: array
     type: object
   v1.SearchBucketContentBySchemaResponse:
     properties:
@@ -930,12 +938,12 @@ paths:
       summary: GetBucketBySchema
       tags:
       - Bucket
-  /bucket/query:
-    get:
+  /bucket/get-from-creator:
+    post:
       description: Query the Sonr Blockchain for all public buckets by a specified
         creator.
       parameters:
-      - description: creator
+      - description: snr...
         in: query
         name: creator
         type: string
@@ -949,14 +957,14 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.BucketResponse'
+            $ref: '#/definitions/v1.QueryWhereIsByCreatorResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/routes.FailedResponse'
-      summary: QueryBuckets
+      summary: QueryWhereIsByCreator
       tags:
-      - Proxy
+      - Bucket
   /bucket/update-items:
     post:
       description: Update a bucket on Sonr using the bucket module of Sonr's Blockchain.
@@ -1266,16 +1274,25 @@ paths:
       tags:
       - Schema
   /schema/get-from-creator:
-    get:
+    post:
       description: Query the Sonr Blockchain for all public schemas on the Blockchain.
         This is a read-only endpoint.
+      parameters:
+      - description: did:snr:...
+        in: query
+        name: creator
+        type: string
+      - description: pagination
+        in: query
+        name: pagination
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SchemaResponse'
+            $ref: '#/definitions/v1.QueryWhatIsByCreatorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -1283,22 +1300,4 @@ paths:
       summary: QueryWhatIsByCreator
       tags:
       - Schema
-  /schema/query:
-    get:
-      description: Query the Sonr Blockchain for all public schemas on the Blockchain.
-        This is a read-only endpoint.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/routes.SchemaResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/routes.FailedResponse'
-      summary: QuerySchemas
-      tags:
-      - Proxy
 swagger: "2.0"

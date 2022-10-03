@@ -23,7 +23,7 @@ interface AuthenticationState {
 	isLogged: boolean
 	loading: boolean
 	error: boolean
-	Address: string
+	address: string
 	alias: string
 }
 
@@ -31,7 +31,7 @@ export const initialState: AuthenticationState = {
 	isLogged: false,
 	loading: false,
 	error: false,
-	Address: "",
+	address: "",
 	alias: "",
 }
 
@@ -95,20 +95,21 @@ export const authenticationSlice = createSlice({
 		builder.addCase(userLogin.fulfilled, (state, action) => {
 			state.loading = false
 			state.isLogged = true
-			state.Address = action.payload
+			state.address = action.payload
 		})
 
 		builder.addCase(userLogin.rejected, (state) => {
 			state.error = true
 			state.loading = false
 		})
+
 		builder.addCase(userCreateAccount.pending, (state) => {
 			state.loading = true
 		})
 
 		builder.addCase(userCreateAccount.fulfilled, (state, action) => {
 			state.loading = false
-			state.Address = action.payload
+			state.address = action.payload
 		})
 
 		builder.addCase(userCreateAccount.rejected, (state) => {
@@ -161,7 +162,7 @@ export const selectAuthenticationIsLoading = (state: RootState) => {
 }
 
 export const selectAddress = (state: RootState) => {
-	return state.authentication.Address
+	return state.authentication.address
 }
 
 export const selectAlias = (state: RootState) => {

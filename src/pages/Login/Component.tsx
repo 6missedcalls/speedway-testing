@@ -59,8 +59,8 @@ const Component = ({
 						<TextInput
 							error={errors?.addressOrAlias?.isRequired}
 							className="text-white mb-4"
-							label="Wallet Address"
-							ariaLabel="Wallet Address"
+							label="Domain or Wallet Address"
+							ariaLabel="Domain or Wallet Address"
 							handleOnChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 								setAddressOrAlias(event.target.value)
 							}}
@@ -72,8 +72,8 @@ const Component = ({
 							RightIcon={passwordVisible ? OpenEyeSvg : ClosedEyeSvg}
 							rightIconOnClick={togglePasswordVisible}
 							className="text-white"
-							label="Your Vault Password"
-							ariaLabel="Your Vault Password"
+							label="Vault Password"
+							ariaLabel="Vault Password"
 							handleOnChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 								setPassword(event.target.value)
 							}}
