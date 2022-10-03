@@ -23,8 +23,8 @@ func (ns *NebulaServer) QueryBucketByCreator(c *gin.Context) {
 	var body rtmv1.QueryWhereIsByCreatorRequest
 	err := c.BindJSON(&body)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, FailedResponse{
-			Error: err.Error(),
+		c.JSON(http.StatusBadRequest, FailedResponse{
+			Error: "QueryWhereIsByCreatorRequest Could not be parsed",
 		})
 		return
 	}
