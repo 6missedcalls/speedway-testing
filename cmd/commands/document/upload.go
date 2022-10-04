@@ -1,4 +1,4 @@
-package schema
+package document
 
 import (
 	"context"
@@ -15,7 +15,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func bootstrapBuildSchemaDocumentCommand(ctx context.Context, logger *golog.Logger) (buildDocCmd *cobra.Command) {
+func bootstrapBuildDocumentCommand(ctx context.Context, logger *golog.Logger) (buildDocCmd *cobra.Command) {
 	buildDocCmd = &cobra.Command{
 		Use:   "document [did]",
 		Short: "Create a new Schema Document associated to a Schema",
@@ -68,7 +68,7 @@ func bootstrapBuildSchemaDocumentCommand(ctx context.Context, logger *golog.Logg
 				}
 			}
 
-			uploadRes, err := cli.CreateSchemaDocument(mt.UploadDocumentRequest{
+			uploadRes, err := cli.CreateDocument(mt.UploadDocumentRequest{
 				Creator:    session.Info.Address,
 				Label:      label,
 				Definition: res.Schema,
