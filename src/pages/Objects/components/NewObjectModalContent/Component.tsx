@@ -1,16 +1,9 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react"
 import { Button, NebulaIcon } from "@sonr-io/nebula-react"
 import FileDropInput from "../../../../components/FileDropInput"
-import { fileToBase64 } from "../../../../utils/files"
-import {
-	Bucket,
-	onInputFileProps,
-	SchemaField,
-	SchemaMeta,
-} from "../../../../utils/types"
-import { objectToBase64 } from "../../../../utils/object"
+import { Bucket, SchemaField, SchemaMeta } from "../../../../utils/types"
 
-interface NewSchemaModalContentComponentProps {
+interface NewObjectModalContentComponentProps {
 	onClose: () => void
 	onSave: () => void
 	onChangeSchema: Dispatch<SetStateAction<string>>
@@ -23,6 +16,7 @@ interface NewSchemaModalContentComponentProps {
 	selectedBucket: string
 	error: string
 	setError: Dispatch<SetStateAction<string>>
+	unsetPropertyValue: (index: number) => void
 }
 
 function NewObjectModalContentComponent({
@@ -38,7 +32,8 @@ function NewObjectModalContentComponent({
 	selectedBucket,
 	error,
 	setError,
-}: NewSchemaModalContentComponentProps) {
+	unsetPropertyValue,
+}: NewObjectModalContentComponentProps) {
 	return (
 		<div className="flex flex-col max-h-[90vh]">
 			<div className="flex justify-between px-8 my-8">
@@ -121,9 +116,11 @@ function NewObjectModalContentComponent({
 								{item.name}
 							</div>
 							<SchemaFieldInput
+								index={index}
 								field={{ name: item.name, type: item.type }}
 								onChange={(value) => onChangeProperty(index, value)}
 								setError={setError}
+								unsetPropertyValue={unsetPropertyValue}
 							/>
 						</div>
 					))}
@@ -152,12 +149,16 @@ type SchemaFieldInputProps = {
 	field: SchemaField
 	onChange: (value: string) => void
 	setError: Dispatch<SetStateAction<string>>
+	index: number
+	unsetPropertyValue: (index: number) => void
 }
 
 const SchemaFieldInput = ({
 	field,
 	onChange,
 	setError,
+	index,
+	unsetPropertyValue,
 }: SchemaFieldInputProps) => {
 	switch (field.type) {
 		case 0:
@@ -198,7 +199,13 @@ const SchemaFieldInput = ({
 				/>
 			)
 		case 5:
-			return <FileDropInput onSizeError={setError} onChange={onChange} />
+			return (
+				<FileDropInput
+					onSizeError={setError}
+					onChange={onChange}
+					onRemove={() => unsetPropertyValue(index)}
+				/>
+			)
 
 		default:
 			return <div className="italic text-subdued">Unrecognized field type</div>

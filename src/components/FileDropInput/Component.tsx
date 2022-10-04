@@ -6,11 +6,13 @@ interface FileDropInputComponentProps {
 	onInput: (e: FormEvent<HTMLInputElement>) => void
 	hasFile: boolean
 	setHasFile: Function
+	onRemove: Function
 	onSizeError: Function
 }
 
 function FileDropInputComponent({
 	onInput,
+	onRemove,
 	hasFile,
 	setHasFile,
 	onSizeError,
@@ -23,7 +25,10 @@ function FileDropInputComponent({
 				</div>
 				<div
 					className="text-tertiary-red font-extrabold text-custom-md cursor-pointer"
-					onClick={() => setHasFile(false)}
+					onClick={() => {
+						setHasFile(false)
+						onRemove()
+					}}
 				>
 					Remove
 				</div>

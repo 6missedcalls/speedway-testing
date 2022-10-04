@@ -1,5 +1,3 @@
-const Buffer = require("buffer/").Buffer
-
 export function fileToBase64(file: File) {
 	return new Promise((resolve, reject) => {
 		const reader = new FileReader()

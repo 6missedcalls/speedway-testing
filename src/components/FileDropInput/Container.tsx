@@ -1,16 +1,18 @@
 import FileDropInputComponent from "./Component"
-import { FormEvent, useState } from "react"
+import { useState } from "react"
 import { fileToBase64 } from "../../utils/files"
 import { objectToBase64 } from "../../utils/object"
 
 interface FileDropInputContainerProps {
 	onChange: (value: string) => void
+	onRemove: Function
 	onSizeError: Function
 }
 
 function FileDropInputContainer({
 	onChange,
 	onSizeError,
+	onRemove,
 }: FileDropInputContainerProps) {
 	const [hasFile, setHasFile] = useState(false)
 
@@ -21,6 +23,7 @@ function FileDropInputContainer({
 
 	return (
 		<FileDropInputComponent
+			onRemove={onRemove}
 			onSizeError={onSizeError}
 			setHasFile={setHasFile}
 			onInput={(file: any) => {
