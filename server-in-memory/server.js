@@ -82,12 +82,7 @@ app.post("/api/v1/account/login", async ({ body }, res) => {
 })
 
 app.get("/api/v1/account/info", async (_, res) => {
-	const sessionAddress = await storage.getItem("sessionAddress")
-	if (!sessionAddress) {
-		res.status(500).send()
-		return
-	}
-
+	const sessionAddress = (await storage.getItem("sessionAddress")) || ""
 	res.json({ Address: sessionAddress })
 })
 
@@ -151,7 +146,7 @@ app.post("/api/v1/schema/create", async ({ body }, res) => {
 
 	await storage.setItem("schemaMetadata", allMetadata)
 
-	res.json({ whatIs: schemaMetadata })
+	res.json({ what_is: schemaMetadata })
 })
 
 app.post("/api/v1/schema/get-from-creator", async (req, res) => {
@@ -282,11 +277,9 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 	await storage.setItem(objectStoreKey(cid), object)
 
 	res.json({
-		objectUpload: {
-			reference: {
-				cid,
-				Label: body.label,
-			},
+		reference: {
+			cid,
+			Label: body.label,
 		},
 	})
 })
