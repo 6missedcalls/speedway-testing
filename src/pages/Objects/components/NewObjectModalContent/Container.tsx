@@ -76,6 +76,10 @@ function NewObjectModalContentContainer({
 					return isNaN(parseInt(value)) ? null : parseInt(value)
 				case 3:
 					return isNaN(parseFloat(value)) ? null : parseFloat(value)
+				case 5:
+					return {
+						bytes: value,
+					}
 				default:
 					return !value ? null : value
 			}

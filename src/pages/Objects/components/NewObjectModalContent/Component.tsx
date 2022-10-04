@@ -150,7 +150,7 @@ function NewObjectModalContentComponent({
 
 type SchemaFieldInputProps = {
 	field: SchemaField
-	onChange: (value: string | Record<string, any>) => void
+	onChange: (value: string) => void
 	setError: Dispatch<SetStateAction<string>>
 }
 
@@ -159,13 +159,6 @@ const SchemaFieldInput = ({
 	onChange,
 	setError,
 }: SchemaFieldInputProps) => {
-	async function onInputFile({ file, onChange }: onInputFileProps) {
-		const base64File = await fileToBase64(file)
-		onChange({
-			bytes: objectToBase64({ base64File, fileName: file.name }),
-		})
-	}
-
 	switch (field.type) {
 		case 0:
 			return <ListInput onChange={onChange} />
@@ -205,12 +198,7 @@ const SchemaFieldInput = ({
 				/>
 			)
 		case 5:
-			return (
-				<FileDropInput
-					onSizeError={setError}
-					onInput={(file: any) => onInputFile({ file, onChange })}
-				/>
-			)
+			return <FileDropInput onSizeError={setError} onChange={onChange} />
 
 		default:
 			return <div className="italic text-subdued">Unrecognized field type</div>
