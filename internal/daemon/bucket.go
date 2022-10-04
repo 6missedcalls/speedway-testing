@@ -1,21 +1,21 @@
 package daemon
 
 import (
-	"context"
-
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 )
 
 func (d *Daemon) CreateBucket(req rtmv1.CreateBucketRequest, res *rtmv1.CreateBucketResponse) (err error) {
-	b, err := d.instance.Instance.CreateBucket(context.Background(), req)
-	if err != nil {
-		return err
+	r, b, e := d.instance.Instance.CreateBucket(req)
+	if e != nil {
+		return e
 	}
 
-	*res = rtmv1.CreateBucketResponse{
-		Did: b.GetDID(),
+	if b != nil {
+		return e
 	}
-	return nil
+
+	*res = *r
+	return
 }
 
 func (d *Daemon) GetBucketsByCreator(req rtmv1.QueryWhereIsByCreatorRequest, res *rtmv1.QueryWhereIsByCreatorResponse) (err error) {

@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -105,7 +105,7 @@ func (ns *NebulaServer) CreateBucket(c *gin.Context) {
 	b := ns.Config.Binding
 
 	// create the bucket
-	res, err := b.Instance.CreateBucket(context.Background(), createBucketReq)
+	res, bucket, err := b.Instance.CreateBucket(createBucketReq)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: err.Error(),
@@ -113,10 +113,13 @@ func (ns *NebulaServer) CreateBucket(c *gin.Context) {
 		return
 	}
 	// create the service endpoint for the bucket
-	serv := res.CreateBucketServiceEndpoint()
+	serv := bucket.CreateBucketServiceEndpoint()
+
+	// printing the output of res to see what is returned
+	fmt.Println(res)
 
 	c.JSON(http.StatusOK, CreateBucketResponse{
-		Bucket:  res.GetBucketItems(),
+		Bucket:  bucket.GetBucketItems(),
 		Service: &serv,
 	})
 }

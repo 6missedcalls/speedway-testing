@@ -6,13 +6,14 @@ import (
 	"math"
 	"strconv"
 
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
+
 	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
-	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/binding"
-	"github.com/sonr-io/speedway/internal/prompts"
+	"github.com/sonr-io/speedway/internal/client"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
@@ -27,54 +28,45 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 		Long: `Build a new object on the Sonr Network.
 		You can create a new object via the command line prompts or by passing in the corresponding values to the --did, --file, and --label flags.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			loginRequest := prompts.LoginPrompt()
-
-			m := binding.InitMotor()
-
-			loginResult, err := utils.Login(m, loginRequest)
-			if err != nil {
-				logger.Fatalf(status.Error("Error: %s"), err)
-				return
-			}
-			if loginResult.Success {
-				logger.Infof(status.Success("Login successful"))
-			} else {
-				logger.Fatalf(status.Error("Login failed"))
-				return
-			}
-
-			creatorDid := m.GetDID()
-			if err != nil {
-				logger.Fatalf(status.Error("Error: %s"), err)
-				return
-			}
-
-			var schemaDid string
-			if schemaDid, err = cmd.Flags().GetString("did"); err == nil && schemaDid == "" {
-				schemaDid = (&prompter.Prompter{
+			var schemadid string
+			var err error
+			if schemadid, err = cmd.Flags().GetString("did"); err == nil && schemadid == "" {
+				schemadid = (&prompter.Prompter{
 					Message: "Schema DID",
 				}).Prompt()
-				if schemaDid == "" {
+				if schemadid == "" {
 					logger.Fatalf(status.Error("Error: %s"), "Schema DID cannot be empty")
 					return
 				}
 			}
 
-			// query whatis req
-			querySchemaReq := rtmv1.QueryWhatIsRequest{
-				Creator: creatorDid.String(),
-				Did:     schemaDid,
+			cli, err := client.New(ctx)
+			if err != nil {
+				logger.Fatalf(status.Error("RPC Client Error: "), err)
+				return
 			}
 
-			querySchema, err := m.QueryWhatIs(querySchemaReq)
+			session, err := cli.GetSessionInfo()
+			if err != nil {
+				logger.Fatalf(status.Error("SessionInfo Error: "), err)
+				return
+			}
+
+			// query schema
+			querySchemaRes, err := cli.GetSchema(rtmv1.QueryWhatIsRequest{
+				Creator: session.Info.Address,
+				Did:     schemadid,
+			})
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
 			}
-			logger.Infof("Schema: %s", querySchema)
+			schema := querySchemaRes.Schema
+
+			m := binding.InitMotor()
 
 			// create new object builder
-			objBuilder, err := m.NewObjectBuilder(schemaDid)
+			objBuilder, err := m.NewObjectBuilder(schemadid)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
@@ -90,7 +82,7 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 
 			if filePath, err := cmd.Flags().GetString("file"); err == nil && filePath == "" {
 
-				for _, field := range querySchema.Schema.Fields {
+				for _, field := range schema.Fields {
 					value := (&prompter.Prompter{
 						Message: "Enter the value for the " + field.Name,
 					}).Prompt()

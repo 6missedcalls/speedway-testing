@@ -92,18 +92,15 @@ func bootstrapCreateBucketCommand(ctx context.Context, logger *golog.Logger) (cr
 			logger.Info("Creating bucket with label: ", bucketLabel)
 			logger.Info("Creating bucket with role: ", role)
 			logger.Info("Creating bucket with visibility: ", visibility)
-			resp, err := m.CreateBucket(ctx, req)
+			resp, b, err := m.CreateBucket(req)
 			if err != nil {
 				logger.Fatal("error while creating bucket: ", err)
 				return
 			}
 			logger.Info("Bucket created")
-			wiResp, err := m.QueryWhereIs(rtmv1.QueryWhereIsRequest{
-				Creator: m.GetAddress(),
-				Did:     resp.GetDID(),
-			})
-			b, err := json.MarshalIndent(wiResp, "", "\t")
-			fmt.Print(status.Success(string(b)))
+			logger.Info("Response: ", resp)
+			bucket, err := json.MarshalIndent(b, "", "\t")
+			fmt.Print(status.Success(string(bucket)))
 		},
 	}
 

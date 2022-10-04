@@ -2612,6 +2612,8 @@ github.com/sonr-io/multi-party-sig v0.7.0 h1:cRpctyTdbgeOm+JBdY/HcHv3dD7lX3JWtw+
 github.com/sonr-io/multi-party-sig v0.7.0/go.mod h1:Bl4/pohbzwlfiHpYaf9sM/hkV71u1SUPQHDEaHOamfo=
 github.com/sonr-io/sonr v0.4.3 h1:4jv+awlaf4HESnuZ/Cj4yG4C3uYtLUSniwhJwhBOYaw=
 github.com/sonr-io/sonr v0.4.3/go.mod h1:3eRagq/OkFSd34bMmY68gRJ3XpC9pxjVt0T1YQ4fHpY=
+github.com/sonr-io/sonr v0.5.3 h1:Ibc0dd1NzMZiZPC/psRE+zKhXYtBwbAhbJfHPGWdXVk=
+github.com/sonr-io/sonr v0.5.3/go.mod h1:3eRagq/OkFSd34bMmY68gRJ3XpC9pxjVt0T1YQ4fHpY=
 github.com/sony/gobreaker v0.4.1/go.mod h1:ZKptC7FHNvhBz7dN2LGjPVBz2sZJmc0/PkyDJOjmxWY=
 github.com/sourcegraph/annotate v0.0.0-20160123013949-f4cad6c6324d/go.mod h1:UdhH50NIW0fCiwBSr0co2m7BnFLdv4fQTgdqdJTHFeE=
 github.com/sourcegraph/go-diff v0.5.1/go.mod h1:j2dHj3m8aZgQO8lMTcTnBcXkRRRqi34cd2MNlA9u1mE=
