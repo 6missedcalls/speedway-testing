@@ -9,6 +9,8 @@ import {
 import { MODAL_CONTENT_NEW_BUCKET } from "../../utils/constants"
 import { Bucket } from "../../utils/types"
 
+const timeAgo = require("node-time-ago")
+
 type Props = {
 	data: Bucket[]
 	loading: boolean
@@ -69,14 +71,14 @@ export default BucketsPageComponent
 
 const BucketCard = (bucket: Bucket) => (
 	<div
-		className="bg-white rounded-2xl w-[330px] h-[160px] shadow-xxl p-6 text-default"
+		className="bg-white rounded-2xl w-[330px] shadow-xxl p-6 text-default"
 		key={bucket.did}
 	>
 		<h2 className="font-extrabold text-custom-lg whitespace-nowrap overflow-hidden text-ellipsis mb-6">
 			{bucket.label}
 		</h2>
 
-		<div className="flex">
+		<div className="flex mb-6">
 			<div className="border rounded-md text-custom-xs">
 				<span className="px-[6px] py-[2px] border-r rounded-tr-md text-subdued">
 					Objects
@@ -86,6 +88,10 @@ const BucketCard = (bucket: Bucket) => (
 					{bucket.content.length}
 				</span>
 			</div>
+		</div>
+
+		<div className="font-extrabold text-placeholder text-custom-xxs">
+			Last Update: {timeAgo(bucket.timestamp)}
 		</div>
 	</div>
 )

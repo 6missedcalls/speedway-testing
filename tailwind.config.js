@@ -31,6 +31,7 @@ module.exports = {
 				},
 			},
 			fontSize: {
+				"custom-xxs": "var(--nds-core-font-xxs)",
 				"custom-xs": "var(--nds-core-font-xs)",
 				"custom-2xs": "var(--nds-core-font-2xs)",
 				"custom-sm": "var(--nds-core-font-sm)",

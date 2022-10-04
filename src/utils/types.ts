@@ -47,6 +47,7 @@ export type Bucket = {
 	did: string
 	label: string
 	creator: string
+	timestamp: string
 	content: BucketContent[]
 }
 
