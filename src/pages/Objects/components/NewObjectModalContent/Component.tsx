@@ -1,19 +1,22 @@
-import { Button, NebulaIcon } from "@sonr-io/nebula-react"
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react"
+import { Button, NebulaIcon } from "@sonr-io/nebula-react"
+import FileDropInput from "../../../../components/FileDropInput"
 import { Bucket, SchemaField, SchemaMeta } from "../../../../utils/types"
 
-interface NewSchemaModalContentComponentProps {
+interface NewObjectModalContentComponentProps {
 	onClose: () => void
 	onSave: () => void
 	onChangeSchema: Dispatch<SetStateAction<string>>
 	onChangeBucket: (value: string) => void
-	onChangeProperty: (index: number, value: string) => void
+	onChangeProperty: (index: number, value: any) => void
 	schemas: Array<SchemaMeta>
 	buckets: Array<Bucket>
 	properties: Array<Record<string, any>>
 	selectedSchema: string
 	selectedBucket: string
 	error: string
+	setError: Dispatch<SetStateAction<string>>
+	unsetPropertyValue: (index: number) => void
 }
 
 function NewObjectModalContentComponent({
@@ -28,7 +31,9 @@ function NewObjectModalContentComponent({
 	selectedSchema,
 	selectedBucket,
 	error,
-}: NewSchemaModalContentComponentProps) {
+	setError,
+	unsetPropertyValue,
+}: NewObjectModalContentComponentProps) {
 	return (
 		<div className="flex flex-col max-h-[90vh]">
 			<div className="flex justify-between px-8 my-8">
@@ -111,8 +116,11 @@ function NewObjectModalContentComponent({
 								{item.name}
 							</div>
 							<SchemaFieldInput
+								index={index}
 								field={{ name: item.name, type: item.type }}
 								onChange={(value) => onChangeProperty(index, value)}
+								setError={setError}
+								unsetPropertyValue={unsetPropertyValue}
 							/>
 						</div>
 					))}
@@ -137,12 +145,21 @@ function NewObjectModalContentComponent({
 	)
 }
 
-type Props = {
+type SchemaFieldInputProps = {
 	field: SchemaField
 	onChange: (value: string) => void
+	setError: Dispatch<SetStateAction<string>>
+	index: number
+	unsetPropertyValue: (index: number) => void
 }
 
-const SchemaFieldInput = ({ field, onChange }: Props) => {
+const SchemaFieldInput = ({
+	field,
+	onChange,
+	setError,
+	index,
+	unsetPropertyValue,
+}: SchemaFieldInputProps) => {
 	switch (field.type) {
 		case 0:
 			return <ListInput onChange={onChange} />
@@ -179,6 +196,14 @@ const SchemaFieldInput = ({ field, onChange }: Props) => {
 					type="text"
 					className="border border-default-border rounded-md w-full p-2"
 					onChange={(event) => onChange(event.target.value)}
+				/>
+			)
+		case 5:
+			return (
+				<FileDropInput
+					onSizeError={setError}
+					onChange={onChange}
+					onRemove={() => unsetPropertyValue(index)}
 				/>
 			)
 
