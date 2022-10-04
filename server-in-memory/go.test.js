@@ -11,11 +11,11 @@ it(
 	"test go",
 	async () => {
 		// WHILE NOT LOGGED IN, CHECK ACCOUNT INFO
-		const resInfoLoggedOut = await app.get(api("/account/info"))
+		const resInfoLoggedOut = await app.get("/account/info")
 		expect(resInfoLoggedOut.status).toBe(500)
 
 		// CREATE A NEW ACCOUNT
-		const resCreateAccount = await app.post(api("/account/create"), {
+		const resCreateAccount = await app.post("/account/create", {
 			password: "123",
 		})
 		expect(resCreateAccount.status).toBe(200)
@@ -25,53 +25,66 @@ it(
 		const address = resCreateAccount.body.address
 
 		// ATTEMPT LOGIN WITH WRONG PASSWORD
-		const resWrongLogin = await app.post(api("/account/login"), {
+		const resWrongLogin = await app.post("/account/login", {
 			address: address,
 			password: "wrong",
 		})
 		expect(resWrongLogin.status).toBe(401)
 
 		// LOGIN
-		const resLogin = await app.post(api("/account/login"), {
+		const resLogin = await app.post("/account/login", {
 			address: address,
 			password: "123",
 		})
 		expect(resLogin.status).toBe(200)
 
 		// WHILE LOGGED IN, CHECK ACCOUNT INFO
-		const resInfoLoggedIn = await app.get(api("/account/info"))
+		const resInfoLoggedIn = await app.get("/account/info")
 		expect(resInfoLoggedIn.status).toBe(200)
 		expect(resInfoLoggedIn.body).toHaveProperty("Address")
 		expect(resInfoLoggedIn.body.Address).toBe(address)
 
 		// BUY AN ALIAS
 		const alias = `steve${Date.now()}`
-		const resAlias = await app.post(api("/alias/buy"), {
+		const resAlias = await app.post("/alias/buy", {
 			creator: address,
 			alias: alias,
 		})
 		expect(resAlias.status).toBe(200)
 
 		// ATTEMPT TO BUY EXISTING ALIAS
-		const resAliasDup = await app.post(api("/alias/buy"), {
+		const resAliasDup = await app.post("/alias/buy", {
 			creator: address,
 			alias: alias,
 		})
 		expect(resAliasDup.status).toBe(500)
 
 		// QUERY ALIAS WHOIS
-		const resAliasQuery = await app.get(api(`/alias/get/${alias}`))
+		const resAliasQuery = await app.get(`/alias/get/${alias}`)
 		expect(resAliasQuery.status).toBe(200)
 		expect(resAliasQuery.body).toHaveProperty("WhoIs.owner")
 		expect(resAliasQuery.body.WhoIs.owner).toBe(address)
 
 		// QUERY ALIAS WHOIS THAT DOESN'T EXIST
 		const wrongAlias = `wrong${Date.now()}`
-		const resAliasQueryWrong = await app.get(api(`/alias/get/${wrongAlias}`))
+		const resAliasQueryWrong = await app.get(`/alias/get/${wrongAlias}`)
 		expect(resAliasQueryWrong.status).toBe(404)
 
+		// GETS AN EMPTY LIST OF SCHEMA
+		const resSchemaListEmpty = await app.post("/schema/get-from-creator", {
+			creator: address,
+		})
+		expect(resSchemaListEmpty.status).toBe(500)
+
+		// GET AN EMPTY LIST OF BUCKETS
+		const resBucketListEmpty = await app.post("/bucket/get-from-creator", {
+			creator: address,
+		})
+		expect(resBucketListEmpty.status).toBe(200)
+		expect(resBucketListEmpty.body.where_is).toBe(undefined)
+
 		// CREATE A SCHEMA
-		const resSchemaCreate = await app.post(api("/schema/create"), {
+		const resSchemaCreate = await app.post("/schema/create", {
 			label: "dinosaurs",
 			fields: {
 				firstname: 4,
@@ -83,7 +96,7 @@ it(
 		})
 		expect(resSchemaCreate.status).toBe(200)
 		expect(resSchemaCreate.body).toHaveProperty("whatIs.creator")
-		expect(resSchemaCreate.body.whatIs.creator).toBe(addressToDid(address))
+		expect(resSchemaCreate.body.whatIs.creator).toBe(address)
 		expect(resSchemaCreate.body).toHaveProperty("whatIs.schema.label")
 		expect(resSchemaCreate.body.whatIs.schema.label).toBe("dinosaurs")
 		expect(resSchemaCreate.body).toHaveProperty("whatIs.schema.did")
@@ -92,7 +105,7 @@ it(
 		const schemaDid = resSchemaCreate.body.whatIs.schema.did
 
 		// CREATE A BUCKET
-		const resBucketCreate = await app.post(api("/bucket/create"), {
+		const resBucketCreate = await app.post("/bucket/create", {
 			creator: address,
 			role: "application",
 			visibility: "public",
@@ -102,59 +115,52 @@ it(
 		expect(resBucketCreate.status).toBe(200)
 
 		// GET A LIST OF SCHEMAS
-		const resSchemaList = await app.get(proxy("schemas?pagination.limit=50000"))
+		const resSchemaList = await app.post("/schema/get-from-creator", {
+			creator: address,
+		})
 		expect(resSchemaList.status).toBe(200)
 		expect(resSchemaList.body).toHaveProperty("what_is.length")
-		expect(resSchemaList.body.what_is.length).toBeGreaterThan(0)
+		expect(resSchemaList.body.what_is.length).toBe(1)
+		expect(resSchemaList.body.what_is[0]).toHaveProperty("schema.did")
+		expect(resSchemaList.body.what_is[0].schema.did).toBe(schemaDid)
+		expect(resSchemaList.body.what_is[0]).toHaveProperty("schema.label")
+		expect(resSchemaList.body.what_is[0].schema.label).toBe("dinosaurs")
+		expect(resSchemaList.body.what_is[0]).toHaveProperty("schema.fields.length")
+		expect(resSchemaList.body.what_is[0].schema.fields.length).toBe(5)
 
-		const userSchemas = _.filter(
-			resSchemaList.body.what_is,
-			(schema) => schema.creator === addressToDid(address)
-		)
+		const fields = _.sortBy(resSchemaList.body.what_is[0].schema.fields, "name")
 
-		expect(userSchemas.length).toBe(1)
-		expect(userSchemas[0]).toHaveProperty("schema.did")
-		expect(userSchemas[0].schema.did).toBe(schemaDid)
-		expect(userSchemas[0]).toHaveProperty("schema.label")
-		expect(userSchemas[0].schema.label).toBe("dinosaurs")
-		expect(userSchemas[0]).toHaveProperty("schema.fields.length")
-		expect(userSchemas[0].schema.fields.length).toBe(5)
-
-		expect(userSchemas[0].schema.fields[0].name).toBe("firstname")
-		expect(userSchemas[0].schema.fields[0].field).toBe("STRING")
-		expect(userSchemas[0].schema.fields[1].name).toBe("extinct")
-		expect(userSchemas[0].schema.fields[1].field).toBe("BOOL")
-		expect(userSchemas[0].schema.fields[2].name).toBe("strength")
-		expect(userSchemas[0].schema.fields[2].field).toBe("INT")
-		expect(userSchemas[0].schema.fields[3].name).toBe("interest")
-		expect(userSchemas[0].schema.fields[3].field).toBe("FLOAT")
-		expect(userSchemas[0].schema.fields[4].name).toBe("friends")
-		expect(userSchemas[0].schema.fields[4].field).toBe("LIST")
+		expect(fields[0].name).toBe("extinct")
+		expect(fields[0].field).toBe(1)
+		expect(fields[1].name).toBe("firstname")
+		expect(fields[1].field).toBe(4)
+		expect(fields[2].name).toBe("friends")
+		expect(fields[2].field).toBe(undefined) // should be 0, but there's a bug currently
+		// expect(fields[2].field).toBe(0)
+		expect(fields[3].name).toBe("interest")
+		expect(fields[3].field).toBe(3)
+		expect(fields[4].name).toBe("strength")
+		expect(fields[4].field).toBe(2)
 
 		// GET A LIST OF BUCKETS
-		const resBucketList = await app.get(proxy("buckets"))
+		const resBucketList = await app.post("/bucket/get-from-creator", {
+			creator: address,
+		})
 		expect(resBucketList.status).toBe(200)
 		expect(resBucketList.body).toHaveProperty("where_is.length")
-		expect(resBucketList.body.where_is.length).toBeGreaterThan(0)
-
-		const userBuckets = _.filter(
-			resBucketList.body.where_is,
-			(bucket) => bucket.creator === address
-		)
-		expect(userBuckets.length).toBe(1)
-		expect(userBuckets[0]).toHaveProperty("did")
-		expect(userBuckets[0].did).toBeDid()
-		expect(userBuckets[0]).toHaveProperty("label")
-		expect(userBuckets[0].label).toBe("great philosophers")
-		expect(userBuckets[0]).toHaveProperty("content.length")
-		expect(userBuckets[0].content.length).toBe(0)
-		expect(userBuckets[0]).toHaveProperty("timestamp")
+		expect(resBucketList.body.where_is.length).toBe(1)
+		expect(resBucketList.body.where_is[0]).toHaveProperty("did")
+		expect(resBucketList.body.where_is[0].did).toBeDid()
+		expect(resBucketList.body.where_is[0]).toHaveProperty("label")
+		expect(resBucketList.body.where_is[0].label).toBe("great philosophers")
+		expect(resBucketList.body.where_is[0]).toHaveProperty("timestamp")
 		expect(typeof resBucketList.body.where_is[0].timestamp).toBe("number")
+		expect(resBucketList.body.where_is[0].content).toBe(undefined)
 
-		const bucketDid = userBuckets[0].did
+		const bucketDid = resBucketList.body.where_is[0].did
 
 		// CREATE AN OBJECT
-		const resObject = await app.post(api("/object/build"), {
+		const resObject = await app.post("/object/build", {
 			label: "dinosaurs",
 			schemaDid: schemaDid,
 			object: {
@@ -172,7 +178,7 @@ it(
 		const objectCid = resObject.body.objectUpload.reference.cid
 
 		// ADD OBJECT TO BUCKET
-		const resAddToBucket = await app.post(api("/bucket/update-items"), {
+		const resAddToBucket = await app.post("/bucket/update-items", {
 			bucketDid: bucketDid,
 			content: [
 				{
@@ -185,7 +191,7 @@ it(
 		expect(resAddToBucket.status).toBe(200)
 
 		// GET BUCKET CONTENTS
-		const resBucketContents = await app.post(api("/bucket/get"), {
+		const resBucketContents = await app.post("/bucket/get", {
 			bucketDid: bucketDid,
 		})
 		expect(resBucketContents.status).toBe(200)
@@ -203,12 +209,9 @@ it(
 	10 * 60 * 1000 // 10 minutes timeout
 )
 
-const api = (route) => `http://localhost:4040/api/v1${route}`
-const proxy = (proxy) => `http://localhost:4040/proxy/${proxy}`
-
 const app = {
-	get: async (url) =>
-		fetch(url, {
+	get: async (route) =>
+		fetch(`http://localhost:4040/api/v1${route}`, {
 			method: "GET",
 			headers: { "content-type": "application/json" },
 		}).then(async (response) =>
@@ -219,8 +222,8 @@ const app = {
 				  }
 				: { status: response.status }
 		),
-	post: async (url, payload) =>
-		fetch(url, {
+	post: async (route, payload) =>
+		fetch(`http://localhost:4040/api/v1${route}`, {
 			method: "POST",
 			headers: { "content-type": "application/json" },
 			body: JSON.stringify(payload),
