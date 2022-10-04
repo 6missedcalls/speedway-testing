@@ -256,7 +256,7 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 	const allSchemaMetadata = await storage.getItem("schemaMetadata")
 	const schemaMetadata = _.find(
 		allSchemaMetadata,
-		(meta) => (meta.schema.did = body.schemaDid)
+		(meta) => meta.schema.did === body.schemaDid
 	)
 
 	const fieldsExpected = _.map(schemaMetadata.schema.fields, "name")
