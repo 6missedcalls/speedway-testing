@@ -19,7 +19,7 @@ import {
 	userGetAllSchemas,
 } from "../../redux/slices/schemasSlice"
 import { AppDispatch } from "../../redux/store"
-import { Bucket } from "../../utils/types"
+import { Bucket, objectsSelectionCheckbox } from "../../utils/types"
 
 const ModalCreateBucket = () => {
 	const [label, setLabel] = useState("")
@@ -33,6 +33,13 @@ const ModalCreateBucket = () => {
 	const loadingSchemas = useSelector(selectSchemasLoading)
 	const loadingAllObjects = useSelector(selectAllObjectsLoading)
 	const loadingObjectsSelection = loadingSchemas || loadingAllObjects
+	const initialCheckboxes = allObjects.map(({ cid, schemaDid }) => ({
+		cid,
+		schemaDid,
+		checked: false,
+	}))
+	const [checkboxes, setCheckboxes] =
+		useState<Array<objectsSelectionCheckbox>>(initialCheckboxes)
 
 	useEffect(() => {
 		initialize()
@@ -46,19 +53,52 @@ const ModalCreateBucket = () => {
 		dispatch(userGetAllObjects({ bucketDids }))
 	}
 
+	function onChangeObjectCheckbox({
+		checked,
+		cid,
+		schemaDid,
+	}: objectsSelectionCheckbox) {
+		if (!cid) return
+		const index = checkboxes.findIndex((item) => item.cid === cid)
+
+		const newCheckboxes = [...checkboxes]
+		newCheckboxes.splice(index, 1, {
+			cid,
+			schemaDid,
+			checked,
+		})
+
+		setCheckboxes(newCheckboxes)
+	}
+
 	const save = async () => {
 		if (!label) {
 			setError("Bucket Name is required")
 			return
 		}
-		await dispatch(userCreateBucket({ label, address }))
+
+		const content = checkboxes
+			.filter((checkbox) => checkbox.checked)
+			.map((checkbox) => {
+				return {
+					type: "cid",
+					schemaDid: checkbox.schemaDid,
+					uri: checkbox.cid,
+				}
+			})
+
+		const createBucketPayload = {
+			label,
+			address,
+			...(content.length > 0 && { content }),
+		}
+
+		await dispatch(userCreateBucket(createBucketPayload))
 		dispatch(userGetAllBuckets(address))
 		closeModal()
 	}
 	const loading = useSelector(selectBucketCreationLoading)
-	console.log("schemas", schemas)
-	console.log("allObjects", allObjects)
-	console.log("loadingObjectsSelection", loadingObjectsSelection)
+
 	return (
 		<div>
 			{!loading && (
@@ -93,8 +133,13 @@ const ModalCreateBucket = () => {
 							View Objects From Schemas
 						</span>
 						{schemas.map((schema) => (
-							<div className="mb-2">
-								<SearchableListGroup schema={schema} />
+							<div key={schema.did} className="mb-2">
+								<SearchableListGroup
+									schema={schema}
+									checkboxes={checkboxes}
+									setCheckboxes={setCheckboxes}
+									onChange={onChangeObjectCheckbox}
+								/>
 							</div>
 						))}
 					</div>

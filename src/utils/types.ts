@@ -90,3 +90,9 @@ export interface onInputFileProps {
 	file: File
 	onChange: (value: Record<string, any>) => void
 }
+
+export interface objectsSelectionCheckbox {
+	cid: string
+	checked: boolean
+	schemaDid: string
+}

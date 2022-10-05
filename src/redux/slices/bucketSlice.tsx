@@ -56,9 +56,16 @@ export const updateBucket = createAsyncThunk(
 
 export const userCreateBucket = createAsyncThunk(
 	"bucket/create",
-	async ({ label, address }: { label: string; address: string }, thunkAPI) => {
+	async (
+		{
+			label,
+			address,
+			content,
+		}: { label: string; address: string; content?: Array<any> },
+		thunkAPI
+	) => {
 		try {
-			await createBucket(label, address)
+			await createBucket(label, address, content)
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
 		}

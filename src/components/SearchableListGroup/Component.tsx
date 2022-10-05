@@ -12,6 +12,8 @@ interface SearchableListGroupComponentProps {
 	list: SonrObject[]
 	onChangeMainInput: Function
 	mainInputIsChecked: boolean
+	onChange: Function
+	checkboxes: any
 }
 
 function SearchableListGroupComponent({
@@ -19,6 +21,8 @@ function SearchableListGroupComponent({
 	list,
 	onChangeMainInput,
 	mainInputIsChecked,
+	onChange,
+	checkboxes,
 }: SearchableListGroupComponentProps) {
 	function mapToListFormat(
 		objectsList: SonrObject[],
@@ -33,9 +37,18 @@ function SearchableListGroupComponent({
 					Component: () => (
 						<div>
 							<input
-								checked={true}
+								checked={
+									checkboxes.find((checkbox: any) => checkbox.cid === cid)
+										.checked
+								}
 								type="checkbox"
-								onChange={() => console.log("cid", cid)}
+								onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+									onChange({
+										checked: event.target.checked,
+										cid,
+										schemaDid,
+									})
+								}
 							/>
 						</div>
 					),
@@ -64,7 +77,6 @@ function SearchableListGroupComponent({
 				})
 				return listItem
 			})
-		console.log("newList", newList)
 
 		return newList
 	}
