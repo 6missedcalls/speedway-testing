@@ -11,6 +11,7 @@ interface NewSchemaModalContentComponentProps {
 	error: string
 	onChangeSchemaName: (value: string) => void
 	saveSchema: () => void
+	deleteProperty: (index: number) => void
 }
 
 function NewSchemaModalContentComponent({
@@ -22,6 +23,7 @@ function NewSchemaModalContentComponent({
 	error,
 	onChangeSchemaName,
 	saveSchema,
+	deleteProperty,
 }: NewSchemaModalContentComponentProps) {
 	return (
 		<div>
@@ -64,8 +66,10 @@ function NewSchemaModalContentComponent({
 								<SchemaPropertyLine
 									key={`schema-property-${index}`}
 									propertyIndex={index}
+									propertiesLength={properties.length}
 									handlePropertyChange={handlePropertyChange}
 									property={property}
+									deleteProperty={deleteProperty}
 								/>
 							)
 						})}
