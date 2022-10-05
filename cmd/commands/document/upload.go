@@ -17,7 +17,7 @@ import (
 
 func bootstrapBuildDocumentCommand(ctx context.Context, logger *golog.Logger) (buildDocCmd *cobra.Command) {
 	buildDocCmd = &cobra.Command{
-		Use:   "document [did]",
+		Use:   "build [did]",
 		Short: "Create a new Schema Document associated to a Schema",
 		Long:  "Creates a new Schema Document associated to a given schema",
 		Args:  cobra.ExactArgs(1),
@@ -44,7 +44,7 @@ func bootstrapBuildDocumentCommand(ctx context.Context, logger *golog.Logger) (b
 				Did:     did.String(),
 			})
 			if err != nil {
-				logger.Fatalf(status.Error("Login Error: "), err)
+				logger.Fatalf("Error while querying schema: ", err)
 				return
 			}
 
@@ -80,8 +80,8 @@ func bootstrapBuildDocumentCommand(ctx context.Context, logger *golog.Logger) (b
 				return
 			}
 
-			fmt.Println("Upload Successful")
-			fmt.Printf("Document CID: %s", uploadRes.Cid)
+			logger.Print("🚀 Upload Successful")
+			logger.Printf("|── Document CID: %s", uploadRes.Cid)
 		},
 	}
 	buildDocCmd.PersistentFlags().String("label", "", "name to associate with the schema document")

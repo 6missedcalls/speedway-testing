@@ -9,9 +9,9 @@ import (
 
 // Base command for the schema subcommands
 // Command Example: speedway schema [subcommand]
-func BootstrapSchemaCommand(ctx context.Context, logger *golog.Logger) (documentCmd *cobra.Command) {
+func BootstrapDocumentCommand(ctx context.Context, logger *golog.Logger) (documentCmd *cobra.Command) {
 	documentCmd = &cobra.Command{
-		Use:   "Document [subcommand]",
+		Use:   "document [subcommand]",
 		Short: "Provides commands for managing documents uploaded to the Sonr content storage",
 		Long: `Provides commands for managing schemas on the Sonr Network.
 		Create a new schema with the 'build' subcommand.
@@ -20,5 +20,6 @@ func BootstrapSchemaCommand(ctx context.Context, logger *golog.Logger) (document
 	}
 	logger = logger.Child("[Documents] ")
 	documentCmd.AddCommand(bootstrapBuildDocumentCommand(ctx, logger))
+	documentCmd.AddCommand(bootstrapGetDocumentCommand(ctx, logger))
 	return
 }
