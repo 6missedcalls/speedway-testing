@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
+
 import {
 	selectBuckets,
 	selectBucketsLoading,
@@ -11,6 +12,7 @@ import {
 	selectObjectsList,
 	selectObjectsLoading,
 	userGetBucketObjects,
+	userGetObject,
 } from "../../redux/slices/objectsSlice"
 import {
 	selectSchemasLoading,
@@ -18,6 +20,8 @@ import {
 	userGetAllSchemas,
 } from "../../redux/slices/schemasSlice"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
+import { downloadFileFromBase64 } from "../../utils/files"
+import { parseJsonFromBase64String } from "../../utils/object"
 import {
 	SearchableList,
 	SearchableListItem,
@@ -101,6 +105,27 @@ function ObjectsPageContainer() {
 		openModal()
 	}
 
+	async function getBytesAndDownload({
+		cid,
+		key,
+	}: {
+		cid: string
+		key: string
+	}) {
+		const { payload } = await dispatch(
+			userGetObject({
+				schemaDid: selectedSchema,
+				objectCid: cid,
+			})
+		)
+		const bytes = payload?.object[key]?.["/"]?.bytes
+		if (!bytes) return
+
+		const parsedData = parseJsonFromBase64String(bytes)
+		const { base64File, fileName } = parsedData
+		downloadFileFromBase64(base64File, fileName)
+	}
+
 	function mapToListFormat(): SearchableList {
 		return objectsList
 			.filter((item: SonrObject) => item.schemaDid === selectedSchema)
@@ -108,7 +133,25 @@ function ObjectsPageContainer() {
 				const listItem: SearchableListItem = {}
 				listItem.cid = { text: cid }
 				Object.keys(data).forEach((key) => {
-					listItem[key] = { text: data[key].toString() }
+					if (data[key]?.bytes) {
+						listItem[key] = {
+							text: "",
+							Component: () => (
+								<div
+									className="w-20 h-8 bg-button-subtle rounded cursor-pointer flex justify-center items-center"
+									onClick={() => getBytesAndDownload({ cid, key })}
+								>
+									<span className="block font-extrabold text-custom-xs text-button-subtle">
+										Download
+									</span>
+								</div>
+							),
+						}
+					} else {
+						listItem[key] = {
+							text: data[key].toString(),
+						}
+					}
 				})
 				return listItem
 			})

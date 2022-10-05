@@ -61,10 +61,18 @@ function NewObjectModalContentContainer({
 		setValues(newValues)
 	}
 
+	function unsetPropertyValue(index: number) {
+		const newValues = [...values]
+		newValues[index] = ""
+		setValues(newValues)
+	}
+
 	async function save() {
 		const schema = schemas.find((item) => item.did === selectedSchema)!
 
 		const castValue = (type: Number, value: string) => {
+			if (!value) return ""
+
 			switch (type) {
 				case 0:
 					return value ? JSON.parse(value) : null
@@ -76,6 +84,10 @@ function NewObjectModalContentContainer({
 					return isNaN(parseInt(value)) ? null : parseInt(value)
 				case 3:
 					return isNaN(parseFloat(value)) ? null : parseFloat(value)
+				case 5:
+					return {
+						bytes: value,
+					}
 				default:
 					return !value ? null : value
 			}
@@ -84,20 +96,19 @@ function NewObjectModalContentContainer({
 		const objectPayload = {
 			schemaDid: selectedSchema,
 			label: schema.label || "",
-			object: properties.reduce(
-				(acc, item, index) => ({
+			object: properties.reduce((acc, item, index) => {
+				return {
 					...acc,
 					[item.name]: castValue(item.type, values[index]),
-				}),
-				{}
-			),
+				}
+			}, {}),
 		}
 
 		if (
 			!Object.values(objectPayload.object).every((value) => {
 				return Array.isArray(value)
 					? value.every((item) => item !== "")
-					: value !== null
+					: value !== ""
 			})
 		) {
 			setError("All properties are required")
@@ -161,6 +172,8 @@ function NewObjectModalContentContainer({
 					onChangeProperty={handlePropertiesChange}
 					error={error}
 					properties={properties}
+					unsetPropertyValue={unsetPropertyValue}
+					setError={setError}
 				/>
 			)}
 		</>

@@ -1,3 +1,5 @@
+const Buffer = require("buffer/").Buffer
+
 export function isEmptyObject(obj: Record<string, any>) {
 	return (
 		obj &&
@@ -30,4 +32,8 @@ export function parseJsonFromBase64String(string: string) {
 		console.error(error)
 		return {}
 	}
+}
+
+export function objectToBase64(obj: Record<string, any>) {
+	return Buffer.from(JSON.stringify(obj)).toString("base64")
 }

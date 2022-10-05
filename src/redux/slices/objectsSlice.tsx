@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import createObject from "../../service/createObject"
+import getObject from "../../service/getObject"
 import getObjectsFromBucket from "../../service/getObjectsFromBucket"
-import { InewObject, SonrObject } from "../../utils/types"
+import { InewObject, SonrObject, userGetObjectProps } from "../../utils/types"
 import { RootState } from "../store"
 
 export interface ObjectsState {
@@ -39,11 +40,35 @@ export const userGetBucketObjects = createAsyncThunk(
 	}
 )
 
+export const userGetObject = createAsyncThunk(
+	"object/get",
+	async ({ schemaDid, objectCid }: userGetObjectProps, thunkAPI) => {
+		try {
+			return await getObject({ schemaDid, objectCid })
+		} catch (err) {
+			return thunkAPI.rejectWithValue(err)
+		}
+	}
+)
+
 export const objectsSlice = createSlice({
 	name: "objects",
 	initialState,
 	reducers: {},
 	extraReducers: (builder) => {
+		builder.addCase(userGetObject.pending, (state) => {
+			state.loading = true
+		})
+
+		builder.addCase(userGetObject.fulfilled, (state) => {
+			state.loading = false
+		})
+
+		builder.addCase(userGetObject.rejected, (state) => {
+			state.error = true
+			state.loading = false
+		})
+
 		builder.addCase(userCreateObject.pending, (state) => {
 			state.loading = true
 		})
@@ -63,8 +88,42 @@ export const objectsSlice = createSlice({
 
 		builder.addCase(userGetBucketObjects.fulfilled, (state, action) => {
 			const { payload } = action
+
+			const list = payload.reduce(
+				(acc: Array<SonrObject>, item: SonrObject) => {
+					const reworkedData = Object.keys(item.data).reduce(
+						(dataAcc: Record<string, any>, key: string) => {
+							const dataItem = item.data[key]
+							if (!dataItem?.["/"]?.bytes) {
+								return {
+									...dataAcc,
+									[key]: dataItem,
+								}
+							}
+
+							return {
+								...dataAcc,
+								[key]: {
+									bytes: true,
+								},
+							}
+						},
+						{}
+					)
+
+					return [
+						...acc,
+						{
+							...item,
+							data: reworkedData,
+						},
+					]
+				},
+				[]
+			)
+
+			state.list = list
 			state.loading = false
-			state.list = payload
 		})
 
 		builder.addCase(userGetBucketObjects.rejected, (state) => {

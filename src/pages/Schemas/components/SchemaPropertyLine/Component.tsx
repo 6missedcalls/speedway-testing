@@ -5,12 +5,16 @@ interface SchemaPropertyComponentProps {
 	handlePropertyChange: ({ index, data }: handlePropertyChangeProps) => void
 	property: Iproperty
 	propertyIndex: number
+	deleteProperty: (index: number) => void
+	propertiesLength: number
 }
 
 function SchemaPropertyComponent({
 	handlePropertyChange,
 	property,
 	propertyIndex,
+	deleteProperty,
+	propertiesLength,
 }: SchemaPropertyComponentProps) {
 	return (
 		<div className="flex justify-between mb-4">
@@ -41,6 +45,7 @@ function SchemaPropertyComponent({
 					<option value="int">Integer</option>
 					<option value="float">Float</option>
 					<option value="boolean">Boolean</option>
+					<option value="bytes">File</option>
 					<option value="list">List</option>
 				</select>
 				<NebulaIcon
@@ -49,6 +54,18 @@ function SchemaPropertyComponent({
 					className="w-8 h-8 pointer-events-none select-none absolute right-0 top-1"
 				/>
 			</div>
+			{propertiesLength > 1 && (
+				<div
+					onClick={() => deleteProperty(propertyIndex)}
+					className="flex ml-3 cursor-pointer justify-center items-center"
+				>
+					<NebulaIcon
+						iconName="Close"
+						iconType="duotone"
+						className="w-6 h-6 fill-primary-light"
+					/>
+				</div>
+			)}
 		</div>
 	)
 }

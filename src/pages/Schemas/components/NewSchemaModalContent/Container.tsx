@@ -32,6 +32,12 @@ function NewSchemaModalContentContainer() {
 		setProperties([...properties, emptyProperty])
 	}
 
+	function deleteProperty(index: number) {
+		const newProperties = [...properties]
+		newProperties.splice(index, 1)
+		setProperties(newProperties)
+	}
+
 	function handlePropertyChange({ index, data }: handlePropertyChangeProps) {
 		if (data.name && !/(^[a-zA-Z])([a-zA-Z0-9]?)+$/g.test(data.name)) {
 			setError(
@@ -96,6 +102,7 @@ function NewSchemaModalContentContainer() {
 			onChangeSchemaName={onChangeSchemaName}
 			handlePropertyChange={handlePropertyChange}
 			saveSchema={saveSchema}
+			deleteProperty={deleteProperty}
 		/>
 	)
 }
