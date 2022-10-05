@@ -23,7 +23,7 @@ import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
 import { downloadFileFromBase64 } from "../../utils/files"
 import { parseJsonFromBase64String } from "../../utils/object"
 import {
-	SearchableList,
+	SearchableListType,
 	SearchableListItem,
 	SonrObject,
 } from "../../utils/types"
@@ -126,7 +126,7 @@ function ObjectsPageContainer() {
 		downloadFileFromBase64(base64File, fileName)
 	}
 
-	function mapToListFormat(): SearchableList {
+	function mapToListFormat(): SearchableListType {
 		return objectsList
 			.filter((item: SonrObject) => item.schemaDid === selectedSchema)
 			.map(({ cid, data }: SonrObject): SearchableListItem => {

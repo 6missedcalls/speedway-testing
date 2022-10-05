@@ -9,6 +9,7 @@ interface SearchableListContainerProps {
 	paginationSize?: number
 	handleOpenModal?: () => void
 	loading: boolean
+	hideSearchBar?: boolean
 }
 
 function SearchableListContainer({
@@ -17,6 +18,7 @@ function SearchableListContainer({
 	type,
 	paginationSize = 8,
 	handleOpenModal,
+	hideSearchBar,
 }: SearchableListContainerProps) {
 	const [orderAsc, setOrderAsc] = useState(true)
 	const [searchTerm, setSearchTerm] = useState("")
@@ -124,6 +126,7 @@ function SearchableListContainer({
 			totalPages={totalPages}
 			setSearchTerm={setSearchTerm}
 			onClickNewItem={handleOpenModal}
+			hideSearchBar={hideSearchBar}
 		/>
 	)
 }

@@ -73,7 +73,7 @@ export type SearchableListItem = {
 	[key: string]: SearchableListItemData
 }
 
-export type SearchableList = SearchableListItem[]
+export type SearchableListType = SearchableListItem[]
 
 export interface updateBucketProps {
 	bucketDid: string
