@@ -8,10 +8,8 @@ import (
 	"github.com/kataras/golog"
 	"github.com/sonr-io/sonr/pkg/did"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/speedway/internal/binding"
-	"github.com/sonr-io/speedway/internal/prompts"
+	"github.com/sonr-io/speedway/internal/client"
 	"github.com/sonr-io/speedway/internal/status"
-	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -31,25 +29,20 @@ func bootstrapQueryBucketbyCreatorCommand(ctx context.Context, logger *golog.Log
 		Use:   "all",
 		Short: "Retrieves all buckets for user",
 		Run: func(cmd *cobra.Command, args []string) {
-			loginRequest := prompts.LoginPrompt()
-
-			m := binding.InitMotor()
-
-			loginResult, err := utils.Login(m, loginRequest)
+			cli, err := client.New(ctx)
 			if err != nil {
-				logger.Fatalf("Login Error: ", err)
-				return
-			}
-			if loginResult.Success {
-				logger.Info(status.Success("Login Successful"))
-			} else {
-				logger.Fatal(status.Error("Login Failed"))
+				logger.Fatalf(status.Error("RPC Client Error: "), err)
 				return
 			}
 
-			logger.Infof("Querying buckets for creator %s", m.GetAddress())
-			res, err := m.QueryWhereIsByCreator(rtmv1.QueryWhereIsByCreatorRequest{
-				Creator: m.GetAddress(),
+			session, err := cli.GetSessionInfo()
+			if err != nil {
+				logger.Fatalf(status.Error("SessionInfo Error: "), err)
+				return
+			}
+
+			res, err := cli.GetBucketsByCreator(rtmv1.QueryWhereIsByCreatorRequest{
+				Creator: session.Info.Address,
 			})
 
 			if err != nil {
@@ -78,31 +71,27 @@ func bootstrapQueryBucketByIdCommand(ctx context.Context, logger *golog.Logger) 
 				return
 			}
 
-			loginRequest := prompts.LoginPrompt()
-
-			m := binding.InitMotor()
-
-			loginResult, err := utils.Login(m, loginRequest)
-			if err != nil {
-				logger.Fatalf("Login Error: ", err)
-				return
-			}
-			if loginResult.Success {
-				logger.Info(status.Success("Login Successful"))
-			} else {
-				logger.Fatal(status.Error("Login Failed"))
-				return
-			}
-
 			didStr := args[0]
-			_, err = did.ParseDID(didStr)
+			_, err := did.ParseDID(didStr)
 			if err != nil {
 				logger.Fatal("invalid did")
 			}
 
+			cli, err := client.New(ctx)
+			if err != nil {
+				logger.Fatalf(status.Error("RPC Client Error: "), err)
+				return
+			}
+
+			session, err := cli.GetSessionInfo()
+			if err != nil {
+				logger.Fatalf(status.Error("SessionInfo Error: "), err)
+				return
+			}
+
 			logger.Info("Attempting to resolve bucket with did: %s", didStr)
-			res, err := m.QueryWhereIs(rtmv1.QueryWhereIsRequest{
-				Creator: m.GetAddress(),
+			res, err := cli.GetBucketById(rtmv1.QueryWhereIsRequest{
+				Creator: session.Info.Address,
 				Did:     didStr,
 			})
 
