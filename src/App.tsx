@@ -46,7 +46,7 @@ function App() {
 		}
 		setLoading(false)
 	}
-	 
+
 	useEffect(() => {
 		fetchAccountInfo()
 	}, [schemasSliceError, objectsSliceError, bucketsSliceError])
