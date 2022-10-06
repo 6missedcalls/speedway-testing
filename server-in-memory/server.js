@@ -270,7 +270,13 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 		.keys()
 		.sortBy()
 		.reduce((acc, key) => {
-			acc[key] = body.object[key]
+			const fieldType = _.find(schemaMetadata.schema.fields, {
+				name: key,
+			}).field
+			acc[key] =
+				fieldType === 5
+					? { "/": { bytes: _.trimEnd(body.object[key].bytes, "=") } }
+					: body.object[key]
 			return acc
 		}, {})
 		.valueOf()
