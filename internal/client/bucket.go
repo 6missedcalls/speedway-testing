@@ -27,3 +27,12 @@ func (c *RpcClient) GetBucketById(req rtmv1.QueryWhereIsRequest) (*rtmv1.QueryWh
 	}
 	return &response, nil
 }
+
+func (c *RpcClient) SearchBucketBySchema(req rtmv1.SeachBucketContentBySchemaRequest) (*rtmv1.SearchBucketContentBySchemaResponse, error) {
+	var response rtmv1.SearchBucketContentBySchemaResponse
+	if err := c.client.Call("Daemon.SearchBucketBySchema", req, &response); err != nil {
+		return nil, err
+	}
+
+	return &response, nil
+}
