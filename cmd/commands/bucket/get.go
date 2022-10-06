@@ -46,7 +46,7 @@ func bootstrapQueryBucketbyCreatorCommand(ctx context.Context, logger *golog.Log
 			})
 
 			if err != nil {
-				logger.Fatalf("error while querying where is by creator %s: %s", m.GetAddress(), err)
+				logger.Fatalf("error while querying where is by creator %s: %s", session.Info.Address, err)
 			}
 
 			for _, wi := range res.WhereIs {
