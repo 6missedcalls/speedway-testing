@@ -7,10 +7,9 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/sonr/pkg/did"
-	"github.com/sonr-io/speedway/internal/binding"
-	"github.com/sonr-io/speedway/internal/prompts"
+	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
+	"github.com/sonr-io/speedway/internal/client"
 	"github.com/sonr-io/speedway/internal/status"
-	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -31,19 +30,16 @@ func bootstrapSearchBySchemaIdCommand(ctx context.Context, logger *golog.Logger)
 		Long:  "Queries contents of a bucket by a schema returns all content matching by schema did",
 		Args:  cobra.ExactArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
-			loginRequest := prompts.LoginPrompt()
-
-			m := binding.InitMotor()
-
-			loginResult, err := utils.Login(m, loginRequest)
+			cli, err := client.New(ctx)
 			if err != nil {
-				logger.Fatalf("Login Error: ", err)
+				logger.Fatalf(status.Error("RPC Client Error: "), err)
 				return
 			}
-			if loginResult.Success {
-				logger.Info(status.Success("Login Successful"))
-			} else {
-				logger.Fatal(status.Error("Login Failed"))
+
+			session, err := cli.GetSessionInfo()
+
+			if err != nil {
+				logger.Fatalf("Error while getting current session info: %s", err)
 				return
 			}
 
@@ -59,17 +55,21 @@ func bootstrapSearchBySchemaIdCommand(ctx context.Context, logger *golog.Logger)
 				logger.Fatal("invalid did")
 			}
 
-			b, err := m.GetBucket(bucketDidStr)
+			result, err := cli.SearchBucketBySchema(rtmv1.SeachBucketContentBySchemaRequest{
+				Creator:   session.Info.Address,
+				BucketDid: bucketDidStr,
+				SchemaDid: schemaDidStr,
+			})
+
 			if err != nil {
-				logger.Fatalf("Error while getting bucket: %s", err)
-				return
+				logger.Fatalf("Error while resolving content by schema did: %s \n %s", schemaDidStr, err)
 			}
-			cnt, err := b.ResolveContentBySchema(schemaDidStr)
-			for _, c := range cnt {
+
+			for _, c := range result.Content {
 				itemBytes, _ := json.MarshalIndent(c, "", "\t")
 				fmt.Println(string(itemBytes))
 				itemCnt := make(map[string]interface{})
-				err = json.Unmarshal(c.Item, &itemCnt)
+				err = json.Unmarshal(c, &itemCnt)
 				if err != nil {
 					logger.Errorf("error while deserializing item resolved from search: %s", err)
 					continue
