@@ -1,4 +1,4 @@
-package schema
+package document
 
 import (
 	"context"
@@ -15,9 +15,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func bootstrapBuildSchemaDocumentCommand(ctx context.Context, logger *golog.Logger) (buildDocCmd *cobra.Command) {
+func bootstrapBuildDocumentCommand(ctx context.Context, logger *golog.Logger) (buildDocCmd *cobra.Command) {
 	buildDocCmd = &cobra.Command{
-		Use:   "document [did]",
+		Use:   "build [did]",
 		Short: "Create a new Schema Document associated to a Schema",
 		Long:  "Creates a new Schema Document associated to a given schema",
 		Args:  cobra.ExactArgs(1),
@@ -44,7 +44,7 @@ func bootstrapBuildSchemaDocumentCommand(ctx context.Context, logger *golog.Logg
 				Did:     did.String(),
 			})
 			if err != nil {
-				logger.Fatalf(status.Error("Login Error: "), err)
+				logger.Fatalf("Error while querying schema: ", err)
 				return
 			}
 
@@ -68,7 +68,7 @@ func bootstrapBuildSchemaDocumentCommand(ctx context.Context, logger *golog.Logg
 				}
 			}
 
-			uploadRes, err := cli.CreateSchemaDocument(mt.UploadDocumentRequest{
+			uploadRes, err := cli.CreateDocument(mt.UploadDocumentRequest{
 				Creator:    session.Info.Address,
 				Label:      label,
 				Definition: res.Schema,
@@ -80,8 +80,8 @@ func bootstrapBuildSchemaDocumentCommand(ctx context.Context, logger *golog.Logg
 				return
 			}
 
-			fmt.Println("Upload Successful")
-			fmt.Printf("Document CID: %s", uploadRes.Cid)
+			logger.Print("🚀 Upload Successful")
+			logger.Printf("|── Document CID: %s", uploadRes.Cid)
 		},
 	}
 	buildDocCmd.PersistentFlags().String("label", "", "name to associate with the schema document")
