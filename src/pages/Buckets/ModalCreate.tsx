@@ -6,7 +6,7 @@ import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 import {
 	selectAllObjects,
-	selectAllObjectsLoading,
+	// selectAllObjectsLoading,
 	selectBucketCreationLoading,
 	selectBuckets,
 	userCreateBucket,
@@ -14,7 +14,7 @@ import {
 	userGetAllObjects,
 } from "../../redux/slices/bucketSlice"
 import {
-	selectSchemasLoading,
+	// selectSchemasLoading,
 	selectSchemasMetadataList,
 	userGetAllSchemas,
 } from "../../redux/slices/schemasSlice"
@@ -30,9 +30,9 @@ const ModalCreateBucket = () => {
 	const buckets = useSelector(selectBuckets)
 	const schemas = useSelector(selectSchemasMetadataList)
 	const allObjects = useSelector(selectAllObjects)
-	const loadingSchemas = useSelector(selectSchemasLoading)
-	const loadingAllObjects = useSelector(selectAllObjectsLoading)
-	const loadingObjectsSelection = loadingSchemas || loadingAllObjects
+	// const loadingSchemas = useSelector(selectSchemasLoading)
+	// const loadingAllObjects = useSelector(selectAllObjectsLoading)
+	// const loadingObjectsSelection = loadingSchemas || loadingAllObjects
 	const [checkboxes, setCheckboxes] = useState<objectsSelectionCheckbox[]>([])
 
 	useEffect(() => {

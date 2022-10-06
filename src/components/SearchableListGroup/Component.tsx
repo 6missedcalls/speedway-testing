@@ -1,3 +1,4 @@
+import useBytes from "../../hooks/useBytes"
 import {
 	ListTypes,
 	SchemaMeta,
@@ -29,6 +30,8 @@ function SearchableListGroupComponent({
 	isOpen,
 	toggleOpen,
 }: SearchableListGroupComponentProps) {
+	const { getBytesAndDownload } = useBytes()
+
 	function mapToListFormat(
 		objectsList: SonrObject[],
 		schemaDid: string
@@ -64,13 +67,16 @@ function SearchableListGroupComponent({
 
 				listItem.cid = { text: cid }
 				Object.keys(data).forEach((key) => {
-					if (data[key]?.bytes) {
+					console.log("data", data)
+					if (data[key]?.["/"]?.bytes) {
 						listItem[key] = {
 							text: "",
 							Component: () => (
 								<div
 									className="w-20 h-8 bg-button-subtle rounded cursor-pointer flex justify-center items-center"
-									onClick={() => {}}
+									onClick={() =>
+										getBytesAndDownload({ cid, key, schemaDid: schema.did })
+									}
 								>
 									<span className="block font-extrabold text-custom-xs text-button-subtle">
 										Download

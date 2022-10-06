@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
+import useBytes from "../../hooks/useBytes"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 
 import {
@@ -12,7 +13,6 @@ import {
 	selectObjectsList,
 	selectObjectsLoading,
 	userGetBucketObjects,
-	userGetObject,
 } from "../../redux/slices/objectsSlice"
 import {
 	selectSchemasLoading,
@@ -20,8 +20,6 @@ import {
 	userGetAllSchemas,
 } from "../../redux/slices/schemasSlice"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
-import { downloadFileFromBase64 } from "../../utils/files"
-import { parseJsonFromBase64String } from "../../utils/object"
 import {
 	SearchableListType,
 	SearchableListItem,
@@ -31,6 +29,7 @@ import ObjectsPageComponent from "./Component"
 
 function ObjectsPageContainer() {
 	const { setModalContent, openModal } = useContext(AppModalContext)
+	const { getBytesAndDownload } = useBytes()
 	const dispatch: Function = useDispatch()
 	const buckets = useSelector(selectBuckets)
 	const schemaMetadata = useSelector(selectSchemasMetadataList)
@@ -61,7 +60,6 @@ function ObjectsPageContainer() {
 			}
 		}
 		initialize()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(() => {
@@ -72,7 +70,6 @@ function ObjectsPageContainer() {
 				})
 			)
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedBucket])
 
 	useEffect(() => {
@@ -88,7 +85,6 @@ function ObjectsPageContainer() {
 				},
 			})
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedSchema, selectedBucket])
 
 	function openNewObjectModal() {
@@ -105,30 +101,11 @@ function ObjectsPageContainer() {
 		openModal()
 	}
 
-	async function getBytesAndDownload({
-		cid,
-		key,
-	}: {
-		cid: string
-		key: string
-	}) {
-		const { payload } = await dispatch(
-			userGetObject({
-				schemaDid: selectedSchema,
-				objectCid: cid,
-			})
-		)
-		const bytes = payload?.object[key]?.["/"]?.bytes
-		if (!bytes) return
-
-		const parsedData = parseJsonFromBase64String(bytes)
-		const { base64File, fileName } = parsedData
-		downloadFileFromBase64(base64File, fileName)
-	}
-
 	function mapToListFormat(): SearchableListType {
 		return objectsList
-			.filter((item: SonrObject) => item.schemaDid === selectedSchema)
+			.filter((item: SonrObject) =>
+				selectedSchema ? item.schemaDid === selectedSchema : true
+			)
 			.map(({ cid, data }: SonrObject): SearchableListItem => {
 				const listItem: SearchableListItem = {}
 				listItem.cid = { text: cid }
@@ -139,7 +116,9 @@ function ObjectsPageContainer() {
 							Component: () => (
 								<div
 									className="w-20 h-8 bg-button-subtle rounded cursor-pointer flex justify-center items-center"
-									onClick={() => getBytesAndDownload({ cid, key })}
+									onClick={() =>
+										getBytesAndDownload({ cid, key, schemaDid: selectedSchema })
+									}
 								>
 									<span className="block font-extrabold text-custom-xs text-button-subtle">
 										Download

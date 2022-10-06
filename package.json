@@ -45,6 +45,9 @@
 		"prepare": "husky install"
 	},
 	"eslintConfig": {
+		"rules": {
+			"react-hooks/exhaustive-deps": "off"
+		},
 		"extends": [
 			"react-app",
 			"react-app/jest"

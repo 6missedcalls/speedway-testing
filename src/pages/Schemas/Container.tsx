@@ -27,7 +27,6 @@ function SchemasPageContainer() {
 
 	useEffect(() => {
 		dispatch(userGetAllSchemas(address))
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	function openNewSchemaModal() {

@@ -46,10 +46,9 @@ function App() {
 		}
 		setLoading(false)
 	}
-
+	 
 	useEffect(() => {
 		fetchAccountInfo()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [schemasSliceError, objectsSliceError, bucketsSliceError])
 
 	if (loading) return null

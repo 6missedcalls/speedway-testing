@@ -51,7 +51,6 @@ function NewObjectModalContentContainer({
 	useEffect(() => {
 		const schema = schemas.find((schema) => schema.did === selectedSchema)!
 		setProperties(schema.fields)
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedSchema])
 
 	function handlePropertiesChange(index: number, value: string) {
