@@ -156,7 +156,6 @@ const bucketSlice = createSlice({
 
 		builder.addCase(userGetAllObjects.fulfilled, (state, action) => {
 			const { payload } = action
-			console.log("payload", payload)
 			state.allObjectsLoading = false
 			state.allObjectsList = payload
 		})
