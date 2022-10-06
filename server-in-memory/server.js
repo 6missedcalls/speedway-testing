@@ -177,7 +177,10 @@ app.post("/api/v1/bucket/create", async ({ body }, res) => {
 		label: body.label,
 		creator: body.creator,
 		timestamp: Date.now(),
-		content: [],
+		content: _.map(body.content, (c) => ({
+			uri: c.uri,
+			schema_did: c.schemaDid,
+		})),
 	}
 
 	const allBuckets = (await storage.getItem("buckets")) || []

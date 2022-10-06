@@ -4,16 +4,19 @@ import {
 	SearchableListType,
 	SearchableListItem,
 	SonrObject,
+	objectsSelectionCheckbox,
 } from "../../utils/types"
 import SearchableList from "../SearchableList"
 
 interface SearchableListGroupComponentProps {
 	schema: SchemaMeta
 	list: SonrObject[]
-	onChangeMainInput: Function
+	onChangeMainInput: (event: React.ChangeEvent<HTMLInputElement>) => void
 	mainInputIsChecked: boolean
 	onChange: Function
-	checkboxes: any
+	toggleOpen: Function
+	checkboxes: objectsSelectionCheckbox[]
+	isOpen: boolean
 }
 
 function SearchableListGroupComponent({
@@ -23,6 +26,8 @@ function SearchableListGroupComponent({
 	mainInputIsChecked,
 	onChange,
 	checkboxes,
+	isOpen,
+	toggleOpen,
 }: SearchableListGroupComponentProps) {
 	function mapToListFormat(
 		objectsList: SonrObject[],
@@ -32,27 +37,31 @@ function SearchableListGroupComponent({
 			.filter((item: SonrObject) => item.schemaDid === schemaDid)
 			.map(({ cid, data }: SonrObject): SearchableListItem => {
 				const listItem: SearchableListItem = {}
-				listItem[""] = {
-					text: "",
-					Component: () => (
-						<div>
-							<input
-								checked={
-									checkboxes.find((checkbox: any) => checkbox.cid === cid)
-										.checked
-								}
-								type="checkbox"
-								onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-									onChange({
-										checked: event.target.checked,
-										cid,
-										schemaDid,
-									})
-								}
-							/>
-						</div>
-					),
+				const checkbox = checkboxes.find(
+					(checkbox) =>
+						checkbox.cid === cid && checkbox.schemaDid === schema.did
+				)
+				if (checkbox) {
+					listItem[""] = {
+						text: "",
+						Component: () => (
+							<div>
+								<input
+									checked={checkbox.checked}
+									type="checkbox"
+									onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+										onChange({
+											checked: event.target.checked,
+											cid,
+											schemaDid,
+										})
+									}
+								/>
+							</div>
+						),
+					}
 				}
+
 				listItem.cid = { text: cid }
 				Object.keys(data).forEach((key) => {
 					if (data[key]?.bytes) {
@@ -83,22 +92,42 @@ function SearchableListGroupComponent({
 
 	return (
 		<div className="flex flex-col justify-start items-start">
-			<div className="flex h-10 hover:text-white w-full rounded-t-md hover:bg-surface-button-subtle-hovered bg-surface-button-subtle cursor-pointer ">
-				<label>
+			<div
+				className={`flex w-full
+				${
+					isOpen
+						? "rounded-t-md text-white bg-surface-button-subtle-hovered"
+						: "bg-surface-button-subtle rounded-md"
+				}
+			`}
+			>
+				<label className="flex items-center px-4">
 					<input
 						type="checkbox"
 						checked={mainInputIsChecked}
-						onChange={() => onChangeMainInput()}
+						onChange={(e) => {
+							e.stopPropagation()
+							onChangeMainInput(e)
+						}}
 					/>
-					{schema.label}
+					<span className="block ml-4">{schema.label}</span>
 				</label>
+				<div
+					onClick={() => toggleOpen()}
+					className={`
+						h-10 w-full cursor-pointer
+						
+					`}
+				/>
 			</div>
-			<SearchableList
-				hideSearchBar={true}
-				initialList={mapToListFormat(list, schema.did)}
-				type={ListTypes.object}
-				loading={false}
-			/>
+			<div className={`w-full ${!isOpen ? "hidden" : ""}`}>
+				<SearchableList
+					hideSearchBar={true}
+					initialList={mapToListFormat(list, schema.did)}
+					type={ListTypes.object}
+					loading={false}
+				/>
+			</div>
 		</div>
 	)
 }

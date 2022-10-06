@@ -3,6 +3,7 @@ import addObjectToBucket from "../../service/addObjectToBucket"
 import createBucket from "../../service/createBucket"
 import getBuckets from "../../service/getBuckets"
 import getObjectsFromBucket from "../../service/getObjectsFromBucket"
+import { arrayObjectDistinct } from "../../utils/object"
 import { isFulfilled, promiseAllSettledLogErrors } from "../../utils/promise"
 import { Bucket, SonrObject, updateBucketProps } from "../../utils/types"
 import { RootState } from "../store"
@@ -85,7 +86,9 @@ export const userGetAllObjects = createAsyncThunk(
 				.filter(isFulfilled)
 				.map((item) => item.value)
 
-			return bucketObjects.flat()
+			const objects = bucketObjects.flat()
+			const distinctObjects = arrayObjectDistinct(objects, "cid")
+			return distinctObjects
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
 		}
@@ -153,6 +156,7 @@ const bucketSlice = createSlice({
 
 		builder.addCase(userGetAllObjects.fulfilled, (state, action) => {
 			const { payload } = action
+			console.log("payload", payload)
 			state.allObjectsLoading = false
 			state.allObjectsList = payload
 		})

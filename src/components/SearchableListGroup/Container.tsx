@@ -9,6 +9,7 @@ interface SearchableListGroupContainerProps {
 	checkboxes: objectsSelectionCheckbox[]
 	setCheckboxes: any
 	onChange: Function
+	defaultOpen: boolean
 }
 
 function SearchableListGroupContainer({
@@ -16,11 +17,19 @@ function SearchableListGroupContainer({
 	checkboxes,
 	setCheckboxes,
 	onChange,
+	defaultOpen,
 }: SearchableListGroupContainerProps) {
 	const allObjects = useSelector(selectAllObjects)
 	const [mainInputIsChecked, setMainInputIsChecked] = useState(false)
+	const [isOpen, setIsOpen] = useState(defaultOpen)
 
-	function onChangeMainInput() {
+	function toggleOpen() {
+		setIsOpen(!isOpen)
+	}
+
+	function onChangeMainInput(event: React.ChangeEvent<HTMLInputElement>) {
+		event.stopPropagation()
+
 		setCheckboxes(
 			checkboxes.map((checkbox) => {
 				if (checkbox.schemaDid === schema.did) {
@@ -43,6 +52,8 @@ function SearchableListGroupContainer({
 			mainInputIsChecked={mainInputIsChecked}
 			onChange={onChange}
 			checkboxes={checkboxes}
+			isOpen={isOpen}
+			toggleOpen={toggleOpen}
 		/>
 	)
 }
