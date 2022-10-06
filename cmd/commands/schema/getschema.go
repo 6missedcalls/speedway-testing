@@ -9,9 +9,7 @@ import (
 	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/client"
-	"github.com/sonr-io/speedway/internal/prompts"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/utils"
 	"github.com/spf13/cobra"
@@ -78,29 +76,25 @@ func bootstrapQuerySchemabyCreatorCommand(ctx context.Context, logger *golog.Log
 		Use:   "all",
 		Short: "Use: retrieves all Schemas for user",
 		Run: func(cmd *cobra.Command, args []string) {
-			loginRequest := prompts.LoginPrompt()
-
-			m := binding.InitMotor()
-
-			loginResult, err := utils.Login(m, loginRequest)
+			cli, err := client.New(ctx)
 			if err != nil {
-				logger.Fatalf("Login Error: ", err)
-				return
-			}
-			if loginResult.Success {
-				logger.Info(status.Success("Login Successful"))
-			} else {
-				logger.Fatal(status.Error("Login Failed"))
+				logger.Fatalf(status.Error("RPC Client Error: "), err)
 				return
 			}
 
-			logger.Infof("Querying Schemas for creator %s", m.GetAddress())
-			res, err := m.QueryWhatIsByCreator(rtmv1.QueryWhatIsByCreatorRequest{
-				Creator: m.GetDID().String(),
+			session, err := cli.GetSessionInfo()
+			if err != nil {
+				logger.Fatalf(status.Error("SessionInfo Error: "), err)
+				return
+			}
+
+			logger.Infof("Querying Schemas for creator %s", session.Info.Address)
+			res, err := cli.GetSchemaByCreator(rtmv1.QueryWhatIsByCreatorRequest{
+				Creator: session.Info.Address,
 			})
 
 			if err != nil {
-				logger.Fatalf("error while querying where is by creator %s: %s", m.GetAddress(), err)
+				logger.Fatalf("error while querying where is by creator %s: %s", session.Info.Address, err)
 			}
 
 			for _, wi := range res.WhatIs {
