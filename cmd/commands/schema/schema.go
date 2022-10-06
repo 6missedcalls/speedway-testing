@@ -19,7 +19,6 @@ func BootstrapSchemaCommand(ctx context.Context, logger *golog.Logger) (schemaCm
 		Run: func(cmd *cobra.Command, args []string) {},
 	}
 	logger = logger.Child("[Schemas] ")
-	schemaCmd.AddCommand(bootstrapBuildSchemaDocumentCommand(ctx, logger))
 	schemaCmd.AddCommand(bootstrapCreateSchemaCommand(ctx, logger))
 	schemaCmd.AddCommand(bootstrapQuerySchemaCommand(ctx, logger))
 	return

@@ -232,3 +232,17 @@ func LoadInfo(name string) (string, error) {
 	data, err := ioutil.ReadAll(file)
 	return string(data), err
 }
+
+func SaveTo(name string, path string, content []byte) error {
+	if _, err := os.Stat(path); err != nil {
+		return err
+	}
+
+	err := os.WriteFile(path+"/"+name+".json", content, 0777)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -14,12 +14,8 @@ func (d *Daemon) GetSchema(req rtmv1.QueryWhatIsRequest, res *rtmv1.QueryWhatIsR
 	return
 }
 
-func (d *Daemon) CreateSchemaDocument(req rtmv1.UploadDocumentRequest, res *rtmv1.UploadDocumentResponse) (err error) {
-	*res, err = d.instance.CreateSchemaDocument(req)
-	return
-}
+func (d *Daemon) GetSchemasByCreator(req rtmv1.QueryWhatIsByCreatorRequest, res *rtmv1.QueryWhatIsByCreatorResponse) (err error) {
+	res, err = d.instance.Instance.QueryWhatIsByCreator(req)
 
-func (d *Daemon) GetSchemaDocument(req rtmv1.GetDocumentRequest, res *rtmv1.GetDocumentResponse) (err error) {
-	*res, err = d.instance.GetSchemaDocument(req)
 	return
 }
