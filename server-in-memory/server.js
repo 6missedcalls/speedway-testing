@@ -176,7 +176,7 @@ app.post("/api/v1/bucket/create", async ({ body }, res) => {
 		did,
 		label: body.label,
 		creator: body.creator,
-		timestamp: Date.now(),
+		timestamp: Math.round(Date.now() / 1000),
 		content: [],
 	}
 
