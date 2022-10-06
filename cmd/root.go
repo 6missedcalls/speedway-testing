@@ -7,7 +7,7 @@ import (
 	"github.com/kataras/golog"
 	bucket "github.com/sonr-io/speedway/cmd/commands/bucket"
 	daemon "github.com/sonr-io/speedway/cmd/commands/daemon"
-	object "github.com/sonr-io/speedway/cmd/commands/object"
+	document "github.com/sonr-io/speedway/cmd/commands/document"
 	registry "github.com/sonr-io/speedway/cmd/commands/registry"
 	schema "github.com/sonr-io/speedway/cmd/commands/schema"
 	prompts "github.com/sonr-io/speedway/internal/prompts"
@@ -32,11 +32,10 @@ func bootstrapRootCommand(ctx context.Context, logger *golog.Logger, buildDir em
 
 	rootCmd.AddCommand(registry.BootstrapRegistryCommand(ctx, logger))
 	rootCmd.AddCommand(schema.BootstrapSchemaCommand(ctx, logger))
-	rootCmd.AddCommand(object.BootstrapObjectCommand(ctx, logger))
 	rootCmd.AddCommand(bucket.BootstrapBucketCommand(ctx, logger))
 	rootCmd.AddCommand(daemon.BootstrapDaemonCommand(ctx, logger))
 	rootCmd.AddCommand(BootstrapServeCommand(ctx, buildDir))
 	rootCmd.AddCommand(cobracompletefig.CreateCompletionSpecCommand())
-
+	rootCmd.AddCommand(document.BootstrapDocumentCommand(ctx, logger))
 	return
 }
