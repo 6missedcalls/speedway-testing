@@ -12,11 +12,7 @@ func (d *Daemon) CreateSchema(req rtmv1.CreateSchemaRequest, res *rtmv1.CreateSc
 		return err
 	}
 
-	*res = rtmv1.CreateSchemaResponse{
-		Status:           response.Status,
-		WhatIs:           response.WhatIs,
-		SchemaDefinition: response.SchemaDefinition,
-	}
+	*res = response
 
 	return
 }
@@ -28,11 +24,7 @@ func (d *Daemon) GetSchema(req rtmv1.QueryWhatIsRequest, res *rtmv1.QueryWhatIsR
 		return
 	}
 
-	*res = rtmv1.QueryWhatIsResponse{
-		Code:   response.Code,
-		WhatIs: response.WhatIs,
-		Schema: response.WhatIs.Schema,
-	}
+	*res = response
 
 	return
 }
@@ -40,11 +32,12 @@ func (d *Daemon) GetSchema(req rtmv1.QueryWhatIsRequest, res *rtmv1.QueryWhatIsR
 func (d *Daemon) GetSchemasByCreator(req rtmv1.QueryWhatIsByCreatorRequest, res *rtmv1.QueryWhatIsByCreatorResponse) (err error) {
 	response, err := d.instance.Instance.QueryWhatIsByCreator(req)
 
-	*res = rtmv1.QueryWhatIsByCreatorResponse{
-		Code:    response.Code,
-		WhatIs:  response.WhatIs,
-		Schemas: response.Schemas,
+	if err != nil {
+		res = &rtmv1.QueryWhatIsByCreatorResponse{}
+		return
 	}
+
+	*res = *response
 
 	return
 }
