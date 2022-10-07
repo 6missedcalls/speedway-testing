@@ -6,7 +6,12 @@ import getObjectsFromBucket from "../../service/getObjectsFromBucket"
 import { replaceFileBase64StringOnObjectList } from "../../utils/mappings"
 import { arrayObjectDistinct } from "../../utils/object"
 import { isFulfilled, promiseAllSettledLogErrors } from "../../utils/promise"
-import { Bucket, SonrObject, updateBucketProps } from "../../utils/types"
+import {
+	Bucket,
+	BucketContent,
+	SonrObject,
+	updateBucketProps,
+} from "../../utils/types"
 import { RootState } from "../store"
 
 export const selectBuckets = (state: RootState) => {
@@ -63,7 +68,7 @@ export const userCreateBucket = createAsyncThunk(
 			label,
 			address,
 			content,
-		}: { label: string; address: string; content?: Array<any> },
+		}: { label: string; address: string; content?: BucketContent[] },
 		thunkAPI
 	) => {
 		try {
