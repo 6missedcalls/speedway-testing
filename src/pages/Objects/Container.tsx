@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
-import useBytes from "../../hooks/useBytes"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 
 import {
@@ -20,6 +19,7 @@ import {
 	userGetAllSchemas,
 } from "../../redux/slices/schemasSlice"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
+import { addDefaultFieldsToObjectsList } from "../../utils/mappings"
 import {
 	SearchableListType,
 	SearchableListItem,
@@ -29,7 +29,6 @@ import ObjectsPageComponent from "./Component"
 
 function ObjectsPageContainer() {
 	const { setModalContent, openModal } = useContext(AppModalContext)
-	const { getBytesAndDownload } = useBytes()
 	const dispatch: Function = useDispatch()
 	const buckets = useSelector(selectBuckets)
 	const schemaMetadata = useSelector(selectSchemasMetadataList)
@@ -108,31 +107,13 @@ function ObjectsPageContainer() {
 			)
 			.map(({ cid, data }: SonrObject): SearchableListItem => {
 				const listItem: SearchableListItem = {}
-				listItem.cid = { text: cid }
-				Object.keys(data).forEach((key) => {
-					if (data[key]?.bytes) {
-						listItem[key] = {
-							text: "",
-							Component: () => (
-								<div
-									className="w-20 h-8 bg-button-subtle rounded cursor-pointer flex justify-center items-center"
-									onClick={() =>
-										getBytesAndDownload({ cid, key, schemaDid: selectedSchema })
-									}
-								>
-									<span className="block font-extrabold text-custom-xs text-button-subtle">
-										Download
-									</span>
-								</div>
-							),
-						}
-					} else {
-						listItem[key] = {
-							text: data[key].toString(),
-						}
-					}
+
+				return addDefaultFieldsToObjectsList({
+					fields: data,
+					cid,
+					schemaDid: selectedSchema,
+					listItem,
 				})
-				return listItem
 			})
 	}
 

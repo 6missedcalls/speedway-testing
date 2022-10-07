@@ -1,12 +1,11 @@
 import { useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import RefreshSvg from "../../assets/svgs/Refresh"
-import SearchableListGroup from "../../components/SearchableListGroup"
+import CheckboxListGroup from "../../components/CheckboxListGroup"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 import {
 	selectAllObjects,
-	// selectAllObjectsLoading,
 	selectBucketCreationLoading,
 	selectBuckets,
 	userCreateBucket,
@@ -14,7 +13,6 @@ import {
 	userGetAllObjects,
 } from "../../redux/slices/bucketSlice"
 import {
-	// selectSchemasLoading,
 	selectSchemasMetadataList,
 	userGetAllSchemas,
 } from "../../redux/slices/schemasSlice"
@@ -30,9 +28,6 @@ const ModalCreateBucket = () => {
 	const buckets = useSelector(selectBuckets)
 	const schemas = useSelector(selectSchemasMetadataList)
 	const allObjects = useSelector(selectAllObjects)
-	// const loadingSchemas = useSelector(selectSchemasLoading)
-	// const loadingAllObjects = useSelector(selectAllObjectsLoading)
-	// const loadingObjectsSelection = loadingSchemas || loadingAllObjects
 	const [checkboxes, setCheckboxes] = useState<objectsSelectionCheckbox[]>([])
 
 	useEffect(() => {
@@ -144,7 +139,7 @@ const ModalCreateBucket = () => {
 									return null
 								return (
 									<div key={schema.did} className="mb-2">
-										<SearchableListGroup
+										<CheckboxListGroup
 											defaultOpen={index === 0}
 											schema={schema}
 											checkboxes={checkboxes}

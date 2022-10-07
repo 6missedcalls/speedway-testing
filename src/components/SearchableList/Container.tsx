@@ -33,9 +33,9 @@ function SearchableListContainer({
 
 	useEffect(() => {
 		if (searchTerm) {
-			const filteredListLenght = getFilteredList(initialList).length
+			const filteredListLength = getFilteredList(initialList).length
 			setPaginationCurrentPage(1)
-			setTotalPages(Math.ceil(filteredListLenght / paginationSize))
+			setTotalPages(Math.ceil(filteredListLength / paginationSize))
 		} else {
 			setTotalPages(Math.ceil(initialList.length / paginationSize))
 		}

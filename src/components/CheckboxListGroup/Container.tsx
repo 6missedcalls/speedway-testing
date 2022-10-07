@@ -2,9 +2,9 @@ import { useState } from "react"
 import { useSelector } from "react-redux"
 import { selectAllObjects } from "../../redux/slices/bucketSlice"
 import { objectsSelectionCheckbox, SchemaMeta } from "../../utils/types"
-import SearchableListGroupComponent from "./Component"
+import CheckboxListGroupComponent from "./Component"
 
-interface SearchableListGroupContainerProps {
+interface CheckboxListGroupContainerProps {
 	schema: SchemaMeta
 	checkboxes: objectsSelectionCheckbox[]
 	setCheckboxes: any
@@ -12,44 +12,43 @@ interface SearchableListGroupContainerProps {
 	defaultOpen: boolean
 }
 
-function SearchableListGroupContainer({
+function CheckboxListGroupContainer({
 	schema,
 	checkboxes,
 	setCheckboxes,
 	onChange,
 	defaultOpen,
-}: SearchableListGroupContainerProps) {
+}: CheckboxListGroupContainerProps) {
 	const allObjects = useSelector(selectAllObjects)
-	const [mainInputIsChecked, setMainInputIsChecked] = useState(false)
+	const [mainCheckboxIsChecked, setMainCheckboxIsChecked] = useState(false)
 	const [isOpen, setIsOpen] = useState(defaultOpen)
 
 	function toggleOpen() {
 		setIsOpen(!isOpen)
 	}
 
-	function onChangeMainInput(event: React.ChangeEvent<HTMLInputElement>) {
-		event.stopPropagation()
-
+	function onChangeMainCheckbox() {
+		const currentMainCheckboxIsChecked = !mainCheckboxIsChecked
 		setCheckboxes(
 			checkboxes.map((checkbox) => {
 				if (checkbox.schemaDid === schema.did) {
 					return {
 						...checkbox,
-						checked: !mainInputIsChecked,
+						checked: currentMainCheckboxIsChecked,
 					}
 				}
 				return checkbox
 			})
 		)
-		setMainInputIsChecked(!mainInputIsChecked)
+		setMainCheckboxIsChecked(currentMainCheckboxIsChecked)
 	}
 
 	return (
-		<SearchableListGroupComponent
+		<CheckboxListGroupComponent
 			schema={schema}
 			list={allObjects}
-			onChangeMainInput={onChangeMainInput}
-			mainInputIsChecked={mainInputIsChecked}
+			onChangeMainCheckbox={onChangeMainCheckbox}
+			mainCheckboxIsChecked={mainCheckboxIsChecked}
 			onChange={onChange}
 			checkboxes={checkboxes}
 			isOpen={isOpen}
@@ -58,4 +57,4 @@ function SearchableListGroupContainer({
 	)
 }
 
-export default SearchableListGroupContainer
+export default CheckboxListGroupContainer

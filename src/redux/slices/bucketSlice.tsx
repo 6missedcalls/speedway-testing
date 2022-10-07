@@ -3,6 +3,7 @@ import addObjectToBucket from "../../service/addObjectToBucket"
 import createBucket from "../../service/createBucket"
 import getBuckets from "../../service/getBuckets"
 import getObjectsFromBucket from "../../service/getObjectsFromBucket"
+import { replaceFileBase64StringOnObjectList } from "../../utils/mappings"
 import { arrayObjectDistinct } from "../../utils/object"
 import { isFulfilled, promiseAllSettledLogErrors } from "../../utils/promise"
 import { Bucket, SonrObject, updateBucketProps } from "../../utils/types"
@@ -157,7 +158,7 @@ const bucketSlice = createSlice({
 		builder.addCase(userGetAllObjects.fulfilled, (state, action) => {
 			const { payload } = action
 			state.allObjectsLoading = false
-			state.allObjectsList = payload
+			state.allObjectsList = replaceFileBase64StringOnObjectList(payload)
 		})
 
 		builder.addCase(userGetAllObjects.rejected, (state) => {
