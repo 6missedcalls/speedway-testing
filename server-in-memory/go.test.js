@@ -92,6 +92,7 @@ it(
 				strength: 2,
 				interest: 3,
 				friends: 0,
+				picture: 5,
 			},
 		})
 		expect(resSchemaCreate.status).toBe(200)
@@ -126,7 +127,7 @@ it(
 		expect(resSchemaList.body.what_is[0]).toHaveProperty("schema.label")
 		expect(resSchemaList.body.what_is[0].schema.label).toBe("dinosaurs")
 		expect(resSchemaList.body.what_is[0]).toHaveProperty("schema.fields.length")
-		expect(resSchemaList.body.what_is[0].schema.fields.length).toBe(5)
+		expect(resSchemaList.body.what_is[0].schema.fields.length).toBe(6)
 
 		const fields = _.sortBy(resSchemaList.body.what_is[0].schema.fields, "name")
 
@@ -139,8 +140,10 @@ it(
 		// expect(fields[2].field).toBe(0)
 		expect(fields[3].name).toBe("interest")
 		expect(fields[3].field).toBe(3)
-		expect(fields[4].name).toBe("strength")
-		expect(fields[4].field).toBe(2)
+		expect(fields[4].name).toBe("picture")
+		expect(fields[4].field).toBe(5)
+		expect(fields[5].name).toBe("strength")
+		expect(fields[5].field).toBe(2)
 
 		// GET A LIST OF BUCKETS
 		const resBucketList = await app.post("/bucket/get-from-creator", {
@@ -169,6 +172,10 @@ it(
 				interest: 2.5,
 				strength: 10,
 				friends: ["robin", "nancy"],
+				picture: {
+					bytes:
+						"eyJiYXNlNjRGaWxlIjoiZGF0YTp0ZXh0L3BsYWluO2Jhc2U2NCxhR1ZzYkc4Z2QyOXliR1E9IiwiZmlsZU5hbWUiOiJody50eHQifQ==",
+				},
 			},
 		})
 		expect(resObject.status).toBe(200)
@@ -203,7 +210,7 @@ it(
 		expect(resBucketContents.body.bucket[0].uri).toBe(objectCid)
 		expect(resBucketContents.body.bucket[0]).toHaveProperty("content.item")
 		expect(resBucketContents.body.bucket[0].content.item).toBe(
-			"eyJleHRpbmN0Ijp0cnVlLCJmaXJzdG5hbWUiOiJzdGV2ZSIsImZyaWVuZHMiOlsicm9iaW4iLCJuYW5jeSJdLCJpbnRlcmVzdCI6Mi41LCJzdHJlbmd0aCI6MTB9"
+			"eyJleHRpbmN0Ijp0cnVlLCJmaXJzdG5hbWUiOiJzdGV2ZSIsImZyaWVuZHMiOlsicm9iaW4iLCJuYW5jeSJdLCJpbnRlcmVzdCI6Mi41LCJwaWN0dXJlIjp7Ii8iOnsiYnl0ZXMiOiJleUppWVhObE5qUkdhV3hsSWpvaVpHRjBZVHAwWlhoMEwzQnNZV2x1TzJKaGMyVTJOQ3hoUjFaellrYzRaMlF5T1hsaVIxRTlJaXdpWm1sc1pVNWhiV1VpT2lKb2R5NTBlSFFpZlEifX0sInN0cmVuZ3RoIjoxMH0="
 		)
 	},
 	10 * 60 * 1000 // 10 minutes timeout
