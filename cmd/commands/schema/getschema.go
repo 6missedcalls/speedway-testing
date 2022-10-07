@@ -19,8 +19,21 @@ import (
 // Command Example: speedway schema get
 func bootstrapQuerySchemaCommand(ctx context.Context, logger *golog.Logger) (querySchemaCmd *cobra.Command) {
 	querySchemaCmd = &cobra.Command{
-		Use:   "get [did]",
-		Short: "Use: Returns a schema by the provided did",
+		Use:   "get",
+		Short: "Query functionality for schemas",
+		Args:  cobra.ExactArgs(1),
+	}
+
+	querySchemaCmd.AddCommand(bootstrapQuerySchemabyCreatorCommand(ctx, logger))
+	querySchemaCmd.AddCommand(bootstrapQuerySchemaById(ctx, logger))
+
+	return
+}
+
+func bootstrapQuerySchemaById(ctx context.Context, logger *golog.Logger) (querySchemaByIdCmd *cobra.Command) {
+	querySchemaByIdCmd = &cobra.Command{
+		Use:   "id [did]",
+		Short: "Use: Returns a schema by the provided DID",
 		Long:  "Returns a schema matching the did, if not provided the cli will prompt",
 		Run: func(cmd *cobra.Command, args []string) {
 			var did string
@@ -42,7 +55,7 @@ func bootstrapQuerySchemaCommand(ctx context.Context, logger *golog.Logger) (que
 
 			cli, err := client.New(ctx)
 			if err != nil {
-				logger.Fatalf(status.Error("RPC Client Error: "), err)
+				logger.Fatalf("RPC Client Error: ", err.Error())
 				return
 			}
 
@@ -62,12 +75,11 @@ func bootstrapQuerySchemaCommand(ctx context.Context, logger *golog.Logger) (que
 				return
 			}
 
-			defStr, _ := utils.MarshalJsonFmt(querySchemaRes.WhatIs.Schema)
+			defStr, _ := utils.MarshalJsonFmt(querySchemaRes.Schema)
 			logger.Info(status.Debug, "Schema:", defStr)
 		},
 	}
 
-	querySchemaCmd.AddCommand(bootstrapQuerySchemabyCreatorCommand(ctx, logger))
 	return
 }
 
