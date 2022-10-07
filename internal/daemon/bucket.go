@@ -27,6 +27,10 @@ func (d *Daemon) GetBucketsByCreator(req rtmv1.QueryWhereIsByCreatorRequest, res
 	if err != nil {
 		return
 	}
+	if r == nil {
+		*res = rtmv1.QueryWhereIsByCreatorResponse{}
+		return
+	}
 
 	*res = *r
 
@@ -52,6 +56,11 @@ func (d *Daemon) GetBucketById(req rtmv1.QueryWhereIsRequest, res *rtmv1.QueryWh
 	err = e
 	if err != nil {
 		return e
+	}
+
+	if r == nil {
+		*res = rtmv1.QueryWhereIsResponse{}
+		return
 	}
 
 	*res = *r
