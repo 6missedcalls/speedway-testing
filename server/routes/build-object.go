@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"encoding/base64"
 	"fmt"
 	"math"
 	"net/http"
@@ -94,6 +95,14 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 				objBuilder.Set(k, value)
 			} else {
 				objBuilder.Set(k, int64(value))
+			}
+			continue
+		case map[string]interface{}:
+			value := v.(map[string]interface{})
+			if base64String, ok := value["bytes"]; ok {
+				rawDecodedString, _ := base64.StdEncoding.DecodeString(base64String.(string))
+				bytes := []byte(rawDecodedString)
+				objBuilder.Set(k, bytes)
 			}
 			continue
 		default:

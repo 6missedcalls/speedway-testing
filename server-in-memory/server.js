@@ -19,11 +19,13 @@ const fieldTypeMap = {
 	2: "INT",
 	3: "FLOAT",
 	4: "STRING",
+	5: "BYTES",
 }
 
 const app = express()
 app.use(cors())
-app.use(bodyParser.json())
+app.use(bodyParser.json({ limit: "1mb" }))
+app.use(bodyParser.urlencoded({ limit: "1mb", extended: true }))
 
 /// DEVELOPMENT
 
@@ -169,7 +171,7 @@ app.post("/api/v1/bucket/create", async ({ body }, res) => {
 		did,
 		label: body.label,
 		creator: body.creator,
-		timestamp: Date.now(),
+		timestamp: Math.round(Date.now() / 1000),
 		content: [],
 	}
 
@@ -263,7 +265,13 @@ app.post("/api/v1/object/build", async ({ body }, res) => {
 		.keys()
 		.sortBy()
 		.reduce((acc, key) => {
-			acc[key] = body.object[key]
+			const fieldType = _.find(schemaMetadata.schema.fields, {
+				name: key,
+			}).field
+			acc[key] =
+				fieldType === 5
+					? { "/": { bytes: _.trimEnd(body.object[key].bytes, "=") } }
+					: body.object[key]
 			return acc
 		}, {})
 		.valueOf()
