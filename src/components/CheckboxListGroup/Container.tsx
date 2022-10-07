@@ -7,7 +7,9 @@ import CheckboxListGroupComponent from "./Component"
 interface CheckboxListGroupContainerProps {
 	schema: SchemaMeta
 	checkboxes: objectsSelectionCheckbox[]
-	setCheckboxes: any
+	setCheckboxes: React.Dispatch<
+		React.SetStateAction<objectsSelectionCheckbox[]>
+	>
 	onChange: Function
 	defaultOpen: boolean
 }
