@@ -5,20 +5,6 @@ import createAccount from "../../service/createAccount"
 import buyAlias from "../../service/buyAlias"
 import getAddressByAlias from "../../service/getAddressByAlias"
 
-interface loginProps {
-	walletAddress: string
-	password: string
-}
-
-interface createAccountProps {
-	password: string
-}
-
-interface buyAliasProps {
-	alias: string
-	creator: string
-}
-
 interface AuthenticationState {
 	isLogged: boolean
 	loading: boolean
@@ -35,6 +21,10 @@ export const initialState: AuthenticationState = {
 	alias: "",
 }
 
+interface loginProps {
+	walletAddress: string
+	password: string
+}
 export const userLogin = createAsyncThunk(
 	"authentication/login",
 	async ({ walletAddress, password }: loginProps, thunkAPI) => {
@@ -47,6 +37,9 @@ export const userLogin = createAsyncThunk(
 	}
 )
 
+interface createAccountProps {
+	password: string
+}
 export const userCreateAccount = createAsyncThunk(
 	"authentication/createAccount",
 	async ({ password }: createAccountProps, thunkAPI) => {
@@ -59,6 +52,10 @@ export const userCreateAccount = createAsyncThunk(
 	}
 )
 
+interface buyAliasProps {
+	alias: string
+	creator: string
+}
 export const userBuyAlias = createAsyncThunk(
 	"authentication/buyAlias",
 	async ({ alias, creator }: buyAliasProps, thunkAPI) => {

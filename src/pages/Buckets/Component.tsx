@@ -1,4 +1,6 @@
 import { useContext } from "react"
+import timeAgo from "node-time-ago"
+
 import LoadingCircleSvg from "../../assets/svgs/LoadingCircle"
 import EmptyList from "../../components/EmptyList"
 import LayoutMenu from "../../components/LayoutMenu"
@@ -8,8 +10,6 @@ import {
 } from "../../contexts/appModalContext/appModalContext"
 import { MODAL_CONTENT_NEW_BUCKET } from "../../utils/constants"
 import { Bucket } from "../../utils/types"
-
-const timeAgo = require("node-time-ago")
 
 type Props = {
 	data: Bucket[]
@@ -91,7 +91,7 @@ const BucketCard = (bucket: Bucket) => (
 		</div>
 
 		<div className="font-extrabold text-placeholder text-custom-xxs">
-			Last Update: {timeAgo(bucket.timestamp)}
+			Last Update: {timeAgo(parseInt(bucket.timestamp) * 1000)}
 		</div>
 	</div>
 )

@@ -7,12 +7,16 @@ import {
 	ROUTE_BUCKETS,
 } from "../../utils/constants"
 import { useSelector } from "react-redux"
-import { selectAddress } from "../../redux/slices/authenticationSlice"
+import {
+	selectAddress,
+	selectAlias,
+} from "../../redux/slices/authenticationSlice"
 import IconLinkAccessApi from "../../assets/svgs/LinkAccessApi"
 import IconLinkDocsSupport from "../../assets/svgs/LinkDocsSupport"
 import AlertSvg from "../../assets/svgs/Alert"
 import LeftSquareIconSvg from "../../assets/svgs/LeftSquaredIcon"
 import MenuLink from "./components/MenuLink"
+import IconUserProfile from "../../assets/svgs/IconUserProfile"
 
 interface SideMenuComponentProps {
 	navigate: NavigateFunction
@@ -46,6 +50,7 @@ function SideMenuComponent({
 	toggleMenuIsCollapsed,
 }: SideMenuComponentProps) {
 	const address = useSelector(selectAddress)
+	const alias = useSelector(selectAlias)
 
 	return (
 		<div
@@ -124,8 +129,13 @@ function SideMenuComponent({
 				/>
 			</div>
 			<div className="border-b border-outlined-disabled mb-10 w-full h-px" />
-			<div className="break-words text-ellipsis overflow-hidden whitespace-nowrap">
-				{address}
+			<div className="flex gap-2 px-2">
+				<div>
+					<IconUserProfile />
+				</div>
+				<div className="flex-1 break-words text-ellipsis overflow-hidden whitespace-nowrap font-semibold">
+					{alias || address}
+				</div>
 			</div>
 		</div>
 	)
