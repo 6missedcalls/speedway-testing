@@ -51,7 +51,7 @@ func InitMotor() mtr.MotorNode {
 	initreq := &rtmv1.InitializeRequest{
 		DeviceId:   utils.GetHwid(),
 		LogLevel:   "warn",
-		ClientMode: 0,
+		ClientMode: rtmv1.ClientMode_ENDPOINT_BETA,
 	}
 	// add MotorCallback with onMotorEvent
 	m, err := mtr.EmptyMotor(initreq, &MotorCallback{})
