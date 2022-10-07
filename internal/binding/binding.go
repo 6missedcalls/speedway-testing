@@ -50,8 +50,8 @@ Initialize the speedway binding to the motor
 func InitMotor() mtr.MotorNode {
 	initreq := &rtmv1.InitializeRequest{
 		DeviceId:   utils.GetHwid(),
-		LogLevel:   "info",
-		ClientMode: 2,
+		LogLevel:   "warn",
+		ClientMode: 0,
 	}
 	// add MotorCallback with onMotorEvent
 	m, err := mtr.EmptyMotor(initreq, &MotorCallback{})
