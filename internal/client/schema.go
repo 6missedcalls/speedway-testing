@@ -22,7 +22,7 @@ func (c *RpcClient) GetSchema(req rtmv1.QueryWhatIsRequest) (*rtmv1.QueryWhatIsR
 
 func (c *RpcClient) GetSchemaByCreator(req rtmv1.QueryWhatIsByCreatorRequest) (*rtmv1.QueryWhatIsByCreatorResponse, error) {
 	var response rtmv1.QueryWhatIsByCreatorResponse
-	if err := c.client.Call("Daemon.GetSchemaByCreator", req, &response); err != nil {
+	if err := c.client.Call("Daemon.GetSchemasByCreator", req, &response); err != nil {
 		return nil, err
 	}
 

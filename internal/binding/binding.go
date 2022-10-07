@@ -50,7 +50,7 @@ Initialize the speedway binding to the motor
 func InitMotor() mtr.MotorNode {
 	initreq := &rtmv1.InitializeRequest{
 		DeviceId:   utils.GetHwid(),
-		LogLevel:   "warn",
+		LogLevel:   "debug",
 		ClientMode: 0,
 	}
 	// add MotorCallback with onMotorEvent
@@ -260,6 +260,10 @@ func (b *SpeedwayBinding) GetSchema(req rtmv1.QueryWhatIsRequest) (rtmv1.QueryWh
 	}
 
 	res, err := b.Instance.QueryWhatIs(req)
+	if err != nil {
+		return rtmv1.QueryWhatIsResponse{}, err
+	}
+
 	return *res, err
 
 }

@@ -5,11 +5,27 @@ import (
 )
 
 func (d *Daemon) CreateSchemaDocument(req rtmv1.UploadDocumentRequest, res *rtmv1.UploadDocumentResponse) (err error) {
-	*res, err = d.instance.CreateSchemaDocument(req)
+	response, err := d.instance.CreateSchemaDocument(req)
+
+	res = &rtmv1.UploadDocumentResponse{
+		Status:   response.Status,
+		Did:      response.Did,
+		Cid:      response.Cid,
+		Document: response.Document,
+	}
+
 	return
 }
 
 func (d *Daemon) GetSchemaDocument(req rtmv1.GetDocumentRequest, res *rtmv1.GetDocumentResponse) (err error) {
-	*res, err = d.instance.GetSchemaDocument(req)
+	response, err := d.instance.GetSchemaDocument(req)
+
+	res = &rtmv1.GetDocumentResponse{
+		Status:   response.Status,
+		Did:      response.Did,
+		Cid:      response.Cid,
+		Document: response.Document,
+	}
+
 	return
 }
