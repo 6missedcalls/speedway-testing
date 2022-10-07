@@ -370,18 +370,18 @@ func (b *SpeedwayBinding) CreateBucket(ctx context.Context, req rtmv1.CreateBuck
 		return nil, did.Service{}, ErrNotAuthenticated
 	}
 
-	res, err := b.Instance.CreateBucket(ctx, req)
+	bucket, err := b.Instance.CreateBucket(ctx, req)
 	if err != nil {
 		fmt.Println(status.Error("Error"), err)
 		return nil, did.Service{}, err
 	}
 
-	serv := res.CreateBucketServiceEndpoint()
+	serv := bucket.CreateBucketServiceEndpoint()
 	fmt.Println(status.Info, "Service Endpoint", serv)
 
-	bucket := res.GetBucketItems()
+	items := bucket.GetBucketItems()
 
-	return bucket, serv, nil
+	return items, serv, nil
 }
 
 /*
