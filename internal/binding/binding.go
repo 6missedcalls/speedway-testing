@@ -49,9 +49,7 @@ Initialize the speedway binding to the motor
 */
 func InitMotor() mtr.MotorNode {
 	initreq := &rtmv1.InitializeRequest{
-		DeviceId:   utils.GetHwid(),
-		LogLevel:   "warn",
-		ClientMode: rtmv1.ClientMode_ENDPOINT_BETA,
+		DeviceId: utils.GetHwid(),
 	}
 	// add MotorCallback with onMotorEvent
 	m, err := mtr.EmptyMotor(initreq, &MotorCallback{})
@@ -372,7 +370,7 @@ func (b *SpeedwayBinding) CreateBucket(ctx context.Context, req rtmv1.CreateBuck
 		return nil, did.Service{}, ErrNotAuthenticated
 	}
 
-	_, bucket, err := b.Instance.CreateBucket(req)
+	bucket, err := b.Instance.CreateBucket(ctx, req)
 	if err != nil {
 		fmt.Println(status.Error("Error"), err)
 		return nil, did.Service{}, err
