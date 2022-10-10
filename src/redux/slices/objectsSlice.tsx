@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import createObject from "../../service/createObject"
 import getObject from "../../service/getObject"
 import getObjectsFromBucket from "../../service/getObjectsFromBucket"
+import { replaceFileBase64StringOnObjectList } from "../../utils/mappings"
 import { InewObject, SonrObject, userGetObjectProps } from "../../utils/types"
 import { RootState } from "../store"
 
@@ -88,40 +89,7 @@ export const objectsSlice = createSlice({
 
 		builder.addCase(userGetBucketObjects.fulfilled, (state, action) => {
 			const { payload } = action
-
-			const list = payload.reduce(
-				(acc: Array<SonrObject>, item: SonrObject) => {
-					const reworkedData = Object.keys(item.data).reduce(
-						(dataAcc: Record<string, any>, key: string) => {
-							const dataItem = item.data[key]
-							if (!dataItem?.["/"]?.bytes) {
-								return {
-									...dataAcc,
-									[key]: dataItem,
-								}
-							}
-
-							return {
-								...dataAcc,
-								[key]: {
-									bytes: true,
-								},
-							}
-						},
-						{}
-					)
-
-					return [
-						...acc,
-						{
-							...item,
-							data: reworkedData,
-						},
-					]
-				},
-				[]
-			)
-
+			const list = replaceFileBase64StringOnObjectList(payload)
 			state.list = list
 			state.loading = false
 		})

@@ -59,6 +59,9 @@ const ObjectsPageComponent = ({
 												{item.label}
 											</option>
 										))}
+										<option key="all_schemas" value="">
+											All
+										</option>
 									</select>
 									<NebulaIcon
 										iconName="ArrowSquareDown"

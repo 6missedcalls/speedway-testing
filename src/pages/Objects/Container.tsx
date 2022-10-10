@@ -12,7 +12,6 @@ import {
 	selectObjectsList,
 	selectObjectsLoading,
 	userGetBucketObjects,
-	userGetObject,
 } from "../../redux/slices/objectsSlice"
 import {
 	selectSchemasLoading,
@@ -20,10 +19,9 @@ import {
 	userGetAllSchemas,
 } from "../../redux/slices/schemasSlice"
 import { MODAL_CONTENT_NEW_OBJECT } from "../../utils/constants"
-import { downloadFileFromBase64 } from "../../utils/files"
-import { parseJsonFromBase64String } from "../../utils/object"
+import { addDefaultFieldsToObjectsList } from "../../utils/mappings"
 import {
-	SearchableList,
+	SearchableListType,
 	SearchableListItem,
 	SonrObject,
 } from "../../utils/types"
@@ -61,7 +59,6 @@ function ObjectsPageContainer() {
 			}
 		}
 		initialize()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(() => {
@@ -72,7 +69,6 @@ function ObjectsPageContainer() {
 				})
 			)
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedBucket])
 
 	useEffect(() => {
@@ -88,7 +84,6 @@ function ObjectsPageContainer() {
 				},
 			})
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedSchema, selectedBucket])
 
 	function openNewObjectModal() {
@@ -105,55 +100,20 @@ function ObjectsPageContainer() {
 		openModal()
 	}
 
-	async function getBytesAndDownload({
-		cid,
-		key,
-	}: {
-		cid: string
-		key: string
-	}) {
-		const { payload } = await dispatch(
-			userGetObject({
-				schemaDid: selectedSchema,
-				objectCid: cid,
-			})
-		)
-		const bytes = payload?.object[key]?.["/"]?.bytes
-		if (!bytes) return
-
-		const parsedData = parseJsonFromBase64String(bytes)
-		const { base64File, fileName } = parsedData
-		downloadFileFromBase64(base64File, fileName)
-	}
-
-	function mapToListFormat(): SearchableList {
+	function mapToListFormat(): SearchableListType {
 		return objectsList
-			.filter((item: SonrObject) => item.schemaDid === selectedSchema)
+			.filter((item: SonrObject) =>
+				selectedSchema ? item.schemaDid === selectedSchema : true
+			)
 			.map(({ cid, data }: SonrObject): SearchableListItem => {
 				const listItem: SearchableListItem = {}
-				listItem.cid = { text: cid }
-				Object.keys(data).forEach((key) => {
-					if (data[key]?.bytes) {
-						listItem[key] = {
-							text: "",
-							Component: () => (
-								<div
-									className="w-20 h-8 bg-button-subtle rounded cursor-pointer flex justify-center items-center"
-									onClick={() => getBytesAndDownload({ cid, key })}
-								>
-									<span className="block font-extrabold text-custom-xs text-button-subtle">
-										Download
-									</span>
-								</div>
-							),
-						}
-					} else {
-						listItem[key] = {
-							text: data[key].toString(),
-						}
-					}
+
+				return addDefaultFieldsToObjectsList({
+					fields: data,
+					cid,
+					schemaDid: selectedSchema,
+					listItem,
 				})
-				return listItem
 			})
 	}
 

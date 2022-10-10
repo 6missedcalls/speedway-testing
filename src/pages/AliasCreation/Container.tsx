@@ -55,14 +55,12 @@ function AliasCreationContainer() {
 		if (!address) {
 			navigate(ROUTE_SIGNUP)
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [address])
 
 	useEffect(() => {
 		if (cachedAlias) {
 			navigate(ROUTE_SCHEMAS)
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [cachedAlias])
 
 	async function onSubmit() {

@@ -2,11 +2,28 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import addObjectToBucket from "../../service/addObjectToBucket"
 import createBucket from "../../service/createBucket"
 import getBuckets from "../../service/getBuckets"
-import { Bucket, updateBucketProps } from "../../utils/types"
+import getObjectsFromBucket from "../../service/getObjectsFromBucket"
+import { replaceFileBase64StringOnObjectList } from "../../utils/mappings"
+import { arrayObjectDistinct } from "../../utils/object"
+import { isFulfilled, promiseAllSettledLogErrors } from "../../utils/promise"
+import {
+	Bucket,
+	BucketContent,
+	SonrObject,
+	updateBucketProps,
+} from "../../utils/types"
 import { RootState } from "../store"
 
 export const selectBuckets = (state: RootState) => {
 	return state.bucket.list
+}
+
+export const selectAllObjects = (state: RootState) => {
+	return state.bucket.allObjectsList
+}
+
+export const selectAllObjectsLoading = (state: RootState) => {
+	return state.bucket.allObjectsLoading
 }
 
 export const selectBucketCreationLoading = (state: RootState) => {
@@ -25,7 +42,7 @@ export const userGetAllBuckets = createAsyncThunk(
 	"bucket/getAll",
 	async (address: string, thunkAPI) => {
 		try {
-			const data = await getBuckets(address)
+			const data: Bucket[] = await getBuckets(address)
 			return data
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
@@ -46,9 +63,38 @@ export const updateBucket = createAsyncThunk(
 
 export const userCreateBucket = createAsyncThunk(
 	"bucket/create",
-	async ({ label, address }: { label: string; address: string }, thunkAPI) => {
+	async (
+		{
+			label,
+			address,
+			content,
+		}: { label: string; address: string; content?: BucketContent[] },
+		thunkAPI
+	) => {
 		try {
-			await createBucket(label, address)
+			await createBucket(label, address, content)
+		} catch (err) {
+			return thunkAPI.rejectWithValue(err)
+		}
+	}
+)
+
+export const userGetAllObjects = createAsyncThunk(
+	"bucket/all/content",
+	async ({ bucketDids }: { bucketDids: Array<string> }, thunkAPI) => {
+		try {
+			const results = await Promise.allSettled(
+				bucketDids.map((did) => getObjectsFromBucket(did))
+			)
+			promiseAllSettledLogErrors(results)
+
+			const bucketObjects = results
+				.filter(isFulfilled)
+				.map((item) => item.value)
+
+			const objects = bucketObjects.flat()
+			const distinctObjects = arrayObjectDistinct(objects, "cid")
+			return distinctObjects
 		} catch (err) {
 			return thunkAPI.rejectWithValue(err)
 		}
@@ -57,14 +103,18 @@ export const userCreateBucket = createAsyncThunk(
 
 export type BucketState = {
 	list: Bucket[]
+	allObjectsList: SonrObject[]
 	creating: boolean
 	loading: boolean
+	allObjectsLoading: boolean
 	error: boolean
 }
 export const initialState: BucketState = {
 	list: [],
+	allObjectsList: [],
 	creating: false,
 	loading: false,
+	allObjectsLoading: false,
 	error: false,
 }
 const bucketSlice = createSlice({
@@ -104,6 +154,21 @@ const bucketSlice = createSlice({
 		})
 		builder.addCase(updateBucket.fulfilled, (state) => {
 			state.loading = false
+		})
+
+		builder.addCase(userGetAllObjects.pending, (state) => {
+			state.allObjectsLoading = true
+		})
+
+		builder.addCase(userGetAllObjects.fulfilled, (state, action) => {
+			const { payload } = action
+			state.allObjectsLoading = false
+			state.allObjectsList = replaceFileBase64StringOnObjectList(payload)
+		})
+
+		builder.addCase(userGetAllObjects.rejected, (state) => {
+			state.error = true
+			state.allObjectsLoading = false
 		})
 	},
 })
