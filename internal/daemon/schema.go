@@ -5,11 +5,12 @@ import (
 )
 
 func (d *Daemon) CreateSchema(req rtmv1.CreateSchemaRequest, res *rtmv1.CreateSchemaResponse) (err error) {
-	response, err := d.instance.CreateSchema(req)
+	response, e := d.instance.CreateSchema(req)
+	err = e
 
 	if err != nil {
 		res = &rtmv1.CreateSchemaResponse{}
-		return err
+		return
 	}
 
 	*res = response
@@ -18,7 +19,9 @@ func (d *Daemon) CreateSchema(req rtmv1.CreateSchemaRequest, res *rtmv1.CreateSc
 }
 
 func (d *Daemon) GetSchema(req rtmv1.QueryWhatIsRequest, res *rtmv1.QueryWhatIsResponse) (err error) {
-	response, err := d.instance.GetSchema(req)
+	response, e := d.instance.GetSchema(req)
+	err = e
+
 	if err != nil {
 		res = &rtmv1.QueryWhatIsResponse{}
 		return
@@ -30,7 +33,8 @@ func (d *Daemon) GetSchema(req rtmv1.QueryWhatIsRequest, res *rtmv1.QueryWhatIsR
 }
 
 func (d *Daemon) GetSchemasByCreator(req rtmv1.QueryWhatIsByCreatorRequest, res *rtmv1.QueryWhatIsByCreatorResponse) (err error) {
-	response, err := d.instance.Instance.QueryWhatIsByCreator(req)
+	response, e := d.instance.Instance.QueryWhatIsByCreator(req)
+	err = e
 
 	if err != nil {
 		res = &rtmv1.QueryWhatIsByCreatorResponse{}
