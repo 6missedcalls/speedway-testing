@@ -258,6 +258,10 @@ func (b *SpeedwayBinding) GetSchema(req rtmv1.QueryWhatIsRequest) (rtmv1.QueryWh
 	}
 
 	res, err := b.Instance.QueryWhatIs(req)
+	if err != nil {
+		return rtmv1.QueryWhatIsResponse{}, err
+	}
+
 	return *res, err
 
 }
