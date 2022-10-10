@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/speedway/internal/binding"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sonr-io/sonr/x/schema/types"
@@ -24,10 +23,10 @@ type CreateSchemaDocumentRequest struct {
 // @Tags Schema Document
 // @Accept json
 // @Produce json
-// @Param 		 creator body string true "creator" example("did:sonr:0x1234")
+// @Param 		 creator body string true "creator" example("did:snr:01234")
 // @Param 		 label body string true "label" example("My Schema")
-// @Param 		 schema_did body string true "schema_did" example("did:sonr:0x1234")
-// @Param 		 fields body string true "fields" example("did:sonr:0x1234")
+// @Param 		 schema_did body string true "schema_did" example("did:snr:01234")
+// @Param 		 fields body string true "fields" example("did:snr:01234")
 // @Success 	 200  {object}  rtmv1.UploadDocumentResponse
 // @Failure      500  {object}  FailedResponse
 // @Router /schema-document/create [post]
@@ -40,9 +39,9 @@ func (ns *NebulaServer) CreateSchemaDocument(c *gin.Context) {
 		})
 		return
 	}
-	b := binding.CreateInstance()
+	b := ns.Config.Binding
 
-	schemaDefinition, err := b.GetSchema(rtmv1.QueryWhatIsRequest{
+	schemadefinition, err := b.Instance.QueryWhatIs(rtmv1.QueryWhatIsRequest{
 		Creator: body.Creator,
 		Did:     body.SchemaDid,
 	})
@@ -56,11 +55,11 @@ func (ns *NebulaServer) CreateSchemaDocument(c *gin.Context) {
 	req := rtmv1.UploadDocumentRequest{
 		Creator:    body.Creator,
 		Label:      body.Label,
-		Definition: schemaDefinition.Schema,
+		Definition: schemadefinition.Schema,
 		Fields:     body.Fields,
 	}
 
-	res, err := b.CreateSchemaDocument(req)
+	res, err := b.Instance.UploadDocument(req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: err.Error(),

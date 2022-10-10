@@ -12,7 +12,9 @@ it(
 	async () => {
 		// WHILE NOT LOGGED IN, CHECK ACCOUNT INFO
 		const resInfoLoggedOut = await app.get("/account/info")
-		expect(resInfoLoggedOut.status).toBe(500)
+		expect(resInfoLoggedOut.status).toBe(200)
+		expect(resInfoLoggedOut.body).toHaveProperty("Address")
+		expect(resInfoLoggedOut.body.Address).toBe("")
 
 		// CREATE A NEW ACCOUNT
 		const resCreateAccount = await app.post("/account/create", {
@@ -96,14 +98,12 @@ it(
 			},
 		})
 		expect(resSchemaCreate.status).toBe(200)
-		expect(resSchemaCreate.body).toHaveProperty("whatIs.creator")
-		expect(resSchemaCreate.body.whatIs.creator).toBe(address)
-		expect(resSchemaCreate.body).toHaveProperty("whatIs.schema.label")
-		expect(resSchemaCreate.body.whatIs.schema.label).toBe("dinosaurs")
-		expect(resSchemaCreate.body).toHaveProperty("whatIs.schema.did")
-		expect(resSchemaCreate.body.whatIs.schema.did).toBeDid()
+		expect(resSchemaCreate.body).toHaveProperty("what_is.schema.label")
+		expect(resSchemaCreate.body.what_is.schema.label).toBe("dinosaurs")
+		expect(resSchemaCreate.body).toHaveProperty("what_is.schema.did")
+		expect(resSchemaCreate.body.what_is.schema.did).toBeDid()
 
-		const schemaDid = resSchemaCreate.body.whatIs.schema.did
+		const schemaDid = resSchemaCreate.body.what_is.schema.did
 
 		// CREATE A BUCKET
 		const resBucketCreate = await app.post("/bucket/create", {
@@ -179,10 +179,10 @@ it(
 			},
 		})
 		expect(resObject.status).toBe(200)
-		expect(resObject.body).toHaveProperty("objectUpload.reference.cid")
-		expect(typeof resObject.body.objectUpload.reference.cid).toBe("string")
+		expect(resObject.body).toHaveProperty("reference.cid")
+		expect(typeof resObject.body.reference.cid).toBe("string")
 
-		const objectCid = resObject.body.objectUpload.reference.cid
+		const objectCid = resObject.body.reference.cid
 
 		// ADD OBJECT TO BUCKET
 		const resAddToBucket = await app.post("/bucket/update-items", {

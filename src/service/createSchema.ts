@@ -20,8 +20,8 @@ const createSchema = async (
 		if (!response.ok) throw new Error(response.statusText)
 		const data = await response.json()
 		return {
-			did: data.whatIs.schema.did,
-			label: data.whatIs.schema.label,
+			did: data.what_is.schema.did,
+			label: data.what_is.schema.label,
 			fields: Object.keys(fields).map((fieldName: string) => ({
 				name: fieldName,
 				type: fields[fieldName],

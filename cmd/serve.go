@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/sonr-io/speedway/internal/binding"
 	sws "github.com/sonr-io/speedway/server/routes"
 	"github.com/spf13/cobra"
 )
@@ -32,6 +33,7 @@ func BootstrapServeCommand(ctx context.Context, buildDir embed.FS) (serveCmd *co
 				options.Address = fmt.Sprintf("127.0.0.1:%d", port)
 				options.EmbedFs = &buildDir
 				options.StaticDir = "out"
+				options.Binding = binding.CreateInstance()
 			})
 			if err != nil {
 				fmt.Print(fmt.Errorf("Error while configuring speedway: %s", err))

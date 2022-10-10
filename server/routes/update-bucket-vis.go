@@ -2,12 +2,10 @@ package routes
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/utils"
 )
 
@@ -28,18 +26,16 @@ type UpdateBucketVisibilityRequest struct {
 // @Failure      500  {object}  FailedResponse
 // @Router /bucket/update-visibility [post]
 func (ns *NebulaServer) UpdateBucketVisibility(c *gin.Context) {
-	rBody := c.Request.Body
-	var r UpdateBucketVisibilityRequest
-	err := json.NewDecoder(rBody).Decode(&r)
+	var body UpdateBucketVisibilityRequest
+	err := c.BindJSON(&body)
 	if err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid Request Body",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
 		})
 		return
 	}
 
-	vis, err := utils.ConvertBucketVisibility(r.Visibility)
+	vis, err := utils.ConvertBucketVisibility(body.Visibility)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, FailedResponse{
 			Error: "Invalid Conversion of Visibility",
@@ -47,10 +43,10 @@ func (ns *NebulaServer) UpdateBucketVisibility(c *gin.Context) {
 		return
 	}
 
-	b := binding.CreateInstance()
+	b := ns.Config.Binding
 
 	// Get the bucket (this is a temporary solution)
-	bucket, err := b.GetBuckets(context.Background(), r.BucketDid)
+	bucket, err := b.GetBuckets(context.Background(), body.BucketDid)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: "Failed to get bucket",
@@ -60,7 +56,7 @@ func (ns *NebulaServer) UpdateBucketVisibility(c *gin.Context) {
 	fmt.Println("Bucket: ", bucket)
 
 	// Update the bucket's Content
-	updateContent, err := b.UpdateBucketVisibility(context.Background(), r.BucketDid, &vis)
+	updateContent, err := b.UpdateBucketVisibility(context.Background(), body.BucketDid, &vis)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: err.Error(),

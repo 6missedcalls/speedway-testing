@@ -1,12 +1,10 @@
 package routes
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	rt "github.com/sonr-io/sonr/x/registry/types"
-	"github.com/sonr-io/speedway/internal/binding"
 )
 
 type SellAliasBody struct {
@@ -37,13 +35,15 @@ func (ns *NebulaServer) SellAlias(c *gin.Context) {
 		})
 		return
 	}
-	m := binding.CreateInstance()
+	m := ns.Config.Binding
+
 	msg := rt.MsgSellAlias{
 		Creator: body.Creator,
 		Alias:   body.Alias,
 		Amount:  body.Amount,
 	}
-	res, err := m.SellAlias(context.Background(), msg)
+
+	res, err := m.Instance.SellAlias(msg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: err.Error(),

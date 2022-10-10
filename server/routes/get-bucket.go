@@ -2,13 +2,10 @@ package routes
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	btv1 "github.com/sonr-io/sonr/x/bucket/types"
-	"github.com/sonr-io/speedway/internal/binding"
 )
 
 type GetBucketBody struct {
@@ -39,20 +36,8 @@ type ConvertBucketRes struct {
 // @Failure      500  {object} FailedResponse
 // @Router /bucket/get [post]
 func (ns *NebulaServer) GetBucket(c *gin.Context) {
-	rBody := c.Request.Body
 	var body GetBucketBody
-	err := json.NewDecoder(rBody).Decode(&body)
-	if err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusBadRequest, FailedResponse{
-			Error: "Invalid request body",
-		})
-		return
-	}
-
-	b := binding.CreateInstance()
-
-	bucket, err := b.GetBuckets(context.Background(), body.BucketDid)
+	err := c.BindJSON(&body)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: err.Error(),
@@ -60,10 +45,21 @@ func (ns *NebulaServer) GetBucket(c *gin.Context) {
 		return
 	}
 
+	b := ns.Config.Binding
+
+	bucket, err := b.Instance.GetBucket(body.BucketDid)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
+		})
+		return
+	}
+	bucketItems := bucket.GetBucketItems()
+
 	var res []*ConvertBucketRes
 
 	// for each bucketitem in bucket get the content
-	for _, bucketItem := range bucket {
+	for _, bucketItem := range bucketItems {
 		content, err := b.GetContentById(context.Background(), body.BucketDid, bucketItem.Uri)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, FailedResponse{

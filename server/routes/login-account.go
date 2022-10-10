@@ -1,13 +1,11 @@
 package routes
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/speedway/internal/binding"
 )
 
 type LoginRequestBody struct {
@@ -37,12 +35,11 @@ type SuccessfulLogin struct {
 // @Failure 500  {object}  FailedLogin
 // @Router /account/login [post]
 func (ns *NebulaServer) LoginAccount(c *gin.Context) {
-	rBody := c.Request.Body
 	var body LoginRequestBody
-	err := json.NewDecoder(rBody).Decode(&body)
+	err := c.BindJSON(&body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid request body",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
 		})
 		return
 	}
@@ -52,10 +49,10 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 		Password: body.Password,
 	}
 
-	m := binding.CreateInstance()
+	b := ns.Config.Binding
 
 	// Login to account with Speedway binding
-	res, err := m.Login(req)
+	res, err := b.Login(req)
 	if err != nil {
 		fmt.Println("Login Error: ", err)
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -69,10 +66,7 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 			Success: false,
 		})
 	} else {
-		addr, err := m.GetAddress()
-		if err != nil {
-			fmt.Println("GetAddress Error: ", err)
-		}
+		addr := b.Instance.GetAddress()
 		// use SuccessfulLogin struct to return address
 		c.JSON(http.StatusOK, SuccessfulLogin{
 			Success: true,

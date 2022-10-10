@@ -1,13 +1,10 @@
 package routes
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/speedway/internal/binding"
 )
 
 // @BasePath /api/v1
@@ -22,19 +19,17 @@ import (
 // @Failure      500  {object} FailedResponse
 // @Router /schema/get-from-creator [post]
 func (ns *NebulaServer) QuerySchemaByCreator(c *gin.Context) {
-	rb := c.Request.Body
 	var body rtmv1.QueryWhatIsByCreatorRequest
-	err := json.NewDecoder(rb).Decode(&body)
+	err := c.BindJSON(&body)
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, FailedResponse{
 			Error: "QueryWhatIsByCreatorRequest Could not be parsed",
 		})
 		return
 	}
 
-	b := binding.CreateInstance().Instance
-	res, err := b.QueryWhatIsByCreator(rtmv1.QueryWhatIsByCreatorRequest{
+	b := ns.Config.Binding
+	res, err := b.Instance.QueryWhatIsByCreator(rtmv1.QueryWhatIsByCreatorRequest{
 		Creator: body.Creator,
 	})
 	if err != nil {

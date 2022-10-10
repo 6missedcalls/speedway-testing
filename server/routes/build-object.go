@@ -1,26 +1,19 @@
 package routes
 
 import (
-	"context"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"math"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/speedway/internal/binding"
 )
 
 type BuildObjectBody struct {
 	SchemaDid string                 `json:"schemaDid"`
 	Label     string                 `json:"label"`
 	Object    map[string]interface{} `json:"object"`
-}
-
-type BuildObjectResponse struct {
-	ObjectUpload *rtmv1.UploadObjectResponse `json:"objectUpload"`
 }
 
 // @BasePath /api/v1
@@ -37,22 +30,21 @@ type BuildObjectResponse struct {
 // @Failure 500  {object}  FailedResponse
 // @Router /object/build [post]
 func (ns *NebulaServer) BuildObject(c *gin.Context) {
-	rBody := c.Request.Body
 	var body BuildObjectBody
-	err := json.NewDecoder(rBody).Decode(&body)
+	err := c.BindJSON(&body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, FailedResponse{
-			Error: "Invalid request body",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
 		})
 		return
 	}
 
 	label := body.Label
 	// init motor
-	m := binding.CreateInstance()
+	b := ns.Config.Binding
 
 	// query whatis
-	did, err := m.GetDID()
+	did := b.Instance.GetDID()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: "Failed to get DID",
@@ -66,7 +58,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 		Did:     body.SchemaDid,
 	}
 
-	querySchema, err := m.QuerySchema(context.Background(), querySchemaReq)
+	querySchema, err := b.Instance.QueryWhatIs(querySchemaReq)
 	if err != nil {
 		fmt.Printf("Command failed %v\n", err)
 		return
@@ -74,7 +66,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	fmt.Printf("Schema WhatIs Response %v\n", querySchema)
 
 	// Initialize NewObjectBuilder
-	objBuilder, err := m.NewObjectBuilder(body.SchemaDid)
+	objBuilder, err := b.Instance.NewObjectBuilder(body.SchemaDid)
 	if err != nil {
 		fmt.Println("ObjectBuilder Error: ", err)
 		c.JSON(http.StatusUnprocessableEntity, FailedResponse{
@@ -127,7 +119,5 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 			Error: err.Error(),
 		})
 	}
-	c.JSON(http.StatusOK, BuildObjectResponse{
-		ObjectUpload: upload,
-	})
+	c.JSON(http.StatusOK, upload)
 }

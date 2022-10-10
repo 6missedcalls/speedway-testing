@@ -1,23 +1,16 @@
 package routes
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/sonr/x/schema/types"
-	"github.com/sonr-io/speedway/internal/binding"
 )
 
 type QuerySchema struct {
 	Creator string `json:"creator"`
 	Schema  string `json:"schema"`
-}
-
-type QuerySchemaResponse struct {
-	Definition *types.SchemaDefinition `json:"definition"`
 }
 
 // @BasePath /api/v1
@@ -29,25 +22,24 @@ type QuerySchemaResponse struct {
 // @Produce json
 // @Param creator body string true "Creator"
 // @Param schema body string true "Schema"
-// @Success      200  {object} QuerySchemaResponse
+// @Success      200  {object} rtmv1.QueryWhatIsResponse
 // @Failure      500  {object} FailedResponse
 // @Router /schema/get [post]
 func (ns *NebulaServer) QuerySchema(c *gin.Context) {
-	rBody := c.Request.Body
-	var r QuerySchema
-	err := json.NewDecoder(rBody).Decode(&r)
+	var body QuerySchema
+	err := c.BindJSON(&body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, FailedResponse{
-			Error: "Invalid Request Body",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
 		})
 		return
 	}
 
-	m := binding.CreateInstance()
+	b := ns.Config.Binding
 
-	schema, err := m.GetSchema(rtmv1.QueryWhatIsRequest{
-		Creator: r.Creator,
-		Did:     r.Schema,
+	res, err := b.Instance.QueryWhatIs(rtmv1.QueryWhatIsRequest{
+		Creator: body.Creator,
+		Did:     body.Schema,
 	})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, FailedResponse{
@@ -55,7 +47,7 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 		})
 		return
 	}
-	if schema.WhatIs == nil {
+	if res.WhatIs == nil {
 		fmt.Printf("GetSchema failed %v\n", err)
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: err.Error(),
@@ -63,8 +55,5 @@ func (ns *NebulaServer) QuerySchema(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK,
-		QuerySchemaResponse{
-			Definition: schema.WhatIs.Schema,
-		})
+	c.JSON(http.StatusOK, res)
 }

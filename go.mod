@@ -20,7 +20,7 @@ require (
 	github.com/kataras/golog v0.1.7
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
 	github.com/shengdoushi/base58 v1.0.0
-	github.com/sonr-io/sonr v0.4.3
+	github.com/sonr-io/sonr v0.5.3
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe

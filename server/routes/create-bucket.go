@@ -1,8 +1,6 @@
 package routes
 
 import (
-	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -11,7 +9,6 @@ import (
 	"github.com/sonr-io/sonr/pkg/did"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	"github.com/sonr-io/sonr/x/bucket/types"
-	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/utils"
 )
 
@@ -53,18 +50,16 @@ type CreateBucketResponse struct {
 // @Failure      500  {object}  FailedResponse
 // @Router /bucket/create [post]
 func (ns *NebulaServer) CreateBucket(c *gin.Context) {
-	rBody := c.Request.Body
-	var r CreateBucketRequest
-	err := json.NewDecoder(rBody).Decode(&r)
+	var body CreateBucketRequest
+	err := c.BindJSON(&body)
 	if err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusBadRequest, FailedResponse{
-			Error: "Invalid request body",
+		c.JSON(http.StatusInternalServerError, FailedResponse{
+			Error: err.Error(),
 		})
 		return
 	}
 
-	vis, err := utils.ConvertBucketVisibility(r.Visibility)
+	vis, err := utils.ConvertBucketVisibility(body.Visibility)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, FailedResponse{
 			Error: "Invalid Conversion of Visibility",
@@ -72,7 +67,7 @@ func (ns *NebulaServer) CreateBucket(c *gin.Context) {
 		return
 	}
 
-	role, err := utils.ConvertBucketRole(r.Role)
+	role, err := utils.ConvertBucketRole(body.Role)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, FailedResponse{
 			Error: "Invalid Conversion of Role",
@@ -81,7 +76,7 @@ func (ns *NebulaServer) CreateBucket(c *gin.Context) {
 	}
 
 	var content []*types.BucketItem
-	for _, item := range r.Content {
+	for _, item := range body.Content {
 		rid, err := utils.ConvertResourceIdentifier(item["type"])
 		if err != nil {
 			c.JSON(http.StatusBadRequest, FailedResponse{
@@ -100,27 +95,31 @@ func (ns *NebulaServer) CreateBucket(c *gin.Context) {
 	}
 
 	createBucketReq := rtmv1.CreateBucketRequest{
-		Creator:    r.Creator,
-		Label:      r.Label,
+		Creator:    body.Creator,
+		Label:      body.Label,
 		Visibility: vis,
 		Role:       role,
 		Content:    content,
 	}
 
-	b := binding.CreateInstance()
+	b := ns.Config.Binding
 
 	// create the bucket
-	bucket, service, err := b.CreateBucket(context.Background(), createBucketReq)
+	res, bucket, err := b.Instance.CreateBucket(createBucketReq)
 	if err != nil {
-		fmt.Println("Create Bucket Error: ", err)
 		c.JSON(http.StatusInternalServerError, FailedResponse{
 			Error: err.Error(),
 		})
 		return
 	}
+	// create the service endpoint for the bucket
+	serv := bucket.CreateBucketServiceEndpoint()
+
+	// printing the output of res to see what is returned
+	fmt.Println(res)
 
 	c.JSON(http.StatusOK, CreateBucketResponse{
-		Bucket:  bucket,
-		Service: &service,
+		Bucket:  bucket.GetBucketItems(),
+		Service: &serv,
 	})
 }

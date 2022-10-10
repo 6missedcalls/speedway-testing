@@ -1,6 +1,10 @@
 package routes
 
-import "embed"
+import (
+	"embed"
+
+	"github.com/sonr-io/speedway/internal/binding"
+)
 
 type ServerConfig struct {
 	RPDisplayName string
@@ -8,6 +12,7 @@ type ServerConfig struct {
 	RPOrigin      string
 	StaticDir     string
 	Address       string
+	Binding       *binding.SpeedwayBinding
 	EmbedFs       *embed.FS
 }
 
