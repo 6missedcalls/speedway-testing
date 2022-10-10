@@ -1,14 +1,23 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import RefreshSvg from "../../assets/svgs/Refresh"
+import CheckboxListGroup from "../../components/CheckboxListGroup"
 import { AppModalContext } from "../../contexts/appModalContext/appModalContext"
 import { selectAddress } from "../../redux/slices/authenticationSlice"
 import {
+	selectAllObjects,
 	selectBucketCreationLoading,
+	selectBuckets,
 	userCreateBucket,
 	userGetAllBuckets,
+	userGetAllObjects,
 } from "../../redux/slices/bucketSlice"
+import {
+	selectSchemasMetadataList,
+	userGetAllSchemas,
+} from "../../redux/slices/schemasSlice"
 import { AppDispatch } from "../../redux/store"
+import { Bucket, objectsSelectionCheckbox } from "../../utils/types"
 
 const ModalCreateBucket = () => {
 	const [label, setLabel] = useState("")
@@ -16,13 +25,76 @@ const ModalCreateBucket = () => {
 	const dispatch = useDispatch<AppDispatch>()
 	const [error, setError] = useState("")
 	const address = useSelector(selectAddress)
+	const buckets = useSelector(selectBuckets)
+	const schemas = useSelector(selectSchemasMetadataList)
+	const allObjects = useSelector(selectAllObjects)
+	const [checkboxes, setCheckboxes] = useState<objectsSelectionCheckbox[]>([])
+
+	useEffect(() => {
+		initialize()
+	}, [buckets])
+
+	useEffect(() => {
+		setCheckboxes(
+			allObjects.map(({ cid, schemaDid }) => ({
+				cid,
+				schemaDid,
+				checked: false,
+			}))
+		)
+	}, [allObjects])
+
+	const initialize = async () => {
+		if (buckets.length === 0) return
+
+		dispatch(userGetAllSchemas(address))
+		const bucketDids = buckets.map((item: Bucket) => item.did)
+		await dispatch(userGetAllObjects({ bucketDids }))
+	}
+
+	function onChangeObjectCheckbox({
+		checked,
+		cid,
+		schemaDid,
+	}: objectsSelectionCheckbox) {
+		if (!cid) return
+		const index = checkboxes.findIndex(
+			(item) => item.cid === cid && item.schemaDid === schemaDid
+		)
+
+		const newCheckboxes = [...checkboxes]
+		newCheckboxes.splice(index, 1, {
+			cid,
+			schemaDid,
+			checked,
+		})
+
+		setCheckboxes(newCheckboxes)
+	}
 
 	const save = async () => {
 		if (!label) {
 			setError("Bucket Name is required")
 			return
 		}
-		await dispatch(userCreateBucket({ label, address }))
+
+		const content = checkboxes
+			.filter((checkbox) => checkbox.checked)
+			.map((checkbox) => {
+				return {
+					type: "cid",
+					schemaDid: checkbox.schemaDid,
+					uri: checkbox.cid,
+				}
+			})
+
+		const createBucketPayload = {
+			label,
+			address,
+			...(content.length > 0 && { content }),
+		}
+
+		await dispatch(userCreateBucket(createBucketPayload))
 		dispatch(userGetAllBuckets(address))
 		closeModal()
 	}
@@ -57,6 +129,28 @@ const ModalCreateBucket = () => {
 							autoFocus
 						/>
 					</div>
+					{allObjects.length > 0 && (
+						<div className="max-h-[50vh] overflow-y-auto p-8">
+							<span className="block mb-4 flex-1 uppercase font-semibold text-custom-2xs text-default">
+								Add Objects From Schemas
+							</span>
+							{schemas.map((schema, index) => {
+								if (!allObjects.some((obj) => obj.schemaDid === schema.did))
+									return null
+								return (
+									<div key={schema.did} className="mb-2">
+										<CheckboxListGroup
+											defaultOpen={index === 0}
+											schema={schema}
+											checkboxes={checkboxes}
+											setCheckboxes={setCheckboxes}
+											onChange={onChangeObjectCheckbox}
+										/>
+									</div>
+								)
+							})}
+						</div>
+					)}
 					{error && (
 						<div className="ml-8 mb-4">
 							<span className="text-tertiary-red block text-xs">{error}</span>

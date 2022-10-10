@@ -8,13 +8,10 @@ export function isEmptyObject(obj: Record<string, any>) {
 	)
 }
 
-export function arrayObjectDistinct(
-	arr: Array<Record<string, any>>,
-	key: string
-) {
+export function arrayObjectDistinct(arr: any[], key: string) {
 	const uniqueIds: Array<boolean> = []
 
-	return arr.filter((element: Record<string, any>) => {
+	return arr.filter((element: any) => {
 		const isDuplicate = uniqueIds.includes(element[key])
 
 		if (!isDuplicate) {

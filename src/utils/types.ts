@@ -73,7 +73,7 @@ export type SearchableListItem = {
 	[key: string]: SearchableListItemData
 }
 
-export type SearchableList = SearchableListItem[]
+export type SearchableListType = SearchableListItem[]
 
 export interface updateBucketProps {
 	bucketDid: string
@@ -89,4 +89,10 @@ export interface userGetObjectProps {
 export interface onInputFileProps {
 	file: File
 	onChange: (value: Record<string, any>) => void
+}
+
+export interface objectsSelectionCheckbox {
+	cid: string
+	checked: boolean
+	schemaDid: string
 }

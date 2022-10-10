@@ -9,6 +9,7 @@ interface SearchableListContainerProps {
 	paginationSize?: number
 	handleOpenModal?: () => void
 	loading: boolean
+	hideSearchBar?: boolean
 }
 
 function SearchableListContainer({
@@ -17,6 +18,7 @@ function SearchableListContainer({
 	type,
 	paginationSize = 8,
 	handleOpenModal,
+	hideSearchBar,
 }: SearchableListContainerProps) {
 	const [orderAsc, setOrderAsc] = useState(true)
 	const [searchTerm, setSearchTerm] = useState("")
@@ -27,18 +29,16 @@ function SearchableListContainer({
 	useEffect(() => {
 		const processedList = getList()
 		setList(processedList)
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [searchTerm, orderAsc, paginationCurrentPage, initialList])
 
 	useEffect(() => {
 		if (searchTerm) {
-			const filteredListLenght = getFilteredList(initialList).length
+			const filteredListLength = getFilteredList(initialList).length
 			setPaginationCurrentPage(1)
-			setTotalPages(Math.ceil(filteredListLenght / paginationSize))
+			setTotalPages(Math.ceil(filteredListLength / paginationSize))
 		} else {
 			setTotalPages(Math.ceil(initialList.length / paginationSize))
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [searchTerm, initialList])
 
 	function toggleOrder() {
@@ -124,6 +124,7 @@ function SearchableListContainer({
 			totalPages={totalPages}
 			setSearchTerm={setSearchTerm}
 			onClickNewItem={handleOpenModal}
+			hideSearchBar={hideSearchBar}
 		/>
 	)
 }

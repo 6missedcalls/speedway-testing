@@ -10,7 +10,7 @@ import {
 import { AppDispatch } from "../../redux/store"
 import { MODAL_CONTENT_NEW_SCHEMA } from "../../utils/constants"
 import {
-	SearchableList,
+	SearchableListType,
 	SearchableListItem,
 	SchemaMeta,
 } from "../../utils/types"
@@ -27,7 +27,6 @@ function SchemasPageContainer() {
 
 	useEffect(() => {
 		dispatch(userGetAllSchemas(address))
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	function openNewSchemaModal() {
@@ -35,7 +34,7 @@ function SchemasPageContainer() {
 		openModal()
 	}
 
-	function mapToListFormat(list: Array<SchemaMeta>): SearchableList {
+	function mapToListFormat(list: Array<SchemaMeta>): SearchableListType {
 		return list.map((item: SchemaMeta): SearchableListItem => {
 			return {
 				"Schema name": {

@@ -20,6 +20,7 @@ interface SearchableListComponentProps {
 	setSearchTerm: React.Dispatch<React.SetStateAction<string>>
 	totalPages: number
 	onClickNewItem?: () => void
+	hideSearchBar?: boolean
 }
 
 function SearchableListComponent({
@@ -33,6 +34,7 @@ function SearchableListComponent({
 	totalPages,
 	setSearchTerm,
 	onClickNewItem,
+	hideSearchBar,
 }: SearchableListComponentProps) {
 	const isFirstPage = paginationCurrentPage === 1
 	const isLastPage = paginationCurrentPage === totalPages
@@ -42,22 +44,24 @@ function SearchableListComponent({
 		setSearchTerm(event.target.value)
 
 	return (
-		<div className="shadow-3xl rounded-2xl bg-white">
-			<div className="flex justify-between p-6 w-full">
-				<input
-					onChange={onChange}
-					className="border border-default rounded-full px-4 py-2 font-normal w-80 mr-4"
-					placeholder="Search"
-				/>
-				{onClickNewItem && (
-					<button
-						className="text-skin-primary bg-skin-primary rounded px-4"
-						onClick={onClickNewItem}
-					>
-						New
-					</button>
-				)}
-			</div>
+		<div className="shadow-3xl rounded-2xl bg-white w-full">
+			{!hideSearchBar && (
+				<div className="flex justify-between p-6 w-full">
+					<input
+						onChange={onChange}
+						className="border border-default rounded-full px-4 py-2 font-normal w-80 mr-4"
+						placeholder="Search"
+					/>
+					{onClickNewItem && (
+						<button
+							className="text-skin-primary bg-skin-primary rounded px-4"
+							onClick={onClickNewItem}
+						>
+							New
+						</button>
+					)}
+				</div>
+			)}
 			<div className={`${type === ListTypes.schema ? "" : "overflow-auto"}`}>
 				<table className="text-left w-full">
 					<thead>

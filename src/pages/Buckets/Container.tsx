@@ -16,7 +16,6 @@ function BucketsPageContainer() {
 	const address = useSelector(selectAddress)
 	useEffect(() => {
 		dispatch(userGetAllBuckets(address))
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	return <BucketsPageComponent data={buckets} loading={loading} />

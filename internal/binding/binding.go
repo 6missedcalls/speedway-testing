@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/sonr-io/sonr/pkg/did"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
 	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	"github.com/sonr-io/sonr/third_party/types/common"
@@ -324,7 +325,52 @@ func (b *SpeedwayBinding) CreateSchema(req rtmv1.CreateSchemaRequest) (rtmv1.Cre
 }
 
 /*
- UpdateBucketItems and return the bucket after the update
+Create the bucket and return the WhereIsResponse
+*/
+func (b *SpeedwayBinding) CreateBucket(ctx context.Context, req rtmv1.CreateBucketRequest) ([]*btv1.BucketItem, did.Service, error) {
+	if b.Instance == nil {
+		return nil, did.Service{}, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return nil, did.Service{}, ErrNotAuthenticated
+	}
+
+	_, bucket, err := b.Instance.CreateBucket(req)
+	if err != nil {
+		fmt.Println(status.Error("Error"), err)
+		return nil, did.Service{}, err
+	}
+
+	serv := bucket.CreateBucketServiceEndpoint()
+	fmt.Println(status.Info, "Service Endpoint", serv)
+
+	items := bucket.GetBucketItems()
+
+	return items, serv, nil
+}
+
+/*
+NewObjectBuilder and return the ObjectBuilder
+*/
+func (b *SpeedwayBinding) NewObjectBuilder(schemaDid string) (*object.ObjectBuilder, error) {
+	if b.Instance == nil {
+		return nil, ErrMotorNotInitialized
+	}
+	if !b.loggedIn {
+		return nil, ErrNotAuthenticated
+	}
+
+	objBuilder, err := b.Instance.NewObjectBuilder(schemaDid)
+	if err != nil {
+		fmt.Println(status.Error("Binding failed %v\n"), err)
+		return nil, err
+	}
+
+	return objBuilder, nil
+}
+
+/*
+UpdateBucketItems and return the bucket after the update
 */
 func (b *SpeedwayBinding) UpdateBucketItems(ctx context.Context, bucketDid string, items []*btv1.BucketItem) ([]*btv1.BucketItem, error) {
 	if b.Instance == nil {

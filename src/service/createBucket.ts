@@ -1,7 +1,12 @@
 import { BASE_API } from "../utils/constants"
 import { formatApiError } from "../utils/errors"
+import { BucketContent } from "../utils/types"
 
-const createBucket = async (label: string, address: string) => {
+const createBucket = async (
+	label: string,
+	address: string,
+	content?: BucketContent[]
+) => {
 	const url = `${BASE_API}/api/v1/bucket/create`
 	const options = {
 		method: "POST",
@@ -11,6 +16,7 @@ const createBucket = async (label: string, address: string) => {
 			creator: address,
 			role: "application",
 			visibility: "public",
+			...(content && { content }),
 		}),
 	}
 

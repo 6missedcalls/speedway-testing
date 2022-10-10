@@ -1,10 +1,7 @@
 import LoadingCircleSvg from "../../assets/svgs/LoadingCircle"
 import LayoutMenu from "../../components/LayoutMenu"
 import SearchableList from "../../components/SearchableList"
-import {
-	SearchableList as SearchableListType,
-	ListTypes,
-} from "../../utils/types"
+import { SearchableListType, ListTypes } from "../../utils/types"
 
 interface SchemasPageComponentProps {
 	list: SearchableListType
