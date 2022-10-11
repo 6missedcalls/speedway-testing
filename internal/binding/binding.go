@@ -7,7 +7,7 @@ import (
 
 	"github.com/sonr-io/sonr/pkg/did"
 	mtr "github.com/sonr-io/sonr/pkg/motor"
-	"github.com/sonr-io/sonr/pkg/motor/x/object"
+	"github.com/sonr-io/sonr/pkg/motor/x/document"
 	"github.com/sonr-io/sonr/third_party/types/common"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	btv1 "github.com/sonr-io/sonr/x/bucket/types"
@@ -190,7 +190,7 @@ func (b *SpeedwayBinding) GetLoggedIn() bool {
 /*
  [DEPRECATED] Get the object and return a map of the object
 */
-func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid string) (*object.Object, error) {
+func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid string) (*document.Document, error) {
 	if b.Instance == nil {
 		return nil, ErrMotorNotInitialized
 	}
@@ -212,7 +212,7 @@ func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid s
 	fmt.Printf("%v\n", querySchema.WhatIs)
 
 	// Start a NewObjectBuilder (so we can call the GetByCID method)
-	objBuilder, err := b.Instance.NewObjectBuilder(schemaDid)
+	objBuilder, err := b.Instance.NewDocumentBuilder(schemaDid)
 	if err != nil {
 		fmt.Println(status.Error("Error"), err)
 		return nil, err
@@ -356,7 +356,7 @@ func (b *SpeedwayBinding) CreateBucket(ctx context.Context, req rtmv1.CreateBuck
 /*
 NewObjectBuilder and return the ObjectBuilder
 */
-func (b *SpeedwayBinding) NewObjectBuilder(schemaDid string) (*object.ObjectBuilder, error) {
+func (b *SpeedwayBinding) NewObjectBuilder(schemaDid string) (*document.DocumentBuilder, error) {
 	if b.Instance == nil {
 		return nil, ErrMotorNotInitialized
 	}

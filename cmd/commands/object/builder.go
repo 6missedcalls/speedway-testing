@@ -6,11 +6,11 @@ import (
 	"math"
 	"strconv"
 
+	"github.com/sonr-io/sonr/pkg/motor/x/document"
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 
 	"github.com/Songmu/prompter"
 	"github.com/kataras/golog"
-	"github.com/sonr-io/sonr/pkg/motor/x/object"
 	"github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/binding"
 	"github.com/sonr-io/speedway/internal/client"
@@ -66,7 +66,7 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 			m := binding.InitMotor()
 
 			// create new object builder
-			objBuilder, err := m.NewObjectBuilder(schemadid)
+			objBuilder, err := m.NewDocumentBuilder(schemadid)
 			if err != nil {
 				fmt.Printf("Command failed %v\n", err)
 				return
@@ -152,7 +152,7 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 	return
 }
 
-func setNormalizedValueFromPrompt(builder *object.ObjectBuilder, field *types.SchemaKindDefinition, value string) error {
+func setNormalizedValueFromPrompt(builder *document.DocumentBuilder, field *types.SchemaKindDefinition, value string) error {
 	switch field.GetKind() {
 	case types.SchemaKind_STRING:
 		return builder.Set(field.Name, value)
