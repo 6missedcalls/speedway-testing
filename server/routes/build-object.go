@@ -66,7 +66,7 @@ func (ns *NebulaServer) BuildObject(c *gin.Context) {
 	fmt.Printf("Schema WhatIs Response %v\n", querySchema)
 
 	// Initialize NewObjectBuilder
-	objBuilder, err := b.Instance.NewObjectBuilder(body.SchemaDid)
+	objBuilder, err := b.Instance.NewDocumentBuilder(body.SchemaDid)
 	if err != nil {
 		fmt.Println("ObjectBuilder Error: ", err)
 		c.JSON(http.StatusUnprocessableEntity, FailedResponse{

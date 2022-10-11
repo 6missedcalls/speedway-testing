@@ -41,7 +41,7 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 				}
 			}
 
-			fields := make(map[string]types.SchemaKind)
+			fields := make(map[string]*types.SchemaFieldKind)
 			if path, err := cmd.Flags().GetString("file"); err == nil && path == "" {
 				// Prompt the user for a list of label:IPLD_TYPE to create a schema
 				// IPLD_TYPE can be one of the following: list, bool, int, float, string, bytes & link

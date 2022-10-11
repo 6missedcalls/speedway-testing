@@ -43,7 +43,7 @@ func LoginPrompt() rtmv1.LoginRequest {
 	}
 
 	loginRequest := rtmv1.LoginRequest{
-		Did: address,
+		AccountId: address,
 	}
 	return loginRequest
 }

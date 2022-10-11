@@ -156,24 +156,24 @@ func LoadDocumentFieldsFromDisk(path string) ([]*st.SchemaDocumentValue, error) 
 	return fields, nil
 }
 
-func ConvertSchemaKind(kind string) (st.SchemaKind, error) {
+func ConvertSchemaKind(kind string) (st.Kind, error) {
 	kind = strings.ToLower(kind)
-	schemaKind := st.SchemaKind_STRING
+	schemaKind := st.Kind_STRING
 	switch kind {
 	case "list":
-		schemaKind = st.SchemaKind_LIST
+		schemaKind = st.Kind_LIST
 	case "bool":
-		schemaKind = st.SchemaKind_BOOL
+		schemaKind = st.Kind_BOOL
 	case "int":
-		schemaKind = st.SchemaKind_INT
+		schemaKind = st.Kind_INT
 	case "float":
-		schemaKind = st.SchemaKind_FLOAT
+		schemaKind = st.Kind_FLOAT
 	case "string":
-		schemaKind = st.SchemaKind_STRING
+		schemaKind = st.Kind_STRING
 	case "bytes":
-		schemaKind = st.SchemaKind_BYTES
+		schemaKind = st.Kind_BYTES
 	case "link":
-		schemaKind = st.SchemaKind_LINK
+		schemaKind = st.Kind_LINK
 	}
 
 	return schemaKind, nil

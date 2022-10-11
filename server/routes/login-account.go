@@ -45,8 +45,8 @@ func (ns *NebulaServer) LoginAccount(c *gin.Context) {
 	}
 
 	req := rtmv1.LoginRequest{
-		Did:      body.Address,
-		Password: body.Password,
+		AccountId: body.Address,
+		Password:  body.Password,
 	}
 
 	b := ns.Config.Binding

@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"encoding/json"
 	"net/http"
 
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
@@ -52,11 +53,12 @@ func (ns *NebulaServer) CreateSchemaDocument(c *gin.Context) {
 		return
 	}
 
+	fieldsBytes, err := json.Marshal(body.Fields)
+
 	req := rtmv1.UploadDocumentRequest{
-		Creator:    body.Creator,
-		Label:      body.Label,
-		Definition: schemadefinition.Schema,
-		Fields:     body.Fields,
+		Label:     body.Label,
+		SchemaDid: schemadefinition.Schema.Did,
+		Document:  fieldsBytes,
 	}
 
 	res, err := b.Instance.UploadDocument(req)
@@ -69,7 +71,6 @@ func (ns *NebulaServer) CreateSchemaDocument(c *gin.Context) {
 
 	c.JSON(http.StatusOK, rtmv1.UploadDocumentResponse{
 		Status:   res.Status,
-		Did:      res.Did,
 		Cid:      res.Cid,
 		Document: res.Document,
 	})

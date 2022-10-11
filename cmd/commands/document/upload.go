@@ -2,6 +2,7 @@ package document
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/Songmu/prompter"
@@ -68,11 +69,12 @@ func bootstrapBuildDocumentCommand(ctx context.Context, logger *golog.Logger) (b
 				}
 			}
 
+			fieldsBytes, err := json.Marshal(fields)
+
 			uploadRes, err := cli.CreateDocument(mt.UploadDocumentRequest{
-				Creator:    session.Info.Address,
-				Label:      label,
-				Definition: res.Schema,
-				Fields:     fields,
+				Label:     label,
+				SchemaDid: res.Schema.Did,
+				Document:  fieldsBytes,
 			})
 
 			if err != nil {

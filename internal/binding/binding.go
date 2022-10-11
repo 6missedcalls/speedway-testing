@@ -12,6 +12,7 @@ import (
 	rtmv1 "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
 	btv1 "github.com/sonr-io/sonr/x/bucket/types"
 	rt "github.com/sonr-io/sonr/x/registry/types"
+	"github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/utils"
 )
@@ -190,7 +191,7 @@ func (b *SpeedwayBinding) GetLoggedIn() bool {
 /*
  [DEPRECATED] Get the object and return a map of the object
 */
-func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid string) (*document.Document, error) {
+func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid string) (*types.SchemaDocument, error) {
 	if b.Instance == nil {
 		return nil, ErrMotorNotInitialized
 	}
@@ -212,20 +213,20 @@ func (b *SpeedwayBinding) GetObject(ctx context.Context, schemaDid string, cid s
 	fmt.Printf("%v\n", querySchema.WhatIs)
 
 	// Start a NewObjectBuilder (so we can call the GetByCID method)
-	objBuilder, err := b.Instance.NewDocumentBuilder(schemaDid)
+	documentBuilder, err := b.Instance.NewDocumentBuilder(schemaDid)
 	if err != nil {
 		fmt.Println(status.Error("Error"), err)
 		return nil, err
 	}
 
 	// Get the object by CID
-	getObject, err := objBuilder.GetByCID(cid)
+	getObject, err := documentBuilder.GetByCID(cid)
 	if err != nil {
 		fmt.Println(status.Error("Error"), err)
 		return nil, err
 	}
 
-	return &getObject, nil
+	return getObject, nil
 }
 
 /*
@@ -354,7 +355,7 @@ func (b *SpeedwayBinding) CreateBucket(ctx context.Context, req rtmv1.CreateBuck
 }
 
 /*
-NewObjectBuilder and return the ObjectBuilder
+NewObjectBuilder and return the DocumentBuilder
 */
 func (b *SpeedwayBinding) NewObjectBuilder(schemaDid string) (*document.DocumentBuilder, error) {
 	if b.Instance == nil {
@@ -364,13 +365,13 @@ func (b *SpeedwayBinding) NewObjectBuilder(schemaDid string) (*document.Document
 		return nil, ErrNotAuthenticated
 	}
 
-	objBuilder, err := b.Instance.NewObjectBuilder(schemaDid)
+	documentBuilder, err := b.Instance.NewDocumentBuilder(schemaDid)
 	if err != nil {
 		fmt.Println(status.Error("Binding failed %v\n"), err)
 		return nil, err
 	}
 
-	return objBuilder, nil
+	return documentBuilder, nil
 }
 
 /*

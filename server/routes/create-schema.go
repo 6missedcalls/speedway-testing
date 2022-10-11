@@ -10,9 +10,9 @@ import (
 )
 
 type CreateSchemaRequest struct {
-	SchemaLabel string                      `json:"label"`    // Label of the schema
-	SchemaField map[string]types.SchemaKind `json:"fields"`   // Fields of the schema
-	Metadata    map[string]string           `json:"metadata"` // Metadata of the schema
+	SchemaLabel string                            `json:"label"`    // Label of the schema
+	SchemaField map[string]*types.SchemaFieldKind `json:"fields"`   // Fields of the schema
+	Metadata    map[string]string                 `json:"metadata"` // Metadata of the schema
 }
 
 // @BasePath /api/v1

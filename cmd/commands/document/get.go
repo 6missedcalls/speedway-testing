@@ -37,7 +37,8 @@ func bootstrapGetDocumentCommand(ctx context.Context, logger *golog.Logger) (get
 				return
 			}
 
-			fmt.Printf("Schema did: %s \n", res.Did)
+			// !Changed from res.Did
+			fmt.Printf("Schema did: %s \n", res.Document.SchemaDid)
 			jsonRep := make(map[string]interface{})
 			docBytes := []byte(res.Document.String())
 			json.Unmarshal(docBytes, &jsonRep)

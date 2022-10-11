@@ -152,23 +152,23 @@ func BootstrapBuildObjectCommand(ctx context.Context, logger *golog.Logger) (bui
 	return
 }
 
-func setNormalizedValueFromPrompt(builder *document.DocumentBuilder, field *types.SchemaKindDefinition, value string) error {
+func setNormalizedValueFromPrompt(builder *document.DocumentBuilder, field *types.SchemaField, value string) error {
 	switch field.GetKind() {
-	case types.SchemaKind_STRING:
+	case types.Kind_STRING:
 		return builder.Set(field.Name, value)
-	case types.SchemaKind_INT:
+	case types.Kind_INT:
 		intValue, err := strconv.Atoi(value)
 		if err != nil {
 			return err
 		}
 		return builder.Set(field.Name, intValue)
-	case types.SchemaKind_FLOAT:
+	case types.Kind_FLOAT:
 		floatValue, err := strconv.ParseFloat(value, 64)
 		if err != nil {
 			return err
 		}
 		return builder.Set(field.Name, floatValue)
-	case types.SchemaKind_BOOL:
+	case types.Kind_BOOL:
 		boolValue, err := strconv.ParseBool(value)
 		if err != nil {
 			return err
