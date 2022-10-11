@@ -68,7 +68,13 @@ func bootstrapCreateSchemaCommand(ctx context.Context, logger *golog.Logger) (cr
 						logger.Fatalf(status.Error("Invalid field format"), err)
 						return
 					}
-					fields[fieldSplit[0]] = kind
+
+					kindObj := types.SchemaFieldKind{
+						Kind: kind,
+					}
+
+					fields[fieldSplit[0]] = &kindObj
+
 					fmt.Println(fieldSplit[0], kind)
 				}
 
