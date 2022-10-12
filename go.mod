@@ -3,7 +3,6 @@ module github.com/sonr-io/speedway
 go 1.16
 
 replace (
-	github.com/CosmWasm/wasm => github.com/CosmWasm/wasm v0.28.0
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/google/certificate-transparency-go => github.com/google/certificate-transparency-go v1.1.0
 	github.com/ipfs/go-ipfs-blockstore => github.com/ipfs/go-ipfs-blockstore v1.1.2
@@ -22,7 +21,7 @@ require (
 	github.com/kataras/golog v0.1.7
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
 	github.com/shengdoushi/base58 v1.0.0
-	github.com/sonr-io/sonr v0.0.0-00010101000000-000000000000
+	github.com/sonr-io/sonr v0.6.3
 	github.com/spf13/cobra v1.4.0
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
 	github.com/swaggo/gin-swagger v1.5.0
