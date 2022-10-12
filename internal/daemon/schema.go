@@ -45,3 +45,17 @@ func (d *Daemon) GetSchemasByCreator(req rtmv1.QueryWhatIsByCreatorRequest, res 
 
 	return
 }
+
+func (d *Daemon) GetSchemaByDid(req rtmv1.QueryWhatIsRequest, res *rtmv1.QueryWhatIsResponse) (err error) {
+	response, e := d.instance.Instance.QueryWhatIsByDid(req.Did)
+	err = e
+
+	if err != nil {
+		res = &rtmv1.QueryWhatIsResponse{}
+		return
+	}
+
+	*res = *response
+
+	return
+}

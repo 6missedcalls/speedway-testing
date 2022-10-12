@@ -139,16 +139,14 @@ func LoadSchemaFieldDefinitionFromDisk(path string) (rtmv1.CreateSchemaRequest, 
 	return req, nil
 }
 
-func LoadDocumentFieldsFromDisk(path string) ([]*st.SchemaDocumentValue, error) {
-	var fields []*st.SchemaDocumentValue = make([]*st.SchemaDocumentValue, 0)
+func LoadDocumentFieldsFromDisk(path string, schema *st.Schema) (map[string]interface{}, error) {
+	fields := make(map[string]interface{})
 	file, err := ioutil.ReadFile(path)
-
 	if err != nil {
 		return nil, err
 	}
 
 	err = json.Unmarshal(file, &fields)
-
 	if err != nil {
 		return nil, err
 	}

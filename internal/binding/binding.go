@@ -261,6 +261,10 @@ func (b *SpeedwayBinding) GetSchemaDocument(req rtmv1.GetDocumentRequest) (rtmv1
 	}
 
 	res, err := b.Instance.GetDocument(req)
+	if err != nil {
+		return rtmv1.GetDocumentResponse{}, err
+	}
+
 	return *res, err
 }
 

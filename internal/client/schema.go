@@ -28,3 +28,12 @@ func (c *RpcClient) GetSchemaByCreator(req rtmv1.QueryWhatIsByCreatorRequest) (*
 
 	return &response, nil
 }
+
+func (c *RpcClient) GetSchemaByDid(req rtmv1.QueryWhatIsRequest) (*rtmv1.QueryWhatIsResponse, error) {
+	var response rtmv1.QueryWhatIsResponse
+	if err := c.client.Call("Daemon.GetSchemaByDid", req, &response); err != nil {
+		return nil, err
+	}
+
+	return &response, nil
+}

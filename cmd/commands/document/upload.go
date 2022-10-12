@@ -9,7 +9,6 @@ import (
 	"github.com/kataras/golog"
 	"github.com/sonr-io/sonr/pkg/did"
 	mt "github.com/sonr-io/sonr/third_party/types/motor/api/v1"
-	"github.com/sonr-io/sonr/x/schema/types"
 	"github.com/sonr-io/speedway/internal/client"
 	"github.com/sonr-io/speedway/internal/status"
 	"github.com/sonr-io/speedway/internal/utils"
@@ -49,19 +48,21 @@ func bootstrapBuildDocumentCommand(ctx context.Context, logger *golog.Logger) (b
 				return
 			}
 
-			var fields []*types.SchemaDocumentValue
-			if file, err := cmd.Flags().GetString("file"); err == nil && file != "" {
-				fields, err = utils.LoadDocumentFieldsFromDisk(file)
-				if err != nil {
-					logger.Fatalf("Error while loading document fields: %s", err)
-					return
-				}
+			file, err := cmd.Flags().GetString("file")
+			if err != nil {
+				logger.Fatalf("error loading file: %s", err)
+			}
+
+			fields, err := utils.LoadDocumentFieldsFromDisk(file, res.WhatIs.Schema)
+			if err != nil {
+				logger.Fatalf("Error while loading document fields: %s", err)
+				return
 			}
 
 			var label string
 			if label, err = cmd.Flags().GetString("label"); err == nil && label == "" {
 				label = (&prompter.Prompter{
-					Message: "Enter Schema Label",
+					Message: "Enter Document Label",
 				}).Prompt()
 				if label == "" {
 					logger.Fatalf("Label cannot be empty")
@@ -70,10 +71,14 @@ func bootstrapBuildDocumentCommand(ctx context.Context, logger *golog.Logger) (b
 			}
 
 			fieldsBytes, err := json.Marshal(fields)
+			if err != nil {
+				logger.Fatalf("error encoding fields: %s", err)
+				return
+			}
 
 			uploadRes, err := cli.CreateDocument(mt.UploadDocumentRequest{
 				Label:     label,
-				SchemaDid: res.Schema.Did,
+				SchemaDid: res.WhatIs.Did,
 				Document:  fieldsBytes,
 			})
 
