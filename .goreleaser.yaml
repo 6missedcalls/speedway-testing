@@ -11,6 +11,13 @@ before:
     - npm install
     - npm run build:embed
 builds:
+  - id: linux-build
+    binary: speedway
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
   - id: darwin-build
     env:
       - CGO_ENABLED=1
