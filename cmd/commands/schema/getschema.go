@@ -59,12 +59,6 @@ func bootstrapQuerySchemaById(ctx context.Context, logger *golog.Logger) (queryS
 				return
 			}
 
-			session, err := cli.GetSessionInfo()
-			if err != nil {
-				logger.Fatalf(status.Error("SessionInfo Error: "), err)
-				return
-			}
-
 			// query schema
 			querySchemaRes, err := cli.GetSchemaByDid(rtmv1.QueryWhatIsRequest{
 				Did:     did,
